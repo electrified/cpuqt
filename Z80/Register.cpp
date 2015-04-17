@@ -1,5 +1,5 @@
 // Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/Register.java
-#include <org/maidavale/cpu/Register.hpp>
+#include <Z80/Register.hpp>
 
 enum Register {
         A,

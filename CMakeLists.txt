@@ -18,21 +18,31 @@ find_package(Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS}) 
 
 set(cpuqt2_SRCS cpuqt2.cpp main.cpp MainWindow.h ${Boost_LIBRARIES})
+# 
+# file(GLOB tools_SRC
+#     "tools/*.hpp"
+#     "tools/*.cpp"
+# )
 
-file(GLOB tools_SRC
-    "tools/*.hpp"
-    "tools/*.cpp"
-)
+file(GLOB tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.hpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp)
+
 
 file(GLOB Z80_SRC
     "Z80/*.hpp"
     "Z80/*.cpp"
 )
 
-add_executable(cpuqt2 ${cpuqt2_SRCS} ${tools_SRC} ${Z80_SRC})
+add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC})
+
+add_executable(tool ${tools_SRC} ${Z80_SRC})
+
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
+
+set_property(TARGET tool PROPERTY CXX_STANDARD 11)
+set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
+
 target_link_libraries(cpuqt2 Qt5::Widgets)
 
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
-
+install(TARGETS tool RUNTIME DESTINATION bin)

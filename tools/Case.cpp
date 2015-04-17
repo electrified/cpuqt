@@ -16,16 +16,16 @@ Case::Case(uint8_t opcode)
 
 void Case::write(std::ofstream* writer)
 {
-   /* writer << u"case 0x%02X:\n" << this->opcode;
-    for (auto FinalNode& node : this->nodes->values() ) {
-            c->write(writer);
-    }*/
+    writer << u"case 0x%02X:\n" << this->opcode;
+    for (auto node : this->nodes->values() ) {
+            node.second->write(writer);
+    }
     if(this->instruction != nullptr) {
         instruction->write(writer);
     }
     if(this->theSwitch != nullptr) {
         this->theSwitch->write(writer);
     }
-//    writer << u"break;\n";
+   writer << u"break;\n";
 }
 

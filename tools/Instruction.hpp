@@ -41,9 +41,9 @@ public:
     virtual std::vector<std::string>* getMethodParams();
 
 private:
-    ::std::string* getParam(::std::string* part, bool indirect, int32_t dataParamsUsed, std::vector<int32_t>* dataParams);
+    ::std::string* getParam(::std::string* part, bool indirect, uint32_t dataParamsUsed, std::vector<u_int32_t>* dataParams);
     int32_t paramsRequired(::std::string* part);
-    std::vector<int32_t>* dataParams();
+    std::vector<uint32_t>* dataParams();
 
 public:
     virtual ::std::string* getFunctionCall();

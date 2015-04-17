@@ -1,5 +1,5 @@
 // Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/RegisterPair.java
-#include <org/maidavale/cpu/RegisterPair.hpp>
+#include <Z80/RegisterPair.hpp>
 enum RegisterPair {
         AF,
         AF_prime,

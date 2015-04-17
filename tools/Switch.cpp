@@ -4,7 +4,7 @@
 #include "tools/Switch.hpp"
 #include "tools/FinalNode.hpp"
 
-Switch::Switch(int32_t* level)
+Switch::Switch(int32_t level)
 {
     this->level = level;
 }
@@ -14,12 +14,12 @@ Switch::Switch(int32_t* level)
  */
 void Switch::write(std::ofstream* writer)
 {
-    writer << u"// get opcode";
-    writer << u"currentInstruction[" <<  this->level << "] = getNextByte();\n";
-    writer << u"switch (currentInstruction["<< this->level << "]) {\n";
-    for (auto FinalNode& node : this->nodes->values() ) {
-            c->write(writer);
+    *writer << "// get opcode";
+    *writer << "currentInstruction[" <<  this->level << "] = getNextByte();\n";
+    *writer << "switch (currentInstruction["<< this->level << "]) {\n";
+    for (auto node : this->nodes ) {
+            node.second->write(writer);
     }
-    writer << u"}";
+    *writer << "}";
 }
 

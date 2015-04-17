@@ -5,16 +5,16 @@
 #include<fstream>
 #include <cstdint>
 
-#include"tools/FinalNode.hpp"
+#include "tools/FinalNode.hpp"
+
+// class FinalNode;
 
 class Switch
 {
 public:
-    int32_t* level;
-    std::map<int, FinalNode>* nodes;
+    int32_t level;
+    std::map<int, FinalNode*> nodes;
 public:
     virtual void write(std::ofstream* writer);
-
-public:
-    Switch(int32_t* level);
+    Switch(int32_t level);
 };

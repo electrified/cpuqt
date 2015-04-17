@@ -1,13 +1,15 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/tools/FinalNode.java
-
 #pragma once
 #include <cstdint>
 #include <map>
 #include <fstream>
 
-#include "tools/Switch.hpp"
-#include "tools/Instruction.hpp"
-#include "tools/GetData.hpp"
+// #include "tools/Switch.hpp"
+// #include "tools/Instruction.hpp"
+
+
+class Switch;
+class Instruction;
+class GetData;
 
 class FinalNode
 {
@@ -16,6 +18,6 @@ public:
     Switch* theSwitch;
     Instruction* instruction;
     std::map<uint8_t,GetData> getDatas;
-    virtual void write(std::ofstream* writer);
+    virtual void write(std::ofstream* writer) = 0;
     FinalNode();
 };

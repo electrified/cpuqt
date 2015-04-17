@@ -1,12 +1,16 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/tools/GetData.java
+#include<fstream>
+#include<cstdint>
+
 #include <tools/GetData.hpp>
+#include <tools/FinalNode.hpp>
+
 
 GetData::GetData(uint8_t level)
 {
-    this->level = level;
+   this->level = level;
 }
 
-void GetData::write(std::ofstream* writer) /* throws(IOException) */
+void GetData::write(std::ofstream* writer)
 {
-  //  writer << u"currentInstruction[%d] = getNextByte();\n" << this->level;
+   writer << u"currentInstruction[%d] = getNextByte();\n" << this->level;
 }
