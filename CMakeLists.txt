@@ -13,7 +13,7 @@ find_package(Qt5Widgets)
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost COMPONENTS) 
+find_package(Boost COMPONENTS regex) 
 
 include_directories(${Boost_INCLUDE_DIRS}) 
 
@@ -24,7 +24,7 @@ set(cpuqt2_SRCS cpuqt2.cpp main.cpp MainWindow.h ${Boost_LIBRARIES})
 #     "tools/*.cpp"
 # )
 
-file(GLOB tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.hpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp)
+set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp tools/Case.cpp tools/Case.hpp)
 
 
 file(GLOB Z80_SRC
@@ -41,6 +41,8 @@ set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
 set_property(TARGET tool PROPERTY CXX_STANDARD 11)
 set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
+target_link_libraries(tool ${Boost_LIBRARIES})
+
 
 target_link_libraries(cpuqt2 Qt5::Widgets)
 

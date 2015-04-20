@@ -2,8 +2,7 @@
 #include<cstdint>
 
 #include <tools/GetData.hpp>
-#include <tools/FinalNode.hpp>
-
+// #include <tools/FinalNode.hpp>
 
 GetData::GetData(uint8_t level)
 {
@@ -12,5 +11,5 @@ GetData::GetData(uint8_t level)
 
 void GetData::write(std::ofstream* writer)
 {
-   writer << u"currentInstruction[%d] = getNextByte();\n" << this->level;
+   *writer << "currentInstruction[%d] = getNextByte();\n" << this->level;
 }

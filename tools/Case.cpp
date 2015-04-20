@@ -16,8 +16,8 @@ Case::Case(uint8_t opcode)
 
 void Case::write(std::ofstream* writer)
 {
-    writer << u"case 0x%02X:\n" << this->opcode;
-    for (auto node : this->nodes->values() ) {
+    *writer << "case 0x%02X:\n" << this->opcode;
+    for (auto const &node : this->nodes ) {
             node.second->write(writer);
     }
     if(this->instruction != nullptr) {
@@ -26,6 +26,6 @@ void Case::write(std::ofstream* writer)
     if(this->theSwitch != nullptr) {
         this->theSwitch->write(writer);
     }
-   writer << u"break;\n";
+   *writer << "break;\n";
 }
 

@@ -7,7 +7,10 @@
 #include <Z80/Register.hpp>
 #include <Z80/RegisterPair.hpp>
 
-constexpr int32_t Instruction::N;
+constexpr uint8_t Instruction::N;
+
+Instruction::Instruction() {
+}
 
 // vector<string>* Instruction::useCondition()
 // {
@@ -15,17 +18,18 @@ constexpr int32_t Instruction::N;
 //     return useCondition_;
 // } 
 
-int32_t* Instruction::getScore(Instruction* o)
+
+int32_t Instruction::getScore() const
 {
-//     auto thisScore = u"0"_j;
-//     for (auto i = int32_t(0); i < 4; i++) {
-//         if(i < o)->getOpcodes())->length && (*o)->getOpcodes())[i] != nullptr) {
-//             thisScore = ::std::stringBuilder().append(thisScore)->append(static_cast< ::java::lang::Object* >((*o)->getOpcodes())[i]))->toString();
-//         } else {
-//             thisScore = ::std::stringBuilder().append(thisScore)->append(u"000"_j)->toString();
-//         }
-//     }
-//     return parseLong(thisScore);
+    string thisScore = "0";
+    for (auto i = 0; i < 4; i++) {
+        if(i < getOpcodes()->size() && (getOpcodes()->at(i) != NULL)) {
+            thisScore = thisScore + to_string(getOpcodes()->at(i));
+        } else {
+            thisScore = thisScore + "000";
+        }
+    }
+    return stoi(thisScore);
 }
 
 std::string* Instruction::getMnemonic()
@@ -48,22 +52,22 @@ void Instruction::setSize(int32_t* size)
     this->size = size;
 }
 
-vector<int32_t>* Instruction::getOpcodes()
+vector<uint8_t>* Instruction::getOpcodes() const
 {
     return opcodes;
 }
 
-void Instruction::setOpcodes(vector<int32_t>* opcodes)
+void Instruction::setOpcodes(vector<uint8_t>* opcodes)
 {
     this->opcodes = opcodes;
 }
 
-vector<int32_t>* Instruction::getClock()
+vector<uint8_t>* Instruction::getClock()
 {
     return clocks;
 }
 
-void Instruction::setClock(vector<int32_t>* clock)
+void Instruction::setClock(vector<uint8_t>* clock)
 {
     this->clocks = clock;
 }
@@ -106,11 +110,6 @@ void Instruction::setEffect(::std::string* effect)
 //        ->append(u'\'')
 //        ->append(u'}')->toString();
 //}
-
-int32_t Instruction::compareTo(Instruction* o)
-{
-    return getScore(this) - getScore(o);
-}
 
 std::string* Instruction::getFunctionisedMethodName()
 {
@@ -205,7 +204,7 @@ std::string* Instruction::getFunctionCall()
 //         ->append(u")"_j)->toString();
 }
 
-int32_t* Instruction::getIndexOfLastOpcode()
+int32_t Instruction::getIndexOfLastOpcode()
 {
 //     auto returnInt = int32_t(0);
 //     for (auto i = int32_t(0); i < opcodes->size(); i++) {

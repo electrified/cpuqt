@@ -2,22 +2,26 @@
 
 #include "tools/Case.hpp"
 #include "tools/FinalNode.hpp"
-#include"tools/GetData.hpp"
+#include "tools/GetData.hpp"
+// #include "tools/Instruction.hpp"
 
 #include<string>
 #include<fstream>
 #include<vector>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
+#include <boost/algorithm/string/regex.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
-      InstructionTableToCode parser;
+    InstructionTableToCode parser;
 
     parser.main();
-    
+
     return 0;
 }
 
@@ -32,7 +36,7 @@ void InstructionTableToCode::main() {
 }
 
 InstructionTableToCode::InstructionTableToCode() {
-  
+
 }
 
 std::vector<Instruction> InstructionTableToCode::parse()
@@ -48,52 +52,54 @@ std::vector<Instruction> InstructionTableToCode::parse()
 
         while ( getline (file,line) )
         {
-	    std::vector<std::string> split;
-	    boost::split(split, line, boost::is_any_of("\t ")); //"\\s{2,}|\\t+"
-	  
-// 	    if(split.size() < 2 || split.at(1).trim()->endsWith("*")) {
-// 	      continue;
-// 	    }
-	    
+            std::vector<std::string> split;
+            boost::split_regex(split, line, boost::regex("\\s{2,}|\\t+"));
+
+            string mnemonic = split[1];
+
+            boost::trim(mnemonic);
+            bool endsWith = boost::ends_with(mnemonic, "*");
+            if(split.size() < 2 || endsWith) {
+                continue;
+            }
+
+            auto instruction = new Instruction();
+
+            instruction->setMnemonic(&mnemonic);
+            auto pattern = boost::regex("(\\w{2})|\\b(\\w+)\\b");
+            boost::cmatch matches;
+
+            if (boost::regex_match(split[0].c_str(), matches, pattern))
+            {
+                vector<uint8_t> intOpcodes;
+
+                // matches[0] contains the original string.  matches[n]
+                // contains a sub_match object for each matching
+                // subexpression
+                for (int i = 1; i < matches.size(); i++)
+                {
+                    // sub_match::first and sub_match::second are iterators that
+                    // refer to the first and one past the last chars of the
+                    // matching subexpression
+                    string match(matches[i].first, matches[i].second);
+                    cout << "\tmatches[" << i << "] = " << match << endl;
+
+                    if (match == "n" || match == "d" || match == "e") {
+                        intOpcodes.push_back((uint8_t)0);
+                    } else {
+                        intOpcodes.push_back((uint8_t)stoul(match,nullptr, 16));
+                    }
+
+                }
+                instruction->setOpcodes(&intOpcodes);
+            }
+            theInstructions.push_back(*instruction);
             cout << line << '\n';
         }
         file.close();
     }
-//     string* line;
-//     while ((line = npc(reader)->readLine()) != nullptr) {
-//         auto split = npc(line)->split(u"\\s{2,}|\\t+"_j);
-//         if(npc(split)->length < 2 || npc(npc((*split)[int32_t(1)])->trim())->endsWith(u"*"_j)) {
-//             continue;
-//         }
-//         split->set(int32_t(1), npc(npc((*split)[int32_t(1)])->trim())->replace(static_cast< ::java::lang::CharSequence* >(u"*"_j), static_cast< ::java::lang::CharSequence* >(u""_j)));
-//         auto instruction = new Instruction();
-//         npc(instruction)->setMnemonic(npc((*split)[int32_t(1)])->trim());
-//         auto pattern = ::java::util::regex::Pattern::compile(u"(\\w{2})|\\b(\\w+)\\b"_j);
-//         auto matcher = npc(pattern)->matcher((*split)[int32_t(0)]);
-//         ::java::util::List* opcodeparts = new ::java::util::ArrayList();
-//         while (npc(matcher)->find()) {
-//             npc(opcodeparts)->add(static_cast< ::java::lang::Object* >(npc(matcher)->group()));
-//         }
-//         ::java::util::List* intOpcodes = new ::java::util::ArrayList();
-//         for (auto _i = npc(opcodeparts)->iterator(); _i->hasNext(); ) {
-//             ::java::lang::String* op = java_cast< ::java::lang::String* >(_i->next());
-//             {
-//                 if(npc(op)->equals(static_cast< ::java::lang::Object* >(u"n"_j)) || npc(op)->equals(static_cast< ::java::lang::Object* >(u"d"_j)) || npc(op)->equals(static_cast< ::java::lang::Object* >(u"e"_j))) {
-//                     npc(intOpcodes)->add(::java::lang::Integer::valueOf(Instruction::N));
-//                 } else {
-//                     npc(intOpcodes)->add(::java::lang::Integer::valueOf(::java::lang::Integer::parseUnsignedInt(op, 16)));
-//                 }
-//             }
-//         }
-//         npc(instruction)->setOpcodes(java_cast< ::java::lang::IntegerArray* >(npc(intOpcodes)->toArray_(static_cast< ::java::lang::ObjectArray* >(new ::java::lang::IntegerArray(npc(intOpcodes)->size())))));
-//         npc(::java::lang::System::out())->println(static_cast< ::java::lang::Object* >(instruction));
-//         npc(theInstructions)->add(static_cast< ::java::lang::Object* >(instruction));
-//     }
-// }
-// catch (::java::io::IOException* x) {
-//     npc(x)->printStackTrace();
-// }
-// ::java::util::Collections::sort(theInstructions);
+
+    std::sort(theInstructions.begin(), theInstructions.end());
     return theInstructions;
 }
 
@@ -101,10 +107,9 @@ void InstructionTableToCode::writeCode(
     Switch* rootSwitch)
 {
     string javaPath = "InstructionDecoderGenerated.cpp";
-//     if (::java::nio::file::Files::exists(javaPath,
-//                                          new ::java::nio::file::LinkOptionArray())) {
-//         ::java::nio::file::Files::delete_ (javaPath);
-//     }
+    if (boost::filesystem::exists(javaPath)) {
+        boost::filesystem::remove(javaPath);
+    }
     ofstream writer (javaPath);
     if (writer.is_open())
     {
@@ -118,13 +123,13 @@ void InstructionTableToCode::writeCode(
 void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
-           *writer << "public class InstructionDecoderGenerated extends BaseInstructionDecoder {\n";
-          *writer << u"    public int[] decode() {\n";
-           *writer << u"int[] currentInstruction = new int[4];\n";
+    *writer << "public class InstructionDecoderGenerated extends BaseInstructionDecoder {\n";
+    *writer << u"    public int[] decode() {\n";
+    *writer << u"int[] currentInstruction = new int[4];\n";
 }
 
-       void InstructionTableToCode::writeFooter(
-           std::ofstream* writer)
+void InstructionTableToCode::writeFooter(
+    std::ofstream* writer)
 {
     *writer << u"currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);\n";
     *writer << u"instructionByteCount = 0;\n";
@@ -136,47 +141,42 @@ void InstructionTableToCode::writeHeader(
 Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructions) {
     auto rootLevel = new Switch(0);
 
-//         for (auto _i = npc(instructions)->iterator(); _i->hasNext();) {
-//             Instruction* instruction = java_cast<Instruction*>(_i->next());
-//             {
-//                 ::java::lang::Integer* depth = ::java::lang::Integer::valueOf(int32_t(0));
-//                 FinalNode* currentCase = nullptr;
-//                 for (auto opcode : *npc(npc(instruction)->getOpcodes())) {
-//                     if ((npc(opcode))->intValue() == Instruction::N) {
-//                         if (!npc(npc(currentCase)->getDatas)->containsKey(depth)) {
-//                             auto data = new GetData(depth);
-//                             npc(npc(currentCase)->getDatas)->put(depth, data);
-//                         }
-//                     } else {
-//                         if (currentCase == nullptr) {
-//                             currentCase = java_cast<FinalNode*>(
-//                                               npc(npc(rootLevel)->nodes)->get(opcode));
-//                             if (currentCase == nullptr) {
-//                                 currentCase = new Case(opcode);
-//                                 npc(npc(rootLevel)->nodes)->put(opcode, currentCase);
-//                             }
-//                         } else {
-//                             if (npc(currentCase)->theSwitch == nullptr) {
-//                                 npc(currentCase)->theSwitch = new Switch(depth);
-//                             }
-//                             if (npc(npc(npc(currentCase)->theSwitch)->nodes)->containsKey(
-//                             opcode)) {
-//                                 currentCase = java_cast<FinalNode*>(
-//                                                   npc(npc(npc(currentCase)->theSwitch)->nodes)->get(
-//                                                       opcode));
-//                             } else {
-//                                 auto c = new Case(opcode);
-//                                 npc(npc(npc(currentCase)->theSwitch)->nodes)->put(opcode, c);
-//                                 currentCase = c;
-//                             }
-//                         }
-//                     }
-//                     if (depth == instruction->getIndexOfLastOpcode()) {
-//                         currentCase->instruction = instruction;
-//                     }
-//                     depth->intValue()++;
-//                 }
-//             }
-//         }
+    for (auto instruction : *instructions) {
+        uint8_t depth =0;
+        FinalNode* currentCase = nullptr;
+        for (uint8_t opcode : *instruction.getOpcodes()) {
+            if (opcode == Instruction::N) {
+                auto dataSearch = currentCase->getDatas.find(depth);
+                if (dataSearch == currentCase->getDatas.end()) {
+                    auto data = new GetData(depth);
+                    currentCase->getDatas.insert(make_pair(depth,data));
+                }
+            } else {
+                if (currentCase == nullptr) {
+                    auto caseSearch = rootLevel->nodes.find(opcode);
+                    if (caseSearch == rootLevel->nodes.end()) {
+                        currentCase = new Case(opcode);
+                        rootLevel->nodes.insert(make_pair(opcode, currentCase));
+                    }
+                } else {
+                    if (currentCase->theSwitch == nullptr) {
+                        currentCase->theSwitch = new Switch(depth);
+                    }
+                    auto caseSearch = currentCase->theSwitch->nodes.find(opcode);
+                    if (caseSearch != currentCase->theSwitch->nodes.end()) {
+                        currentCase = caseSearch->second;
+                    } else {
+                        auto c = new Case(opcode);
+                        currentCase->theSwitch->nodes.insert(make_pair(opcode, c));
+                        currentCase = c;
+                    }
+                }
+            }
+            if (depth == instruction.getIndexOfLastOpcode()) {
+                currentCase->instruction = &instruction;
+            }
+            depth++;
+        }
+    }
     return rootLevel;
 }
