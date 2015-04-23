@@ -19,20 +19,16 @@ using namespace std;
 int main(int argc, char** argv)
 {
     InstructionTableToCode parser;
-
     parser.main();
-
     return 0;
 }
 
 
 
 void InstructionTableToCode::main() {
-
     auto instructions = this->parse();
     auto s = this->groupOpcodes(&instructions);
     this->writeCode(s);
-
 }
 
 InstructionTableToCode::InstructionTableToCode() {
@@ -55,50 +51,48 @@ std::vector<Instruction> InstructionTableToCode::parse()
             std::vector<std::string> split;
             boost::split_regex(split, line, boost::regex("\\s{2,}|\\t+"));
 
+            if(split.size() < 2) {
+                continue;
+            }
+
             string mnemonic = split[1];
 
             boost::trim(mnemonic);
             bool endsWith = boost::ends_with(mnemonic, "*");
-            if(split.size() < 2 || endsWith) {
+            
+	    if(endsWith) {
                 continue;
             }
 
+            cout << "full line: \"" << line<< "\" opcode:\"" << split[0] << "\"" << endl;
+	    
             auto instruction = new Instruction();
 
-            instruction->setMnemonic(&mnemonic);
-            auto pattern = boost::regex("(\\w{2})|\\b(\\w+)\\b");
-            boost::cmatch matches;
+            instruction->setMnemonic(mnemonic);
+            // 2 letter word or word boundary, word, word boundary
+            auto pattern = boost::regex("([0-9A-F]{2})|([dne])");
+//             boost::cmatch matches;
 
-            if (boost::regex_match(split[0].c_str(), matches, pattern))
-            {
-                vector<uint8_t> intOpcodes;
+            boost::sregex_iterator res(split[0].begin(),split[0].end(),pattern);
+            boost::sregex_iterator end;
+            vector<int> intOpcodes;
 
-                // matches[0] contains the original string.  matches[n]
-                // contains a sub_match object for each matching
-                // subexpression
-                for (int i = 1; i < matches.size(); i++)
-                {
-                    // sub_match::first and sub_match::second are iterators that
-                    // refer to the first and one past the last chars of the
-                    // matching subexpression
-                    string match(matches[i].first, matches[i].second);
-                    cout << "\tmatches[" << i << "] = " << match << endl;
+            for (; res != end; ++res) {
+                std::cout << (*res)[0] << std::endl;
+                string match = (*res)[0];
 
-                    if (match == "n" || match == "d" || match == "e") {
-                        intOpcodes.push_back((uint8_t)0);
-                    } else {
-                        intOpcodes.push_back((uint8_t)stoul(match,nullptr, 16));
-                    }
-
+                if (match == "n" || match == "d" || match == "e") {
+                    intOpcodes.push_back(-1);
+                } else {
+                    intOpcodes.push_back((int)stoul(match,nullptr, 16));
                 }
-                instruction->setOpcodes(&intOpcodes);
             }
+            instruction->setOpcodes(intOpcodes);
             theInstructions.push_back(*instruction);
-            cout << line << '\n';
         }
         file.close();
     }
-
+cout << "Sorting " << endl;
     std::sort(theInstructions.begin(), theInstructions.end());
     return theInstructions;
 }
@@ -139,12 +133,13 @@ void InstructionTableToCode::writeFooter(
 }
 
 Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructions) {
+    cout << "grouping opcodes" << endl;
     auto rootLevel = new Switch(0);
 
     for (auto instruction : *instructions) {
         uint8_t depth =0;
         FinalNode* currentCase = nullptr;
-        for (uint8_t opcode : *instruction.getOpcodes()) {
+        for (uint8_t opcode : instruction.getOpcodes()) {
             if (opcode == Instruction::N) {
                 auto dataSearch = currentCase->getDatas.find(depth);
                 if (dataSearch == currentCase->getDatas.end()) {

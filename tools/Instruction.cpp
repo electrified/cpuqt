@@ -2,6 +2,7 @@
 
 #include <tools/Instruction.hpp>
 #include <string>
+#include <iostream>
 
 #include <Z80/Condition.hpp>
 #include <Z80/Register.hpp>
@@ -19,25 +20,28 @@ Instruction::Instruction() {
 // } 
 
 
-int32_t Instruction::getScore() const
+uint32_t Instruction::getScore() const
 {
-    string thisScore = "0";
+  std::cout << getMnemonic() << endl;
+    string thisScore = "";
     for (auto i = 0; i < 4; i++) {
-        if(i < getOpcodes()->size() && (getOpcodes()->at(i) != NULL)) {
-            thisScore = thisScore + to_string(getOpcodes()->at(i));
+      std::cout << "loopinng " << thisScore <<endl;
+        if(i < getOpcodes().size() && (getOpcodes().at(i) >= 0)) {
+            thisScore = thisScore + to_string(getOpcodes().at(i));
         } else {
             thisScore = thisScore + "000";
         }
     }
-    return stoi(thisScore);
+    std::cout << "stringscore " << thisScore <<endl;
+    return stoul(thisScore);
 }
 
-std::string* Instruction::getMnemonic()
+std::string Instruction::getMnemonic() const
 {
     return mnemonic;
 }
 
-void Instruction::setMnemonic(::std::string* mnemonic)
+void Instruction::setMnemonic(::std::string mnemonic)
 {
     this->mnemonic = mnemonic;
 }
@@ -52,12 +56,12 @@ void Instruction::setSize(int32_t* size)
     this->size = size;
 }
 
-vector<uint8_t>* Instruction::getOpcodes() const
+vector<int> Instruction::getOpcodes() const
 {
     return opcodes;
 }
 
-void Instruction::setOpcodes(vector<uint8_t>* opcodes)
+void Instruction::setOpcodes(vector<int> opcodes)
 {
     this->opcodes = opcodes;
 }
