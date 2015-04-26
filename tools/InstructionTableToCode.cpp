@@ -27,7 +27,9 @@ int main(int argc, char** argv)
 
 void InstructionTableToCode::main() {
     auto instructions = this->parse();
+    cout << "grouping" <<endl;
     auto s = this->groupOpcodes(&instructions);
+    cout << "writing code" <<endl;
     this->writeCode(s);
 }
 
@@ -43,7 +45,7 @@ std::vector<Instruction> InstructionTableToCode::parse()
     if (file.is_open()) {
         for (int i = 0; i < 33; i++) {
             getline (file,line);
-            cout <<"Skipping line" << endl;
+//             cout <<"Skipping line" << endl;
         }
 
         while ( getline (file,line) )
@@ -64,7 +66,7 @@ std::vector<Instruction> InstructionTableToCode::parse()
                 continue;
             }
 
-            cout << "full line: \"" << line<< "\" opcode:\"" << split[0] << "\"" << endl;
+//             cout << "full line: \"" << line<< "\" opcode:\"" << split[0] << "\"" << endl;
 	    
             auto instruction = new Instruction();
 
@@ -78,7 +80,7 @@ std::vector<Instruction> InstructionTableToCode::parse()
             vector<int> intOpcodes;
 
             for (; res != end; ++res) {
-                std::cout << (*res)[0] << std::endl;
+//                 std::cout << (*res)[0] << std::endl;
                 string match = (*res)[0];
 
                 if (match == "n" || match == "d" || match == "e") {
@@ -92,7 +94,7 @@ std::vector<Instruction> InstructionTableToCode::parse()
         }
         file.close();
     }
-cout << "Sorting " << endl;
+// cout << "Sorting " << endl;
     std::sort(theInstructions.begin(), theInstructions.end());
     return theInstructions;
 }
@@ -117,8 +119,7 @@ void InstructionTableToCode::writeCode(
 void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
-    *writer << "public class InstructionDecoderGenerated extends BaseInstructionDecoder {\n";
-    *writer << u"    public int[] decode() {\n";
+    *writer << "int[] InstructionDecoderGenerated::decode() {\n";
     *writer << u"int[] currentInstruction = new int[4];\n";
 }
 
@@ -128,19 +129,20 @@ void InstructionTableToCode::writeFooter(
     *writer << u"currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);\n";
     *writer << u"instructionByteCount = 0;\n";
     *writer << u"return currentInstruction;\n";
-    *writer << u"    }\n";
     *writer << u"}\n";
 }
 
 Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructions) {
-    cout << "grouping opcodes" << endl;
-    auto rootLevel = new Switch(0);
+//     cout << "grouping opcodes" << endl;
+    Switch* rootLevel = new Switch(0);
 
     for (auto instruction : *instructions) {
+        cout << instruction.getMnemonic() << endl;
         uint8_t depth =0;
         FinalNode* currentCase = nullptr;
-        for (uint8_t opcode : instruction.getOpcodes()) {
-            if (opcode == Instruction::N) {
+        for (uint8_t opcode : instruction.getOpcodes()) {        
+//             cout << to_string(opcode) << endl;
+            if (opcode < 0) {
                 auto dataSearch = currentCase->getDatas.find(depth);
                 if (dataSearch == currentCase->getDatas.end()) {
                     auto data = new GetData(depth);
@@ -148,30 +150,36 @@ Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructi
                 }
             } else {
                 if (currentCase == nullptr) {
-                    auto caseSearch = rootLevel->nodes.find(opcode);
-                    if (caseSearch == rootLevel->nodes.end()) {
+                    auto caseSearch = rootLevel->cases.find(opcode);
+                    if (caseSearch != rootLevel->cases.end()) {
+                        currentCase = caseSearch->second;
+                    } else {
                         currentCase = new Case(opcode);
-                        rootLevel->nodes.insert(make_pair(opcode, currentCase));
+                        rootLevel->cases.insert(make_pair(opcode, (Case*)currentCase));
                     }
                 } else {
-                    if (currentCase->theSwitch == nullptr) {
-                        currentCase->theSwitch = new Switch(depth);
+                    if (currentCase->theSwitch.level < 0) {
+                        currentCase->theSwitch.level = depth;
                     }
-                    auto caseSearch = currentCase->theSwitch->nodes.find(opcode);
-                    if (caseSearch != currentCase->theSwitch->nodes.end()) {
+                    auto caseSearch = currentCase->theSwitch.cases.find(opcode);
+                    if (caseSearch != currentCase->theSwitch.cases.end()) {
                         currentCase = caseSearch->second;
                     } else {
                         auto c = new Case(opcode);
-                        currentCase->theSwitch->nodes.insert(make_pair(opcode, c));
+                        currentCase->theSwitch.cases.insert(make_pair(opcode, c));
                         currentCase = c;
                     }
                 }
             }
+
             if (depth == instruction.getIndexOfLastOpcode()) {
-                currentCase->instruction = &instruction;
+                cout << "hello" <<endl;
+                currentCase->instruction = instruction;                
+                cout << "hello2" <<endl;
             }
             depth++;
         }
     }
+    cout << "returning cropuped" <<endl;
     return rootLevel;
 }

@@ -1,7 +1,6 @@
-// Generated from /org.maidavale.cpu/src/main/java/Case.java
-
 using namespace std;
 #include <fstream>
+#include<boost/format.hpp>
 
 #include "tools/Case.hpp"
 
@@ -9,23 +8,28 @@ using namespace std;
 #include <tools/Instruction.hpp>
 #include <tools/Switch.hpp>
 
-Case::Case(uint8_t opcode)
+Case::Case()
+{
+    this->opcode = -1;
+}
+
+Case::Case(int opcode)
 {
     this->opcode = opcode;
 }
 
 void Case::write(std::ofstream* writer)
 {
-    *writer << "case 0x%02X:\n" << this->opcode;
+    *writer << boost::format("case 0x%02X:") % this->opcode << endl;
     for (auto const &node : this->nodes ) {
             node.second->write(writer);
     }
-    if(this->instruction != nullptr) {
-        instruction->write(writer);
+    if(this->instruction.getOpcodes().size() > 0) {
+        instruction.write(writer);
     }
-    if(this->theSwitch != nullptr) {
-        this->theSwitch->write(writer);
+    if(this->theSwitch.cases.size() > 0) {
+        this->theSwitch.write(writer);
     }
-   *writer << "break;\n";
+   *writer << "break;" << endl;
 }
 

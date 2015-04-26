@@ -1,31 +1,37 @@
-// Generated from /org.maidavale.cpu/src/main/java/Instruction.java
-
 #include <tools/Instruction.hpp>
 #include <string>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <vector>
 
-#include <Z80/Condition.hpp>
-#include <Z80/Register.hpp>
-#include <Z80/RegisterPair.hpp>
+#include<boost/format.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/regex.hpp>
+#include <boost/algorithm/string/regex.hpp>
 
-constexpr uint8_t Instruction::N;
+#include "Z80/Condition.hpp"
+#include "Z80/Register.hpp"
+#include "Z80/RegisterPair.hpp"
+
+using namespace std;
+
+    vector<string> Instruction::useCondition_;
+    vector<string> Instruction::registers;
+    vector<string> Instruction::registerpairs;
 
 Instruction::Instruction() {
 }
 
-// vector<string>* Instruction::useCondition()
-// {
-//     clinit();
-//     return useCondition_;
-// } 
-
-
 uint32_t Instruction::getScore() const
 {
-  std::cout << getMnemonic() << endl;
+    std::cout << getMnemonic() << endl;
     string thisScore = "";
     for (auto i = 0; i < 4; i++) {
-      std::cout << "loopinng " << thisScore <<endl;
+        std::cout << "loopinng " << thisScore <<endl;
         if(i < getOpcodes().size() && (getOpcodes().at(i) >= 0)) {
             thisScore = thisScore + to_string(getOpcodes().at(i));
         } else {
@@ -41,7 +47,7 @@ std::string Instruction::getMnemonic() const
     return mnemonic;
 }
 
-void Instruction::setMnemonic(::std::string mnemonic)
+void Instruction::setMnemonic(string mnemonic)
 {
     this->mnemonic = mnemonic;
 }
@@ -95,159 +101,163 @@ void Instruction::setEffect(::std::string* effect)
 {
     this->effect = effect;
 }
-//
-//std::string* Instruction::toString()
-//{
-//    return ::std::stringBuilder().append(::std::stringBuilder().append(u"Opcode{"_j)->append(u"mnemonic='"_j)->toString())->append(mnemonic)
-//        ->append(u'\'')
-//        ->append(u", size="_j)
-//        ->append(static_cast< ::java::lang::Object* >(size))
-//        ->append(u", opcodes="_j)
-//        ->append(::java::util::Arrays::toString(static_cast< ::java::lang::ObjectArray* >(opcodes)))
-//        ->append(u", clocks="_j)
-//        ->append(::java::util::Arrays::toString(static_cast< ::java::lang::ObjectArray* >(clocks)))
-//        ->append(u", flags='"_j)
-//        ->append(flags)
-//        ->append(u'\'')
-//        ->append(u", effect='"_j)
-//        ->append(effect)
-//        ->append(u'\'')
-//        ->append(u'}')->toString();
-//}
 
-std::string* Instruction::getFunctionisedMethodName()
+std::string Instruction::getFunctionisedMethodName()
 {
-//     return this->getMnemonic()->split(u"\\s"_j);
+    vector<string> details;
+    string str = this->getMnemonic();
+    boost::split(details, str, boost::is_any_of(" "));
+    return details.at(0);
 }
 
-std::vector<std::string>* Instruction::getMethodParams()
+vector<string> Instruction::getMethodParams()
 {
     auto dataParamsUsed = int32_t(0);
     auto dataParams = this->dataParams();
-    std::vector<std::string>* parameters;// = new ::java::util::ArrayList();
-//     auto parts = this->getMnemonic()->split(u"\\s|,"_j);
-//     if(parts->length > 1) {
-//         for (auto i = int32_t(1); i < parts.size(); i++) {
-//             auto part = (*parts)[i];
-//             if(part)->startsWith(u"("_j)) {
-//                 auto param = u"new MemoryAddress("_j;
-//                 part = part)->substring(1, part)->length() - int32_t(1));
-//                 if(part)->contains(u"+"_j)) {
-//                     auto innerParts = part)->split(u"\\+"_j);
-//                     for(auto innerPart : *innerParts)) {
-//                         param = ::std::stringBuilder().append(param)->append(getParam(innerPart, true, dataParamsUsed, dataParams))
-//                             ->append(u", "_j)->toString();
-//                         dataParamsUsed += paramsRequired(innerPart);
-//                     }
-//                     param = param)->substring(0, param)->length() - int32_t(2));
-//                 } else {
-//                     param = ::std::stringBuilder().append(param)->append(getParam(part, true, dataParamsUsed, dataParams))->toString();
-//                     dataParamsUsed += paramsRequired(part);
-//                 }
-//                 param = ::std::stringBuilder().append(param)->append(u")"_j)->toString();
-//                 parameters)->add(static_cast< ::java::lang::Object* >(param));
-//             } else {
-//                 auto param = getParam(part, false, dataParamsUsed, dataParams);
-//                 dataParamsUsed += paramsRequired(part);
-//                 parameters)->add(static_cast< ::java::lang::Object* >(param));
-//             }
-//         }
-//     }
+    vector<string> parameters;
+    vector<string> parts;
+    string str = this->getMnemonic();
+    boost::split(parts, str, boost::is_any_of(" ,"));
+
+    if(parts.size() > 1) {
+        for (string part : parts) {
+            if(boost::starts_with(part,"(")) {
+                stringstream paramStream;
+
+                paramStream << "new MemoryAddress(";
+                part = part.substr(1, part.size() - 1);
+                if(part.find("+") != string::npos) {
+                    vector<string>  innerParts;
+                    boost::split(innerParts, part, boost::is_any_of("+"));
+                    for(string innerPart : innerParts) {
+                        paramStream << getParam(innerPart, true, dataParamsUsed, dataParams) << ", ";
+                        dataParamsUsed += paramsRequired(innerPart);
+                    }
+//                     param = paramStream.str().substr(0, param.size() - 2);
+                } else {
+                    paramStream << getParam(part, true, dataParamsUsed, dataParams);
+                    dataParamsUsed += paramsRequired(part);
+                }
+                paramStream << ")";
+                parameters.push_back(paramStream.str());
+            } else {
+                auto param = getParam(part, false, dataParamsUsed, dataParams);
+                dataParamsUsed += paramsRequired(part);
+                parameters.push_back(param);
+            }
+        }
+    }
     return parameters;
 }
 
-std::string* Instruction::getParam(::std::string* part, bool indirect, uint32_t dataParamsUsed, vector<uint32_t>* dataParams)
+string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed, vector<uint32_t> dataParams)
 {
-    string param = ""; //_j;
-//     part = part)->replace(static_cast< ::java::lang::CharSequence* >(u"'"_j), static_cast< ::java::lang::CharSequence* >(u"_prime"_j));
-//     if(::org::apache::commons::lang3::StringUtils::isAllUpperCase(part) || part)->endsWith(u"_prime"_j)) {
-//         if(::org::apache::commons::lang3::ArrayUtils::contains(static_cast< ::java::lang::ObjectArray* >(::org::maidavale::cpu::Register::names()), static_cast< ::java::lang::Object* >(part)) && !::org::apache::commons::lang3::ArrayUtils::contains(static_cast< ::java::lang::ObjectArray* >(useCondition_), static_cast< ::java::lang::Object* >(getFunctionisedMethodName()))) {
-//             param = ::std::stringBuilder().append(u"Register."_j)->append(part)->toString();
-//         } else if(::org::apache::commons::lang3::ArrayUtils::contains(static_cast< ::java::lang::ObjectArray* >(::org::maidavale::cpu::RegisterPair::names()), static_cast< ::java::lang::Object* >(part))) {
-//             param = ::std::stringBuilder().append(u"RegisterPair."_j)->append(part)->toString();
-//         } else if(::org::apache::commons::lang3::ArrayUtils::contains(static_cast< ::java::lang::ObjectArray* >(::org::maidavale::cpu::Condition::names()), static_cast< ::java::lang::Object* >(part))) {
-//             param = ::std::stringBuilder().append(u"Condition."_j)->append(part)->toString();
-//         }
-//     } else if(::org::apache::commons::lang3::StringUtils::isNumeric(part)) {
-//         param = part;
-//     } else if(part)->equals(static_cast< ::java::lang::Object* >(u"nn"_j))) {
-//         param = ::std::string::format(u"(currentInstruction[%d] << 8) | currentInstruction[%d]"_j, new ::java::lang::ObjectArray({static_cast< ::java::lang::Object* >((*dataParams)[dataParamsUsed + int32_t(1)]), static_cast< ::java::lang::Object* >((*dataParams)[dataParamsUsed])}));
-//     } else if(part)->equals(static_cast< ::java::lang::Object* >(u"n"_j)) || part)->equals(static_cast< ::java::lang::Object* >(u"e"_j)) || part)->equals(static_cast< ::java::lang::Object* >(u"d"_j))) {
-//         param = ::std::string::format(u"currentInstruction[%d]"_j, new ::java::lang::ObjectArray({static_cast< ::java::lang::Object* >((*dataParams)[dataParamsUsed])}));
-//     } else if(part)->matches(u"[0-9a-fA-F]+H"_j)) {
-//         param = ::std::stringBuilder().append(u"0x"_j)->append(part)->substring(0, part)->length() - int32_t(1)))->toString();
-//     }
-    return &param;
+    stringstream param;
+    boost::replace_all(part, "'", "_prime");
+    if( boost::regex_match(part, boost::regex("[A-Z]*")) || boost::ends_with(part, "_prime")) {
+        if(contains(part, registers) && !contains(getFunctionisedMethodName(), useCondition_)) {
+        param << "Register." << part;
+    } else if(contains(part, registerpairs)) {
+        param << "RegisterPair." << part;
+    } else if(contains(part, useCondition_)) {
+        param << "Condition." << part;
+    }
+} else if( boost::regex_match(part, boost::regex("[0-9]*"))) {
+        param << part;
+    } else if(part == "nn") {
+        param << boost::format("(currentInstruction[%d] << 8) | currentInstruction[%d]") % dataParams[dataParamsUsed + 1] % dataParams[dataParamsUsed];
+    } else if(part =="n" || part== "e" || part == "d") {
+        param << boost::format("currentInstruction[%d]") % dataParams[dataParamsUsed];
+    } else if(boost::regex_match(part, boost::regex("[0-9a-fA-F]+H"))) {
+        param <<"0x" << part.substr(0, part.size() - 1);
+    }
+    return "";
 }
 
-int32_t Instruction::paramsRequired(::std::string* part)
+bool Instruction::contains(string testString, vector<string> possibles) {
+
+    for (string test : possibles) {
+        if (testString.find(test) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int32_t Instruction::paramsRequired(string part)
 {
-//     if(part)->equals(static_cast< ::java::lang::Object* >(u"nn"_j))) {
-//         return 2;
-//     } else if(part)->equals(static_cast< ::java::lang::Object* >(u"n"_j)) || part)->equals(static_cast< ::java::lang::Object* >(u"e"_j)) || part)->equals(static_cast< ::java::lang::Object* >(u"d"_j))) {
-//         return 1;
-//     }
+    if(part == "nn") {
+        return 2;
+    } else if(part =="n" || part == "e" || part == "d") {
+        return 1;
+    }
     return 0;
 }
 
-vector<uint32_t>* Instruction::dataParams()
+vector<uint32_t> Instruction::dataParams()
 {
-//     ::java::util::List* data = new ::java::util::ArrayList();
-//     for (auto i = int32_t(0); i < opcodes)->length; i++) {
-//         if(((*opcodes)[i]))->intValue() == N) {
-//             data)->add(::java::lang::Integer::valueOf(i));
-//         }
-//     }
-//     return java_cast< ::java::lang::IntegerArray* >(data)->toArray_(static_cast< ::java::lang::ObjectArray* >(new ::java::lang::IntegerArray(data)->size()))));
+    vector<uint32_t> data;
+    for (auto i = 0; i < opcodes.size(); i++) {
+        if(opcodes.at(i) >= 0) {
+            data.push_back(i);
+        }
+    }
+    return data;
 }
 
-std::string* Instruction::getFunctionCall()
+std::string Instruction::getFunctionCall()
 {
-//     return ::std::stringBuilder().append(getFunctionisedMethodName())->append(u"("_j)
-//         ->append(::std::string::join(static_cast< ::java::lang::CharSequence* >(u", "_j), static_cast< ::java::lang::CharSequenceArray* >(getMethodParams())))
-//         ->append(u")"_j)->toString();
+    std::stringstream stream;
+    stream << getFunctionisedMethodName() << "(";
+    auto params = getMethodParams();
+    for(int i = 0; i < params.size(); i++) {
+        stream << params.at(i);
+        if (i != params.size() -1) {
+            stream << ", ";
+
+        }
+    }
+    stream  << ")";
+    return stream.str();
 }
 
-int32_t Instruction::getIndexOfLastOpcode()
+int Instruction::getIndexOfLastOpcode()
 {
-//     auto returnInt = int32_t(0);
-//     for (auto i = int32_t(0); i < opcodes->size(); i++) {
-//         if((*opcodes)[i] != nullptr) {
-//             returnInt = i;
-//         }
-//     }
-//     return returnInt;
+    int returnInt = 0;
+    for (int i = 0; i < opcodes.size(); i++) {
+        if(opcodes.at(i) >= 0) {
+            returnInt = i;
+        }
+    }
+    return returnInt;
 }
 
-std::string* Instruction::getOpcodesAsHex()
+std::string Instruction::getOpcodesAsHex()
 {
-//     auto blah = u""_j;
-//     for(auto i : *opcodes) {
-//         if(i != nullptr && (i))->intValue() != N) {
-//             blah = ::std::stringBuilder().append(blah)->append(::java::lang::Integer::toHexString((i))->intValue()))
-//                 ->append(u" "_j)->toString();
-//         } else {
-//             blah = ::std::stringBuilder().append(blah)->append(u"n "_j)->toString();
-//         }
-//     }
-//     return blah;
+    std::stringstream stream;
+    for(auto i : opcodes) {
+        if( i >= 0) {
+            stream << std::hex << i << " ";
+        } else {
+            stream << "n ";
+        }
+    }
+    return stream.str();
 }
 
-void Instruction::write(std::ofstream* writer) /* throws(IOException) */
+void Instruction::write(std::ofstream* writer)
 {
-//     writer << "// %s - %s\n" << this->getMnemonic() << this->getOpcodesAsHex();
-//     writer << "logger.debug(\"%s - %s\");\n" << this->getMnemonic() << this->getOpcodesAsHex();
-//     writer << "getProcessor().%s;\n" << this->getFunctionCall();
+    *writer << boost::format("// %s - %s") % this->getMnemonic() % this->getOpcodesAsHex() << endl;
+    *writer << boost::format("logger.debug(\"%s - %s\");") % this->getMnemonic() % this->getOpcodesAsHex()<< endl;
+    *writer << boost::format("getProcessor().%s;") % this->getFunctionCall()<< endl;
 }
 
 
 void Instruction::clinit()
 {
-//         useCondition_ = (new ::std::stringArray({
-//             u"JP"_j
-//             , u"RET"_j
-//             , u"CALL"_j
-//             , u"JR"_j
-//         }));
+    useCondition_.push_back("JP");
+    useCondition_.push_back("RET");
+    useCondition_.push_back("CALL");
+    useCondition_.push_back("JR");
 }
 

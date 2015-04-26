@@ -1,20 +1,19 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/tools/Switch.java
-
 #pragma once
 #include<map>
 #include<fstream>
 #include <cstdint>
 
-#include "tools/FinalNode.hpp"
+//#include "tools/FinalNode.hpp"
 
-// class FinalNode;
+class Case;
 
 class Switch
 {
 public:
-    int32_t level;
-    std::map<int, FinalNode*> nodes;
+    int level;
+    std::map<int, Case*> cases;
 public:
     virtual void write(std::ofstream* writer);
-    Switch(int32_t level);
+    Switch(int level);
+    Switch();
 };

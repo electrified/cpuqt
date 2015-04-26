@@ -2,9 +2,13 @@
 #include <fstream>
 
 #include "tools/Switch.hpp"
-#include "tools/FinalNode.hpp"
+#include "tools/Case.hpp"
 
-Switch::Switch(int32_t level)
+Switch::Switch() {
+    this->level = -1;
+}
+
+Switch::Switch(int level)
 {
     this->level = level;
 }
@@ -14,12 +18,12 @@ Switch::Switch(int32_t level)
  */
 void Switch::write(std::ofstream* writer)
 {
-    *writer << "// get opcode";
-    *writer << "currentInstruction[" <<  this->level << "] = getNextByte();\n";
-    *writer << "switch (currentInstruction["<< this->level << "]) {\n";
-    for (auto node : this->nodes ) {
-            node.second->write(writer);
+    *writer << "// get opcode"<< endl;
+    *writer << "currentInstruction[" <<  this->level << "] = getNextByte();"<< endl;
+    *writer << "switch (currentInstruction["<< this->level << "]) {"<< endl;
+    for (auto node : this->cases ) {
+        node.second->write(writer);
     }
-    *writer << "}";
+    *writer << "}<< endl";
 }
 

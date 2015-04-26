@@ -15,49 +15,47 @@ public:
         return (getScore() < instr.getScore());
     }
 
-    static constexpr uint8_t N { 255 };
-
 private:
-//    static ::std::stringArray* useCondition_;
-    std::string mnemonic {  };
-    std::int32_t* size {  };
-    std::vector<int> opcodes {  };
-    std::vector<uint8_t>* clocks {  };
-    std::string* flags {  };
-    std::string* effect {  };
+    string mnemonic {  };
+    int32_t* size {  };
+    vector<int> opcodes {  };
+    vector<uint8_t>* clocks {  };
+    string* flags {  };
+    string* effect {  };
+    static vector<string> useCondition_;
+    static vector<string> registers;
+    static vector<string> registerpairs;
 
 public:
     Instruction();
     uint32_t getScore() const;
-    virtual ::std::string getMnemonic() const;
-    virtual void setMnemonic(::std::string mnemonic);
+    virtual string getMnemonic() const;
+    virtual void setMnemonic(string mnemonic);
     virtual int32_t* getSize();
     virtual void setSize(int32_t* size);
-    virtual std::vector<int> getOpcodes() const;
-    virtual void setOpcodes(std::vector<int> opcodes);
-    virtual std::vector<uint8_t>* getClock();
-    virtual void setClock(std::vector<uint8_t>* clock);
-    virtual ::std::string* getFlags();
-    virtual void setFlags(::std::string* flags);
-    virtual ::std::string* getEffect();
-    virtual void setEffect(::std::string* effect);
-    virtual ::std::string* getFunctionisedMethodName();
-    virtual std::vector<std::string>* getMethodParams();
+    virtual vector<int> getOpcodes() const;
+    virtual void setOpcodes(vector<int> opcodes);
+    virtual vector<uint8_t>* getClock();
+    virtual void setClock(vector<uint8_t>* clock);
+    virtual string* getFlags();
+    virtual void setFlags(string* flags);
+    virtual string* getEffect();
+    virtual void setEffect(string* effect);
+    virtual string getFunctionisedMethodName();
+    vector<string> getMethodParams();
 
 private:
-    ::std::string* getParam(::std::string* part, bool indirect, uint32_t dataParamsUsed, std::vector<u_int32_t>* dataParams);
-    int32_t paramsRequired(::std::string* part);
-    std::vector<uint32_t>* dataParams();
+    string getParam(string part, bool indirect, uint32_t dataParamsUsed, vector< uint32_t > dataParams);
+    int32_t paramsRequired(string part);
+    vector< uint32_t > dataParams();
+    bool contains(string test, vector<string> arg2);
 
 public:
-    virtual ::std::string* getFunctionCall();
-    virtual int32_t getIndexOfLastOpcode();
-    virtual ::std::string* getOpcodesAsHex();
-    virtual void write(std::ofstream* writer);
+    virtual string getFunctionCall();
+    virtual int getIndexOfLastOpcode();
+    virtual string getOpcodesAsHex();
+    virtual void write(ofstream* writer);
 
 public:
     static void clinit();
-
-//public: /* package */
-//    static ::std::stringArray*& useCondition();
 };
