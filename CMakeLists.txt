@@ -27,24 +27,41 @@ set(cpuqt2_SRCS cpuqt2.cpp main.cpp MainWindow.h ${Boost_LIBRARIES})
 set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp tools/Case.cpp tools/Case.hpp)
 
 
-file(GLOB Z80_SRC
-    "Z80/*.hpp"
-    "Z80/*.cpp"
+set(Z80_SRC
+    Z80/EmulationProcessor.cpp Z80/EmulationProcessor.h Z80/Condition.cpp Z80/Condition.hpp Z80/DisassemblerProcessor.cpp Z80/DisassemblerProcessor.h
+    Z80/InstructionDecoder.cpp Z80/InstructionDecoder.h Z80/InstructionDecoderGenerated.cpp Z80/InstructionDecoderGenerated.h Z80/Memory.cpp Z80/Memory.h
+    Z80/MemoryAddress.cpp Z80/MemoryAddress.h Z80/Processor.cpp Z80/Processor.h Z80/Register.cpp Z80/Register.hpp Z80/RegisterPair.cpp Z80/RegisterPair.hpp Z80/IO.cpp Z80/IO.h
+    Z80/BaseInstructionDecoder.cpp Z80/BaseInstructionDecoder.h Z80/BaseProcessor.cpp Z80/BaseProcessor.h
 )
+
+set(tooltests_SRC tools/Test.cpp tools/Instruction.hpp tools/Instruction.cpp)
+
+
+# Setup testing
+enable_testing()
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+
 
 add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC})
 
 add_executable(tool ${tools_SRC} ${Z80_SRC})
+
+add_executable(tooltests ${tooltests_SRC})
 
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
 set_property(TARGET tool PROPERTY CXX_STANDARD 11)
 set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
+
+set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
+set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 target_link_libraries(tool ${Boost_LIBRARIES})
-
-
 target_link_libraries(cpuqt2 Qt5::Widgets)
+target_link_libraries(tooltests ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES})
 
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
 install(TARGETS tool RUNTIME DESTINATION bin)
+install(TARGETS tooltests RUNTIME DESTINATION bin)

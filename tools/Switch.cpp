@@ -24,6 +24,6 @@ void Switch::write(std::ofstream* writer)
     for (auto node : this->cases ) {
         node.second->write(writer);
     }
-    *writer << "}<< endl";
+    *writer << "}"<< endl;
 }
 

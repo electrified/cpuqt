@@ -1,3 +1,11 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/Condition.java
-
 #pragma once
+enum class Condition {
+        C,
+        M,
+        NC,
+        NZ,
+        P,
+        PE,
+        PO,
+        Z,
+    };

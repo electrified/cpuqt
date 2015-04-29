@@ -1,3 +1,16 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/Register.java
-
 #pragma once
+enum class Register {
+        A,
+        B,
+        C,
+        D,
+        E,
+        H,
+        I,
+        IXH,
+        IXL,
+        IYH,
+        IYL,
+        L,
+        R,
+    };

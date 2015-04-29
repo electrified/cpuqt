@@ -22,9 +22,7 @@ private:
     vector<uint8_t>* clocks {  };
     string* flags {  };
     string* effect {  };
-    static vector<string> useCondition_;
-    static vector<string> registers;
-    static vector<string> registerpairs;
+
 
 public:
     Instruction();
@@ -43,19 +41,26 @@ public:
     virtual void setEffect(string* effect);
     virtual string getFunctionisedMethodName();
     vector<string> getMethodParams();
-
+    
+    static const string useCondition[];
+    static const string registers[];
+    static const string registerpairs[];
+    static const string conditions[];
+    bool contains(string test, const string arg2[], const int itemCount);
 private:
     string getParam(string part, bool indirect, uint32_t dataParamsUsed, vector< uint32_t > dataParams);
     int32_t paramsRequired(string part);
     vector< uint32_t > dataParams();
-    bool contains(string test, vector<string> arg2);
+
 
 public:
     virtual string getFunctionCall();
     virtual int getIndexOfLastOpcode();
     virtual string getOpcodesAsHex();
     virtual void write(ofstream* writer);
-
-public:
-    static void clinit();
 };
+
+const int useConditionCount = 4;
+const int registerCount = 13;
+const int registerPairCount = 12;
+const int conditionCount = 8;

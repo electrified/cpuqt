@@ -19,30 +19,71 @@
 
 using namespace std;
 
-    vector<string> Instruction::useCondition_;
-    vector<string> Instruction::registers;
-    vector<string> Instruction::registerpairs;
+
+const string Instruction::useCondition[useConditionCount] = {  "JP","RET","CALL","JR"};
+
+const string Instruction::registers[registerCount] = {"A",
+                                         "B",
+                                         "C",
+                                         "D",
+                                         "E",
+                                         "H",
+                                         "I",
+                                         "IXH",
+                                         "IXL",
+                                         "IYH",
+                                         "IYL",
+                                         "L",
+                                         "R"
+                                        };
+
+
+const string Instruction::registerpairs[registerPairCount] = {
+    "AF",
+    "AF_prime",
+    "BC",
+    "BC_prime",
+    "DE",
+    "DE_prime",
+    "HL",
+    "HL_prime",
+    "IX",
+    "IY",
+    "PC",
+    "SP"
+};
+
+const string Instruction::conditions[conditionCount] = {
+        "C",
+        "M",
+        "NC",
+        "NZ",
+        "P",
+        "PE",
+        "PO",
+        "Z",
+    };
 
 Instruction::Instruction() {
 }
 
 uint32_t Instruction::getScore() const
 {
-    std::cout << getMnemonic() << endl;
+    cout << getMnemonic() << endl;
     string thisScore = "";
     for (auto i = 0; i < 4; i++) {
-        std::cout << "loopinng " << thisScore <<endl;
+        cout << "loopinng " << thisScore <<endl;
         if(i < getOpcodes().size() && (getOpcodes().at(i) >= 0)) {
             thisScore = thisScore + to_string(getOpcodes().at(i));
         } else {
             thisScore = thisScore + "000";
         }
     }
-    std::cout << "stringscore " << thisScore <<endl;
+    cout << "stringscore " << thisScore <<endl;
     return stoul(thisScore);
 }
 
-std::string Instruction::getMnemonic() const
+string Instruction::getMnemonic() const
 {
     return mnemonic;
 }
@@ -87,7 +128,7 @@ std::string* Instruction::getFlags()
     return flags;
 }
 
-void Instruction::setFlags(::std::string* flags)
+void Instruction::setFlags(string* flags)
 {
     this->flags = flags;
 }
@@ -97,7 +138,7 @@ std::string* Instruction::getEffect()
     return effect;
 }
 
-void Instruction::setEffect(::std::string* effect)
+void Instruction::setEffect(string* effect)
 {
     this->effect = effect;
 }
@@ -112,28 +153,36 @@ std::string Instruction::getFunctionisedMethodName()
 
 vector<string> Instruction::getMethodParams()
 {
-    auto dataParamsUsed = int32_t(0);
+    int dataParamsUsed = 0;
     auto dataParams = this->dataParams();
+
     vector<string> parameters;
     vector<string> parts;
+
     string str = this->getMnemonic();
     boost::split(parts, str, boost::is_any_of(" ,"));
 
     if(parts.size() > 1) {
-        for (string part : parts) {
+        for (int i =1; i < parts.size(); i++) {
+            string part = parts[i];
             if(boost::starts_with(part,"(")) {
                 stringstream paramStream;
 
                 paramStream << "new MemoryAddress(";
-                part = part.substr(1, part.size() - 1);
-                if(part.find("+") != string::npos) {
+                
+                part = part.substr(1, part.size() - 2);
+                
+                if(part.find("+") != std::string::npos) {
                     vector<string>  innerParts;
                     boost::split(innerParts, part, boost::is_any_of("+"));
-                    for(string innerPart : innerParts) {
-                        paramStream << getParam(innerPart, true, dataParamsUsed, dataParams) << ", ";
+                    for(int i = 0; i < innerParts.size(); i++) {
+                        string innerPart = innerParts.at(i);
+                        paramStream << getParam(innerPart, true, dataParamsUsed, dataParams);
                         dataParamsUsed += paramsRequired(innerPart);
+                        if (i != innerParts.size() -1) {
+                            paramStream << ", ";
+                        }
                     }
-//                     param = paramStream.str().substr(0, param.size() - 2);
                 } else {
                     paramStream << getParam(part, true, dataParamsUsed, dataParams);
                     dataParamsUsed += paramsRequired(part);
@@ -152,17 +201,19 @@ vector<string> Instruction::getMethodParams()
 
 string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed, vector<uint32_t> dataParams)
 {
+    cout << "part " << part;
     stringstream param;
     boost::replace_all(part, "'", "_prime");
     if( boost::regex_match(part, boost::regex("[A-Z]*")) || boost::ends_with(part, "_prime")) {
-        if(contains(part, registers) && !contains(getFunctionisedMethodName(), useCondition_)) {
-        param << "Register." << part;
-    } else if(contains(part, registerpairs)) {
-        param << "RegisterPair." << part;
-    } else if(contains(part, useCondition_)) {
-        param << "Condition." << part;
-    }
-} else if( boost::regex_match(part, boost::regex("[0-9]*"))) {
+        cout << " match1 " <<endl;
+        if(contains(part, registers, registerCount) && !contains(getFunctionisedMethodName(), useCondition, useConditionCount)) {
+            param << "Register::" << part;
+        } else if(contains(part, registerpairs, registerPairCount)) {
+            param << "RegisterPair::" << part;
+        } else if(contains(part, conditions, conditionCount)) {
+            param << "Condition::" << part;
+        }
+    } else if( boost::regex_match(part, boost::regex("[0-9]*"))) {
         param << part;
     } else if(part == "nn") {
         param << boost::format("(currentInstruction[%d] << 8) | currentInstruction[%d]") % dataParams[dataParamsUsed + 1] % dataParams[dataParamsUsed];
@@ -171,13 +222,16 @@ string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed
     } else if(boost::regex_match(part, boost::regex("[0-9a-fA-F]+H"))) {
         param <<"0x" << part.substr(0, part.size() - 1);
     }
-    return "";
+    return param.str();
 }
 
-bool Instruction::contains(string testString, vector<string> possibles) {
-
-    for (string test : possibles) {
-        if (testString.find(test) != std::string::npos) {
+bool Instruction::contains(std::string testString, const string possibles[], const int itemCount) {
+    cout << "looking for matches to" << testString <<endl;
+    cout << itemCount << endl;
+    for (int i =0; i < itemCount; i++) {
+        cout << "possible match: " << possibles[i] << endl;
+        if (testString.find(possibles[i]) != std::string::npos) {
+            cout << "found!!!!" << endl;
             return true;
         }
     }
@@ -198,7 +252,7 @@ vector<uint32_t> Instruction::dataParams()
 {
     vector<uint32_t> data;
     for (auto i = 0; i < opcodes.size(); i++) {
-        if(opcodes.at(i) >= 0) {
+        if(opcodes.at(i) < 0) {
             data.push_back(i);
         }
     }
@@ -214,7 +268,6 @@ std::string Instruction::getFunctionCall()
         stream << params.at(i);
         if (i != params.size() -1) {
             stream << ", ";
-
         }
     }
     stream  << ")";
@@ -251,13 +304,3 @@ void Instruction::write(std::ofstream* writer)
     *writer << boost::format("logger.debug(\"%s - %s\");") % this->getMnemonic() % this->getOpcodesAsHex()<< endl;
     *writer << boost::format("getProcessor().%s;") % this->getFunctionCall()<< endl;
 }
-
-
-void Instruction::clinit()
-{
-    useCondition_.push_back("JP");
-    useCondition_.push_back("RET");
-    useCondition_.push_back("CALL");
-    useCondition_.push_back("JR");
-}
-

@@ -119,17 +119,23 @@ void InstructionTableToCode::writeCode(
 void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
-    *writer << "int[] InstructionDecoderGenerated::decode() {\n";
-    *writer << u"int[] currentInstruction = new int[4];\n";
+        *writer << "#include \"Z80/InstructionDecoderGenerated.h\"" << endl;
+    *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
+    *writer << "#include \"Z80/Register.hpp\"" << endl;
+    *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
+    *writer << "#include \"Z80/Condition.hpp\"" << endl;
+
+    *writer << "void InstructionDecoderGenerated::decode() {" << endl;
+    *writer << "int currentInstruction[4];" << endl;
 }
 
 void InstructionTableToCode::writeFooter(
     std::ofstream* writer)
 {
-    *writer << u"currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);\n";
-    *writer << u"instructionByteCount = 0;\n";
-    *writer << u"return currentInstruction;\n";
-    *writer << u"}\n";
+    *writer << "currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);" << endl;
+    *writer << "instructionByteCount = 0;" << endl;
+    *writer << "//return currentInstruction;" << endl;
+    *writer << "}\n";
 }
 
 Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructions) {
