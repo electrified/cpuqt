@@ -25,19 +25,60 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
+#include<string>
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
 
-MemoryAddress::MemoryAddress(int i) {
+MemoryAddress::MemoryAddress(int memoryAddress) {
+    memoryAddress = memoryAddress;
 };
 
-MemoryAddress::MemoryAddress(Register r) {
+MemoryAddress::MemoryAddress(Register rgstr) {
+    rgstr = rgstr;
 };
 
-MemoryAddress::MemoryAddress(RegisterPair rp) {
+MemoryAddress::MemoryAddress(RegisterPair rgstrPair) {
+    registerPair = rgstrPair;
 };
 
-MemoryAddress::MemoryAddress(RegisterPair rp, int offset) {
+MemoryAddress::MemoryAddress(RegisterPair rgstrPair, int offset) {
+    registerPair = rgstrPair;
+    offset = offset;
+};
+
+
+int MemoryAddress::getMemoryAddress() {
+    return memoryAddress;
+};
+
+int MemoryAddress::getOffset() {
+    return offset;
+};
+
+Register MemoryAddress::getRegister() {
+    return rgstr;
+};
+
+RegisterPair MemoryAddress::getRegisterPair() {
+    return registerPair;
+};
+
+std::string MemoryAddress::toString() {
+//         String address = "";
+//         if(getRegister() != null) {
+//             address = getRegister().name();
+//             if (getOffset() != null) {
+//                 address = address + "+" + "0x" + Integer.toHexString(getOffset());
+//             }
+//         } else if (getRegisterPair() != null) {
+//             address = getRegisterPair().name();
+//             if (getOffset() != null) {
+//                 address = address + "+" + "0x" + Integer.toHexString(getOffset());
+//             }
+//         } else if (getMemoryAddress() != null) {
+//             address = "0x" + Integer.toHexString(getMemoryAddress());
+//         }
+// 
+//         return address;
 };

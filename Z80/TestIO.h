@@ -29,7 +29,9 @@
 #ifndef TESTIO_H
 #define TESTIO_H
 
-class TestIO
+#include "Z80/IO.h"
+
+class TestIO : public IO
 {
 };
 

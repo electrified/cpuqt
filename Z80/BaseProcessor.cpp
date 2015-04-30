@@ -29,55 +29,42 @@
 #include "BaseProcessor.h"
 #include "Z80/InstructionDecoder.h"
 #include "Z80/Memory.h"
+#include "BadgerMemory.h"
 
-    protected InstructionDecoder* instructionDecoder;
-    protected Memory* memory;
-    int addressBus;
+void BaseProcessor::placeProgramCounterOnAddressBus() {
+    addressBus = this->getPC();
+    PC++;
+}
 
-    /*
- * Program Counter (PC) The program counter holds the 16-bit address of the
- * current instruction being fetched from memory. The PC is automatically
- * incremented after its contents have been transferred to the address
- * lines. When a program jump occurs, the new value is automatically placed
- * in the PC, overriding the incrementer.
+/**
+ * @return the pC
  */
-    int PC;
+int BaseProcessor::getPC() {
+    return PC;
+}
 
-     void BaseProcessor::placeProgramCounterOnAddressBus() {
-        addressBus = this.getPC();
-        PC++;
-    }
+/**
+ * @param pC the pC to set
+ */
+void BaseProcessor::setPC(int pC) {
+    PC = pC;
+}
 
+/**
+ * @return the memory
+ */
+Memory* BaseProcessor::getMemory() {
+    return memory;
+}
 
-    /**
-     * @return the pC
-     */
-     int BaseProcessor::getPC() {
-        return PC;
-    }
+void BaseProcessor::setMemory(int memory[]) {
+    this->setMemory(new BadgerMemory(memory));
+}
 
-    /**
-     * @param pC the pC to set
-     */
-     void BaseProcessor::setPC(int pC) {
-        PC = pC;
-    }
+void BaseProcessor::setMemory(Memory* memory) {
+    this->memory = memory;
+}
 
-    /**
-     * @return the memory
-     */
-     Memory BaseProcessor::getMemory() {
-        return memory;
-    }
-
-     void BaseProcessor::setMemory(int memory[]) {
-        this.setMemory(new BadgerMemory(memory));
-    }
-
-     void BaseProcessor::setMemory(Memory memory) {
-        this.memory = memory;
-    }
-
-     int BaseProcessor::fetchInstruction() {
-        return getMemory().read(addressBus) & 0xFF;
-    }
+int BaseProcessor::fetchInstruction() {
+    return getMemory()->read(addressBus) & 0xFF;
+}

@@ -289,7 +289,7 @@ public:
 
     virtual int fetchInstruction() = 0;
 
-    virtual Memory getMemory() = 0;
+    virtual Memory* getMemory() = 0;
 
 //     virtual void setMemory(int[] memory) = 0;
 

@@ -44,6 +44,7 @@ public:
     int getNextByte();
     int getRegisterValue(Register r);
     int getRegisterPairValue(RegisterPair rp);
+    virtual void decode() = 0;
 };
 
 #endif // INSTRUCTIONDECODER_H

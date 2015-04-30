@@ -26,15 +26,21 @@
  *
  */
 
-#ifndef IO_H
-#define IO_H
+#ifndef LOGGER_H
+#define LOGGER_H
 
-class IO
+#include <string>
+
+using namespace std;
+
+class Logger
 {
 public:
-    int read(int address);
-
-    void write(int address, int value);
+    Logger();
+    Logger(const Logger& other);
+    ~Logger();
+    bool operator==(const Logger& other) const;
+    void debug(string toLog);
 };
 
-#endif // IO_H
+#endif // LOGGER_H

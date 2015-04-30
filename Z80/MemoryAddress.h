@@ -28,17 +28,28 @@
 
 #ifndef MEMORYADDRESS_H
 #define MEMORYADDRESS_H
-
+#include <string>
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
 
+using namespace std;
 class MemoryAddress
 {
+    int memoryAddress;
+    int offset;
+    Register rgstr;
+    RegisterPair registerPair;
 public:
     MemoryAddress(int i);
     MemoryAddress(Register r);
     MemoryAddress(RegisterPair rp);
     MemoryAddress(RegisterPair rp, int offset);
+    int getMemoryAddress();
+    int getOffset();
+    Register getRegister();
+    RegisterPair getRegisterPair();
+
+    std::string toString();
 };
 
 #endif // MEMORYADDRESS_H

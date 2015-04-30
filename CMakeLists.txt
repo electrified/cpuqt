@@ -44,7 +44,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 
-add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC})
+add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC} Z80/BadgerMemory.cpp Z80/BadgerMemory.h)
 
 add_executable(tool ${tools_SRC} ${Z80_SRC})
 

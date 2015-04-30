@@ -31,9 +31,23 @@
 
 #include "Z80/Memory.h"
 #include "Z80/Processor.h"
+#include "Z80/InstructionDecoder.h"
 
 class BaseProcessor : public Processor
 {
+protected:
+    InstructionDecoder* instructionDecoder;
+    Memory* memory;
+    int addressBus;
+
+    /*
+ * Program Counter (PC) The program counter holds the 16-bit address of the
+ * current instruction being fetched from memory. The PC is automatically
+ * incremented after its contents have been transferred to the address
+ * lines. When a program jump occurs, the new value is automatically placed
+ * in the PC, overriding the incrementer.
+ */
+    int PC;
 public:
     void placeProgramCounterOnAddressBus();
     /**
@@ -48,11 +62,11 @@ public:
     /**
      * @return the memory
      */
-    Memory getMemory();
+    Memory* getMemory();
 
     void setMemory(int memory[]);
 
-    void setMemory(Memory memory);
+    void setMemory(Memory* memory);
 
     int fetchInstruction();
 };

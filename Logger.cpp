@@ -26,15 +26,29 @@
  *
  */
 
-#ifndef IO_H
-#define IO_H
+#include "Logger.h"
 
-class IO
+Logger::Logger()
 {
-public:
-    int read(int address);
 
-    void write(int address, int value);
-};
+}
 
-#endif // IO_H
+Logger::Logger(const Logger& other)
+{
+
+}
+
+Logger::~Logger()
+{
+
+}
+
+bool Logger::operator==(const Logger& other) const
+{
+
+}
+
+void Logger::debug(string toLog)
+{
+    
+}
