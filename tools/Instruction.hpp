@@ -1,5 +1,3 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/tools/Instruction.java
-
 #pragma once
 #include <vector>
 #include <cstdint>
@@ -16,13 +14,12 @@ public:
     }
 
 private:
-    string mnemonic {  };
-    int32_t* size {  };
-    vector<int> opcodes {  };
-    vector<uint8_t>* clocks {  };
-    string* flags {  };
-    string* effect {  };
-
+    string mnemonic;
+    int32_t* size;
+    vector<int> opcodes;
+    vector<uint8_t>* clocks;
+    string* flags;
+    string* effect;
 
 public:
     Instruction();

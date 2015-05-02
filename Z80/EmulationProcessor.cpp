@@ -26,6 +26,8 @@
  *
  */
 
+#include <boost/utility/binary.hpp>
+
 #include "EmulationProcessor.h"
 
 #include "Z80/Processor.h"
@@ -35,11 +37,9 @@
 #include "Z80/Memory.h"
 #include "Z80/MemoryAddress.h"
 #include "Z80/IO.h"
-#include "Z80/TestIO.h"
+#include "Z80/badgerio.h"
 #include "Z80/InstructionDecoder.h"
 #include "Z80/InstructionDecoderGenerated.h"
-
-
 
 EmulationProcessor::EmulationProcessor() {
 //         this(new InstructionDecoderGenerated());
@@ -47,7 +47,7 @@ EmulationProcessor::EmulationProcessor() {
 
 EmulationProcessor::EmulationProcessor(InstructionDecoder* instructionDecoder) {
     this->instructionDecoder = instructionDecoder;
-    io = new TestIO();
+    io = new BadgerIO();
     instructionDecoder->setProcessor(this);
 }
 
@@ -309,7 +309,7 @@ void EmulationProcessor::CPIR() {
 
 void EmulationProcessor::CPL() {
 
-    setA(getA() ^ 0b11111111);
+    setA(getA() ^ BOOST_BINARY(11111111));
     setNFlag(true);
     setHFlag(true);
 }
@@ -749,12 +749,12 @@ void EmulationProcessor::LDIR() {
  */
 
 void EmulationProcessor::NEG() {
-    setSignFlag((getA() & 0b10000000) == 0b10000000);
+    setSignFlag((getA() & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
     setParityOverflowFlag(getA() == 0x80);
     setZeroFlag(getA() == 0);
     setNFlag(true);
     setCFlag(getA() != 0);
-    setA(~getA() & 0b11111111);
+    setA(~getA() & BOOST_BINARY(11111111));
     // setHFlag(false);
 }
 
@@ -868,9 +868,9 @@ void EmulationProcessor::POP(RegisterPair rgstr) {
 void EmulationProcessor::PUSH(RegisterPair valueRegister) {
     int value = getRegisterPairValue(valueRegister);
     decrementSP();
-    getMemory()->write(getSP(), value >>> 8);
+    getMemory()->write(getSP(), value >> 8);
     decrementSP();
-    getMemory()->write(getSP(), value & 0b11111111);
+    getMemory()->write(getSP(), value & BOOST_BINARY(11111111));
 }
 
 
@@ -962,8 +962,8 @@ void EmulationProcessor::RL(Register r) {
 void EmulationProcessor::RLA() {
 
     int tempA = getA();
-    setA(((getA() << 1) & 0b11111111) | (getCFlag() ? 1 : 0));
-    setCFlag((tempA & 0b10000000) == 0b10000000);
+    setA(((getA() << 1) & BOOST_BINARY(11111111)) | (getCFlag() ? 1 : 0));
+    setCFlag((tempA & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
 }
 
 
@@ -987,8 +987,8 @@ void EmulationProcessor::RLC(Register rgstr) {
 
 void EmulationProcessor::RLCA() {
 
-    setA(((getA() << 1) & 0b11111111) | ((getA() >>> (8 - 1)) & 0b00000001));
-    setCFlag((getA() & 0b1) == 1);
+    setA(((getA() << 1) & BOOST_BINARY(11111111)) | ((getA() >> (8 - 1)) & BOOST_BINARY(00000001)));
+    setCFlag((getA() & BOOST_BINARY(1)) == 1);
 }
 
 
@@ -1014,9 +1014,9 @@ void EmulationProcessor::RR(Register r) {
 
 void EmulationProcessor::RRA() {
 
-    int f2 = getCFlag() ? 0b1 : 0;
-    setCFlag((0b1 & getA()) == 1);
-    setA((getA() >>> 1) | (f2 << (8 - 1)));
+    int f2 = getCFlag() ? BOOST_BINARY(1) : 0;
+    setCFlag((BOOST_BINARY(1) & getA()) == 1);
+    setA((getA() >> 1) | (f2 << (8 - 1)));
 }
 
 
@@ -1037,8 +1037,8 @@ void EmulationProcessor::RRC(Register r) {
 
 void EmulationProcessor::RRCA() {
 
-    setCFlag((0b1 & getA()) == 1);
-    setA((getA() >>> 1) | ((getA() << (8 - 1)) & 0b10000000));
+    setCFlag((BOOST_BINARY(1) & getA()) == 1);
+    setA((getA() >> 1) | ((getA() << (8 - 1)) & BOOST_BINARY(10000000)));
 }
 
 /**
@@ -1055,10 +1055,10 @@ void EmulationProcessor::RRD() {
     int priorMemory = getMemory()->read(getHL());
     int priorAccumulator = getA();
 
-    setA((priorMemory & 0b1111) | (priorAccumulator & 0b11110000));
+    setA((priorMemory & BOOST_BINARY(1111)) | (priorAccumulator & BOOST_BINARY(11110000)));
 
     getMemory()->write(getHL(),
-                      (priorMemory >>> 4) | ((priorAccumulator & 0b1111) << 4));
+                      (priorMemory >> 4) | ((priorAccumulator & BOOST_BINARY(1111)) << 4));
 }
 
 /**
@@ -1332,14 +1332,14 @@ void EmulationProcessor::setC(int c) {
 }
 
 bool EmulationProcessor::getCFlag() {
-    return (F & 0b1) == 0b1;
+    return (F & BOOST_BINARY(1)) == BOOST_BINARY(1);
 }
 
 void EmulationProcessor::setCFlag(bool flag) {
     if (flag) {
-        F |= 0b1;
+        F |= BOOST_BINARY(1);
     } else {
-        F &= ~0b1;
+        F &= ~BOOST_BINARY(1);
     }
 }
 
@@ -1474,14 +1474,14 @@ void EmulationProcessor::setH(int h) {
 }
 
 bool EmulationProcessor::getHFlag() {
-    return (F & 0b100000) == 0b100000;
+    return (F & BOOST_BINARY(100000)) == BOOST_BINARY(100000);
 }
 
 void EmulationProcessor::setHFlag(bool flag) {
     if (flag) {
-        F |= 0b100000;
+        F |= BOOST_BINARY(100000);
     } else {
-        F &= ~0b100000;
+        F &= ~BOOST_BINARY(100000);
     }
 }
 
@@ -1556,7 +1556,7 @@ int EmulationProcessor::getIXH() {
  * @return lower byte of IX
  */
 int EmulationProcessor::getIXL() {
-    return IX & 0b11111111;
+    return IX & BOOST_BINARY(11111111);
 }
 
 //
@@ -1605,15 +1605,15 @@ int EmulationProcessor::getIYH() {
 }
 
 int EmulationProcessor::getIYL() {
-    return IY & 0b11111111;
+    return IY & BOOST_BINARY(11111111);
 }
 
 IO* EmulationProcessor::getIo() {
     return io;
 }
 
-void setIo(IO* io) {
-    this.io = io;
+void EmulationProcessor::setIo(IO* io) {
+    this->io = io;
 }
 
 /**
@@ -1645,26 +1645,26 @@ void EmulationProcessor::setL_alt(int l_alt) {
 }
 
 bool EmulationProcessor::getNFlag() {
-    return (F & 0b10000) == 0b10000;
+    return (F & BOOST_BINARY(10000)) == BOOST_BINARY(10000);
 }
 
 void EmulationProcessor::setNFlag(bool flag) {
     if (flag) {
-        F |= 0b10000;
+        F |= BOOST_BINARY(10000);
     } else {
-        F &= ~0b10000;
+        F &= ~BOOST_BINARY(10000);
     }
 }
 
 bool EmulationProcessor::getParityOverflowFlag() {
-    return (F & 0b100) == 0b100;
+    return (F & BOOST_BINARY(100)) == BOOST_BINARY(100);
 }
 
 void EmulationProcessor::setParityOverflowFlag(bool flag) {
     if (flag) {
-        F |= 0b100;
+        F |= BOOST_BINARY(100);
     } else {
-        F &= ~0b100;
+        F &= ~BOOST_BINARY(100);
     }
 }
 
@@ -1766,26 +1766,26 @@ void EmulationProcessor::setSP(int sP) {
 }
 
 bool EmulationProcessor::getSignFlag() {
-    return (F & 0b10000000) == 0b10000000;
+    return (F & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000);
 }
 
 void EmulationProcessor::setSignFlag(bool flag) {
     if (flag) {
-        F |= 0b10000000;
+        F |= BOOST_BINARY(10000000);
     } else {
-        F &= ~0b10000000;
+        F &= ~BOOST_BINARY(10000000);
     }
 }
 
 bool EmulationProcessor::getZeroFlag() {
-    return (F & 0b1000000) == 0b1000000;
+    return (F & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000);
 }
 
 void EmulationProcessor::setZeroFlag(bool flag) {
     if (flag) {
-        F |= 0b1000000;
+        F |= BOOST_BINARY(1000000);
     } else {
-        F &= ~0b1000000;
+        F &= ~BOOST_BINARY(1000000);
     }
 }
 
@@ -1916,7 +1916,7 @@ void EmulationProcessor::reset() {
     setPC(0x0);
     setI(0x0);
     setR(0x0);
-    IM = 0;
+    _IM = 0;
 }
 
 /**
@@ -1934,7 +1934,7 @@ void EmulationProcessor::setFlags(int value) {
     flag contains a 0.
      */
 
-    setSignFlag((value & 0b10000000) == 0b10000000);
+    setSignFlag((value & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
     setZeroFlag(value == 0);
     setHFlag(false);
     setParityOverflowFlag(isIFF2());
@@ -1945,12 +1945,12 @@ void EmulationProcessor::setFlags(int value) {
  * @param memory the memory to set
  */
 
-void EmulationProcessor::setMemory(Memory* memory) {
-    this->memory = memory;
-}
+//void EmulationProcessor::setMemory(Memory* memory) {
+//    this->memory = memory;
+//}
 
 void EmulationProcessor::setRegister(Register rgstr, int value) {
-    logger.debug("Setting value 0x" + value + " for rgstr " + rgstr);
+//    logger.debug("Setting value 0x" + value + " for rgstr " + rgstr);
     switch (rgstr) {
         case Register::A:
         setA(value);
@@ -2048,23 +2048,23 @@ void EmulationProcessor::unimplemented() {
  * @param value
  */
 void EmulationProcessor::writeIO(int address, int value) {
-    logger.debug("Writing IO: addr:" + address + " val:" + value);
+//    logger.debug("Writing IO: addr:" + address + " val:" + value);
     io->write(address, value);
 }
 
-int EmulationProcessor::getMemoryAddress(MemoryAddress memoryAddress) {
-    int address = 0;
-    if (memoryAddress.getRegister() != null) {
+std::uint16_t EmulationProcessor::getMemoryAddress(MemoryAddress memoryAddress) {
+    std::uint16_t address = 0;
+    if (memoryAddress.getRegister() != Register::unknown) {
         address = this->getRegisterValue(memoryAddress.getRegister());
-        if (memoryAddress.getOffset() != null) {
+        if (memoryAddress.getOffset() > 0) {
             address += memoryAddress.getOffset();
         }
-    } else if (memoryAddress.getRegisterPair() != null) {
+    } else if (memoryAddress.getRegisterPair() != RegisterPair::unknown) {
         address = this->getRegisterPairValue(memoryAddress.getRegisterPair());
-        if (memoryAddress.getOffset() != null) {
+        if (memoryAddress.getOffset() > 0) {
             address += memoryAddress.getOffset();
         }
-    } else if (memoryAddress.getMemoryAddress() != null) {
+    } else if (memoryAddress.getMemoryAddress() > 0) {
         address = memoryAddress.getMemoryAddress();
     }
 

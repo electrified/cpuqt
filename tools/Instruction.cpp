@@ -6,7 +6,7 @@
 #include <fstream>
 #include <vector>
 
-#include<boost/format.hpp>
+#include <boost/format.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>

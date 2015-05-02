@@ -28,21 +28,12 @@
 
 #ifndef MEMORY_H
 #define MEMORY_H
-
+#include <cstdint>
 class Memory
 {
 public:
-    void bulkWrite(int i, int ints[]);
-
-    int read(int address);
-
-    void write(int address, int value);
-
-    /**
-     * Gets amount of memory available
-     * @return
-     */
-    int size();
+    virtual std::uint8_t read(std::uint16_t address) = 0;
+    virtual void write(std::uint16_t address, std::uint8_t value) = 0;
 };
 
 #endif // MEMORY_H

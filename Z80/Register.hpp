@@ -1,5 +1,6 @@
 #pragma once
 enum class Register {
+    unknown,
     A,
     B,
     C,

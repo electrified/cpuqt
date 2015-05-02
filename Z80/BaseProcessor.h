@@ -29,6 +29,8 @@
 #ifndef BASEPROCESSOR_H
 #define BASEPROCESSOR_H
 
+#include <cstdint>
+
 #include "Z80/Memory.h"
 #include "Z80/Processor.h"
 #include "Z80/InstructionDecoder.h"
@@ -38,7 +40,7 @@ class BaseProcessor : public Processor
 protected:
     InstructionDecoder* instructionDecoder;
     Memory* memory;
-    int addressBus;
+    std::uint16_t addressBus;
 
     /*
  * Program Counter (PC) The program counter holds the 16-bit address of the
@@ -47,28 +49,15 @@ protected:
  * lines. When a program jump occurs, the new value is automatically placed
  * in the PC, overriding the incrementer.
  */
-    int PC;
+    std::uint16_t PC;
 public:
     void placeProgramCounterOnAddressBus();
-    /**
-     * @return the pC
-     */
-    int getPC();
-    /**
-     * @param pC the pC to set
-     */
-    void setPC(int pC);
-
-    /**
-     * @return the memory
-     */
+    std::uint16_t getPC();
+    void setPC(std::uint16_t pC);
     Memory* getMemory();
-
-    void setMemory(int memory[]);
-
+    void setMemory(std::uint8_t memory[]);
     void setMemory(Memory* memory);
-
-    int fetchInstruction();
+    std::uint8_t fetchInstruction();
 };
 
 #endif // BASEPROCESSOR_H

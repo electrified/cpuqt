@@ -48,10 +48,10 @@
     }
 
     int InstructionDecoder::getRegisterValue(Register r) {
-//         int i = processor.getRegisterValue(r);
-//         return i;
+         int i = getProcessor()->getRegisterValue(r);
+         return i;
     }
 
     int InstructionDecoder::getRegisterPairValue(RegisterPair rp) {
-//         return getProcessor().getRegisterPairValue(rp);
+         return getProcessor()->getRegisterPairValue(rp);
     }

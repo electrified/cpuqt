@@ -82,6 +82,8 @@ public:
 
     void BIT(int i, MemoryAddress memoryAddress);
 
+    void BIT(int y, int value);
+
     void CALL(Condition c, MemoryAddress memoryAddress);
 
     void CALL(MemoryAddress memoryAddress);
@@ -283,34 +285,29 @@ public:
     void SRA(MemoryAddress memoryAddress);
 
     void SRL(Register r);
-
     void SRL(MemoryAddress memoryAddress);
 
     void SUB(Register iX2);
-
     void SUB(int iX2);
-
     void SUB(MemoryAddress memoryAddress);
 
     void XOR(Register val);
-
     void XOR(int val);
-
     void XOR(MemoryAddress memoryAddress);
 
-    int fetchInstruction();
+//    std::uint8_t fetchInstruction();
 
-    Memory *getMemory();
+//    Memory *getMemory();
 
 //      void setMemory(int[] memory);
 
-    void setMemory(Memory *memory);
+//    void setMemory(Memory *memory);
 
     int getRegisterPairValue(RegisterPair register);
 
     int getRegisterValue(Register register);
 
-    void placeProgramCounterOnAddressBus();
+//    void placeProgramCounterOnAddressBus();
 
 private:
 //     void setRegisterPair(RegisterPair register, int lowOrder, int highOrder);
@@ -507,7 +504,7 @@ private:
 
     void writeIO(int address, int value);
 
-    int getMemoryAddress(MemoryAddress memoryAddress);
+    std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
 
     void decrementSP();
 

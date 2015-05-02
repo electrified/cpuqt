@@ -39,7 +39,7 @@ public:
     Logger();
     Logger(const Logger& other);
     ~Logger();
-    bool operator==(const Logger& other) const;
+//    bool operator==(const Logger& other) const;
     void debug(string toLog);
 };
 

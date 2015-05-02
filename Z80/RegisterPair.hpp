@@ -1,6 +1,7 @@
 #pragma once
 
 enum class RegisterPair {
+    unknown,
     AF,
     AF_prime,
     BC,

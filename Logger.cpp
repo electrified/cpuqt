@@ -43,10 +43,10 @@ Logger::~Logger()
 
 }
 
-bool Logger::operator==(const Logger& other) const
-{
+//bool Logger::operator==(const Logger& other) const
+//{
 
-}
+//}
 
 void Logger::debug(string toLog)
 {

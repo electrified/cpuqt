@@ -36,35 +36,26 @@ void BaseProcessor::placeProgramCounterOnAddressBus() {
     PC++;
 }
 
-/**
- * @return the pC
- */
-int BaseProcessor::getPC() {
+std::uint16_t BaseProcessor::getPC() {
     return PC;
 }
 
-/**
- * @param pC the pC to set
- */
-void BaseProcessor::setPC(int pC) {
-    PC = pC;
+void BaseProcessor::setPC(std::uint16_t pc) {
+    PC = pc;
 }
 
-/**
- * @return the memory
- */
 Memory* BaseProcessor::getMemory() {
     return memory;
 }
 
-void BaseProcessor::setMemory(int memory[]) {
-    this->setMemory(new BadgerMemory(memory));
-}
+//void BaseProcessor::setMemory(std::uint8_t memory[]) {
+//    this->setMemory(new BadgerMemory(memory));
+//}
 
 void BaseProcessor::setMemory(Memory* memory) {
     this->memory = memory;
 }
 
-int BaseProcessor::fetchInstruction() {
-    return getMemory()->read(addressBus) & 0xFF;
+std::uint8_t BaseProcessor::fetchInstruction() {
+    return getMemory()->read(addressBus);
 }

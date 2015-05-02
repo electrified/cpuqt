@@ -65,7 +65,7 @@ RegisterPair MemoryAddress::getRegisterPair() {
 };
 
 std::string MemoryAddress::toString() {
-//         String address = "";
+         string address = "";
 //         if(getRegister() != null) {
 //             address = getRegister().name();
 //             if (getOffset() != null) {
@@ -79,6 +79,6 @@ std::string MemoryAddress::toString() {
 //         } else if (getMemoryAddress() != null) {
 //             address = "0x" + Integer.toHexString(getMemoryAddress());
 //         }
-// 
-//         return address;
+
+         return address;
 };
