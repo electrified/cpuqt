@@ -47,8 +47,7 @@ MemoryAddress::MemoryAddress(Rgstr rgstr) {
     rgstr = rgstr;
 }
 
-MemoryAddress::MemoryAddress(RegisterPair rgstrPair) {
-    MemoryAddress();
+MemoryAddress::MemoryAddress(RegisterPair rgstrPair) : MemoryAddress() {
     registerPair = rgstrPair;
 }
 
