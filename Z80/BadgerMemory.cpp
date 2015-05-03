@@ -1,12 +1,14 @@
 //
 // Created by ed on 30/04/15.
 //
-#include <cstdint>
 #include "BadgerMemory.h"
+#include <iostream>
+#include <cstdint>
 
-//BadgerMemory::BadgerMemory(std::uint8_t memory[]) {
-//    this->memory = memory;
-//}
+
+BadgerMemory::BadgerMemory() {
+    std::cout << "Initialising badgermemory";
+}
 
 std::uint8_t BadgerMemory::read(std::uint16_t address){
     return memory[address];

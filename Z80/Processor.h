@@ -41,29 +41,29 @@ class Processor
 {
 public:
     virtual void ADC(RegisterPair hl, RegisterPair bc) = 0;
-    virtual void ADC(Register a, Register b) = 0;
-    virtual void ADC(Register a, int i) = 0;
-    virtual void ADC(Register a, MemoryAddress memoryAddress) = 0;
+    virtual void ADC(Rgstr a, Rgstr b) = 0;
+    virtual void ADC(Rgstr a, std::uint8_t i) = 0;
+    virtual void ADC(Rgstr a, MemoryAddress memoryAddress) = 0;
 
     virtual void ADD(RegisterPair destination, RegisterPair register) = 0;
-    virtual void ADD(Register a, int nextByte) = 0;
-    virtual void ADD(Register a, Register b) = 0;
-    virtual void ADD(Register a, MemoryAddress memoryAddress) = 0;
+    virtual void ADD(Rgstr a, std::uint8_t nextByte) = 0;
+    virtual void ADD(Rgstr a, Rgstr b) = 0;
+    virtual void ADD(Rgstr a, MemoryAddress memoryAddress) = 0;
 
-    virtual void AND(Register iX2) = 0;
-    virtual void AND(int iX2) = 0;
+    virtual void AND(Rgstr iX2) = 0;
+    virtual void AND(std::uint8_t iX2) = 0;
     virtual void AND(MemoryAddress memoryAddress) = 0;
 
-    virtual void BIT(int y, Register register) = 0;
-    virtual void BIT(int i, MemoryAddress memoryAddress) = 0;
+    virtual void BIT(std::uint8_t y, Rgstr register) = 0;
+    virtual void BIT(std::uint8_t i, MemoryAddress memoryAddress) = 0;
 
     virtual void CALL(Condition c, MemoryAddress memoryAddress) = 0;
     virtual void CALL(MemoryAddress memoryAddress) = 0;
 
     virtual void CCF() = 0;
 
-    virtual void CP(int val) = 0;
-    virtual void CP(Register val) = 0;
+    virtual void CP(std::uint8_t val) = 0;
+    virtual void CP(Rgstr val) = 0;
     virtual void CP(MemoryAddress memoryAddress) = 0;
 
     virtual void CPD() = 0;
@@ -82,7 +82,7 @@ public:
      * DEC B - 5
      * @param r
      */
-    virtual void DEC(Register r) = 0;
+    virtual void DEC(Rgstr r) = 0;
     virtual void DEC(RegisterPair r) = 0;
     virtual void DEC(MemoryAddress memoryAddress) = 0;
 
@@ -99,11 +99,11 @@ public:
 
     virtual void HALT() = 0;
 
-    virtual void IM(int im) = 0;
+    virtual void IM(std::uint8_t im) = 0;
 
-    virtual void IN(Register a, MemoryAddress i) = 0;
+    virtual void in(Rgstr a, MemoryAddress i) = 0;
 
-    virtual void INC(Register r) = 0;
+    virtual void INC(Rgstr r) = 0;
     virtual void INC(RegisterPair r) = 0;
     virtual void INC(MemoryAddress memoryAddress) = 0;
 
@@ -121,8 +121,8 @@ public:
     virtual void JR(Condition nz, MemoryAddress memoryAddress) = 0;
     virtual void JR(MemoryAddress memoryAddress) = 0;
 
-    virtual void LD(Register register, int memoryAddress) = 0;
-    virtual void LD(Register r1, Register r2) = 0;
+    virtual void LD(Rgstr register, std::uint8_t memoryAddress) = 0;
+    virtual void LD(Rgstr r1, Rgstr r2) = 0;
     virtual void LD(RegisterPair r1, RegisterPair r2) = 0;
 
     /**
@@ -130,12 +130,12 @@ public:
      * @param registerPair
      * @param immediateValue
      */
-    virtual void LD(RegisterPair registerPair, int immediateValue) = 0;
-    virtual void LD(MemoryAddress memoryAddress, Register a) = 0;
-    virtual void LD(Register a, MemoryAddress memoryAddress) = 0;
+    virtual void LD(RegisterPair registerPair, std::uint8_t immediateValue) = 0;
+    virtual void LD(MemoryAddress memoryAddress, Rgstr a) = 0;
+    virtual void LD(Rgstr a, MemoryAddress memoryAddress) = 0;
     virtual void LD(MemoryAddress memoryAddress, RegisterPair hl) = 0;
     virtual void LD(RegisterPair hl, MemoryAddress memoryAddress) = 0;
-    virtual void LD(MemoryAddress memoryAddress, int i) = 0;
+    virtual void LD(MemoryAddress memoryAddress, std::uint8_t i) = 0;
 
     virtual void LDD() = 0;
 
@@ -150,22 +150,15 @@ public:
 
     virtual void NOP() = 0;
 
-    virtual void OR(Register iX2) = 0;
-
-
-    virtual void OR(int immediateValue) = 0;
+    virtual void OR(Rgstr iX2) = 0;
+    virtual void OR(std::uint8_t immediateValue) = 0;
     virtual void OR(MemoryAddress memoryAddress) = 0;
 
     virtual void OTDR() = 0;
 
     virtual void OTIR() = 0;
 
-    /**
-     * OUT (n),A - d3 3e8
-     * @param address
-     * @param register
-     */
-    virtual void OUT(MemoryAddress address, Register register) = 0;
+    virtual void out(MemoryAddress address, Rgstr register) = 0;
 
     virtual void OUTD() = 0;
 
@@ -175,8 +168,8 @@ public:
 
     virtual void PUSH(RegisterPair valueRegister) = 0;
 
-    virtual void RES(int i, Register b) = 0;
-    virtual void RES(int i, MemoryAddress memoryAddress) = 0;
+    virtual void RES(std::uint8_t i, Rgstr b) = 0;
+    virtual void RES(std::uint8_t i, MemoryAddress memoryAddress) = 0;
 
     virtual void RET(Condition p) = 0;
 
@@ -186,27 +179,26 @@ public:
 
     virtual void RETN() = 0;
 
-    virtual void RL(Register r) = 0;
+    virtual void RL(Rgstr r) = 0;
 
     virtual void RL(MemoryAddress memoryAddress) = 0;
 
     virtual void RLA() = 0;
 
-    virtual void RLC(Register register) = 0;
-
+    virtual void RLC(Rgstr register) = 0;
     virtual void RLC(MemoryAddress memoryAddress) = 0;
 
     virtual void RLCA() = 0;
 
     virtual void RLD() = 0;
 
-    virtual void RR(Register r) = 0;
+    virtual void RR(Rgstr r) = 0;
 
     virtual void RR(MemoryAddress memoryAddress) = 0;
 
     virtual void RRA() = 0;
 
-    virtual void RRC(Register r) = 0;
+    virtual void RRC(Rgstr r) = 0;
 
     virtual void RRC(MemoryAddress memoryAddress) = 0;
 
@@ -214,34 +206,34 @@ public:
 
     virtual void RRD() = 0;
 
-    virtual void RST(int i) = 0;
+    virtual void RST(std::uint8_t i) = 0;
 
-    virtual void SBC(Register a, int nextByte) = 0;
-    virtual void SBC(Register a, Register b) = 0;
+    virtual void SBC(Rgstr a, std::uint8_t nextByte) = 0;
+    virtual void SBC(Rgstr a, Rgstr b) = 0;
     virtual void SBC(RegisterPair hl, RegisterPair hl1) = 0;
-    virtual void SBC(Register a, MemoryAddress memoryAddress) = 0;
+    virtual void SBC(Rgstr a, MemoryAddress memoryAddress) = 0;
 
     virtual void SCF() = 0;
 
-    virtual void SET(int y, Register register) = 0;
+    virtual void SET(std::uint8_t y, Rgstr register) = 0;
 
-    virtual void SET(int i, MemoryAddress memoryAddress) = 0;
+    virtual void SET(std::uint8_t i, MemoryAddress memoryAddress) = 0;
 
-    virtual void SLA(Register r) = 0;
+    virtual void SLA(Rgstr r) = 0;
     virtual void SLA(MemoryAddress memoryAddress) = 0;
 
-    virtual void SRA(Register r) = 0;
+    virtual void SRA(Rgstr r) = 0;
     virtual void SRA(MemoryAddress memoryAddress) = 0;
 
-    virtual void SRL(Register r) = 0;
+    virtual void SRL(Rgstr r) = 0;
     virtual void SRL(MemoryAddress memoryAddress) = 0;
 
-    virtual void SUB(Register iX2) = 0;
-    virtual void SUB(int iX2) = 0;
+    virtual void SUB(Rgstr iX2) = 0;
+    virtual void SUB(std::uint8_t iX2) = 0;
     virtual void SUB(MemoryAddress memoryAddress) = 0;
 
-    virtual void XOR(Register val) = 0;
-    virtual void XOR(int val) = 0;
+    virtual void XOR(Rgstr val) = 0;
+    virtual void XOR(std::uint8_t val) = 0;
     virtual void XOR(MemoryAddress memoryAddress) = 0;
 
     virtual std::uint8_t fetchInstruction() = 0;
@@ -252,9 +244,9 @@ public:
 
     virtual void setMemory(Memory* memory) = 0;
 
-    virtual int getRegisterPairValue(RegisterPair register) = 0;
+    virtual std::uint16_t getRegisterPairValue(RegisterPair register) = 0;
 
-    virtual int getRegisterValue(Register register) = 0;
+    virtual std::uint8_t getRegisterValue(Rgstr register) = 0;
 
     virtual void placeProgramCounterOnAddressBus() = 0;
 };

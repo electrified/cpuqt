@@ -27,7 +27,7 @@
  */
 
 #include "Logger.h"
-
+#include <iostream>
 Logger::Logger()
 {
 
@@ -50,5 +50,5 @@ Logger::~Logger()
 
 void Logger::debug(string toLog)
 {
-    
+    std::cout << "DEBUG: " << toLog << std::endl;
 }

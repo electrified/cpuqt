@@ -51,11 +51,13 @@ protected:
  */
     std::uint16_t PC;
 public:
+    BaseProcessor();
+    ~BaseProcessor();
     void placeProgramCounterOnAddressBus();
     std::uint16_t getPC();
     void setPC(std::uint16_t pC);
     Memory* getMemory();
-    void setMemory(std::uint8_t memory[]);
+//    void setMemory(std::uint8_t memory[]);
     void setMemory(Memory* memory);
     std::uint8_t fetchInstruction();
 };

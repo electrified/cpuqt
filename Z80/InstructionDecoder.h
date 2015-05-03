@@ -29,6 +29,7 @@
 #ifndef INSTRUCTIONDECODER_H
 #define INSTRUCTIONDECODER_H
 
+#include <cstdint>
 #include "Z80/Processor.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
@@ -38,12 +39,12 @@ class InstructionDecoder
 {
 public:
     Processor* processor;
-    int instructionByteCount = 0;
+    std::uint8_t instructionByteCount = 0;
     Processor* getProcessor();
     void setProcessor(Processor* processor);
-    int getNextByte();
-    int getRegisterValue(Register r);
-    int getRegisterPairValue(RegisterPair rp);
+    std::uint8_t getNextByte();
+    std::uint8_t getRegisterValue(Rgstr r);
+    std::uint16_t getRegisterPairValue(RegisterPair rp);
     virtual void decode() = 0;
 };
 

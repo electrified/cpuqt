@@ -31,58 +31,60 @@
 
 #include "Z80/BaseProcessor.h"
 #include "Z80/InstructionDecoder.h"
+#include "Z80/MemoryAddress.h"
+#include "Z80/Register.hpp"
+#include "Z80/RegisterPair.hpp"
 #include "Z80/IO.h"
 #include "Logger.h"
+
 class EmulationProcessor : public BaseProcessor {
     /*
          * in java all numbers are internally represented as 32 bit. There is also
          * no unsigned therefore just using ints
          */
-    int A, B, C, D, E, F, H, L, SP;
-    int IX, IY, I, R;
-    int A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt;
+    std::uint8_t A, B, C, D, E, F, H, L, I, R;
+    std::uint16_t IX, IY, SP;
+    std::uint8_t A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt;
     IO *io;
     //interrupt enable flip flops
     bool IFF1 = false;
     bool IFF2 = false;
     bool halted = false;
     //interrupt mode
-    int _IM;
+    std::uint8_t _IM;
     Logger logger;
 public:
     EmulationProcessor();
-
-    EmulationProcessor(InstructionDecoder *instructionDecoder);
-
-    EmulationProcessor(EmulationProcessor *emulationProcessor);
-
+    EmulationProcessor(InstructionDecoder *decoder);
+//    EmulationProcessor(EmulationProcessor *emulationProcessor);
+    ~EmulationProcessor();
     void ADC(RegisterPair hl, RegisterPair bc);
 
-    void ADC(Register a, Register b);
+    void ADC(Rgstr a, Rgstr b);
 
-    void ADC(Register a, int i);
+    void ADC(Rgstr a, std::uint8_t i);
 
-    void ADC(Register a, MemoryAddress memoryAddress);
+    void ADC(Rgstr a, MemoryAddress memoryAddress);
 
     void ADD(RegisterPair destination, RegisterPair register);
 
-    void ADD(Register a, int nextByte);
+    void ADD(Rgstr a, std::uint8_t nextByte);
 
-    void ADD(Register a, Register b);
+    void ADD(Rgstr a, Rgstr b);
 
-    void ADD(Register a, MemoryAddress memoryAddress);
+    void ADD(Rgstr a, MemoryAddress memoryAddress);
 
-    void AND(Register iX2);
+    void AND(Rgstr iX2);
 
-    void AND(int iX2);
+    void AND(std::uint8_t iX2);
 
     void AND(MemoryAddress memoryAddress);
 
-    void BIT(int y, Register register);
+    void BIT(std::uint8_t y, Rgstr register);
 
-    void BIT(int i, MemoryAddress memoryAddress);
+    void BIT(std::uint8_t i, MemoryAddress memoryAddress);
 
-    void BIT(int y, int value);
+    void BIT(std::uint8_t y, std::uint8_t value);
 
     void CALL(Condition c, MemoryAddress memoryAddress);
 
@@ -90,9 +92,9 @@ public:
 
     void CCF();
 
-    void CP(int val);
+    void CP(std::uint8_t val);
 
-    void CP(Register val);
+    void CP(Rgstr val);
 
     void CP(MemoryAddress memoryAddress);
 
@@ -112,7 +114,7 @@ public:
      * DEC B - 5
      * @param r
      */
-    void DEC(Register r);
+    void DEC(Rgstr r);
 
     void DEC(RegisterPair r);
 
@@ -132,11 +134,11 @@ public:
 
     void HALT();
 
-    void IM(int im);
+    void IM(std::uint8_t im);
 
-    void IN(Register a, MemoryAddress i);
+    void in(Rgstr a, MemoryAddress i);
 
-    void INC(Register r);
+    void INC(Rgstr r);
 
     void INC(RegisterPair r);
 
@@ -158,9 +160,9 @@ public:
 
     void JR(MemoryAddress memoryAddress);
 
-    void LD(Register register, int memoryAddress);
+    void LD(Rgstr register, std::uint8_t memoryAddress);
 
-    void LD(Register r1, Register r2);
+    void LD(Rgstr r1, Rgstr r2);
 
     void LD(RegisterPair r1, RegisterPair r2);
 
@@ -169,17 +171,17 @@ public:
      * @param registerPair
      * @param immediateValue
      */
-    void LD(RegisterPair registerPair, int immediateValue);
+    void LD(RegisterPair registerPair, std::uint8_t immediateValue);
 
-    void LD(MemoryAddress memoryAddress, Register a);
+    void LD(MemoryAddress memoryAddress, Rgstr a);
 
-    void LD(Register a, MemoryAddress memoryAddress);
+    void LD(Rgstr a, MemoryAddress memoryAddress);
 
     void LD(MemoryAddress memoryAddress, RegisterPair hl);
 
     void LD(RegisterPair hl, MemoryAddress memoryAddress);
 
-    void LD(MemoryAddress memoryAddress, int i);
+    void LD(MemoryAddress memoryAddress, std::uint8_t i);
 
     void LDD();
 
@@ -196,13 +198,13 @@ public:
      */
     void NOP();
 
-    void OR(Register iX2);
+    void OR(Rgstr iX2);
 
     /**
      * OR n - f6 n
      * @param immediateValue
      */
-    void OR(int immediateValue);
+    void OR(std::uint8_t immediateValue);
 
     void OR(MemoryAddress memoryAddress);
 
@@ -210,7 +212,7 @@ public:
 
     void OTIR();
 
-    void OUT(MemoryAddress address, Register register);
+    void out(MemoryAddress address, Rgstr register);
 
     void OUTD();
 
@@ -220,9 +222,9 @@ public:
 
     void PUSH(RegisterPair valueRegister);
 
-    void RES(int i, Register b);
+    void RES(std::uint8_t i, Rgstr b);
 
-    void RES(int i, MemoryAddress memoryAddress);
+    void RES(std::uint8_t i, MemoryAddress memoryAddress);
 
     void RET(Condition p);
 
@@ -232,13 +234,13 @@ public:
 
     void RETN();
 
-    void RL(Register r);
+    void RL(Rgstr r);
 
     void RL(MemoryAddress memoryAddress);
 
     void RLA();
 
-    void RLC(Register register);
+    void RLC(Rgstr register);
 
     void RLC(MemoryAddress memoryAddress);
 
@@ -246,13 +248,13 @@ public:
 
     void RLD();
 
-    void RR(Register r);
+    void RR(Rgstr r);
 
     void RR(MemoryAddress memoryAddress);
 
     void RRA();
 
-    void RRC(Register r);
+    void RRC(Rgstr r);
 
     void RRC(MemoryAddress memoryAddress);
 
@@ -260,39 +262,39 @@ public:
 
     void RRD();
 
-    void RST(int i);
+    void RST(std::uint8_t i);
 
-    void SBC(Register a, int nextByte);
+    void SBC(Rgstr a, std::uint8_t nextByte);
 
-    void SBC(Register a, Register b);
+    void SBC(Rgstr a, Rgstr b);
 
     void SBC(RegisterPair hl, RegisterPair hl1);
 
-    void SBC(Register a, MemoryAddress memoryAddress);
+    void SBC(Rgstr a, MemoryAddress memoryAddress);
 
     void SCF();
 
-    void SET(int y, Register register);
+    void SET(std::uint8_t y, Rgstr register);
 
-    void SET(int i, MemoryAddress memoryAddress);
+    void SET(std::uint8_t i, MemoryAddress memoryAddress);
 
-    void SLA(Register r);
+    void SLA(Rgstr r);
 
     void SLA(MemoryAddress memoryAddress);
 
-    void SRA(Register r);
+    void SRA(Rgstr r);
 
     void SRA(MemoryAddress memoryAddress);
 
-    void SRL(Register r);
+    void SRL(Rgstr r);
     void SRL(MemoryAddress memoryAddress);
 
-    void SUB(Register iX2);
-    void SUB(int iX2);
+    void SUB(Rgstr iX2);
+    void SUB(std::uint8_t iX2);
     void SUB(MemoryAddress memoryAddress);
 
-    void XOR(Register val);
-    void XOR(int val);
+    void XOR(Rgstr val);
+    void XOR(std::uint8_t val);
     void XOR(MemoryAddress memoryAddress);
 
 //    std::uint8_t fetchInstruction();
@@ -303,145 +305,83 @@ public:
 
 //    void setMemory(Memory *memory);
 
-    int getRegisterPairValue(RegisterPair register);
+    std::uint16_t getRegisterPairValue(RegisterPair register);
 
-    int getRegisterValue(Register register);
+    std::uint8_t getRegisterValue(Rgstr register);
 
 //    void placeProgramCounterOnAddressBus();
 
-private:
-//     void setRegisterPair(RegisterPair register, int lowOrder, int highOrder);
-//     void setRegisterPair(RegisterPair register, int sixteenBit);
-//     int getMemoryAddress(MemoryAddress memoryAddress);
-//     void writeIO(int address, int value);
-//     void unimplemented();
-    int getA();
 
-    void setA(int a);
-
-    int getAF();
-
-    void setAF(int value);
-
-    int getAF_alt();
-
-    void setAF_alt(int value);
-
-    int getA_alt();
-
-    void setA_alt(int a_alt);
-
-    int getB();
-
-    void setB(int b);
-
-    int getBC();
-
-    void setBC(int value);
-
-    int getBC_alt();
-
-    void setBC_alt(int value);
-
-    int getB_alt();
-
-    void setB_alt(int b_alt);
-
-    int getC();
-
-    void setC(int c);
-
+    std::uint8_t getA();
+    void setA(std::uint8_t a);
+    std::uint16_t getAF();
+    void setAF(std::uint16_t value);
+    std::uint16_t getAF_alt();
+    void setAF_alt(std::uint16_t value);
+    std::uint8_t getA_alt();
+    void setA_alt(std::uint8_t a_alt);
+    std::uint8_t getB();
+    void setB(std::uint8_t b);
+    std::uint16_t getBC();
+    void setBC(std::uint16_t value);
+    std::uint16_t getBC_alt();
+    void setBC_alt(std::uint16_t value);
+    std::uint8_t getB_alt();
+    void setB_alt(std::uint8_t b_alt);
+    std::uint8_t getC();
+    void setC(std::uint8_t c);
     bool getCFlag();
-
     void setCFlag(bool flag);
-
-    int getC_alt();
-
-    void setC_alt(int c_alt);
-
-    int getD();
-
-    void setD(int d);
-
-    int getDE();
-
-    void setDE(int value);
-
-    int getDE_alt();
-
-    void setDE_alt(int value);
-
-    int getD_alt();
-
-    void setD_alt(int d_alt);
-
-    int getE();
-
-    void setE(int e);
-
-    int getE_alt();
-
-    void setE_alt(int e_alt);
-
-    int getF();
-
-    void setF(int f);
-
-    int getF_alt();
-
-    void setF_alt(int f_alt);
-
-    int getH();
-
-    void setH(int h);
-
+    std::uint8_t getC_alt();
+    void setC_alt(std::uint8_t c_alt);
+    std::uint8_t getD();
+    void setD(std::uint8_t d);
+    std::uint16_t getDE();
+    void setDE(std::uint16_t value);
+    std::uint16_t getDE_alt();
+    void setDE_alt(std::uint16_t value);
+    std::uint8_t getD_alt();
+    void setD_alt(std::uint8_t d_alt);
+    std::uint8_t getE();
+    void setE(std::uint8_t e);
+    std::uint8_t getE_alt();
+    void setE_alt(std::uint8_t e_alt);
+    std::uint8_t getF();
+    void setF(std::uint8_t f);
+    std::uint8_t getF_alt();
+    void setF_alt(std::uint8_t f_alt);
+    std::uint8_t getH();
+    void setH(std::uint8_t h);
     bool getHFlag();
-
     void setHFlag(bool flag);
+    std::uint16_t getHL();
+    void setHL(std::uint16_t value);
+    std::uint16_t getHL_alt();
+    void setHL_alt(std::uint16_t value);
+    std::uint8_t getH_alt();
+    void setH_alt(std::uint8_t h_alt);
+    std::uint8_t getI();
+    void setI(std::uint8_t i);
+    std::uint16_t getIX();
+    void setIX(std::uint16_t iX);
+    std::uint8_t getIXH();
+    std::uint8_t getIXL();
+    std::uint16_t getIY();
+    void setIY(std::uint16_t iY);
+    std::uint8_t getIYH();
+    std::uint8_t getIYL();
+    std::uint8_t getL();
+    void setL(std::uint8_t l);
+    std::uint8_t getL_alt();
+    void setL_alt(std::uint8_t l_alt);
 
-    int getHL();
+    void process();
+    void process(std::uint8_t count);
 
-    void setHL(int value);
-
-    int getHL_alt();
-
-    void setHL_alt(int value);
-
-    int getH_alt();
-
-    void setH_alt(int h_alt);
-
-    int getI();
-
-    void setI(int i);
-
-    int getIX();
-
-    void setIX(int iX);
-
-    int getIXH();
-
-    int getIXL();
-
-    int getIY();
-
-    void setIY(int iY);
-
-    int getIYH();
-
-    int getIYL();
-
+private:
     IO *getIo();
 
     void setIo(IO* io);
-
-    int getL();
-
-    void setL(int l);
-
-    int getL_alt();
-
-    void setL_alt(int l_alt);
 
     bool getNFlag();
 
@@ -451,15 +391,15 @@ private:
 
     void setParityOverflowFlag(bool flag);
 
-    int getR();
+    std::uint8_t getR();
 
-    void setR(int r);
+    void setR(std::uint8_t r);
 
-//     int getRegisterPairValue(RegisterPair register);
-//     int getRegisterValue(Register register);
-    int getSP();
+//     std::uint8_t getRegisterPairValue(RegisterPair register);
+//     std::uint8_t getRegisterValue(Rgstr register);
+    std::uint16_t getSP();
 
-    void setSP(int sP);
+    void setSP(std::uint16_t sP);
 
     bool getSignFlag();
 
@@ -481,28 +421,25 @@ private:
 
     void setIFF2(bool iFF2);
 
-    void process();
 
-    void process(int count);
 
     void pushPCtoStack();
 
-    int readIO(int address);
+    std::uint8_t readIO(std::uint16_t address);
 
     void reset();
 
-    void setFlags(int value);
+    void setFlags(std::uint8_t value);
 
-//     void setMemory(Memory* memory);
-    void setRegister(Register register, int value);
+    void setRegister(Rgstr register, std::uint8_t value);
 
-    void setRegisterPair(RegisterPair register, int sixteenBit);
+    void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
 
-    void setRegisterPair(RegisterPair register, int lowOrder, int highOrder);
+    void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 
     void unimplemented();
 
-    void writeIO(int address, int value);
+    void writeIO(std::uint16_t address, std::uint8_t value);
 
     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
 

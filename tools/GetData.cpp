@@ -3,7 +3,6 @@
 #include<boost/format.hpp>
 
 #include "tools/GetData.hpp"
-//#include <tools/FinalNode.hpp>
 
 GetData::GetData(uint8_t level)
 {

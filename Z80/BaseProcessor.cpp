@@ -31,6 +31,14 @@
 #include "Z80/Memory.h"
 #include "BadgerMemory.h"
 
+BaseProcessor::BaseProcessor() {
+    PC = 0;
+}
+
+BaseProcessor::~BaseProcessor() {
+
+}
+
 void BaseProcessor::placeProgramCounterOnAddressBus() {
     addressBus = this->getPC();
     PC++;
@@ -47,10 +55,6 @@ void BaseProcessor::setPC(std::uint16_t pc) {
 Memory* BaseProcessor::getMemory() {
     return memory;
 }
-
-//void BaseProcessor::setMemory(std::uint8_t memory[]) {
-//    this->setMemory(new BadgerMemory(memory));
-//}
 
 void BaseProcessor::setMemory(Memory* memory) {
     this->memory = memory;

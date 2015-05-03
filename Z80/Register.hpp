@@ -1,5 +1,5 @@
 #pragma once
-enum class Register {
+enum class Rgstr {
     unknown,
     A,
     B,

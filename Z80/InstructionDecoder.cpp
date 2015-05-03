@@ -31,27 +31,25 @@
 #include "Z80/RegisterPair.hpp"
 #include "Z80/Processor.h"
 
-//     int instructionByteCount = 0;
+Processor* InstructionDecoder::getProcessor() {
+    return processor;
+}
 
-    Processor* InstructionDecoder::getProcessor() {
-        return processor;
-    }
+void InstructionDecoder::setProcessor(Processor* processor) {
+    this->processor = processor;
+}
 
-    void InstructionDecoder::setProcessor(Processor* processor) {
-        this->processor = processor;
-    }
+std::uint8_t InstructionDecoder::getNextByte() {
+    instructionByteCount++;
+    getProcessor()->placeProgramCounterOnAddressBus();
+    return getProcessor()->fetchInstruction();
+}
 
-    int InstructionDecoder::getNextByte() {
-        instructionByteCount++;
-        //getProcessor().placeProgramCounterOnAddressBus();
-        return 0; //getProcessor().fetchInstruction();
-    }
+std::uint8_t InstructionDecoder::getRegisterValue(Rgstr r) {
+    int i = getProcessor()->getRegisterValue(r);
+    return i;
+}
 
-    int InstructionDecoder::getRegisterValue(Register r) {
-         int i = getProcessor()->getRegisterValue(r);
-         return i;
-    }
-
-    int InstructionDecoder::getRegisterPairValue(RegisterPair rp) {
-         return getProcessor()->getRegisterPairValue(rp);
-    }
+std::uint16_t InstructionDecoder::getRegisterPairValue(RegisterPair rp) {
+    return getProcessor()->getRegisterPairValue(rp);
+}

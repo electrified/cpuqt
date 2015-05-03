@@ -12,7 +12,7 @@ class BadgerMemory : public Memory {
 private:
     std::uint8_t memory[0xffff];
 public:
-//    BadgerMemory(std::uint8_t pInt[]);
+    BadgerMemory();
     std::uint8_t read(std::uint16_t  address);
     void write(std::uint16_t address, std::uint8_t value);
 };

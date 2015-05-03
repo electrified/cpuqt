@@ -28,6 +28,7 @@
 
 #ifndef MEMORYADDRESS_H
 #define MEMORYADDRESS_H
+#include <cstdint>
 #include <string>
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
@@ -35,18 +36,19 @@
 using namespace std;
 class MemoryAddress
 {
-    int memoryAddress;
-    int offset;
-    Register rgstr;
+    std::uint16_t memoryAddress;
+    std::uint8_t offset;
+    Rgstr rgstr;
     RegisterPair registerPair;
 public:
-    MemoryAddress(int i);
-    MemoryAddress(Register r);
+    MemoryAddress();
+    MemoryAddress(std::uint16_t i);
+    MemoryAddress(Rgstr r);
     MemoryAddress(RegisterPair rp);
-    MemoryAddress(RegisterPair rp, int offset);
-    int getMemoryAddress();
-    int getOffset();
-    Register getRegister();
+    MemoryAddress(RegisterPair rp, std::uint8_t offset);
+    std::uint16_t getMemoryAddress();
+    std::uint8_t getOffset();
+    Rgstr getRegister();
     RegisterPair getRegisterPair();
 
     std::string toString();

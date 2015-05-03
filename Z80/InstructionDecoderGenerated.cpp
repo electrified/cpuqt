@@ -1,10 +1,13 @@
 #include "Z80/InstructionDecoderGenerated.h"
+
+#include <cstdint>
+
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
 #include "Z80/Condition.hpp"
 void InstructionDecoderGenerated::decode() {
-    int currentInstruction[4];
+    std::uint8_t currentInstruction[4];
     // get opcode
     currentInstruction[0] = getNextByte();
     switch (currentInstruction[0]) {
@@ -33,7 +36,7 @@ void InstructionDecoderGenerated::decode() {
     case 0x02:
         // LD (BC),A - 2
         logger.debug("LD (BC),A - 2 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::BC), Register::A);
+        getProcessor()->LD(MemoryAddress(RegisterPair::BC), Rgstr::A);
         break;
     case 0x03:
         // INC BC - 3
@@ -43,17 +46,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x04:
         // INC B - 4
         logger.debug("INC B - 4 ");
-        getProcessor()->INC(Register::B);
+        getProcessor()->INC(Rgstr::B);
         break;
     case 0x05:
         // DEC B - 5
         logger.debug("DEC B - 5 ");
-        getProcessor()->DEC(Register::B);
+        getProcessor()->DEC(Rgstr::B);
         break;
     case 0x06:
         // LD B,n - 6 n
         logger.debug("LD B,n - 6 n ");
-        getProcessor()->LD(Register::B, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::B, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -79,7 +82,7 @@ void InstructionDecoderGenerated::decode() {
     case 0x0A:
         // LD A,(BC) - a
         logger.debug("LD A,(BC) - a ");
-        getProcessor()->LD(Register::A, MemoryAddress(RegisterPair::BC));
+        getProcessor()->LD(Rgstr::A, MemoryAddress(RegisterPair::BC));
         break;
     case 0x0B:
         // DEC BC - b
@@ -89,17 +92,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x0C:
         // INC C - c
         logger.debug("INC C - c ");
-        getProcessor()->INC(Register::C);
+        getProcessor()->INC(Rgstr::C);
         break;
     case 0x0D:
         // DEC C - d
         logger.debug("DEC C - d ");
-        getProcessor()->DEC(Register::C);
+        getProcessor()->DEC(Rgstr::C);
         break;
     case 0x0E:
         // LD C,n - e n
         logger.debug("LD C,n - e n ");
-        getProcessor()->LD(Register::C, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::C, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -143,7 +146,7 @@ void InstructionDecoderGenerated::decode() {
     case 0x12:
         // LD (DE),A - 12
         logger.debug("LD (DE),A - 12 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::DE), Register::A);
+        getProcessor()->LD(MemoryAddress(RegisterPair::DE), Rgstr::A);
         break;
     case 0x13:
         // INC DE - 13
@@ -153,17 +156,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x14:
         // INC D - 14
         logger.debug("INC D - 14 ");
-        getProcessor()->INC(Register::D);
+        getProcessor()->INC(Rgstr::D);
         break;
     case 0x15:
         // DEC D - 15
         logger.debug("DEC D - 15 ");
-        getProcessor()->DEC(Register::D);
+        getProcessor()->DEC(Rgstr::D);
         break;
     case 0x16:
         // LD D,n - 16 n
         logger.debug("LD D,n - 16 n ");
-        getProcessor()->LD(Register::D, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::D, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -195,7 +198,7 @@ void InstructionDecoderGenerated::decode() {
     case 0x1A:
         // LD A,(DE) - 1a
         logger.debug("LD A,(DE) - 1a ");
-        getProcessor()->LD(Register::A, MemoryAddress(RegisterPair::DE));
+        getProcessor()->LD(Rgstr::A, MemoryAddress(RegisterPair::DE));
         break;
     case 0x1B:
         // DEC DE - 1b
@@ -205,17 +208,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x1C:
         // INC E - 1c
         logger.debug("INC E - 1c ");
-        getProcessor()->INC(Register::E);
+        getProcessor()->INC(Rgstr::E);
         break;
     case 0x1D:
         // DEC E - 1d
         logger.debug("DEC E - 1d ");
-        getProcessor()->DEC(Register::E);
+        getProcessor()->DEC(Rgstr::E);
         break;
     case 0x1E:
         // LD E,n - 1e n
         logger.debug("LD E,n - 1e n ");
-        getProcessor()->LD(Register::E, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::E, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -281,17 +284,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x24:
         // INC H - 24
         logger.debug("INC H - 24 ");
-        getProcessor()->INC(Register::H);
+        getProcessor()->INC(Rgstr::H);
         break;
     case 0x25:
         // DEC H - 25
         logger.debug("DEC H - 25 ");
-        getProcessor()->DEC(Register::H);
+        getProcessor()->DEC(Rgstr::H);
         break;
     case 0x26:
         // LD H,n - 26 n
         logger.debug("LD H,n - 26 n ");
-        getProcessor()->LD(Register::H, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::H, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -345,17 +348,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x2C:
         // INC L - 2c
         logger.debug("INC L - 2c ");
-        getProcessor()->INC(Register::L);
+        getProcessor()->INC(Rgstr::L);
         break;
     case 0x2D:
         // DEC L - 2d
         logger.debug("DEC L - 2d ");
-        getProcessor()->DEC(Register::L);
+        getProcessor()->DEC(Rgstr::L);
         break;
     case 0x2E:
         // LD L,n - 2e n
         logger.debug("LD L,n - 2e n ");
-        getProcessor()->LD(Register::L, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::L, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -399,7 +402,7 @@ void InstructionDecoderGenerated::decode() {
     case 0x32:
         // LD (nn),A - 32 n n
         logger.debug("LD (nn),A - 32 n n ");
-        getProcessor()->LD(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]), Register::A);
+        getProcessor()->LD(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]), Rgstr::A);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -463,7 +466,7 @@ void InstructionDecoderGenerated::decode() {
     case 0x3A:
         // LD A,(nn) - 3a n n
         logger.debug("LD A,(nn) - 3a n n ");
-        getProcessor()->LD(Register::A, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
+        getProcessor()->LD(Rgstr::A, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -485,17 +488,17 @@ void InstructionDecoderGenerated::decode() {
     case 0x3C:
         // INC A - 3c
         logger.debug("INC A - 3c ");
-        getProcessor()->INC(Register::A);
+        getProcessor()->INC(Rgstr::A);
         break;
     case 0x3D:
         // DEC A - 3d
         logger.debug("DEC A - 3d ");
-        getProcessor()->DEC(Register::A);
+        getProcessor()->DEC(Rgstr::A);
         break;
     case 0x3E:
         // LD A,n - 3e n
         logger.debug("LD A,n - 3e n ");
-        getProcessor()->LD(Register::A, currentInstruction[1]);
+        getProcessor()->LD(Rgstr::A, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -511,272 +514,272 @@ void InstructionDecoderGenerated::decode() {
     case 0x40:
         // LD B,B - 40
         logger.debug("LD B,B - 40 ");
-        getProcessor()->LD(Register::B, Register::B);
+        getProcessor()->LD(Rgstr::B, Rgstr::B);
         break;
     case 0x41:
         // LD B,C - 41
         logger.debug("LD B,C - 41 ");
-        getProcessor()->LD(Register::B, Register::C);
+        getProcessor()->LD(Rgstr::B, Rgstr::C);
         break;
     case 0x42:
         // LD B,D - 42
         logger.debug("LD B,D - 42 ");
-        getProcessor()->LD(Register::B, Register::D);
+        getProcessor()->LD(Rgstr::B, Rgstr::D);
         break;
     case 0x43:
         // LD B,E - 43
         logger.debug("LD B,E - 43 ");
-        getProcessor()->LD(Register::B, Register::E);
+        getProcessor()->LD(Rgstr::B, Rgstr::E);
         break;
     case 0x44:
         // LD B,H - 44
         logger.debug("LD B,H - 44 ");
-        getProcessor()->LD(Register::B, Register::H);
+        getProcessor()->LD(Rgstr::B, Rgstr::H);
         break;
     case 0x45:
         // LD B,L - 45
         logger.debug("LD B,L - 45 ");
-        getProcessor()->LD(Register::B, Register::L);
+        getProcessor()->LD(Rgstr::B, Rgstr::L);
         break;
     case 0x46:
         // LD B,(HL) - 46
         logger.debug("LD B,(HL) - 46 ");
-        getProcessor()->LD(Register::B, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::B, MemoryAddress(RegisterPair::HL));
         break;
     case 0x47:
         // LD B,A - 47
         logger.debug("LD B,A - 47 ");
-        getProcessor()->LD(Register::B, Register::A);
+        getProcessor()->LD(Rgstr::B, Rgstr::A);
         break;
     case 0x48:
         // LD C,B - 48
         logger.debug("LD C,B - 48 ");
-        getProcessor()->LD(Register::C, Register::B);
+        getProcessor()->LD(Rgstr::C, Rgstr::B);
         break;
     case 0x49:
         // LD C,C - 49
         logger.debug("LD C,C - 49 ");
-        getProcessor()->LD(Register::C, Register::C);
+        getProcessor()->LD(Rgstr::C, Rgstr::C);
         break;
     case 0x4A:
         // LD C,D - 4a
         logger.debug("LD C,D - 4a ");
-        getProcessor()->LD(Register::C, Register::D);
+        getProcessor()->LD(Rgstr::C, Rgstr::D);
         break;
     case 0x4B:
         // LD C,E - 4b
         logger.debug("LD C,E - 4b ");
-        getProcessor()->LD(Register::C, Register::E);
+        getProcessor()->LD(Rgstr::C, Rgstr::E);
         break;
     case 0x4C:
         // LD C,H - 4c
         logger.debug("LD C,H - 4c ");
-        getProcessor()->LD(Register::C, Register::H);
+        getProcessor()->LD(Rgstr::C, Rgstr::H);
         break;
     case 0x4D:
         // LD C,L - 4d
         logger.debug("LD C,L - 4d ");
-        getProcessor()->LD(Register::C, Register::L);
+        getProcessor()->LD(Rgstr::C, Rgstr::L);
         break;
     case 0x4E:
         // LD C,(HL) - 4e
         logger.debug("LD C,(HL) - 4e ");
-        getProcessor()->LD(Register::C, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::C, MemoryAddress(RegisterPair::HL));
         break;
     case 0x4F:
         // LD C,A - 4f
         logger.debug("LD C,A - 4f ");
-        getProcessor()->LD(Register::C, Register::A);
+        getProcessor()->LD(Rgstr::C, Rgstr::A);
         break;
     case 0x50:
         // LD D,B - 50
         logger.debug("LD D,B - 50 ");
-        getProcessor()->LD(Register::D, Register::B);
+        getProcessor()->LD(Rgstr::D, Rgstr::B);
         break;
     case 0x51:
         // LD D,C - 51
         logger.debug("LD D,C - 51 ");
-        getProcessor()->LD(Register::D, Register::C);
+        getProcessor()->LD(Rgstr::D, Rgstr::C);
         break;
     case 0x52:
         // LD D,D - 52
         logger.debug("LD D,D - 52 ");
-        getProcessor()->LD(Register::D, Register::D);
+        getProcessor()->LD(Rgstr::D, Rgstr::D);
         break;
     case 0x53:
         // LD D,E - 53
         logger.debug("LD D,E - 53 ");
-        getProcessor()->LD(Register::D, Register::E);
+        getProcessor()->LD(Rgstr::D, Rgstr::E);
         break;
     case 0x54:
         // LD D,H - 54
         logger.debug("LD D,H - 54 ");
-        getProcessor()->LD(Register::D, Register::H);
+        getProcessor()->LD(Rgstr::D, Rgstr::H);
         break;
     case 0x55:
         // LD D,L - 55
         logger.debug("LD D,L - 55 ");
-        getProcessor()->LD(Register::D, Register::L);
+        getProcessor()->LD(Rgstr::D, Rgstr::L);
         break;
     case 0x56:
         // LD D,(HL) - 56
         logger.debug("LD D,(HL) - 56 ");
-        getProcessor()->LD(Register::D, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::D, MemoryAddress(RegisterPair::HL));
         break;
     case 0x57:
         // LD D,A - 57
         logger.debug("LD D,A - 57 ");
-        getProcessor()->LD(Register::D, Register::A);
+        getProcessor()->LD(Rgstr::D, Rgstr::A);
         break;
     case 0x58:
         // LD E,B - 58
         logger.debug("LD E,B - 58 ");
-        getProcessor()->LD(Register::E, Register::B);
+        getProcessor()->LD(Rgstr::E, Rgstr::B);
         break;
     case 0x59:
         // LD E,C - 59
         logger.debug("LD E,C - 59 ");
-        getProcessor()->LD(Register::E, Register::C);
+        getProcessor()->LD(Rgstr::E, Rgstr::C);
         break;
     case 0x5A:
         // LD E,D - 5a
         logger.debug("LD E,D - 5a ");
-        getProcessor()->LD(Register::E, Register::D);
+        getProcessor()->LD(Rgstr::E, Rgstr::D);
         break;
     case 0x5B:
         // LD E,E - 5b
         logger.debug("LD E,E - 5b ");
-        getProcessor()->LD(Register::E, Register::E);
+        getProcessor()->LD(Rgstr::E, Rgstr::E);
         break;
     case 0x5C:
         // LD E,H - 5c
         logger.debug("LD E,H - 5c ");
-        getProcessor()->LD(Register::E, Register::H);
+        getProcessor()->LD(Rgstr::E, Rgstr::H);
         break;
     case 0x5D:
         // LD E,L - 5d
         logger.debug("LD E,L - 5d ");
-        getProcessor()->LD(Register::E, Register::L);
+        getProcessor()->LD(Rgstr::E, Rgstr::L);
         break;
     case 0x5E:
         // LD E,(HL) - 5e
         logger.debug("LD E,(HL) - 5e ");
-        getProcessor()->LD(Register::E, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::E, MemoryAddress(RegisterPair::HL));
         break;
     case 0x5F:
         // LD E,A - 5f
         logger.debug("LD E,A - 5f ");
-        getProcessor()->LD(Register::E, Register::A);
+        getProcessor()->LD(Rgstr::E, Rgstr::A);
         break;
     case 0x60:
         // LD H,B - 60
         logger.debug("LD H,B - 60 ");
-        getProcessor()->LD(Register::H, Register::B);
+        getProcessor()->LD(Rgstr::H, Rgstr::B);
         break;
     case 0x61:
         // LD H,C - 61
         logger.debug("LD H,C - 61 ");
-        getProcessor()->LD(Register::H, Register::C);
+        getProcessor()->LD(Rgstr::H, Rgstr::C);
         break;
     case 0x62:
         // LD H,D - 62
         logger.debug("LD H,D - 62 ");
-        getProcessor()->LD(Register::H, Register::D);
+        getProcessor()->LD(Rgstr::H, Rgstr::D);
         break;
     case 0x63:
         // LD H,E - 63
         logger.debug("LD H,E - 63 ");
-        getProcessor()->LD(Register::H, Register::E);
+        getProcessor()->LD(Rgstr::H, Rgstr::E);
         break;
     case 0x64:
         // LD H,H - 64
         logger.debug("LD H,H - 64 ");
-        getProcessor()->LD(Register::H, Register::H);
+        getProcessor()->LD(Rgstr::H, Rgstr::H);
         break;
     case 0x65:
         // LD H,L - 65
         logger.debug("LD H,L - 65 ");
-        getProcessor()->LD(Register::H, Register::L);
+        getProcessor()->LD(Rgstr::H, Rgstr::L);
         break;
     case 0x66:
         // LD H,(HL) - 66
         logger.debug("LD H,(HL) - 66 ");
-        getProcessor()->LD(Register::H, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::H, MemoryAddress(RegisterPair::HL));
         break;
     case 0x67:
         // LD H,A - 67
         logger.debug("LD H,A - 67 ");
-        getProcessor()->LD(Register::H, Register::A);
+        getProcessor()->LD(Rgstr::H, Rgstr::A);
         break;
     case 0x68:
         // LD L,B - 68
         logger.debug("LD L,B - 68 ");
-        getProcessor()->LD(Register::L, Register::B);
+        getProcessor()->LD(Rgstr::L, Rgstr::B);
         break;
     case 0x69:
         // LD L,C - 69
         logger.debug("LD L,C - 69 ");
-        getProcessor()->LD(Register::L, Register::C);
+        getProcessor()->LD(Rgstr::L, Rgstr::C);
         break;
     case 0x6A:
         // LD L,D - 6a
         logger.debug("LD L,D - 6a ");
-        getProcessor()->LD(Register::L, Register::D);
+        getProcessor()->LD(Rgstr::L, Rgstr::D);
         break;
     case 0x6B:
         // LD L,E - 6b
         logger.debug("LD L,E - 6b ");
-        getProcessor()->LD(Register::L, Register::E);
+        getProcessor()->LD(Rgstr::L, Rgstr::E);
         break;
     case 0x6C:
         // LD L,H - 6c
         logger.debug("LD L,H - 6c ");
-        getProcessor()->LD(Register::L, Register::H);
+        getProcessor()->LD(Rgstr::L, Rgstr::H);
         break;
     case 0x6D:
         // LD L,L - 6d
         logger.debug("LD L,L - 6d ");
-        getProcessor()->LD(Register::L, Register::L);
+        getProcessor()->LD(Rgstr::L, Rgstr::L);
         break;
     case 0x6E:
         // LD L,(HL) - 6e
         logger.debug("LD L,(HL) - 6e ");
-        getProcessor()->LD(Register::L, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::L, MemoryAddress(RegisterPair::HL));
         break;
     case 0x6F:
         // LD L,A - 6f
         logger.debug("LD L,A - 6f ");
-        getProcessor()->LD(Register::L, Register::A);
+        getProcessor()->LD(Rgstr::L, Rgstr::A);
         break;
     case 0x70:
         // LD (HL),B - 70
         logger.debug("LD (HL),B - 70 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::B);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::B);
         break;
     case 0x71:
         // LD (HL),C - 71
         logger.debug("LD (HL),C - 71 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::C);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::C);
         break;
     case 0x72:
         // LD (HL),D - 72
         logger.debug("LD (HL),D - 72 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::D);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::D);
         break;
     case 0x73:
         // LD (HL),E - 73
         logger.debug("LD (HL),E - 73 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::E);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::E);
         break;
     case 0x74:
         // LD (HL),H - 74
         logger.debug("LD (HL),H - 74 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::H);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::H);
         break;
     case 0x75:
         // LD (HL),L - 75
         logger.debug("LD (HL),L - 75 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::L);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::L);
         break;
     case 0x76:
         // HALT - 76
@@ -786,157 +789,157 @@ void InstructionDecoderGenerated::decode() {
     case 0x77:
         // LD (HL),A - 77
         logger.debug("LD (HL),A - 77 ");
-        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Register::A);
+        getProcessor()->LD(MemoryAddress(RegisterPair::HL), Rgstr::A);
         break;
     case 0x78:
         // LD A,B - 78
         logger.debug("LD A,B - 78 ");
-        getProcessor()->LD(Register::A, Register::B);
+        getProcessor()->LD(Rgstr::A, Rgstr::B);
         break;
     case 0x79:
         // LD A,C - 79
         logger.debug("LD A,C - 79 ");
-        getProcessor()->LD(Register::A, Register::C);
+        getProcessor()->LD(Rgstr::A, Rgstr::C);
         break;
     case 0x7A:
         // LD A,D - 7a
         logger.debug("LD A,D - 7a ");
-        getProcessor()->LD(Register::A, Register::D);
+        getProcessor()->LD(Rgstr::A, Rgstr::D);
         break;
     case 0x7B:
         // LD A,E - 7b
         logger.debug("LD A,E - 7b ");
-        getProcessor()->LD(Register::A, Register::E);
+        getProcessor()->LD(Rgstr::A, Rgstr::E);
         break;
     case 0x7C:
         // LD A,H - 7c
         logger.debug("LD A,H - 7c ");
-        getProcessor()->LD(Register::A, Register::H);
+        getProcessor()->LD(Rgstr::A, Rgstr::H);
         break;
     case 0x7D:
         // LD A,L - 7d
         logger.debug("LD A,L - 7d ");
-        getProcessor()->LD(Register::A, Register::L);
+        getProcessor()->LD(Rgstr::A, Rgstr::L);
         break;
     case 0x7E:
         // LD A,(HL) - 7e
         logger.debug("LD A,(HL) - 7e ");
-        getProcessor()->LD(Register::A, MemoryAddress(RegisterPair::HL));
+        getProcessor()->LD(Rgstr::A, MemoryAddress(RegisterPair::HL));
         break;
     case 0x7F:
         // LD A,A - 7f
         logger.debug("LD A,A - 7f ");
-        getProcessor()->LD(Register::A, Register::A);
+        getProcessor()->LD(Rgstr::A, Rgstr::A);
         break;
     case 0x80:
         // ADD A,B - 80
         logger.debug("ADD A,B - 80 ");
-        getProcessor()->ADD(Register::A, Register::B);
+        getProcessor()->ADD(Rgstr::A, Rgstr::B);
         break;
     case 0x81:
         // ADD A,C - 81
         logger.debug("ADD A,C - 81 ");
-        getProcessor()->ADD(Register::A, Register::C);
+        getProcessor()->ADD(Rgstr::A, Rgstr::C);
         break;
     case 0x82:
         // ADD A,D - 82
         logger.debug("ADD A,D - 82 ");
-        getProcessor()->ADD(Register::A, Register::D);
+        getProcessor()->ADD(Rgstr::A, Rgstr::D);
         break;
     case 0x83:
         // ADD A,E - 83
         logger.debug("ADD A,E - 83 ");
-        getProcessor()->ADD(Register::A, Register::E);
+        getProcessor()->ADD(Rgstr::A, Rgstr::E);
         break;
     case 0x84:
         // ADD A,H - 84
         logger.debug("ADD A,H - 84 ");
-        getProcessor()->ADD(Register::A, Register::H);
+        getProcessor()->ADD(Rgstr::A, Rgstr::H);
         break;
     case 0x85:
         // ADD A,L - 85
         logger.debug("ADD A,L - 85 ");
-        getProcessor()->ADD(Register::A, Register::L);
+        getProcessor()->ADD(Rgstr::A, Rgstr::L);
         break;
     case 0x86:
         // ADD A,(HL) - 86
         logger.debug("ADD A,(HL) - 86 ");
-        getProcessor()->ADD(Register::A, MemoryAddress(RegisterPair::HL));
+        getProcessor()->ADD(Rgstr::A, MemoryAddress(RegisterPair::HL));
         break;
     case 0x87:
         // ADD A,A - 87
         logger.debug("ADD A,A - 87 ");
-        getProcessor()->ADD(Register::A, Register::A);
+        getProcessor()->ADD(Rgstr::A, Rgstr::A);
         break;
     case 0x88:
         // ADC A,B - 88
         logger.debug("ADC A,B - 88 ");
-        getProcessor()->ADC(Register::A, Register::B);
+        getProcessor()->ADC(Rgstr::A, Rgstr::B);
         break;
     case 0x89:
         // ADC A,C - 89
         logger.debug("ADC A,C - 89 ");
-        getProcessor()->ADC(Register::A, Register::C);
+        getProcessor()->ADC(Rgstr::A, Rgstr::C);
         break;
     case 0x8A:
         // ADC A,D - 8a
         logger.debug("ADC A,D - 8a ");
-        getProcessor()->ADC(Register::A, Register::D);
+        getProcessor()->ADC(Rgstr::A, Rgstr::D);
         break;
     case 0x8B:
         // ADC A,E - 8b
         logger.debug("ADC A,E - 8b ");
-        getProcessor()->ADC(Register::A, Register::E);
+        getProcessor()->ADC(Rgstr::A, Rgstr::E);
         break;
     case 0x8C:
         // ADC A,H - 8c
         logger.debug("ADC A,H - 8c ");
-        getProcessor()->ADC(Register::A, Register::H);
+        getProcessor()->ADC(Rgstr::A, Rgstr::H);
         break;
     case 0x8D:
         // ADC A,L - 8d
         logger.debug("ADC A,L - 8d ");
-        getProcessor()->ADC(Register::A, Register::L);
+        getProcessor()->ADC(Rgstr::A, Rgstr::L);
         break;
     case 0x8E:
         // ADC A,(HL) - 8e
         logger.debug("ADC A,(HL) - 8e ");
-        getProcessor()->ADC(Register::A, MemoryAddress(RegisterPair::HL));
+        getProcessor()->ADC(Rgstr::A, MemoryAddress(RegisterPair::HL));
         break;
     case 0x8F:
         // ADC A,A - 8f
         logger.debug("ADC A,A - 8f ");
-        getProcessor()->ADC(Register::A, Register::A);
+        getProcessor()->ADC(Rgstr::A, Rgstr::A);
         break;
     case 0x90:
         // SUB B - 90
         logger.debug("SUB B - 90 ");
-        getProcessor()->SUB(Register::B);
+        getProcessor()->SUB(Rgstr::B);
         break;
     case 0x91:
         // SUB C - 91
         logger.debug("SUB C - 91 ");
-        getProcessor()->SUB(Register::C);
+        getProcessor()->SUB(Rgstr::C);
         break;
     case 0x92:
         // SUB D - 92
         logger.debug("SUB D - 92 ");
-        getProcessor()->SUB(Register::D);
+        getProcessor()->SUB(Rgstr::D);
         break;
     case 0x93:
         // SUB E - 93
         logger.debug("SUB E - 93 ");
-        getProcessor()->SUB(Register::E);
+        getProcessor()->SUB(Rgstr::E);
         break;
     case 0x94:
         // SUB H - 94
         logger.debug("SUB H - 94 ");
-        getProcessor()->SUB(Register::H);
+        getProcessor()->SUB(Rgstr::H);
         break;
     case 0x95:
         // SUB L - 95
         logger.debug("SUB L - 95 ");
-        getProcessor()->SUB(Register::L);
+        getProcessor()->SUB(Rgstr::L);
         break;
     case 0x96:
         // SUB (HL) - 96
@@ -946,77 +949,77 @@ void InstructionDecoderGenerated::decode() {
     case 0x97:
         // SUB A - 97
         logger.debug("SUB A - 97 ");
-        getProcessor()->SUB(Register::A);
+        getProcessor()->SUB(Rgstr::A);
         break;
     case 0x98:
         // SBC A,B - 98
         logger.debug("SBC A,B - 98 ");
-        getProcessor()->SBC(Register::A, Register::B);
+        getProcessor()->SBC(Rgstr::A, Rgstr::B);
         break;
     case 0x99:
         // SBC A,C - 99
         logger.debug("SBC A,C - 99 ");
-        getProcessor()->SBC(Register::A, Register::C);
+        getProcessor()->SBC(Rgstr::A, Rgstr::C);
         break;
     case 0x9A:
         // SBC A,D - 9a
         logger.debug("SBC A,D - 9a ");
-        getProcessor()->SBC(Register::A, Register::D);
+        getProcessor()->SBC(Rgstr::A, Rgstr::D);
         break;
     case 0x9B:
         // SBC A,E - 9b
         logger.debug("SBC A,E - 9b ");
-        getProcessor()->SBC(Register::A, Register::E);
+        getProcessor()->SBC(Rgstr::A, Rgstr::E);
         break;
     case 0x9C:
         // SBC A,H - 9c
         logger.debug("SBC A,H - 9c ");
-        getProcessor()->SBC(Register::A, Register::H);
+        getProcessor()->SBC(Rgstr::A, Rgstr::H);
         break;
     case 0x9D:
         // SBC A,L - 9d
         logger.debug("SBC A,L - 9d ");
-        getProcessor()->SBC(Register::A, Register::L);
+        getProcessor()->SBC(Rgstr::A, Rgstr::L);
         break;
     case 0x9E:
         // SBC A,(HL) - 9e
         logger.debug("SBC A,(HL) - 9e ");
-        getProcessor()->SBC(Register::A, MemoryAddress(RegisterPair::HL));
+        getProcessor()->SBC(Rgstr::A, MemoryAddress(RegisterPair::HL));
         break;
     case 0x9F:
         // SBC A,A - 9f
         logger.debug("SBC A,A - 9f ");
-        getProcessor()->SBC(Register::A, Register::A);
+        getProcessor()->SBC(Rgstr::A, Rgstr::A);
         break;
     case 0xA0:
         // AND B - a0
         logger.debug("AND B - a0 ");
-        getProcessor()->AND(Register::B);
+        getProcessor()->AND(Rgstr::B);
         break;
     case 0xA1:
         // AND C - a1
         logger.debug("AND C - a1 ");
-        getProcessor()->AND(Register::C);
+        getProcessor()->AND(Rgstr::C);
         break;
     case 0xA2:
         // AND D - a2
         logger.debug("AND D - a2 ");
-        getProcessor()->AND(Register::D);
+        getProcessor()->AND(Rgstr::D);
         break;
     case 0xA3:
         // AND E - a3
         logger.debug("AND E - a3 ");
-        getProcessor()->AND(Register::E);
+        getProcessor()->AND(Rgstr::E);
         break;
     case 0xA4:
         // AND H - a4
         logger.debug("AND H - a4 ");
-        getProcessor()->AND(Register::H);
+        getProcessor()->AND(Rgstr::H);
         break;
     case 0xA5:
         // AND L - a5
         logger.debug("AND L - a5 ");
-        getProcessor()->AND(Register::L);
+        getProcessor()->AND(Rgstr::L);
         break;
     case 0xA6:
         // AND (HL) - a6
@@ -1026,37 +1029,37 @@ void InstructionDecoderGenerated::decode() {
     case 0xA7:
         // AND A - a7
         logger.debug("AND A - a7 ");
-        getProcessor()->AND(Register::A);
+        getProcessor()->AND(Rgstr::A);
         break;
     case 0xA8:
         // XOR B - a8
         logger.debug("XOR B - a8 ");
-        getProcessor()->XOR(Register::B);
+        getProcessor()->XOR(Rgstr::B);
         break;
     case 0xA9:
         // XOR C - a9
         logger.debug("XOR C - a9 ");
-        getProcessor()->XOR(Register::C);
+        getProcessor()->XOR(Rgstr::C);
         break;
     case 0xAA:
         // XOR D - aa
         logger.debug("XOR D - aa ");
-        getProcessor()->XOR(Register::D);
+        getProcessor()->XOR(Rgstr::D);
         break;
     case 0xAB:
         // XOR E - ab
         logger.debug("XOR E - ab ");
-        getProcessor()->XOR(Register::E);
+        getProcessor()->XOR(Rgstr::E);
         break;
     case 0xAC:
         // XOR H - ac
         logger.debug("XOR H - ac ");
-        getProcessor()->XOR(Register::H);
+        getProcessor()->XOR(Rgstr::H);
         break;
     case 0xAD:
         // XOR L - ad
         logger.debug("XOR L - ad ");
-        getProcessor()->XOR(Register::L);
+        getProcessor()->XOR(Rgstr::L);
         break;
     case 0xAE:
         // XOR (HL) - ae
@@ -1066,37 +1069,37 @@ void InstructionDecoderGenerated::decode() {
     case 0xAF:
         // XOR A - af
         logger.debug("XOR A - af ");
-        getProcessor()->XOR(Register::A);
+        getProcessor()->XOR(Rgstr::A);
         break;
     case 0xB0:
         // OR B - b0
         logger.debug("OR B - b0 ");
-        getProcessor()->OR(Register::B);
+        getProcessor()->OR(Rgstr::B);
         break;
     case 0xB1:
         // OR C - b1
         logger.debug("OR C - b1 ");
-        getProcessor()->OR(Register::C);
+        getProcessor()->OR(Rgstr::C);
         break;
     case 0xB2:
         // OR D - b2
         logger.debug("OR D - b2 ");
-        getProcessor()->OR(Register::D);
+        getProcessor()->OR(Rgstr::D);
         break;
     case 0xB3:
         // OR E - b3
         logger.debug("OR E - b3 ");
-        getProcessor()->OR(Register::E);
+        getProcessor()->OR(Rgstr::E);
         break;
     case 0xB4:
         // OR H - b4
         logger.debug("OR H - b4 ");
-        getProcessor()->OR(Register::H);
+        getProcessor()->OR(Rgstr::H);
         break;
     case 0xB5:
         // OR L - b5
         logger.debug("OR L - b5 ");
-        getProcessor()->OR(Register::L);
+        getProcessor()->OR(Rgstr::L);
         break;
     case 0xB6:
         // OR (HL) - b6
@@ -1106,37 +1109,37 @@ void InstructionDecoderGenerated::decode() {
     case 0xB7:
         // OR A - b7
         logger.debug("OR A - b7 ");
-        getProcessor()->OR(Register::A);
+        getProcessor()->OR(Rgstr::A);
         break;
     case 0xB8:
         // CP B - b8
         logger.debug("CP B - b8 ");
-        getProcessor()->CP(Register::B);
+        getProcessor()->CP(Rgstr::B);
         break;
     case 0xB9:
         // CP C - b9
         logger.debug("CP C - b9 ");
-        getProcessor()->CP(Register::C);
+        getProcessor()->CP(Rgstr::C);
         break;
     case 0xBA:
         // CP D - ba
         logger.debug("CP D - ba ");
-        getProcessor()->CP(Register::D);
+        getProcessor()->CP(Rgstr::D);
         break;
     case 0xBB:
         // CP E - bb
         logger.debug("CP E - bb ");
-        getProcessor()->CP(Register::E);
+        getProcessor()->CP(Rgstr::E);
         break;
     case 0xBC:
         // CP H - bc
         logger.debug("CP H - bc ");
-        getProcessor()->CP(Register::H);
+        getProcessor()->CP(Rgstr::H);
         break;
     case 0xBD:
         // CP L - bd
         logger.debug("CP L - bd ");
-        getProcessor()->CP(Register::L);
+        getProcessor()->CP(Rgstr::L);
         break;
     case 0xBE:
         // CP (HL) - be
@@ -1146,7 +1149,7 @@ void InstructionDecoderGenerated::decode() {
     case 0xBF:
         // CP A - bf
         logger.debug("CP A - bf ");
-        getProcessor()->CP(Register::A);
+        getProcessor()->CP(Rgstr::A);
         break;
     case 0xC0:
         // RET NZ - c0
@@ -1217,7 +1220,7 @@ void InstructionDecoderGenerated::decode() {
     case 0xC6:
         // ADD A,n - c6 n
         logger.debug("ADD A,n - c6 n ");
-        getProcessor()->ADD(Register::A, currentInstruction[1]);
+        getProcessor()->ADD(Rgstr::A, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -1264,32 +1267,32 @@ void InstructionDecoderGenerated::decode() {
         case 0x00:
             // RLC B - cb 0
             logger.debug("RLC B - cb 0 ");
-            getProcessor()->RLC(Register::B);
+            getProcessor()->RLC(Rgstr::B);
             break;
         case 0x01:
             // RLC C - cb 1
             logger.debug("RLC C - cb 1 ");
-            getProcessor()->RLC(Register::C);
+            getProcessor()->RLC(Rgstr::C);
             break;
         case 0x02:
             // RLC D - cb 2
             logger.debug("RLC D - cb 2 ");
-            getProcessor()->RLC(Register::D);
+            getProcessor()->RLC(Rgstr::D);
             break;
         case 0x03:
             // RLC E - cb 3
             logger.debug("RLC E - cb 3 ");
-            getProcessor()->RLC(Register::E);
+            getProcessor()->RLC(Rgstr::E);
             break;
         case 0x04:
             // RLC H - cb 4
             logger.debug("RLC H - cb 4 ");
-            getProcessor()->RLC(Register::H);
+            getProcessor()->RLC(Rgstr::H);
             break;
         case 0x05:
             // RLC L - cb 5
             logger.debug("RLC L - cb 5 ");
-            getProcessor()->RLC(Register::L);
+            getProcessor()->RLC(Rgstr::L);
             break;
         case 0x06:
             // RLC (HL) - cb 6
@@ -1299,37 +1302,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x07:
             // RLC A - cb 7
             logger.debug("RLC A - cb 7 ");
-            getProcessor()->RLC(Register::A);
+            getProcessor()->RLC(Rgstr::A);
             break;
         case 0x08:
             // RRC B - cb 8
             logger.debug("RRC B - cb 8 ");
-            getProcessor()->RRC(Register::B);
+            getProcessor()->RRC(Rgstr::B);
             break;
         case 0x09:
             // RRC C - cb 9
             logger.debug("RRC C - cb 9 ");
-            getProcessor()->RRC(Register::C);
+            getProcessor()->RRC(Rgstr::C);
             break;
         case 0x0A:
             // RRC D - cb a
             logger.debug("RRC D - cb a ");
-            getProcessor()->RRC(Register::D);
+            getProcessor()->RRC(Rgstr::D);
             break;
         case 0x0B:
             // RRC E - cb b
             logger.debug("RRC E - cb b ");
-            getProcessor()->RRC(Register::E);
+            getProcessor()->RRC(Rgstr::E);
             break;
         case 0x0C:
             // RRC H - cb c
             logger.debug("RRC H - cb c ");
-            getProcessor()->RRC(Register::H);
+            getProcessor()->RRC(Rgstr::H);
             break;
         case 0x0D:
             // RRC L - cb d
             logger.debug("RRC L - cb d ");
-            getProcessor()->RRC(Register::L);
+            getProcessor()->RRC(Rgstr::L);
             break;
         case 0x0E:
             // RRC (HL) - cb e
@@ -1339,37 +1342,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x0F:
             // RRC A - cb f
             logger.debug("RRC A - cb f ");
-            getProcessor()->RRC(Register::A);
+            getProcessor()->RRC(Rgstr::A);
             break;
         case 0x10:
             // RL B - cb 10
             logger.debug("RL B - cb 10 ");
-            getProcessor()->RL(Register::B);
+            getProcessor()->RL(Rgstr::B);
             break;
         case 0x11:
             // RL C - cb 11
             logger.debug("RL C - cb 11 ");
-            getProcessor()->RL(Register::C);
+            getProcessor()->RL(Rgstr::C);
             break;
         case 0x12:
             // RL D - cb 12
             logger.debug("RL D - cb 12 ");
-            getProcessor()->RL(Register::D);
+            getProcessor()->RL(Rgstr::D);
             break;
         case 0x13:
             // RL E - cb 13
             logger.debug("RL E - cb 13 ");
-            getProcessor()->RL(Register::E);
+            getProcessor()->RL(Rgstr::E);
             break;
         case 0x14:
             // RL H - cb 14
             logger.debug("RL H - cb 14 ");
-            getProcessor()->RL(Register::H);
+            getProcessor()->RL(Rgstr::H);
             break;
         case 0x15:
             // RL L - cb 15
             logger.debug("RL L - cb 15 ");
-            getProcessor()->RL(Register::L);
+            getProcessor()->RL(Rgstr::L);
             break;
         case 0x16:
             // RL (HL) - cb 16
@@ -1379,37 +1382,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x17:
             // RL A - cb 17
             logger.debug("RL A - cb 17 ");
-            getProcessor()->RL(Register::A);
+            getProcessor()->RL(Rgstr::A);
             break;
         case 0x18:
             // RR B - cb 18
             logger.debug("RR B - cb 18 ");
-            getProcessor()->RR(Register::B);
+            getProcessor()->RR(Rgstr::B);
             break;
         case 0x19:
             // RR C - cb 19
             logger.debug("RR C - cb 19 ");
-            getProcessor()->RR(Register::C);
+            getProcessor()->RR(Rgstr::C);
             break;
         case 0x1A:
             // RR D - cb 1a
             logger.debug("RR D - cb 1a ");
-            getProcessor()->RR(Register::D);
+            getProcessor()->RR(Rgstr::D);
             break;
         case 0x1B:
             // RR E - cb 1b
             logger.debug("RR E - cb 1b ");
-            getProcessor()->RR(Register::E);
+            getProcessor()->RR(Rgstr::E);
             break;
         case 0x1C:
             // RR H - cb 1c
             logger.debug("RR H - cb 1c ");
-            getProcessor()->RR(Register::H);
+            getProcessor()->RR(Rgstr::H);
             break;
         case 0x1D:
             // RR L - cb 1d
             logger.debug("RR L - cb 1d ");
-            getProcessor()->RR(Register::L);
+            getProcessor()->RR(Rgstr::L);
             break;
         case 0x1E:
             // RR (HL) - cb 1e
@@ -1419,37 +1422,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x1F:
             // RR A - cb 1f
             logger.debug("RR A - cb 1f ");
-            getProcessor()->RR(Register::A);
+            getProcessor()->RR(Rgstr::A);
             break;
         case 0x20:
             // SLA B - cb 20
             logger.debug("SLA B - cb 20 ");
-            getProcessor()->SLA(Register::B);
+            getProcessor()->SLA(Rgstr::B);
             break;
         case 0x21:
             // SLA C - cb 21
             logger.debug("SLA C - cb 21 ");
-            getProcessor()->SLA(Register::C);
+            getProcessor()->SLA(Rgstr::C);
             break;
         case 0x22:
             // SLA D - cb 22
             logger.debug("SLA D - cb 22 ");
-            getProcessor()->SLA(Register::D);
+            getProcessor()->SLA(Rgstr::D);
             break;
         case 0x23:
             // SLA E - cb 23
             logger.debug("SLA E - cb 23 ");
-            getProcessor()->SLA(Register::E);
+            getProcessor()->SLA(Rgstr::E);
             break;
         case 0x24:
             // SLA H - cb 24
             logger.debug("SLA H - cb 24 ");
-            getProcessor()->SLA(Register::H);
+            getProcessor()->SLA(Rgstr::H);
             break;
         case 0x25:
             // SLA L - cb 25
             logger.debug("SLA L - cb 25 ");
-            getProcessor()->SLA(Register::L);
+            getProcessor()->SLA(Rgstr::L);
             break;
         case 0x26:
             // SLA (HL) - cb 26
@@ -1459,37 +1462,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x27:
             // SLA A - cb 27
             logger.debug("SLA A - cb 27 ");
-            getProcessor()->SLA(Register::A);
+            getProcessor()->SLA(Rgstr::A);
             break;
         case 0x28:
             // SRA B - cb 28
             logger.debug("SRA B - cb 28 ");
-            getProcessor()->SRA(Register::B);
+            getProcessor()->SRA(Rgstr::B);
             break;
         case 0x29:
             // SRA C - cb 29
             logger.debug("SRA C - cb 29 ");
-            getProcessor()->SRA(Register::C);
+            getProcessor()->SRA(Rgstr::C);
             break;
         case 0x2A:
             // SRA D - cb 2a
             logger.debug("SRA D - cb 2a ");
-            getProcessor()->SRA(Register::D);
+            getProcessor()->SRA(Rgstr::D);
             break;
         case 0x2B:
             // SRA E - cb 2b
             logger.debug("SRA E - cb 2b ");
-            getProcessor()->SRA(Register::E);
+            getProcessor()->SRA(Rgstr::E);
             break;
         case 0x2C:
             // SRA H - cb 2c
             logger.debug("SRA H - cb 2c ");
-            getProcessor()->SRA(Register::H);
+            getProcessor()->SRA(Rgstr::H);
             break;
         case 0x2D:
             // SRA L - cb 2d
             logger.debug("SRA L - cb 2d ");
-            getProcessor()->SRA(Register::L);
+            getProcessor()->SRA(Rgstr::L);
             break;
         case 0x2E:
             // SRA (HL) - cb 2e
@@ -1499,37 +1502,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x2F:
             // SRA A - cb 2f
             logger.debug("SRA A - cb 2f ");
-            getProcessor()->SRA(Register::A);
+            getProcessor()->SRA(Rgstr::A);
             break;
         case 0x38:
             // SRL B - cb 38
             logger.debug("SRL B - cb 38 ");
-            getProcessor()->SRL(Register::B);
+            getProcessor()->SRL(Rgstr::B);
             break;
         case 0x39:
             // SRL C - cb 39
             logger.debug("SRL C - cb 39 ");
-            getProcessor()->SRL(Register::C);
+            getProcessor()->SRL(Rgstr::C);
             break;
         case 0x3A:
             // SRL D - cb 3a
             logger.debug("SRL D - cb 3a ");
-            getProcessor()->SRL(Register::D);
+            getProcessor()->SRL(Rgstr::D);
             break;
         case 0x3B:
             // SRL E - cb 3b
             logger.debug("SRL E - cb 3b ");
-            getProcessor()->SRL(Register::E);
+            getProcessor()->SRL(Rgstr::E);
             break;
         case 0x3C:
             // SRL H - cb 3c
             logger.debug("SRL H - cb 3c ");
-            getProcessor()->SRL(Register::H);
+            getProcessor()->SRL(Rgstr::H);
             break;
         case 0x3D:
             // SRL L - cb 3d
             logger.debug("SRL L - cb 3d ");
-            getProcessor()->SRL(Register::L);
+            getProcessor()->SRL(Rgstr::L);
             break;
         case 0x3E:
             // SRL (HL) - cb 3e
@@ -1539,37 +1542,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x3F:
             // SRL A - cb 3f
             logger.debug("SRL A - cb 3f ");
-            getProcessor()->SRL(Register::A);
+            getProcessor()->SRL(Rgstr::A);
             break;
         case 0x40:
             // BIT 0,B - cb 40
             logger.debug("BIT 0,B - cb 40 ");
-            getProcessor()->BIT(0, Register::B);
+            getProcessor()->BIT(0, Rgstr::B);
             break;
         case 0x41:
             // BIT 0,C - cb 41
             logger.debug("BIT 0,C - cb 41 ");
-            getProcessor()->BIT(0, Register::C);
+            getProcessor()->BIT(0, Rgstr::C);
             break;
         case 0x42:
             // BIT 0,D - cb 42
             logger.debug("BIT 0,D - cb 42 ");
-            getProcessor()->BIT(0, Register::D);
+            getProcessor()->BIT(0, Rgstr::D);
             break;
         case 0x43:
             // BIT 0,E - cb 43
             logger.debug("BIT 0,E - cb 43 ");
-            getProcessor()->BIT(0, Register::E);
+            getProcessor()->BIT(0, Rgstr::E);
             break;
         case 0x44:
             // BIT 0,H - cb 44
             logger.debug("BIT 0,H - cb 44 ");
-            getProcessor()->BIT(0, Register::H);
+            getProcessor()->BIT(0, Rgstr::H);
             break;
         case 0x45:
             // BIT 0,L - cb 45
             logger.debug("BIT 0,L - cb 45 ");
-            getProcessor()->BIT(0, Register::L);
+            getProcessor()->BIT(0, Rgstr::L);
             break;
         case 0x46:
             // BIT 0,(HL) - cb 46
@@ -1579,37 +1582,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x47:
             // BIT 0,A - cb 47
             logger.debug("BIT 0,A - cb 47 ");
-            getProcessor()->BIT(0, Register::A);
+            getProcessor()->BIT(0, Rgstr::A);
             break;
         case 0x48:
             // BIT 1,B - cb 48
             logger.debug("BIT 1,B - cb 48 ");
-            getProcessor()->BIT(1, Register::B);
+            getProcessor()->BIT(1, Rgstr::B);
             break;
         case 0x49:
             // BIT 1,C - cb 49
             logger.debug("BIT 1,C - cb 49 ");
-            getProcessor()->BIT(1, Register::C);
+            getProcessor()->BIT(1, Rgstr::C);
             break;
         case 0x4A:
             // BIT 1,D - cb 4a
             logger.debug("BIT 1,D - cb 4a ");
-            getProcessor()->BIT(1, Register::D);
+            getProcessor()->BIT(1, Rgstr::D);
             break;
         case 0x4B:
             // BIT 1,E - cb 4b
             logger.debug("BIT 1,E - cb 4b ");
-            getProcessor()->BIT(1, Register::E);
+            getProcessor()->BIT(1, Rgstr::E);
             break;
         case 0x4C:
             // BIT 1,H - cb 4c
             logger.debug("BIT 1,H - cb 4c ");
-            getProcessor()->BIT(1, Register::H);
+            getProcessor()->BIT(1, Rgstr::H);
             break;
         case 0x4D:
             // BIT 1,L - cb 4d
             logger.debug("BIT 1,L - cb 4d ");
-            getProcessor()->BIT(1, Register::L);
+            getProcessor()->BIT(1, Rgstr::L);
             break;
         case 0x4E:
             // BIT 1,(HL) - cb 4e
@@ -1619,37 +1622,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x4F:
             // BIT 1,A - cb 4f
             logger.debug("BIT 1,A - cb 4f ");
-            getProcessor()->BIT(1, Register::A);
+            getProcessor()->BIT(1, Rgstr::A);
             break;
         case 0x50:
             // BIT 2,B - cb 50
             logger.debug("BIT 2,B - cb 50 ");
-            getProcessor()->BIT(2, Register::B);
+            getProcessor()->BIT(2, Rgstr::B);
             break;
         case 0x51:
             // BIT 2,C - cb 51
             logger.debug("BIT 2,C - cb 51 ");
-            getProcessor()->BIT(2, Register::C);
+            getProcessor()->BIT(2, Rgstr::C);
             break;
         case 0x52:
             // BIT 2,D - cb 52
             logger.debug("BIT 2,D - cb 52 ");
-            getProcessor()->BIT(2, Register::D);
+            getProcessor()->BIT(2, Rgstr::D);
             break;
         case 0x53:
             // BIT 2,E - cb 53
             logger.debug("BIT 2,E - cb 53 ");
-            getProcessor()->BIT(2, Register::E);
+            getProcessor()->BIT(2, Rgstr::E);
             break;
         case 0x54:
             // BIT 2,H - cb 54
             logger.debug("BIT 2,H - cb 54 ");
-            getProcessor()->BIT(2, Register::H);
+            getProcessor()->BIT(2, Rgstr::H);
             break;
         case 0x55:
             // BIT 2,L - cb 55
             logger.debug("BIT 2,L - cb 55 ");
-            getProcessor()->BIT(2, Register::L);
+            getProcessor()->BIT(2, Rgstr::L);
             break;
         case 0x56:
             // BIT 2,(HL) - cb 56
@@ -1659,37 +1662,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x57:
             // BIT 2,A - cb 57
             logger.debug("BIT 2,A - cb 57 ");
-            getProcessor()->BIT(2, Register::A);
+            getProcessor()->BIT(2, Rgstr::A);
             break;
         case 0x58:
             // BIT 3,B - cb 58
             logger.debug("BIT 3,B - cb 58 ");
-            getProcessor()->BIT(3, Register::B);
+            getProcessor()->BIT(3, Rgstr::B);
             break;
         case 0x59:
             // BIT 3,C - cb 59
             logger.debug("BIT 3,C - cb 59 ");
-            getProcessor()->BIT(3, Register::C);
+            getProcessor()->BIT(3, Rgstr::C);
             break;
         case 0x5A:
             // BIT 3,D - cb 5a
             logger.debug("BIT 3,D - cb 5a ");
-            getProcessor()->BIT(3, Register::D);
+            getProcessor()->BIT(3, Rgstr::D);
             break;
         case 0x5B:
             // BIT 3,E - cb 5b
             logger.debug("BIT 3,E - cb 5b ");
-            getProcessor()->BIT(3, Register::E);
+            getProcessor()->BIT(3, Rgstr::E);
             break;
         case 0x5C:
             // BIT 3,H - cb 5c
             logger.debug("BIT 3,H - cb 5c ");
-            getProcessor()->BIT(3, Register::H);
+            getProcessor()->BIT(3, Rgstr::H);
             break;
         case 0x5D:
             // BIT 3,L - cb 5d
             logger.debug("BIT 3,L - cb 5d ");
-            getProcessor()->BIT(3, Register::L);
+            getProcessor()->BIT(3, Rgstr::L);
             break;
         case 0x5E:
             // BIT 3,(HL) - cb 5e
@@ -1699,37 +1702,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x5F:
             // BIT 3,A - cb 5f
             logger.debug("BIT 3,A - cb 5f ");
-            getProcessor()->BIT(3, Register::A);
+            getProcessor()->BIT(3, Rgstr::A);
             break;
         case 0x60:
             // BIT 4,B - cb 60
             logger.debug("BIT 4,B - cb 60 ");
-            getProcessor()->BIT(4, Register::B);
+            getProcessor()->BIT(4, Rgstr::B);
             break;
         case 0x61:
             // BIT 4,C - cb 61
             logger.debug("BIT 4,C - cb 61 ");
-            getProcessor()->BIT(4, Register::C);
+            getProcessor()->BIT(4, Rgstr::C);
             break;
         case 0x62:
             // BIT 4,D - cb 62
             logger.debug("BIT 4,D - cb 62 ");
-            getProcessor()->BIT(4, Register::D);
+            getProcessor()->BIT(4, Rgstr::D);
             break;
         case 0x63:
             // BIT 4,E - cb 63
             logger.debug("BIT 4,E - cb 63 ");
-            getProcessor()->BIT(4, Register::E);
+            getProcessor()->BIT(4, Rgstr::E);
             break;
         case 0x64:
             // BIT 4,H - cb 64
             logger.debug("BIT 4,H - cb 64 ");
-            getProcessor()->BIT(4, Register::H);
+            getProcessor()->BIT(4, Rgstr::H);
             break;
         case 0x65:
             // BIT 4,L - cb 65
             logger.debug("BIT 4,L - cb 65 ");
-            getProcessor()->BIT(4, Register::L);
+            getProcessor()->BIT(4, Rgstr::L);
             break;
         case 0x66:
             // BIT 4,(HL) - cb 66
@@ -1739,37 +1742,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x67:
             // BIT 4,A - cb 67
             logger.debug("BIT 4,A - cb 67 ");
-            getProcessor()->BIT(4, Register::A);
+            getProcessor()->BIT(4, Rgstr::A);
             break;
         case 0x68:
             // BIT 5,B - cb 68
             logger.debug("BIT 5,B - cb 68 ");
-            getProcessor()->BIT(5, Register::B);
+            getProcessor()->BIT(5, Rgstr::B);
             break;
         case 0x69:
             // BIT 5,C - cb 69
             logger.debug("BIT 5,C - cb 69 ");
-            getProcessor()->BIT(5, Register::C);
+            getProcessor()->BIT(5, Rgstr::C);
             break;
         case 0x6A:
             // BIT 5,D - cb 6a
             logger.debug("BIT 5,D - cb 6a ");
-            getProcessor()->BIT(5, Register::D);
+            getProcessor()->BIT(5, Rgstr::D);
             break;
         case 0x6B:
             // BIT 5,E - cb 6b
             logger.debug("BIT 5,E - cb 6b ");
-            getProcessor()->BIT(5, Register::E);
+            getProcessor()->BIT(5, Rgstr::E);
             break;
         case 0x6C:
             // BIT 5,H - cb 6c
             logger.debug("BIT 5,H - cb 6c ");
-            getProcessor()->BIT(5, Register::H);
+            getProcessor()->BIT(5, Rgstr::H);
             break;
         case 0x6D:
             // BIT 5,L - cb 6d
             logger.debug("BIT 5,L - cb 6d ");
-            getProcessor()->BIT(5, Register::L);
+            getProcessor()->BIT(5, Rgstr::L);
             break;
         case 0x6E:
             // BIT 5,(HL) - cb 6e
@@ -1779,37 +1782,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x6F:
             // BIT 5,A - cb 6f
             logger.debug("BIT 5,A - cb 6f ");
-            getProcessor()->BIT(5, Register::A);
+            getProcessor()->BIT(5, Rgstr::A);
             break;
         case 0x70:
             // BIT 6,B - cb 70
             logger.debug("BIT 6,B - cb 70 ");
-            getProcessor()->BIT(6, Register::B);
+            getProcessor()->BIT(6, Rgstr::B);
             break;
         case 0x71:
             // BIT 6,C - cb 71
             logger.debug("BIT 6,C - cb 71 ");
-            getProcessor()->BIT(6, Register::C);
+            getProcessor()->BIT(6, Rgstr::C);
             break;
         case 0x72:
             // BIT 6,D - cb 72
             logger.debug("BIT 6,D - cb 72 ");
-            getProcessor()->BIT(6, Register::D);
+            getProcessor()->BIT(6, Rgstr::D);
             break;
         case 0x73:
             // BIT 6,E - cb 73
             logger.debug("BIT 6,E - cb 73 ");
-            getProcessor()->BIT(6, Register::E);
+            getProcessor()->BIT(6, Rgstr::E);
             break;
         case 0x74:
             // BIT 6,H - cb 74
             logger.debug("BIT 6,H - cb 74 ");
-            getProcessor()->BIT(6, Register::H);
+            getProcessor()->BIT(6, Rgstr::H);
             break;
         case 0x75:
             // BIT 6,L - cb 75
             logger.debug("BIT 6,L - cb 75 ");
-            getProcessor()->BIT(6, Register::L);
+            getProcessor()->BIT(6, Rgstr::L);
             break;
         case 0x76:
             // BIT 6,(HL) - cb 76
@@ -1819,37 +1822,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x77:
             // BIT 6,A - cb 77
             logger.debug("BIT 6,A - cb 77 ");
-            getProcessor()->BIT(6, Register::A);
+            getProcessor()->BIT(6, Rgstr::A);
             break;
         case 0x78:
             // BIT 7,B - cb 78
             logger.debug("BIT 7,B - cb 78 ");
-            getProcessor()->BIT(7, Register::B);
+            getProcessor()->BIT(7, Rgstr::B);
             break;
         case 0x79:
             // BIT 7,C - cb 79
             logger.debug("BIT 7,C - cb 79 ");
-            getProcessor()->BIT(7, Register::C);
+            getProcessor()->BIT(7, Rgstr::C);
             break;
         case 0x7A:
             // BIT 7,D - cb 7a
             logger.debug("BIT 7,D - cb 7a ");
-            getProcessor()->BIT(7, Register::D);
+            getProcessor()->BIT(7, Rgstr::D);
             break;
         case 0x7B:
             // BIT 7,E - cb 7b
             logger.debug("BIT 7,E - cb 7b ");
-            getProcessor()->BIT(7, Register::E);
+            getProcessor()->BIT(7, Rgstr::E);
             break;
         case 0x7C:
             // BIT 7,H - cb 7c
             logger.debug("BIT 7,H - cb 7c ");
-            getProcessor()->BIT(7, Register::H);
+            getProcessor()->BIT(7, Rgstr::H);
             break;
         case 0x7D:
             // BIT 7,L - cb 7d
             logger.debug("BIT 7,L - cb 7d ");
-            getProcessor()->BIT(7, Register::L);
+            getProcessor()->BIT(7, Rgstr::L);
             break;
         case 0x7E:
             // BIT 7,(HL) - cb 7e
@@ -1859,37 +1862,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x7F:
             // BIT 7,A - cb 7f
             logger.debug("BIT 7,A - cb 7f ");
-            getProcessor()->BIT(7, Register::A);
+            getProcessor()->BIT(7, Rgstr::A);
             break;
         case 0x80:
             // RES 0,B - cb 80
             logger.debug("RES 0,B - cb 80 ");
-            getProcessor()->RES(0, Register::B);
+            getProcessor()->RES(0, Rgstr::B);
             break;
         case 0x81:
             // RES 0,C - cb 81
             logger.debug("RES 0,C - cb 81 ");
-            getProcessor()->RES(0, Register::C);
+            getProcessor()->RES(0, Rgstr::C);
             break;
         case 0x82:
             // RES 0,D - cb 82
             logger.debug("RES 0,D - cb 82 ");
-            getProcessor()->RES(0, Register::D);
+            getProcessor()->RES(0, Rgstr::D);
             break;
         case 0x83:
             // RES 0,E - cb 83
             logger.debug("RES 0,E - cb 83 ");
-            getProcessor()->RES(0, Register::E);
+            getProcessor()->RES(0, Rgstr::E);
             break;
         case 0x84:
             // RES 0,H - cb 84
             logger.debug("RES 0,H - cb 84 ");
-            getProcessor()->RES(0, Register::H);
+            getProcessor()->RES(0, Rgstr::H);
             break;
         case 0x85:
             // RES 0,L - cb 85
             logger.debug("RES 0,L - cb 85 ");
-            getProcessor()->RES(0, Register::L);
+            getProcessor()->RES(0, Rgstr::L);
             break;
         case 0x86:
             // RES 0,(HL) - cb 86
@@ -1899,37 +1902,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x87:
             // RES 0,A - cb 87
             logger.debug("RES 0,A - cb 87 ");
-            getProcessor()->RES(0, Register::A);
+            getProcessor()->RES(0, Rgstr::A);
             break;
         case 0x88:
             // RES 1,B - cb 88
             logger.debug("RES 1,B - cb 88 ");
-            getProcessor()->RES(1, Register::B);
+            getProcessor()->RES(1, Rgstr::B);
             break;
         case 0x89:
             // RES 1,C - cb 89
             logger.debug("RES 1,C - cb 89 ");
-            getProcessor()->RES(1, Register::C);
+            getProcessor()->RES(1, Rgstr::C);
             break;
         case 0x8A:
             // RES 1,D - cb 8a
             logger.debug("RES 1,D - cb 8a ");
-            getProcessor()->RES(1, Register::D);
+            getProcessor()->RES(1, Rgstr::D);
             break;
         case 0x8B:
             // RES 1,E - cb 8b
             logger.debug("RES 1,E - cb 8b ");
-            getProcessor()->RES(1, Register::E);
+            getProcessor()->RES(1, Rgstr::E);
             break;
         case 0x8C:
             // RES 1,H - cb 8c
             logger.debug("RES 1,H - cb 8c ");
-            getProcessor()->RES(1, Register::H);
+            getProcessor()->RES(1, Rgstr::H);
             break;
         case 0x8D:
             // RES 1,L - cb 8d
             logger.debug("RES 1,L - cb 8d ");
-            getProcessor()->RES(1, Register::L);
+            getProcessor()->RES(1, Rgstr::L);
             break;
         case 0x8E:
             // RES 1,(HL) - cb 8e
@@ -1939,37 +1942,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x8F:
             // RES 1,A - cb 8f
             logger.debug("RES 1,A - cb 8f ");
-            getProcessor()->RES(1, Register::A);
+            getProcessor()->RES(1, Rgstr::A);
             break;
         case 0x90:
             // RES 2,B - cb 90
             logger.debug("RES 2,B - cb 90 ");
-            getProcessor()->RES(2, Register::B);
+            getProcessor()->RES(2, Rgstr::B);
             break;
         case 0x91:
             // RES 2,C - cb 91
             logger.debug("RES 2,C - cb 91 ");
-            getProcessor()->RES(2, Register::C);
+            getProcessor()->RES(2, Rgstr::C);
             break;
         case 0x92:
             // RES 2,D - cb 92
             logger.debug("RES 2,D - cb 92 ");
-            getProcessor()->RES(2, Register::D);
+            getProcessor()->RES(2, Rgstr::D);
             break;
         case 0x93:
             // RES 2,E - cb 93
             logger.debug("RES 2,E - cb 93 ");
-            getProcessor()->RES(2, Register::E);
+            getProcessor()->RES(2, Rgstr::E);
             break;
         case 0x94:
             // RES 2,H - cb 94
             logger.debug("RES 2,H - cb 94 ");
-            getProcessor()->RES(2, Register::H);
+            getProcessor()->RES(2, Rgstr::H);
             break;
         case 0x95:
             // RES 2,L - cb 95
             logger.debug("RES 2,L - cb 95 ");
-            getProcessor()->RES(2, Register::L);
+            getProcessor()->RES(2, Rgstr::L);
             break;
         case 0x96:
             // RES 2,(HL) - cb 96
@@ -1979,37 +1982,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x97:
             // RES 2,A - cb 97
             logger.debug("RES 2,A - cb 97 ");
-            getProcessor()->RES(2, Register::A);
+            getProcessor()->RES(2, Rgstr::A);
             break;
         case 0x98:
             // RES 3,B - cb 98
             logger.debug("RES 3,B - cb 98 ");
-            getProcessor()->RES(3, Register::B);
+            getProcessor()->RES(3, Rgstr::B);
             break;
         case 0x99:
             // RES 3,C - cb 99
             logger.debug("RES 3,C - cb 99 ");
-            getProcessor()->RES(3, Register::C);
+            getProcessor()->RES(3, Rgstr::C);
             break;
         case 0x9A:
             // RES 3,D - cb 9a
             logger.debug("RES 3,D - cb 9a ");
-            getProcessor()->RES(3, Register::D);
+            getProcessor()->RES(3, Rgstr::D);
             break;
         case 0x9B:
             // RES 3,E - cb 9b
             logger.debug("RES 3,E - cb 9b ");
-            getProcessor()->RES(3, Register::E);
+            getProcessor()->RES(3, Rgstr::E);
             break;
         case 0x9C:
             // RES 3,H - cb 9c
             logger.debug("RES 3,H - cb 9c ");
-            getProcessor()->RES(3, Register::H);
+            getProcessor()->RES(3, Rgstr::H);
             break;
         case 0x9D:
             // RES 3,L - cb 9d
             logger.debug("RES 3,L - cb 9d ");
-            getProcessor()->RES(3, Register::L);
+            getProcessor()->RES(3, Rgstr::L);
             break;
         case 0x9E:
             // RES 3,(HL) - cb 9e
@@ -2019,37 +2022,37 @@ void InstructionDecoderGenerated::decode() {
         case 0x9F:
             // RES 3,A - cb 9f
             logger.debug("RES 3,A - cb 9f ");
-            getProcessor()->RES(3, Register::A);
+            getProcessor()->RES(3, Rgstr::A);
             break;
         case 0xA0:
             // RES 4,B - cb a0
             logger.debug("RES 4,B - cb a0 ");
-            getProcessor()->RES(4, Register::B);
+            getProcessor()->RES(4, Rgstr::B);
             break;
         case 0xA1:
             // RES 4,C - cb a1
             logger.debug("RES 4,C - cb a1 ");
-            getProcessor()->RES(4, Register::C);
+            getProcessor()->RES(4, Rgstr::C);
             break;
         case 0xA2:
             // RES 4,D - cb a2
             logger.debug("RES 4,D - cb a2 ");
-            getProcessor()->RES(4, Register::D);
+            getProcessor()->RES(4, Rgstr::D);
             break;
         case 0xA3:
             // RES 4,E - cb a3
             logger.debug("RES 4,E - cb a3 ");
-            getProcessor()->RES(4, Register::E);
+            getProcessor()->RES(4, Rgstr::E);
             break;
         case 0xA4:
             // RES 4,H - cb a4
             logger.debug("RES 4,H - cb a4 ");
-            getProcessor()->RES(4, Register::H);
+            getProcessor()->RES(4, Rgstr::H);
             break;
         case 0xA5:
             // RES 4,L - cb a5
             logger.debug("RES 4,L - cb a5 ");
-            getProcessor()->RES(4, Register::L);
+            getProcessor()->RES(4, Rgstr::L);
             break;
         case 0xA6:
             // RES 4,(HL) - cb a6
@@ -2059,37 +2062,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xA7:
             // RES 4,A - cb a7
             logger.debug("RES 4,A - cb a7 ");
-            getProcessor()->RES(4, Register::A);
+            getProcessor()->RES(4, Rgstr::A);
             break;
         case 0xA8:
             // RES 5,B - cb a8
             logger.debug("RES 5,B - cb a8 ");
-            getProcessor()->RES(5, Register::B);
+            getProcessor()->RES(5, Rgstr::B);
             break;
         case 0xA9:
             // RES 5,C - cb a9
             logger.debug("RES 5,C - cb a9 ");
-            getProcessor()->RES(5, Register::C);
+            getProcessor()->RES(5, Rgstr::C);
             break;
         case 0xAA:
             // RES 5,D - cb aa
             logger.debug("RES 5,D - cb aa ");
-            getProcessor()->RES(5, Register::D);
+            getProcessor()->RES(5, Rgstr::D);
             break;
         case 0xAB:
             // RES 5,E - cb ab
             logger.debug("RES 5,E - cb ab ");
-            getProcessor()->RES(5, Register::E);
+            getProcessor()->RES(5, Rgstr::E);
             break;
         case 0xAC:
             // RES 5,H - cb ac
             logger.debug("RES 5,H - cb ac ");
-            getProcessor()->RES(5, Register::H);
+            getProcessor()->RES(5, Rgstr::H);
             break;
         case 0xAD:
             // RES 5,L - cb ad
             logger.debug("RES 5,L - cb ad ");
-            getProcessor()->RES(5, Register::L);
+            getProcessor()->RES(5, Rgstr::L);
             break;
         case 0xAE:
             // RES 5,(HL) - cb ae
@@ -2099,37 +2102,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xAF:
             // RES 5,A - cb af
             logger.debug("RES 5,A - cb af ");
-            getProcessor()->RES(5, Register::A);
+            getProcessor()->RES(5, Rgstr::A);
             break;
         case 0xB0:
             // RES 6,B - cb b0
             logger.debug("RES 6,B - cb b0 ");
-            getProcessor()->RES(6, Register::B);
+            getProcessor()->RES(6, Rgstr::B);
             break;
         case 0xB1:
             // RES 6,C - cb b1
             logger.debug("RES 6,C - cb b1 ");
-            getProcessor()->RES(6, Register::C);
+            getProcessor()->RES(6, Rgstr::C);
             break;
         case 0xB2:
             // RES 6,D - cb b2
             logger.debug("RES 6,D - cb b2 ");
-            getProcessor()->RES(6, Register::D);
+            getProcessor()->RES(6, Rgstr::D);
             break;
         case 0xB3:
             // RES 6,E - cb b3
             logger.debug("RES 6,E - cb b3 ");
-            getProcessor()->RES(6, Register::E);
+            getProcessor()->RES(6, Rgstr::E);
             break;
         case 0xB4:
             // RES 6,H - cb b4
             logger.debug("RES 6,H - cb b4 ");
-            getProcessor()->RES(6, Register::H);
+            getProcessor()->RES(6, Rgstr::H);
             break;
         case 0xB5:
             // RES 6,L - cb b5
             logger.debug("RES 6,L - cb b5 ");
-            getProcessor()->RES(6, Register::L);
+            getProcessor()->RES(6, Rgstr::L);
             break;
         case 0xB6:
             // RES 6,(HL) - cb b6
@@ -2139,37 +2142,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xB7:
             // RES 6,A - cb b7
             logger.debug("RES 6,A - cb b7 ");
-            getProcessor()->RES(6, Register::A);
+            getProcessor()->RES(6, Rgstr::A);
             break;
         case 0xB8:
             // RES 7,B - cb b8
             logger.debug("RES 7,B - cb b8 ");
-            getProcessor()->RES(7, Register::B);
+            getProcessor()->RES(7, Rgstr::B);
             break;
         case 0xB9:
             // RES 7,C - cb b9
             logger.debug("RES 7,C - cb b9 ");
-            getProcessor()->RES(7, Register::C);
+            getProcessor()->RES(7, Rgstr::C);
             break;
         case 0xBA:
             // RES 7,D - cb ba
             logger.debug("RES 7,D - cb ba ");
-            getProcessor()->RES(7, Register::D);
+            getProcessor()->RES(7, Rgstr::D);
             break;
         case 0xBB:
             // RES 7,E - cb bb
             logger.debug("RES 7,E - cb bb ");
-            getProcessor()->RES(7, Register::E);
+            getProcessor()->RES(7, Rgstr::E);
             break;
         case 0xBC:
             // RES 7,H - cb bc
             logger.debug("RES 7,H - cb bc ");
-            getProcessor()->RES(7, Register::H);
+            getProcessor()->RES(7, Rgstr::H);
             break;
         case 0xBD:
             // RES 7,L - cb bd
             logger.debug("RES 7,L - cb bd ");
-            getProcessor()->RES(7, Register::L);
+            getProcessor()->RES(7, Rgstr::L);
             break;
         case 0xBE:
             // RES 7,(HL) - cb be
@@ -2179,37 +2182,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xBF:
             // RES 7,A - cb bf
             logger.debug("RES 7,A - cb bf ");
-            getProcessor()->RES(7, Register::A);
+            getProcessor()->RES(7, Rgstr::A);
             break;
         case 0xC0:
             // SET 0,B - cb c0
             logger.debug("SET 0,B - cb c0 ");
-            getProcessor()->SET(0, Register::B);
+            getProcessor()->SET(0, Rgstr::B);
             break;
         case 0xC1:
             // SET 0,C - cb c1
             logger.debug("SET 0,C - cb c1 ");
-            getProcessor()->SET(0, Register::C);
+            getProcessor()->SET(0, Rgstr::C);
             break;
         case 0xC2:
             // SET 0,D - cb c2
             logger.debug("SET 0,D - cb c2 ");
-            getProcessor()->SET(0, Register::D);
+            getProcessor()->SET(0, Rgstr::D);
             break;
         case 0xC3:
             // SET 0,E - cb c3
             logger.debug("SET 0,E - cb c3 ");
-            getProcessor()->SET(0, Register::E);
+            getProcessor()->SET(0, Rgstr::E);
             break;
         case 0xC4:
             // SET 0,H - cb c4
             logger.debug("SET 0,H - cb c4 ");
-            getProcessor()->SET(0, Register::H);
+            getProcessor()->SET(0, Rgstr::H);
             break;
         case 0xC5:
             // SET 0,L - cb c5
             logger.debug("SET 0,L - cb c5 ");
-            getProcessor()->SET(0, Register::L);
+            getProcessor()->SET(0, Rgstr::L);
             break;
         case 0xC6:
             // SET 0,(HL) - cb c6
@@ -2219,37 +2222,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xC7:
             // SET 0,A - cb c7
             logger.debug("SET 0,A - cb c7 ");
-            getProcessor()->SET(0, Register::A);
+            getProcessor()->SET(0, Rgstr::A);
             break;
         case 0xC8:
             // SET 1,B - cb c8
             logger.debug("SET 1,B - cb c8 ");
-            getProcessor()->SET(1, Register::B);
+            getProcessor()->SET(1, Rgstr::B);
             break;
         case 0xC9:
             // SET 1,C - cb c9
             logger.debug("SET 1,C - cb c9 ");
-            getProcessor()->SET(1, Register::C);
+            getProcessor()->SET(1, Rgstr::C);
             break;
         case 0xCA:
             // SET 1,D - cb ca
             logger.debug("SET 1,D - cb ca ");
-            getProcessor()->SET(1, Register::D);
+            getProcessor()->SET(1, Rgstr::D);
             break;
         case 0xCB:
             // SET 1,E - cb cb
             logger.debug("SET 1,E - cb cb ");
-            getProcessor()->SET(1, Register::E);
+            getProcessor()->SET(1, Rgstr::E);
             break;
         case 0xCC:
             // SET 1,H - cb cc
             logger.debug("SET 1,H - cb cc ");
-            getProcessor()->SET(1, Register::H);
+            getProcessor()->SET(1, Rgstr::H);
             break;
         case 0xCD:
             // SET 1,L - cb cd
             logger.debug("SET 1,L - cb cd ");
-            getProcessor()->SET(1, Register::L);
+            getProcessor()->SET(1, Rgstr::L);
             break;
         case 0xCE:
             // SET 1,(HL) - cb ce
@@ -2259,37 +2262,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xCF:
             // SET 1,A - cb cf
             logger.debug("SET 1,A - cb cf ");
-            getProcessor()->SET(1, Register::A);
+            getProcessor()->SET(1, Rgstr::A);
             break;
         case 0xD0:
             // SET 2,B - cb d0
             logger.debug("SET 2,B - cb d0 ");
-            getProcessor()->SET(2, Register::B);
+            getProcessor()->SET(2, Rgstr::B);
             break;
         case 0xD1:
             // SET 2,C - cb d1
             logger.debug("SET 2,C - cb d1 ");
-            getProcessor()->SET(2, Register::C);
+            getProcessor()->SET(2, Rgstr::C);
             break;
         case 0xD2:
             // SET 2,D - cb d2
             logger.debug("SET 2,D - cb d2 ");
-            getProcessor()->SET(2, Register::D);
+            getProcessor()->SET(2, Rgstr::D);
             break;
         case 0xD3:
             // SET 2,E - cb d3
             logger.debug("SET 2,E - cb d3 ");
-            getProcessor()->SET(2, Register::E);
+            getProcessor()->SET(2, Rgstr::E);
             break;
         case 0xD4:
             // SET 2,H - cb d4
             logger.debug("SET 2,H - cb d4 ");
-            getProcessor()->SET(2, Register::H);
+            getProcessor()->SET(2, Rgstr::H);
             break;
         case 0xD5:
             // SET 2,L - cb d5
             logger.debug("SET 2,L - cb d5 ");
-            getProcessor()->SET(2, Register::L);
+            getProcessor()->SET(2, Rgstr::L);
             break;
         case 0xD6:
             // SET 2,(HL) - cb d6
@@ -2299,37 +2302,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xD7:
             // SET 2,A - cb d7
             logger.debug("SET 2,A - cb d7 ");
-            getProcessor()->SET(2, Register::A);
+            getProcessor()->SET(2, Rgstr::A);
             break;
         case 0xD8:
             // SET 3,B - cb d8
             logger.debug("SET 3,B - cb d8 ");
-            getProcessor()->SET(3, Register::B);
+            getProcessor()->SET(3, Rgstr::B);
             break;
         case 0xD9:
             // SET 3,C - cb d9
             logger.debug("SET 3,C - cb d9 ");
-            getProcessor()->SET(3, Register::C);
+            getProcessor()->SET(3, Rgstr::C);
             break;
         case 0xDA:
             // SET 3,D - cb da
             logger.debug("SET 3,D - cb da ");
-            getProcessor()->SET(3, Register::D);
+            getProcessor()->SET(3, Rgstr::D);
             break;
         case 0xDB:
             // SET 3,E - cb db
             logger.debug("SET 3,E - cb db ");
-            getProcessor()->SET(3, Register::E);
+            getProcessor()->SET(3, Rgstr::E);
             break;
         case 0xDC:
             // SET 3,H - cb dc
             logger.debug("SET 3,H - cb dc ");
-            getProcessor()->SET(3, Register::H);
+            getProcessor()->SET(3, Rgstr::H);
             break;
         case 0xDD:
             // SET 3,L - cb dd
             logger.debug("SET 3,L - cb dd ");
-            getProcessor()->SET(3, Register::L);
+            getProcessor()->SET(3, Rgstr::L);
             break;
         case 0xDE:
             // SET 3,(HL) - cb de
@@ -2339,37 +2342,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xDF:
             // SET 3,A - cb df
             logger.debug("SET 3,A - cb df ");
-            getProcessor()->SET(3, Register::A);
+            getProcessor()->SET(3, Rgstr::A);
             break;
         case 0xE0:
             // SET 4,B - cb e0
             logger.debug("SET 4,B - cb e0 ");
-            getProcessor()->SET(4, Register::B);
+            getProcessor()->SET(4, Rgstr::B);
             break;
         case 0xE1:
             // SET 4,C - cb e1
             logger.debug("SET 4,C - cb e1 ");
-            getProcessor()->SET(4, Register::C);
+            getProcessor()->SET(4, Rgstr::C);
             break;
         case 0xE2:
             // SET 4,D - cb e2
             logger.debug("SET 4,D - cb e2 ");
-            getProcessor()->SET(4, Register::D);
+            getProcessor()->SET(4, Rgstr::D);
             break;
         case 0xE3:
             // SET 4,E - cb e3
             logger.debug("SET 4,E - cb e3 ");
-            getProcessor()->SET(4, Register::E);
+            getProcessor()->SET(4, Rgstr::E);
             break;
         case 0xE4:
             // SET 4,H - cb e4
             logger.debug("SET 4,H - cb e4 ");
-            getProcessor()->SET(4, Register::H);
+            getProcessor()->SET(4, Rgstr::H);
             break;
         case 0xE5:
             // SET 4,L - cb e5
             logger.debug("SET 4,L - cb e5 ");
-            getProcessor()->SET(4, Register::L);
+            getProcessor()->SET(4, Rgstr::L);
             break;
         case 0xE6:
             // SET 4,(HL) - cb e6
@@ -2379,37 +2382,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xE7:
             // SET 4,A - cb e7
             logger.debug("SET 4,A - cb e7 ");
-            getProcessor()->SET(4, Register::A);
+            getProcessor()->SET(4, Rgstr::A);
             break;
         case 0xE8:
             // SET 5,B - cb e8
             logger.debug("SET 5,B - cb e8 ");
-            getProcessor()->SET(5, Register::B);
+            getProcessor()->SET(5, Rgstr::B);
             break;
         case 0xE9:
             // SET 5,C - cb e9
             logger.debug("SET 5,C - cb e9 ");
-            getProcessor()->SET(5, Register::C);
+            getProcessor()->SET(5, Rgstr::C);
             break;
         case 0xEA:
             // SET 5,D - cb ea
             logger.debug("SET 5,D - cb ea ");
-            getProcessor()->SET(5, Register::D);
+            getProcessor()->SET(5, Rgstr::D);
             break;
         case 0xEB:
             // SET 5,E - cb eb
             logger.debug("SET 5,E - cb eb ");
-            getProcessor()->SET(5, Register::E);
+            getProcessor()->SET(5, Rgstr::E);
             break;
         case 0xEC:
             // SET 5,H - cb ec
             logger.debug("SET 5,H - cb ec ");
-            getProcessor()->SET(5, Register::H);
+            getProcessor()->SET(5, Rgstr::H);
             break;
         case 0xED:
             // SET 5,L - cb ed
             logger.debug("SET 5,L - cb ed ");
-            getProcessor()->SET(5, Register::L);
+            getProcessor()->SET(5, Rgstr::L);
             break;
         case 0xEE:
             // SET 5,(HL) - cb ee
@@ -2419,37 +2422,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xEF:
             // SET 5,A - cb ef
             logger.debug("SET 5,A - cb ef ");
-            getProcessor()->SET(5, Register::A);
+            getProcessor()->SET(5, Rgstr::A);
             break;
         case 0xF0:
             // SET 6,B - cb f0
             logger.debug("SET 6,B - cb f0 ");
-            getProcessor()->SET(6, Register::B);
+            getProcessor()->SET(6, Rgstr::B);
             break;
         case 0xF1:
             // SET 6,C - cb f1
             logger.debug("SET 6,C - cb f1 ");
-            getProcessor()->SET(6, Register::C);
+            getProcessor()->SET(6, Rgstr::C);
             break;
         case 0xF2:
             // SET 6,D - cb f2
             logger.debug("SET 6,D - cb f2 ");
-            getProcessor()->SET(6, Register::D);
+            getProcessor()->SET(6, Rgstr::D);
             break;
         case 0xF3:
             // SET 6,E - cb f3
             logger.debug("SET 6,E - cb f3 ");
-            getProcessor()->SET(6, Register::E);
+            getProcessor()->SET(6, Rgstr::E);
             break;
         case 0xF4:
             // SET 6,H - cb f4
             logger.debug("SET 6,H - cb f4 ");
-            getProcessor()->SET(6, Register::H);
+            getProcessor()->SET(6, Rgstr::H);
             break;
         case 0xF5:
             // SET 6,L - cb f5
             logger.debug("SET 6,L - cb f5 ");
-            getProcessor()->SET(6, Register::L);
+            getProcessor()->SET(6, Rgstr::L);
             break;
         case 0xF6:
             // SET 6,(HL) - cb f6
@@ -2459,37 +2462,37 @@ void InstructionDecoderGenerated::decode() {
         case 0xF7:
             // SET 6,A - cb f7
             logger.debug("SET 6,A - cb f7 ");
-            getProcessor()->SET(6, Register::A);
+            getProcessor()->SET(6, Rgstr::A);
             break;
         case 0xF8:
             // SET 7,B - cb f8
             logger.debug("SET 7,B - cb f8 ");
-            getProcessor()->SET(7, Register::B);
+            getProcessor()->SET(7, Rgstr::B);
             break;
         case 0xF9:
             // SET 7,C - cb f9
             logger.debug("SET 7,C - cb f9 ");
-            getProcessor()->SET(7, Register::C);
+            getProcessor()->SET(7, Rgstr::C);
             break;
         case 0xFA:
             // SET 7,D - cb fa
             logger.debug("SET 7,D - cb fa ");
-            getProcessor()->SET(7, Register::D);
+            getProcessor()->SET(7, Rgstr::D);
             break;
         case 0xFB:
             // SET 7,E - cb fb
             logger.debug("SET 7,E - cb fb ");
-            getProcessor()->SET(7, Register::E);
+            getProcessor()->SET(7, Rgstr::E);
             break;
         case 0xFC:
             // SET 7,H - cb fc
             logger.debug("SET 7,H - cb fc ");
-            getProcessor()->SET(7, Register::H);
+            getProcessor()->SET(7, Rgstr::H);
             break;
         case 0xFD:
             // SET 7,L - cb fd
             logger.debug("SET 7,L - cb fd ");
-            getProcessor()->SET(7, Register::L);
+            getProcessor()->SET(7, Rgstr::L);
             break;
         case 0xFE:
             // SET 7,(HL) - cb fe
@@ -2499,7 +2502,7 @@ void InstructionDecoderGenerated::decode() {
         case 0xFF:
             // SET 7,A - cb ff
             logger.debug("SET 7,A - cb ff ");
-            getProcessor()->SET(7, Register::A);
+            getProcessor()->SET(7, Rgstr::A);
             break;
         }
         break;
@@ -2540,7 +2543,7 @@ void InstructionDecoderGenerated::decode() {
     case 0xCE:
         // ADC A,n - ce n
         logger.debug("ADC A,n - ce n ");
-        getProcessor()->ADC(Register::A, currentInstruction[1]);
+        getProcessor()->ADC(Rgstr::A, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -2583,7 +2586,7 @@ void InstructionDecoderGenerated::decode() {
     case 0xD3:
         // OUT (n),A - d3 n
         logger.debug("OUT (n),A - d3 n ");
-        getProcessor()->OUT(MemoryAddress(currentInstruction[1]), Register::A);
+        getProcessor()->out(MemoryAddress(currentInstruction[1]), Rgstr::A);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -2659,7 +2662,7 @@ void InstructionDecoderGenerated::decode() {
     case 0xDB:
         // IN A,(n) - db n
         logger.debug("IN A,(n) - db n ");
-        getProcessor()->IN(Register::A, MemoryAddress(currentInstruction[1]));
+        getProcessor()->in(Rgstr::A, MemoryAddress(currentInstruction[1]));
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -2811,7 +2814,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x46:
             // LD B,(IX+d) - dd 46 n
             logger.debug("LD B,(IX+d) - dd 46 n ");
-            getProcessor()->LD(Register::B, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::B, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2822,7 +2825,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x4E:
             // LD C,(IX+d) - dd 4e n
             logger.debug("LD C,(IX+d) - dd 4e n ");
-            getProcessor()->LD(Register::C, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::C, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2833,7 +2836,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x56:
             // LD D,(IX+d) - dd 56 n
             logger.debug("LD D,(IX+d) - dd 56 n ");
-            getProcessor()->LD(Register::D, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::D, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2844,7 +2847,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x5E:
             // LD E,(IX+d) - dd 5e n
             logger.debug("LD E,(IX+d) - dd 5e n ");
-            getProcessor()->LD(Register::E, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::E, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2855,7 +2858,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x66:
             // LD H,(IX+d) - dd 66 n
             logger.debug("LD H,(IX+d) - dd 66 n ");
-            getProcessor()->LD(Register::H, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::H, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2866,7 +2869,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x6E:
             // LD L,(IX+d) - dd 6e n
             logger.debug("LD L,(IX+d) - dd 6e n ");
-            getProcessor()->LD(Register::L, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::L, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2877,7 +2880,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x70:
             // LD (IX+d),B - dd 70 n
             logger.debug("LD (IX+d),B - dd 70 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::B);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::B);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2888,7 +2891,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x71:
             // LD (IX+d),C - dd 71 n
             logger.debug("LD (IX+d),C - dd 71 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::C);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::C);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2899,7 +2902,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x72:
             // LD (IX+d),D - dd 72 n
             logger.debug("LD (IX+d),D - dd 72 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::D);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::D);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2910,7 +2913,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x73:
             // LD (IX+d),E - dd 73 n
             logger.debug("LD (IX+d),E - dd 73 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::E);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::E);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2921,7 +2924,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x74:
             // LD (IX+d),H - dd 74 n
             logger.debug("LD (IX+d),H - dd 74 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::H);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::H);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2932,7 +2935,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x75:
             // LD (IX+d),L - dd 75 n
             logger.debug("LD (IX+d),L - dd 75 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::L);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::L);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2943,7 +2946,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x77:
             // LD (IX+d),A - dd 77 n
             logger.debug("LD (IX+d),A - dd 77 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Register::A);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::A);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2954,7 +2957,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x7E:
             // LD A,(IX+d) - dd 7e n
             logger.debug("LD A,(IX+d) - dd 7e n ");
-            getProcessor()->LD(Register::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2965,7 +2968,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x86:
             // ADD A,(IX+d) - dd 86 n
             logger.debug("ADD A,(IX+d) - dd 86 n ");
-            getProcessor()->ADD(Register::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->ADD(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2976,7 +2979,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x8E:
             // ADC A,(IX+d) - dd 8e n
             logger.debug("ADC A,(IX+d) - dd 8e n ");
-            getProcessor()->ADC(Register::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->ADC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -2998,7 +3001,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x9E:
             // SBC A,(IX+d) - dd 9e n
             logger.debug("SBC A,(IX+d) - dd 9e n ");
-            getProcessor()->SBC(Register::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
+            getProcessor()->SBC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -3247,7 +3250,7 @@ void InstructionDecoderGenerated::decode() {
     case 0xDE:
         // SBC A,n - de n
         logger.debug("SBC A,n - de n ");
-        getProcessor()->SBC(Register::A, currentInstruction[1]);
+        getProcessor()->SBC(Rgstr::A, currentInstruction[1]);
         // get opcode
         currentInstruction[1] = getNextByte();
         switch (currentInstruction[1]) {
@@ -3386,12 +3389,12 @@ void InstructionDecoderGenerated::decode() {
         case 0x40:
             // IN B,(C) - ed 40
             logger.debug("IN B,(C) - ed 40 ");
-            getProcessor()->IN(Register::B, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::B, MemoryAddress(Rgstr::C));
             break;
         case 0x41:
             // OUT (C),B - ed 41
             logger.debug("OUT (C),B - ed 41 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::B);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::B);
             break;
         case 0x42:
             // SBC HL,BC - ed 42
@@ -3433,17 +3436,17 @@ void InstructionDecoderGenerated::decode() {
         case 0x47:
             // LD I,A - ed 47
             logger.debug("LD I,A - ed 47 ");
-            getProcessor()->LD(Register::I, Register::A);
+            getProcessor()->LD(Rgstr::I, Rgstr::A);
             break;
         case 0x48:
             // IN C,(C) - ed 48
             logger.debug("IN C,(C) - ed 48 ");
-            getProcessor()->IN(Register::C, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::C, MemoryAddress(Rgstr::C));
             break;
         case 0x49:
             // OUT (C),C - ed 49
             logger.debug("OUT (C),C - ed 49 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::C);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::C);
             break;
         case 0x4A:
             // ADC HL,BC - ed 4a
@@ -3475,17 +3478,17 @@ void InstructionDecoderGenerated::decode() {
         case 0x4F:
             // LD R,A - ed 4f
             logger.debug("LD R,A - ed 4f ");
-            getProcessor()->LD(Register::R, Register::A);
+            getProcessor()->LD(Rgstr::R, Rgstr::A);
             break;
         case 0x50:
             // IN D,(C) - ed 50
             logger.debug("IN D,(C) - ed 50 ");
-            getProcessor()->IN(Register::D, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::D, MemoryAddress(Rgstr::C));
             break;
         case 0x51:
             // OUT (C),D - ed 51
             logger.debug("OUT (C),D - ed 51 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::D);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::D);
             break;
         case 0x52:
             // SBC HL,DE - ed 52
@@ -3517,17 +3520,17 @@ void InstructionDecoderGenerated::decode() {
         case 0x57:
             // LD A,I - ed 57
             logger.debug("LD A,I - ed 57 ");
-            getProcessor()->LD(Register::A, Register::I);
+            getProcessor()->LD(Rgstr::A, Rgstr::I);
             break;
         case 0x58:
             // IN E,(C) - ed 58
             logger.debug("IN E,(C) - ed 58 ");
-            getProcessor()->IN(Register::E, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::E, MemoryAddress(Rgstr::C));
             break;
         case 0x59:
             // OUT (C),E - ed 59
             logger.debug("OUT (C),E - ed 59 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::E);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::E);
             break;
         case 0x5A:
             // ADC HL,DE - ed 5a
@@ -3559,17 +3562,17 @@ void InstructionDecoderGenerated::decode() {
         case 0x5F:
             // LD A,R - ed 5f
             logger.debug("LD A,R - ed 5f ");
-            getProcessor()->LD(Register::A, Register::R);
+            getProcessor()->LD(Rgstr::A, Rgstr::R);
             break;
         case 0x60:
             // IN H,(C) - ed 60
             logger.debug("IN H,(C) - ed 60 ");
-            getProcessor()->IN(Register::H, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::H, MemoryAddress(Rgstr::C));
             break;
         case 0x61:
             // OUT (C),H - ed 61
             logger.debug("OUT (C),H - ed 61 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::H);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::H);
             break;
         case 0x62:
             // SBC HL,HL - ed 62
@@ -3601,12 +3604,12 @@ void InstructionDecoderGenerated::decode() {
         case 0x68:
             // IN L,(C) - ed 68
             logger.debug("IN L,(C) - ed 68 ");
-            getProcessor()->IN(Register::L, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::L, MemoryAddress(Rgstr::C));
             break;
         case 0x69:
             // OUT (C),L - ed 69
             logger.debug("OUT (C),L - ed 69 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::L);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::L);
             break;
         case 0x6A:
             // ADC HL,HL - ed 6a
@@ -3660,12 +3663,12 @@ void InstructionDecoderGenerated::decode() {
         case 0x78:
             // IN A,(C) - ed 78
             logger.debug("IN A,(C) - ed 78 ");
-            getProcessor()->IN(Register::A, MemoryAddress(Register::C));
+            getProcessor()->in(Rgstr::A, MemoryAddress(Rgstr::C));
             break;
         case 0x79:
             // OUT (C),A - ed 79
             logger.debug("OUT (C),A - ed 79 ");
-            getProcessor()->OUT(MemoryAddress(Register::C), Register::A);
+            getProcessor()->out(MemoryAddress(Rgstr::C), Rgstr::A);
             break;
         case 0x7A:
             // ADC HL,SP - ed 7a
@@ -4033,7 +4036,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x46:
             // LD B,(IY+d) - fd 46 n
             logger.debug("LD B,(IY+d) - fd 46 n ");
-            getProcessor()->LD(Register::B, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::B, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4044,7 +4047,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x4E:
             // LD C,(IY+d) - fd 4e n
             logger.debug("LD C,(IY+d) - fd 4e n ");
-            getProcessor()->LD(Register::C, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::C, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4055,7 +4058,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x56:
             // LD D,(IY+d) - fd 56 n
             logger.debug("LD D,(IY+d) - fd 56 n ");
-            getProcessor()->LD(Register::D, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::D, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4066,7 +4069,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x5E:
             // LD E,(IY+d) - fd 5e n
             logger.debug("LD E,(IY+d) - fd 5e n ");
-            getProcessor()->LD(Register::E, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::E, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4077,7 +4080,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x66:
             // LD H,(IY+d) - fd 66 n
             logger.debug("LD H,(IY+d) - fd 66 n ");
-            getProcessor()->LD(Register::H, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::H, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4088,7 +4091,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x6E:
             // LD L,(IY+d) - fd 6e n
             logger.debug("LD L,(IY+d) - fd 6e n ");
-            getProcessor()->LD(Register::L, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::L, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4099,7 +4102,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x70:
             // LD (IY+d),B - fd 70 n
             logger.debug("LD (IY+d),B - fd 70 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::B);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::B);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4110,7 +4113,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x71:
             // LD (IY+d),C - fd 71 n
             logger.debug("LD (IY+d),C - fd 71 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::C);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::C);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4121,7 +4124,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x72:
             // LD (IY+d),D - fd 72 n
             logger.debug("LD (IY+d),D - fd 72 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::D);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::D);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4132,7 +4135,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x73:
             // LD (IY+d),E - fd 73 n
             logger.debug("LD (IY+d),E - fd 73 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::E);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::E);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4143,7 +4146,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x74:
             // LD (IY+d),H - fd 74 n
             logger.debug("LD (IY+d),H - fd 74 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::H);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::H);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4154,7 +4157,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x75:
             // LD (IY+d),L - fd 75 n
             logger.debug("LD (IY+d),L - fd 75 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::L);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::L);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4165,7 +4168,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x77:
             // LD (IY+d),A - fd 77 n
             logger.debug("LD (IY+d),A - fd 77 n ");
-            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Register::A);
+            getProcessor()->LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::A);
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4176,7 +4179,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x7E:
             // LD A,(IY+d) - fd 7e n
             logger.debug("LD A,(IY+d) - fd 7e n ");
-            getProcessor()->LD(Register::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->LD(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4187,7 +4190,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x86:
             // ADD A,(IY+d) - fd 86 n
             logger.debug("ADD A,(IY+d) - fd 86 n ");
-            getProcessor()->ADD(Register::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->ADD(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4198,7 +4201,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x8E:
             // ADC A,(IY+d) - fd 8e n
             logger.debug("ADC A,(IY+d) - fd 8e n ");
-            getProcessor()->ADC(Register::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->ADC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {
@@ -4220,7 +4223,7 @@ void InstructionDecoderGenerated::decode() {
         case 0x9E:
             // SBC A,(IY+d) - fd 9e n
             logger.debug("SBC A,(IY+d) - fd 9e n ");
-            getProcessor()->SBC(Register::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
+            getProcessor()->SBC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
             // get opcode
             currentInstruction[2] = getNextByte();
             switch (currentInstruction[2]) {

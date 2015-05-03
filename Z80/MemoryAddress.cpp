@@ -30,39 +30,49 @@
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
 
-MemoryAddress::MemoryAddress(int memoryAddress) {
-    memoryAddress = memoryAddress;
-};
+MemoryAddress::MemoryAddress() {
+    memoryAddress = 0;
+    offset = 0;
+    registerPair = RegisterPair::unknown;
+    rgstr = Rgstr::unknown;
+}
 
-MemoryAddress::MemoryAddress(Register rgstr) {
+MemoryAddress::MemoryAddress(std::uint16_t  memoryAddress) {
+    MemoryAddress();
+    memoryAddress = memoryAddress;
+}
+
+MemoryAddress::MemoryAddress(Rgstr rgstr) {
+    MemoryAddress();
     rgstr = rgstr;
-};
+}
 
 MemoryAddress::MemoryAddress(RegisterPair rgstrPair) {
+    MemoryAddress();
     registerPair = rgstrPair;
-};
+}
 
-MemoryAddress::MemoryAddress(RegisterPair rgstrPair, int offset) {
+MemoryAddress::MemoryAddress(RegisterPair rgstrPair, std::uint8_t  offset) {
+    MemoryAddress();
     registerPair = rgstrPair;
     offset = offset;
-};
+}
 
-
-int MemoryAddress::getMemoryAddress() {
+std::uint16_t  MemoryAddress::getMemoryAddress() {
     return memoryAddress;
-};
+}
 
-int MemoryAddress::getOffset() {
+std::uint8_t  MemoryAddress::getOffset() {
     return offset;
-};
+}
 
-Register MemoryAddress::getRegister() {
+Rgstr MemoryAddress::getRegister() {
     return rgstr;
-};
+}
 
 RegisterPair MemoryAddress::getRegisterPair() {
     return registerPair;
-};
+}
 
 std::string MemoryAddress::toString() {
          string address = "";
@@ -81,4 +91,4 @@ std::string MemoryAddress::toString() {
 //         }
 
          return address;
-};
+}

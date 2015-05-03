@@ -120,14 +120,15 @@ void InstructionTableToCode::writeCode(
 void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
-        *writer << "#include \"Z80/InstructionDecoderGenerated.h\"" << endl;
+    *writer << "#include \"Z80/InstructionDecoderGenerated.h\"" << endl;
+    *writer << "#include<cstdint>\"" << endl;
     *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
     *writer << "#include \"Z80/Register.hpp\"" << endl;
     *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
     *writer << "#include \"Z80/Condition.hpp\"" << endl;
 
     *writer << "void InstructionDecoderGenerated::decode() {" << endl;
-    *writer << "int currentInstruction[4];" << endl;
+    *writer << "std::uint8_t currentInstruction[4];" << endl;
 }
 
 void InstructionTableToCode::writeFooter(
@@ -187,6 +188,6 @@ Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructi
             depth++;
         }
     }
-    cout << "returning cropuped" <<endl;
+    cout << "returning grouped" <<endl;
     return rootLevel;
 }

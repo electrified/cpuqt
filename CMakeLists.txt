@@ -19,14 +19,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 #message(${Boost_LIBRARIES})
 set(cpuqt2_SRCS cpuqt2.cpp main.cpp MainWindow.h )
-# 
-# file(GLOB tools_SRC
-#     "tools/*.hpp"
-#     "tools/*.cpp"
-# )
 
 set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp tools/Case.cpp tools/Case.hpp)
-
 
 set(Z80_SRC
     Z80/EmulationProcessor.cpp Z80/EmulationProcessor.h Z80/Condition.cpp Z80/Condition.hpp Z80/DisassemblerProcessor.cpp Z80/DisassemblerProcessor.h
@@ -37,21 +31,13 @@ set(Z80_SRC
     Logger.cpp Logger.h
 )
 
-set(tooltests_SRC tools/Test.cpp tools/Instruction.hpp tools/Instruction.cpp)
-
-
-# Setup testing
-#enable_testing()
-#find_package(GTest REQUIRED)
-#include_directories(${GTEST_INCLUDE_DIRS})
-
-
+set(tooltests_SRC catch.hpp tools/Test.cpp)
 
 add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC})
 
 add_executable(tool ${tools_SRC} ${Z80_SRC})
 
-#add_executable(tooltests ${tooltests_SRC})
+add_executable(tooltests ${Z80_SRC} ${tooltests_SRC})
 
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
@@ -59,11 +45,13 @@ set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET tool PROPERTY CXX_STANDARD 11)
 set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
 
-#set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
-#set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
+set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
+
 target_link_libraries(tool ${Boost_LIBRARIES})
 target_link_libraries(cpuqt2 Qt5::Widgets)
-#target_link_libraries(tooltests ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(tooltests ${Boost_LIBRARIES})
+
 if (WIN32)
  # disable autolinking in boost
   add_definitions( -DBOOST_ALL_NO_LIB )
@@ -110,7 +98,7 @@ file(COPY z80sean.txt DESTINATION .)
 
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
 install(TARGETS tool RUNTIME DESTINATION bin)
-#install(TARGETS tooltests RUNTIME DESTINATION bin)
+install(TARGETS tooltests RUNTIME DESTINATION bin)
 
 if(WIN32)
         option(COPY_BOOST_BINARIES "Copy boost DLL files to local path" 1)
