@@ -18,6 +18,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+    cout << "Instruction decoder generator v2" << endl;
     InstructionTableToCode parser;
     parser.main();
     return 0;

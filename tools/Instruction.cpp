@@ -67,7 +67,7 @@ const string Instruction::conditions[conditionCount] = {
 Instruction::Instruction() {
 }
 
-uint32_t Instruction::getScore() const
+unsigned long long Instruction::getScore() const
 {
     cout << getMnemonic() << endl;
     string thisScore = "";
@@ -80,7 +80,7 @@ uint32_t Instruction::getScore() const
         }
     }
     cout << "stringscore " << thisScore <<endl;
-    return stoul(thisScore);
+    return stoull(thisScore);
 }
 
 string Instruction::getMnemonic() const
@@ -168,7 +168,7 @@ vector<string> Instruction::getMethodParams()
             if(boost::starts_with(part,"(")) {
                 stringstream paramStream;
 
-                paramStream << "new MemoryAddress(";
+                paramStream << "MemoryAddress(";
                 
                 part = part.substr(1, part.size() - 2);
                 
@@ -230,7 +230,7 @@ bool Instruction::contains(std::string testString, const string possibles[], con
     cout << itemCount << endl;
     for (int i =0; i < itemCount; i++) {
         cout << "possible match: " << possibles[i] << endl;
-        if (testString.find(possibles[i]) != std::string::npos) {
+        if (testString ==possibles[i]) {
             cout << "found!!!!" << endl;
             return true;
         }
@@ -302,5 +302,5 @@ void Instruction::write(std::ofstream* writer)
 {
     *writer << boost::format("// %s - %s") % this->getMnemonic() % this->getOpcodesAsHex() << endl;
     *writer << boost::format("logger.debug(\"%s - %s\");") % this->getMnemonic() % this->getOpcodesAsHex()<< endl;
-    *writer << boost::format("getProcessor().%s;") % this->getFunctionCall()<< endl;
+    *writer << boost::format("getProcessor()->%s;") % this->getFunctionCall()<< endl;
 }

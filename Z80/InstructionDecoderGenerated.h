@@ -26,12 +26,14 @@
  *
  */
 #include "Z80/InstructionDecoder.h"
+#include "Logger.h"
 
 #ifndef INSTRUCTIONDECODERGENERATED_H
 #define INSTRUCTIONDECODERGENERATED_H
 
 class InstructionDecoderGenerated : public InstructionDecoder
 {
+    Logger logger;
 public:
 //     InstructionDecoderGenerated();
 //     InstructionDecoderGenerated(const InstructionDecoderGenerated& other);

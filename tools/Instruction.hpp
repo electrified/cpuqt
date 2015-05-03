@@ -23,7 +23,7 @@ private:
 
 public:
     Instruction();
-    uint32_t getScore() const;
+    unsigned long long getScore() const;
     virtual string getMnemonic() const;
     virtual void setMnemonic(string mnemonic);
     virtual int32_t* getSize();

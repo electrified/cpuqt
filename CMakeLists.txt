@@ -9,13 +9,14 @@ set(CMAKE_AUTOMOC ON)
 
 # Find the QtWidgets library
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-set(Boost_DEBUG OFF)
+#set(Boost_DEBUG OFF)
 set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost COMPONENTS regex system filesystem REQUIRED)
 
-include_directories(${Boost_INCLUDE_DIRS}) 
+include_directories(${Boost_INCLUDE_DIRS})
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 #message(${Boost_LIBRARIES})
 set(cpuqt2_SRCS cpuqt2.cpp main.cpp MainWindow.h )
 # 
@@ -64,7 +65,7 @@ target_link_libraries(tool ${Boost_LIBRARIES})
 target_link_libraries(cpuqt2 Qt5::Widgets)
 #target_link_libraries(tooltests ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES})
 if (WIN32)
-  # disable autolinking in boost
+ # disable autolinking in boost
   add_definitions( -DBOOST_ALL_NO_LIB )
 
   # force all boost libraries to dynamic link (we already disabled
@@ -87,9 +88,59 @@ if (MSVC)
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuuc53.dll" "${CMAKE_BINARY_DIR}"
     COMMENT "Copying Qt5 dependencies to ${COPY_DEST}"
     VERBATIM)
+
+   install(FILES ${Boost_SYSTEM_LIBRARY_RELEASE}
+      ${Boost_FILESYSTEM_LIBRARY_RELEASE}
+      ${Boost_REGEX_LIBRARY_RELEASE}
+      DESTINATION bin
+      CONFIGURATIONS Release RelWithDebInfo
+   )
+message (${Boost_SYSTEM_LIBRARY_DEBUG}
+      ${Boost_FILESYSTEM_LIBRARY_DEBUG}
+      ${Boost_REGEX_LIBRARY_DEBUG})
+   install(FILES ${Boost_SYSTEM_LIBRARY_DEBUG}
+      ${Boost_FILESYSTEM_LIBRARY_DEBUG}
+      ${Boost_REGEX_LIBRARY_DEBUG}
+      DESTINATION bin
+      CONFIGURATIONS Debug
+   )
 endif()
 
+file(COPY z80sean.txt DESTINATION .)
 
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
 install(TARGETS tool RUNTIME DESTINATION bin)
 #install(TARGETS tooltests RUNTIME DESTINATION bin)
+
+if(WIN32)
+        option(COPY_BOOST_BINARIES "Copy boost DLL files to local path" 1)
+        #file(GLOB Boost_BINARIES ${Boost_LIBRARY_DIRS}/*.dll)
+        if(COPY_BOOST_BINARIES)
+                message(STATUS "Copying Boost DLL Files")
+        endif()
+        foreach(LIB ${Boost_LIBRARIES})
+                if(NOT ${LIB} MATCHES "optimized" AND NOT ${LIB} MATCHES "debug")
+                        set(BIN ${LIB})
+                        string(REPLACE ".lib" ".dll" BIN ${BIN})
+                        string(REPLACE "libboost" "boost" BIN ${BIN})
+                        if(EXISTS ${BIN})
+                                set(Boost_BINARIES ${Boost_BINARIES} ${BIN})
+                                if(COPY_BOOST_BINARIES)
+                                        message(STATUS "\t${BIN}")
+
+                                        execute_process(COMMAND ${CMAKE_COMMAND} -E copy
+                                                                                ${BIN} ${CMAKE_BINARY_DIR}/
+                                                                                RESULT_VARIABLE COPY_RESULT
+                                                                                ERROR_VARIABLE ERROR)
+                                        if(NOT COPY_RESULT EQUAL 0)
+                                                                MESSAGE(STATUS "Copy Boost - ${ERROR}")
+                                        endif()
+                                endif()
+                        endif()
+                endif()
+        endforeach()
+endif()
+get_cmake_property(_variableNames VARIABLES)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
