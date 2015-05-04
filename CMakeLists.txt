@@ -24,11 +24,13 @@ set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/Ge
 
 set(Z80_SRC
     Z80/EmulationProcessor.cpp Z80/EmulationProcessor.h Z80/Condition.cpp Z80/Condition.hpp Z80/DisassemblerProcessor.cpp Z80/DisassemblerProcessor.h
-    Z80/InstructionDecoder.cpp Z80/InstructionDecoder.h Z80/InstructionDecoderGenerated.cpp Z80/InstructionDecoderGenerated.h Z80/Memory.cpp Z80/Memory.h
+    Z80/Memory.cpp Z80/Memory.h
     Z80/MemoryAddress.cpp Z80/MemoryAddress.h Z80/Processor.cpp Z80/Processor.h Z80/Register.cpp Z80/Register.hpp Z80/RegisterPair.cpp Z80/RegisterPair.hpp Z80/IO.cpp Z80/IO.h
-    Z80/BaseInstructionDecoder.cpp Z80/BaseInstructionDecoder.h Z80/BaseProcessor.cpp Z80/BaseProcessor.h
+    Z80/BaseProcessor.cpp Z80/BaseProcessor.h
+    Z80/baseprocessordecoder.cpp Z80/baseprocessordecoder.h
     Z80/badgerio.cpp Z80/badgerio.h  Z80/BadgerMemory.cpp Z80/BadgerMemory.h
     Logger.cpp Logger.h
+    #Z80/InstructionDecoder.cpp Z80/InstructionDecoder.h Z80/InstructionDecoderGenerated.cpp Z80/InstructionDecoderGenerated.h
 )
 
 set(tooltests_SRC catch.hpp tools/Test.cpp)

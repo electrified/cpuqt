@@ -29,15 +29,16 @@
 #ifndef EMULATIONPROCESSOR_H
 #define EMULATIONPROCESSOR_H
 
-#include "Z80/BaseProcessor.h"
-#include "Z80/InstructionDecoder.h"
+//#include "Z80/BaseProcessor.h"
+#include "Z80/baseprocessordecoder.h"
+//#include "Z80/InstructionDecoder.h"
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
 #include "Z80/IO.h"
 #include "Logger.h"
 
-class EmulationProcessor : public BaseProcessor {
+class EmulationProcessor : public BaseProcessorDecoder {
     /*
          * in java all numbers are internally represented as 32 bit. There is also
          * no unsigned therefore just using ints
@@ -55,7 +56,7 @@ class EmulationProcessor : public BaseProcessor {
     Logger logger;
 public:
     EmulationProcessor();
-    EmulationProcessor(InstructionDecoder *decoder);
+//    EmulationProcessor(InstructionDecoder *decoder);
 //    EmulationProcessor(EmulationProcessor *emulationProcessor);
     ~EmulationProcessor();
     void ADC(RegisterPair hl, RegisterPair bc);

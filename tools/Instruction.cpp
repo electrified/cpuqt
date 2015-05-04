@@ -207,7 +207,7 @@ string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed
     if( boost::regex_match(part, boost::regex("[A-Z]*")) || boost::ends_with(part, "_prime")) {
         cout << " match1 " <<endl;
         if(contains(part, registers, registerCount) && !contains(getFunctionisedMethodName(), useCondition, useConditionCount)) {
-            param << "Regstr::" << part;
+            param << "Rgstr::" << part;
         } else if(contains(part, registerpairs, registerPairCount)) {
             param << "RegisterPair::" << part;
         } else if(contains(part, conditions, conditionCount)) {
@@ -302,5 +302,5 @@ void Instruction::write(std::ofstream* writer)
 {
     *writer << boost::format("// %s - %s") % this->getMnemonic() % this->getOpcodesAsHex() << endl;
     *writer << boost::format("logger.debug(\"%s - %s\");") % this->getMnemonic() % this->getOpcodesAsHex()<< endl;
-    *writer << boost::format("getProcessor()->%s;") % this->getFunctionCall()<< endl;
+    *writer << boost::format("%s;") % this->getFunctionCall()<< endl;
 }

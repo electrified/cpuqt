@@ -103,7 +103,7 @@ std::vector<Instruction> InstructionTableToCode::parse()
 void InstructionTableToCode::writeCode(
     Switch* rootSwitch)
 {
-    string javaPath = "InstructionDecoderGenerated.cpp";
+    string javaPath = "baseprocessordecoder.cpp";
     if (boost::filesystem::exists(javaPath)) {
         boost::filesystem::remove(javaPath);
     }
@@ -114,27 +114,26 @@ void InstructionTableToCode::writeCode(
         rootSwitch->write(&writer);
         writeFooter(&writer);
     }
-
 }
 
 void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
-    *writer << "#include \"Z80/InstructionDecoderGenerated.h\"" << endl;
-    *writer << "#include<cstdint>\"" << endl;
-    *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
-    *writer << "#include \"Z80/Register.hpp\"" << endl;
-    *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
-    *writer << "#include \"Z80/Condition.hpp\"" << endl;
+//    *writer << "#include \"Z80/InstructionDecoderGenerated.h\"" << endl;
+//    *writer << "#include<cstdint>\"" << endl;
+//    *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
+//    *writer << "#include \"Z80/Register.hpp\"" << endl;
+//    *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
+//    *writer << "#include \"Z80/Condition.hpp\"" << endl;
 
-    *writer << "void InstructionDecoderGenerated::decode() {" << endl;
+    *writer << "void BaseProcessor::decode() {" << endl;
     *writer << "std::uint8_t currentInstruction[4];" << endl;
 }
 
 void InstructionTableToCode::writeFooter(
     std::ofstream* writer)
 {
-    *writer << "currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);" << endl;
+    *writer << "//currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);" << endl;
     *writer << "instructionByteCount = 0;" << endl;
     *writer << "//return currentInstruction;" << endl;
     *writer << "}\n";

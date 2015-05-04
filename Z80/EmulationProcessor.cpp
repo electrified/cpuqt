@@ -41,20 +41,21 @@
 #include "Z80/IO.h"
 #include "Z80/badgerio.h"
 #include "Z80/BadgerMemory.h"
-#include "Z80/InstructionDecoder.h"
-#include "Z80/InstructionDecoderGenerated.h"
+//#include "Z80/InstructionDecoder.h"
+//#include "Z80/InstructionDecoderGenerated.h"
 
-EmulationProcessor::EmulationProcessor() : BaseProcessor() {
-    EmulationProcessor::EmulationProcessor(new InstructionDecoderGenerated());
-    setMemory(new BadgerMemory());
+// : BaseProcessorDecoder()
+EmulationProcessor::EmulationProcessor() {
+//    EmulationProcessor::EmulationProcessor(new InstructionDecoderGenerated());
+//    setMemory(new BadgerMemory());
 }
 
-EmulationProcessor::EmulationProcessor(InstructionDecoder* decoder) : BaseProcessor() {
-    std::cout << "EmulationProcessor ctr" << std::endl;
-    instructionDecoder = decoder;
-    io = new BadgerIO();
-    instructionDecoder->setProcessor(this);
-}
+//EmulationProcessor::EmulationProcessor(InstructionDecoder* decoder) : BaseProcessor() {
+//    std::cout << "EmulationProcessor ctr" << std::endl;
+//    instructionDecoder = decoder;
+//    io = new BadgerIO();
+//    instructionDecoder->setProcessor(this);
+//}
 
 //EmulationProcessor::EmulationProcessor(EmulationProcessor* processor) {
 //    this->A = processor->getA();
@@ -73,8 +74,8 @@ EmulationProcessor::EmulationProcessor(InstructionDecoder* decoder) : BaseProces
 //}
 
 EmulationProcessor::~EmulationProcessor() {
-    delete memory;
-    delete instructionDecoder;
+//    delete memory;
+//    delete instructionDecoder;
 }
 
 
@@ -1881,7 +1882,7 @@ void EmulationProcessor::process() {
 //            decoder.decode(); //NOP
 //        } else {
 //            placeProgramCounterOnAddressBus();
-     instructionDecoder->decode();
+     decode();
 //        }
 }
 

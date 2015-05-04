@@ -27,9 +27,13 @@
  */
 
 #include "BaseProcessor.h"
-#include "Z80/InstructionDecoder.h"
+#include <cstdint>
+
+#include "Z80/MemoryAddress.h"
+#include "Z80/Register.hpp"
+#include "Z80/RegisterPair.hpp"
+#include "Z80/Condition.hpp"
 #include "Z80/Memory.h"
-#include "BadgerMemory.h"
 
 BaseProcessor::BaseProcessor() {
     PC = 0;
@@ -63,3 +67,10 @@ void BaseProcessor::setMemory(Memory* memory) {
 std::uint8_t BaseProcessor::fetchInstruction() {
     return getMemory()->read(addressBus);
 }
+
+std::uint8_t BaseProcessor::getNextByte() {
+    instructionByteCount++;
+    placeProgramCounterOnAddressBus();
+    return fetchInstruction();
+}
+

@@ -34,11 +34,12 @@
 #include "Z80/Memory.h"
 #include "Z80/Processor.h"
 #include "Z80/InstructionDecoder.h"
+#include "Logger.h"
 
 class BaseProcessor : public Processor
 {
 protected:
-    InstructionDecoder* instructionDecoder;
+    Logger logger;
     Memory* memory;
     std::uint16_t addressBus;
 
@@ -57,9 +58,10 @@ public:
     std::uint16_t getPC();
     void setPC(std::uint16_t pC);
     Memory* getMemory();
-//    void setMemory(std::uint8_t memory[]);
     void setMemory(Memory* memory);
     std::uint8_t fetchInstruction();
+    std::uint8_t instructionByteCount = 0;
+    std::uint8_t getNextByte();
 };
 
 #endif // BASEPROCESSOR_H
