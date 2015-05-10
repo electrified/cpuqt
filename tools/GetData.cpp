@@ -11,5 +11,6 @@ GetData::GetData(uint8_t level)
 
 void GetData::write(std::ofstream* writer)
 {
-   *writer << boost::format("currentInstruction[%d] = getNextByte();") % this->level << endl;
+    *writer << "//GetData" <<std::endl;
+   *writer << boost::format("currentInstruction[%1%] = getNextByte();") % int(this->level) <<std::endl;
 }

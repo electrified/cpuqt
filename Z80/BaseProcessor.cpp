@@ -29,12 +29,6 @@
 #include "BaseProcessor.h"
 #include <cstdint>
 
-#include "Z80/MemoryAddress.h"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
-#include "Z80/Condition.hpp"
-#include "Z80/Memory.h"
-
 BaseProcessor::BaseProcessor() {
     PC = 0;
 }
@@ -62,6 +56,14 @@ Memory* BaseProcessor::getMemory() {
 
 void BaseProcessor::setMemory(Memory* memory) {
     this->memory = memory;
+}
+
+IO* BaseProcessor::getIO() {
+    return io;
+}
+
+void BaseProcessor::setIO(IO* io) {
+    this->io = io;
 }
 
 std::uint8_t BaseProcessor::fetchInstruction() {

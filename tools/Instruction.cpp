@@ -72,14 +72,14 @@ unsigned long long Instruction::getScore() const
     cout << getMnemonic() << endl;
     string thisScore = "";
     for (auto i = 0; i < 4; i++) {
-        cout << "loopinng " << thisScore <<endl;
+//         cout << "loopinng " << thisScore <<endl;
         if(i < getOpcodes().size() && (getOpcodes().at(i) >= 0)) {
             thisScore = thisScore + to_string(getOpcodes().at(i));
         } else {
             thisScore = thisScore + "000";
         }
     }
-    cout << "stringscore " << thisScore <<endl;
+//     cout << "stringscore " << thisScore <<endl;
     return stoull(thisScore);
 }
 
@@ -201,11 +201,11 @@ vector<string> Instruction::getMethodParams()
 
 string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed, vector<uint32_t> dataParams)
 {
-    cout << "part " << part;
+//     cout << "part " << part;
     stringstream param;
     boost::replace_all(part, "'", "_prime");
     if( boost::regex_match(part, boost::regex("[A-Z]*")) || boost::ends_with(part, "_prime")) {
-        cout << " match1 " <<endl;
+//         cout << " match1 " <<endl;
         if(contains(part, registers, registerCount) && !contains(getFunctionisedMethodName(), useCondition, useConditionCount)) {
             param << "Rgstr::" << part;
         } else if(contains(part, registerpairs, registerPairCount)) {
@@ -226,12 +226,12 @@ string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed
 }
 
 bool Instruction::contains(std::string testString, const string possibles[], const int itemCount) {
-    cout << "looking for matches to" << testString <<endl;
-    cout << itemCount << endl;
+//     cout << "looking for matches to" << testString <<endl;
+//     cout << itemCount << endl;
     for (int i =0; i < itemCount; i++) {
-        cout << "possible match: " << possibles[i] << endl;
+//         cout << "possible match: " << possibles[i] << endl;
         if (testString ==possibles[i]) {
-            cout << "found!!!!" << endl;
+//             cout << "found!!!!" << endl;
             return true;
         }
     }

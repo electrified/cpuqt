@@ -7,7 +7,7 @@
 
 
 BadgerMemory::BadgerMemory() {
-    std::cout << "Initialising badgermemory";
+    std::cout << "Initialising badgermemory" << std::endl;
 }
 
 std::uint8_t BadgerMemory::read(std::uint16_t address){

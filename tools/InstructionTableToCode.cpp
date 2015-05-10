@@ -5,9 +5,9 @@
 #include "tools/GetData.hpp"
 // #include "tools/Instruction.hpp"
 
-#include<string>
-#include<fstream>
-#include<vector>
+#include <string>
+#include <fstream>
+#include <vector>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
@@ -23,8 +23,6 @@ int main(int argc, char** argv)
     parser.main();
     return 0;
 }
-
-
 
 void InstructionTableToCode::main() {
     auto instructions = this->parse();
@@ -119,14 +117,15 @@ void InstructionTableToCode::writeCode(
 void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
-//    *writer << "#include \"Z80/InstructionDecoderGenerated.h\"" << endl;
-//    *writer << "#include<cstdint>\"" << endl;
-//    *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
-//    *writer << "#include \"Z80/Register.hpp\"" << endl;
-//    *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
-//    *writer << "#include \"Z80/Condition.hpp\"" << endl;
-
-    *writer << "void BaseProcessor::decode() {" << endl;
+   *writer << "#include \"Z80/baseprocessordecoder.h\"" << endl;
+   *writer << "#include <cstdint>" << endl;
+   *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
+   *writer << "#include \"Z80/Register.hpp\"" << endl;
+   *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
+   *writer << "#include \"Z80/Condition.hpp\"" << endl;
+   *writer << "#include \"Z80/Memory.h\"" << endl << endl;
+   
+    *writer << "void BaseProcessorDecoder::decode() {" << endl;
     *writer << "std::uint8_t currentInstruction[4];" << endl;
 }
 
@@ -146,43 +145,43 @@ Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructi
     for (auto instruction : *instructions) {
         cout << instruction.getMnemonic() << endl;
         uint8_t depth =0;
-        FinalNode* currentCase = nullptr;
-        for (uint8_t opcode : instruction.getOpcodes()) {        
+        FinalNode* currentNode = nullptr;
+        for (int opcode : instruction.getOpcodes()) {        
 //             cout << to_string(opcode) << endl;
             if (opcode < 0) {
-                auto dataSearch = currentCase->getDatas.find(depth);
-                if (dataSearch == currentCase->getDatas.end()) {
+                auto dataSearch = currentNode->getDatas.find(depth);
+                if (dataSearch == currentNode->getDatas.end()) {
                     auto data = new GetData(depth);
-                    currentCase->getDatas.insert(make_pair(depth,data));
+                    currentNode->getDatas.insert(make_pair(depth,data));
                 }
             } else {
-                if (currentCase == nullptr) {
+                if (currentNode == nullptr) {
                     auto caseSearch = rootLevel->cases.find(opcode);
                     if (caseSearch != rootLevel->cases.end()) {
-                        currentCase = caseSearch->second;
+                        currentNode = caseSearch->second;
                     } else {
-                        currentCase = new Case(opcode);
-                        rootLevel->cases.insert(make_pair(opcode, (Case*)currentCase));
+                        currentNode = new Case(opcode);
+                        rootLevel->cases.insert(make_pair(opcode, (Case*)currentNode));
                     }
                 } else {
-                    if (currentCase->theSwitch.level < 0) {
-                        currentCase->theSwitch.level = depth;
+                    if (currentNode->theSwitch.level < 0) {
+                        currentNode->theSwitch.level = depth;
                     }
-                    auto caseSearch = currentCase->theSwitch.cases.find(opcode);
-                    if (caseSearch != currentCase->theSwitch.cases.end()) {
-                        currentCase = caseSearch->second;
+                    auto caseSearch = currentNode->theSwitch.cases.find(opcode);
+                    if (caseSearch != currentNode->theSwitch.cases.end()) {
+                        currentNode = caseSearch->second;
                     } else {
                         auto c = new Case(opcode);
-                        currentCase->theSwitch.cases.insert(make_pair(opcode, c));
-                        currentCase = c;
+                        currentNode->theSwitch.cases.insert(make_pair(opcode, c));
+                        currentNode = c;
                     }
                 }
             }
 
             if (depth == instruction.getIndexOfLastOpcode()) {
-                cout << "hello" <<endl;
-                currentCase->instruction = instruction;                
-                cout << "hello2" <<endl;
+//                 cout << "hello" <<endl;
+                currentNode->instruction = instruction;                
+//                 cout << "hello2" <<endl;
             }
             depth++;
         }

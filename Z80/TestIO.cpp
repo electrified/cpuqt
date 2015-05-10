@@ -27,3 +27,12 @@
  */
 
 #include "TestIO.h"
+
+
+std::uint8_t TestIO::read(std::uint16_t address)
+{
+}
+
+void TestIO::write(std::uint16_t address, std::uint8_t value)
+{
+}

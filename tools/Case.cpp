@@ -7,6 +7,7 @@ using namespace std;
 #include <tools/FinalNode.hpp>
 #include <tools/Instruction.hpp>
 #include <tools/Switch.hpp>
+#include <tools/GetData.hpp>
 
 Case::Case()
 {
@@ -21,7 +22,7 @@ Case::Case(int opcode)
 void Case::write(std::ofstream* writer)
 {
     *writer << boost::format("case 0x%02X:") % this->opcode << endl;
-    for (auto const &node : this->nodes ) {
+    for (auto const &node : this->getDatas ) {
             node.second->write(writer);
     }
     if(this->instruction.getOpcodes().size() > 0) {

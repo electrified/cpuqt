@@ -240,10 +240,12 @@ public:
 
     virtual Memory* getMemory() = 0;
 
-//     virtual void setMemory(int[] memory) = 0;
-
     virtual void setMemory(Memory* memory) = 0;
 
+    virtual IO* getIO() = 0;
+
+    virtual void setIO(IO* io) = 0;
+    
     virtual std::uint16_t getRegisterPairValue(RegisterPair register) = 0;
 
     virtual std::uint8_t getRegisterValue(Rgstr register) = 0;

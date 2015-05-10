@@ -4,11 +4,8 @@
 #include <fstream>
 
 #include "tools/Switch.hpp"
-// #include "tools/GetData.hpp"
 #include "tools/Instruction.hpp"
-
-//class Switch;
-//class Instruction;
+// #include "tools/GetData.hpp"
 class GetData;
 
 class FinalNode

@@ -5,47 +5,42 @@
 
 #include "Z80/EmulationProcessor.h"
 #include "Z80/BadgerMemory.h"
-#include "Z80/InstructionDecoderGenerated.h"
+#include "Z80/TestIO.h"
 
 EmulationProcessor* setupProcessor() {
-//    InstructionDecoderGenerated* decoder = new InstructionDecoderGenerated();
     EmulationProcessor* proc = new EmulationProcessor();
     proc->setMemory(new BadgerMemory());
+    proc->setIO(new TestIO());
     return proc;
 }
 
 TEST_CASE("ADCA_HL_Test") {
-//    EmulationProcessor* proc = setupProcessor();
-        EmulationProcessor proc;
-//    proc.set
-    // ADC A, (HL)
-//    proc.setMemory(int[64 * 1024]);
-    proc.getMemory()->write(0x0, 0x8E);
-    proc.getMemory()->write(0x6666, 0x10);
-    proc.setA(0x16);
-    proc.setHL(0x6666);
-    proc.setCFlag(true);
-    proc.process();
-    REQUIRE(proc.getA() == 0x27);
+    EmulationProcessor* proc = setupProcessor();
+
+    proc->getMemory()->write(0x0, 0x8E);
+    proc->getMemory()->write(0x6666, 0x10);
+    proc->setA(0x16);
+    proc->setHL(0x6666);
+    proc->setCFlag(true);
+    proc->process();
+    REQUIRE(proc->getA() == 0x27);
 }
 
 
-//TEST_CASE("ADCA_IX_d_Test") {
-//    EmulationProcessor proc = EmulationProcessor();
-
-//    // ADC A, (IX+d)
-////    proc.setMemory(new int[64 * 1024]);
-//    proc.getMemory()->write(0x0, 0xDD);
-//    proc.getMemory()->write(0x1, 0x8E);
-//    proc.getMemory()->write(0x2, 0x10);
-//    proc.getMemory()->write(0x6676, 0x10);
-//    proc.setIX(0x6666);
-//    proc.setA(0x16);
-////        proc.setHL(0x6666);
-//    proc.setCFlag(true);
-//    proc.process();
-//    REQUIRE(proc.getA() == 0x27);
-//}
+TEST_CASE("ADCA_IX_d_Test") {
+   EmulationProcessor* proc = setupProcessor();
+   // ADC A, (IX+d)
+   proc->getMemory()->write(0x0, 0xDD);
+   proc->getMemory()->write(0x1, 0x8E);
+   proc->getMemory()->write(0x2, 0x10);
+   proc->getMemory()->write(0x6676, 0x10);
+   proc->setIX(0x6666);
+   proc->setA(0x16);
+//        proc.setHL(0x6666);
+   proc->setCFlag(true);
+   proc->process();
+   REQUIRE(proc->getA() == 0x27);
+}
 
 
 //TEST_CASE("ADCAnTest") {

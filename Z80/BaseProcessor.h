@@ -32,8 +32,9 @@
 #include <cstdint>
 
 #include "Z80/Memory.h"
+#include "Z80/IO.h"
 #include "Z80/Processor.h"
-#include "Z80/InstructionDecoder.h"
+// #include "Z80/InstructionDecoder.h"
 #include "Logger.h"
 
 class BaseProcessor : public Processor
@@ -41,6 +42,7 @@ class BaseProcessor : public Processor
 protected:
     Logger logger;
     Memory* memory;
+    IO* io;
     std::uint16_t addressBus;
 
     /*
@@ -59,6 +61,8 @@ public:
     void setPC(std::uint16_t pC);
     Memory* getMemory();
     void setMemory(Memory* memory);
+    IO* getIO();
+    void setIO(IO* io);
     std::uint8_t fetchInstruction();
     std::uint8_t instructionByteCount = 0;
     std::uint8_t getNextByte();

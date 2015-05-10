@@ -3,8 +3,6 @@
 #include<fstream>
 #include <cstdint>
 
-//#include "tools/FinalNode.hpp"
-
 class Case;
 
 class Switch

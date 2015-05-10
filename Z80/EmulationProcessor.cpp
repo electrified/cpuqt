@@ -39,12 +39,7 @@
 #include "Z80/Memory.h"
 #include "Z80/MemoryAddress.h"
 #include "Z80/IO.h"
-#include "Z80/badgerio.h"
-#include "Z80/BadgerMemory.h"
-//#include "Z80/InstructionDecoder.h"
-//#include "Z80/InstructionDecoderGenerated.h"
 
-// : BaseProcessorDecoder()
 EmulationProcessor::EmulationProcessor() {
 //    EmulationProcessor::EmulationProcessor(new InstructionDecoderGenerated());
 //    setMemory(new BadgerMemory());
@@ -57,21 +52,6 @@ EmulationProcessor::EmulationProcessor() {
 //    instructionDecoder->setProcessor(this);
 //}
 
-//EmulationProcessor::EmulationProcessor(EmulationProcessor* processor) {
-//    this->A = processor->getA();
-//    this->B = processor->getB();
-//    this->C = processor->getC();
-//    this->D = processor->getD();
-//    this->E = processor->getE();
-//    this->F = processor->getF();
-//    this->H = processor->getH();
-//    this->L = processor->getL();
-//    this->PC = processor->getPC();
-//    this->IFF1 = processor->isIFF1();
-//    this->IFF2 = processor->isIFF2();
-////         this->setMemory(processor->getMemory()->clone());
-//    this->SP = processor->getSP();
-//}
 
 EmulationProcessor::~EmulationProcessor() {
 //    delete memory;

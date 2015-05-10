@@ -6,7 +6,7 @@
 class Case : public FinalNode {
 public:
     int opcode;
-    std::map<int, FinalNode*> nodes;
+//     std::map<int, FinalNode*> nodes;
     void write(std::ofstream* writer) override;
     Case(int opcode);
     Case();
