@@ -30,11 +30,11 @@
 #include <iostream>
 
 TestIO::TestIO() {
-    std::cout << "Initialising TestIO" << std::endl;
+//     std::cout << "Initialising TestIO" << std::endl;
 }
 
 TestIO::~TestIO() {
-    std::cout << "Destroying TestIO" << std::endl;
+//     std::cout << "Destroying TestIO" << std::endl;
 }
 
 std::uint8_t TestIO::read(std::uint16_t address)

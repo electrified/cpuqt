@@ -360,11 +360,6 @@ public:
     void process();
     void process(std::uint8_t count);
 
-
-//     IO *getIo();
-// 
-//     void setIo(IO* io);
-
     bool getNFlag();
 
     void setNFlag(bool flag);
@@ -377,8 +372,6 @@ public:
 
     void setR(std::uint8_t r);
 
-//     std::uint8_t getRegisterPairValue(RegisterPair register);
-//     std::uint8_t getRegisterValue(Rgstr register);
     std::uint16_t getSP();
 
     void setSP(std::uint16_t sP);

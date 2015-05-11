@@ -30,34 +30,9 @@
 #include "EmulationProcessor.h"
 #include <boost/utility/binary.hpp>
 #include <iostream>
-//#include <cstdint>
-//
-//#include "Z80/baseprocessordecoder.h"
-//#include "Z80/Processor.h"
-//#include "Z80/Register.hpp"
-//#include "Z80/RegisterPair.hpp"
-//#include "Z80/Condition.hpp"
-//#include "Z80/Memory.h"
-//#include "Z80/MemoryAddress.h"
-//#include "Z80/IO.h"
 
 EmulationProcessor::EmulationProcessor(Memory& memory, IO& io) : BaseProcessorDecoder::BaseProcessorDecoder(memory, io){
 }
-
-//EmulationProcessor::EmulationProcessor(InstructionDecoder* decoder) : BaseProcessor() {
-//    std::cout << "EmulationProcessor ctr" << std::endl;
-//    instructionDecoder = decoder;
-//    io = new BadgerIO();
-//    io = new BadgerIO();
-//    instructionDecoder->setProcessor(this);
-//}
-
-
-// EmulationProcessor::~EmulationProcessor() {
-// //    delete memory;
-// //    delete instructionDecoder;
-// }
-
 
 void EmulationProcessor::ADC(RegisterPair hl, RegisterPair bc) {
     unimplemented();
@@ -1703,7 +1678,6 @@ std::uint16_t EmulationProcessor::getRegisterPairValue(RegisterPair rgstr) {
     }
 }
 
-//
 std::uint8_t EmulationProcessor::getRegisterValue(Rgstr rgstr) {
 //		logger.debug("Getting value for rgstr " + rgstr);
     switch (rgstr) {
@@ -1858,9 +1832,8 @@ void EmulationProcessor::setIFF2(bool iFF2) {
 
 void EmulationProcessor::process() {
 //        if (halted) {
-//            decoder.decode(); //NOP
+//            decode(); //NOP
 //        } else {
-//            placeProgramCounterOnAddressBus();
      decode();
 //        }
 }

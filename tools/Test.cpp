@@ -136,7 +136,7 @@ TEST_CASE("BITb_IXplusd_Test") {
    proc->getMemory().write(0x2004, BOOST_BINARY(1101100));
    proc->setIX(0x2000);
    proc->process(5);
-   REQUIRE(proc->getZeroFlag());
+   REQUIRE_FALSE(proc->getZeroFlag());
    REQUIRE((proc->getMemory().read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
 }
 
@@ -173,8 +173,6 @@ TEST_CASE("CPrTest") {
     * results in the P/V flag in the F register resetting.
     */
    EmulationProcessor* proc = setupProcessor();
-//    proc->setMemory(new int[64 * 1024]);
-   proc->getMemory().write(0x0, 0xBE);
    proc->getMemory().write(0x6000, 0x60);
    proc->setHL(0x6000);
    proc->setA(0x63);

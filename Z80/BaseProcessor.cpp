@@ -31,8 +31,6 @@
 
 BaseProcessor::BaseProcessor(Memory& memory, IO& io) : io(io), memory(memory){
     PC = 0;
-//     this->io = io;
-//     this->memory = memory;
 }
 
 BaseProcessor::~BaseProcessor() {
