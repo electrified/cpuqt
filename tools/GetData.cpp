@@ -1,5 +1,5 @@
 #include<fstream>
-#include<cstdint>
+//#include<cstdint>
 #include<boost/format.hpp>
 
 #include "tools/GetData.hpp"

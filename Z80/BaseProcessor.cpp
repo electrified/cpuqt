@@ -27,10 +27,12 @@
  */
 
 #include "BaseProcessor.h"
-#include <cstdint>
+//#include <cstdint>
 
-BaseProcessor::BaseProcessor() {
+BaseProcessor::BaseProcessor(Memory& memory, IO& io) : io(io), memory(memory){
     PC = 0;
+//     this->io = io;
+//     this->memory = memory;
 }
 
 BaseProcessor::~BaseProcessor() {
@@ -50,24 +52,24 @@ void BaseProcessor::setPC(std::uint16_t pc) {
     PC = pc;
 }
 
-Memory* BaseProcessor::getMemory() {
+Memory& BaseProcessor::getMemory() {
     return memory;
 }
 
-void BaseProcessor::setMemory(Memory* memory) {
+void BaseProcessor::setMemory(Memory& memory) {
     this->memory = memory;
 }
 
-IO* BaseProcessor::getIO() {
+IO& BaseProcessor::getIO() {
     return io;
 }
 
-void BaseProcessor::setIO(IO* io) {
+void BaseProcessor::setIO(IO& io) {
     this->io = io;
 }
 
 std::uint8_t BaseProcessor::fetchInstruction() {
-    return getMemory()->read(addressBus);
+    return getMemory().read(addressBus);
 }
 
 std::uint8_t BaseProcessor::getNextByte() {

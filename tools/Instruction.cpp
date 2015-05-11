@@ -1,21 +1,21 @@
 #include <tools/Instruction.hpp>
-#include <string>
+//#include <string>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <vector>
+//#include <vector>
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/predicate.hpp>
+//#include <boost/algorithm/string/predicate.hpp>
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/regex.hpp>
 
-#include "Z80/Condition.hpp"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
+//#include "Z80/Condition.hpp"
+//#include "Z80/Register.hpp"
+//#include "Z80/RegisterPair.hpp"
 
 using namespace std;
 
@@ -71,7 +71,7 @@ unsigned long long Instruction::getScore() const
 {
     cout << getMnemonic() << endl;
     string thisScore = "";
-    for (auto i = 0; i < 4; i++) {
+    for (unsigned long i = 0; i < 4; i++) {
 //         cout << "loopinng " << thisScore <<endl;
         if(i < getOpcodes().size() && (getOpcodes().at(i) >= 0)) {
             thisScore = thisScore + to_string(getOpcodes().at(i));
@@ -93,15 +93,15 @@ void Instruction::setMnemonic(string mnemonic)
     this->mnemonic = mnemonic;
 }
 
-int32_t* Instruction::getSize()
-{
-    return size;
-}
-
-void Instruction::setSize(int32_t* size)
-{
-    this->size = size;
-}
+//int32_t* Instruction::getSize()
+//{
+//    return size;
+//}
+//
+//void Instruction::setSize(int32_t* size)
+//{
+//    this->size = size;
+//}
 
 vector<int> Instruction::getOpcodes() const
 {
@@ -112,36 +112,36 @@ void Instruction::setOpcodes(vector<int> opcodes)
 {
     this->opcodes = opcodes;
 }
-
-vector<uint8_t>* Instruction::getClock()
-{
-    return clocks;
-}
-
-void Instruction::setClock(vector<uint8_t>* clock)
-{
-    this->clocks = clock;
-}
-
-std::string* Instruction::getFlags()
-{
-    return flags;
-}
-
-void Instruction::setFlags(string* flags)
-{
-    this->flags = flags;
-}
-
-std::string* Instruction::getEffect()
-{
-    return effect;
-}
-
-void Instruction::setEffect(string* effect)
-{
-    this->effect = effect;
-}
+//
+//vector<uint8_t>* Instruction::getClock()
+//{
+//    return clocks;
+//}
+//
+//void Instruction::setClock(vector<uint8_t>* clock)
+//{
+//    this->clocks = clock;
+//}
+//
+//std::string* Instruction::getFlags()
+//{
+//    return flags;
+//}
+//
+//void Instruction::setFlags(string* flags)
+//{
+//    this->flags = flags;
+//}
+//
+//std::string* Instruction::getEffect()
+//{
+//    return effect;
+//}
+//
+//void Instruction::setEffect(string* effect)
+//{
+//    this->effect = effect;
+//}
 
 std::string Instruction::getFunctionisedMethodName()
 {
@@ -175,11 +175,11 @@ vector<string> Instruction::getMethodParams()
                 if(part.find("+") != std::string::npos) {
                     vector<string>  innerParts;
                     boost::split(innerParts, part, boost::is_any_of("+"));
-                    for(int i = 0; i < innerParts.size(); i++) {
-                        string innerPart = innerParts.at(i);
+                    for(int j = 0; j < innerParts.size(); j++) {
+                        string innerPart = innerParts.at(j);
                         paramStream << getParam(innerPart, true, dataParamsUsed, dataParams);
                         dataParamsUsed += paramsRequired(innerPart);
-                        if (i != innerParts.size() -1) {
+                        if (j != innerParts.size() -1) {
                             paramStream << ", ";
                         }
                     }
@@ -251,7 +251,7 @@ int32_t Instruction::paramsRequired(string part)
 vector<uint32_t> Instruction::dataParams()
 {
     vector<uint32_t> data;
-    for (auto i = 0; i < opcodes.size(); i++) {
+    for (unsigned long i = 0; i < opcodes.size(); i++) {
         if(opcodes.at(i) < 0) {
             data.push_back(i);
         }
@@ -264,7 +264,7 @@ std::string Instruction::getFunctionCall()
     std::stringstream stream;
     stream << getFunctionisedMethodName() << "(";
     auto params = getMethodParams();
-    for(int i = 0; i < params.size(); i++) {
+    for(unsigned long i = 0; i < params.size(); i++) {
         stream << params.at(i);
         if (i != params.size() -1) {
             stream << ", ";
@@ -277,7 +277,7 @@ std::string Instruction::getFunctionCall()
 int Instruction::getIndexOfLastOpcode()
 {
     int returnInt = 0;
-    for (int i = 0; i < opcodes.size(); i++) {
+    for (unsigned long i = 0; i < opcodes.size(); i++) {
         if(opcodes.at(i) >= 0) {
             returnInt = i;
         }

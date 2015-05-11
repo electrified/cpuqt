@@ -43,28 +43,28 @@ public:
     virtual void ADC(RegisterPair hl, RegisterPair bc) = 0;
     virtual void ADC(Rgstr a, Rgstr b) = 0;
     virtual void ADC(Rgstr a, std::uint8_t i) = 0;
-    virtual void ADC(Rgstr a, MemoryAddress memoryAddress) = 0;
+    virtual void ADC(Rgstr a, const MemoryAddress memoryAddress) = 0;
 
     virtual void ADD(RegisterPair destination, RegisterPair register) = 0;
     virtual void ADD(Rgstr a, std::uint8_t nextByte) = 0;
     virtual void ADD(Rgstr a, Rgstr b) = 0;
-    virtual void ADD(Rgstr a, MemoryAddress memoryAddress) = 0;
+    virtual void ADD(Rgstr a, const MemoryAddress memoryAddress) = 0;
 
     virtual void AND(Rgstr iX2) = 0;
     virtual void AND(std::uint8_t iX2) = 0;
-    virtual void AND(MemoryAddress memoryAddress) = 0;
+    virtual void AND( const MemoryAddress memoryAddress) = 0;
 
     virtual void BIT(std::uint8_t y, Rgstr register) = 0;
-    virtual void BIT(std::uint8_t i, MemoryAddress memoryAddress) = 0;
+    virtual void BIT(std::uint8_t i, const MemoryAddress memoryAddress) = 0;
 
-    virtual void CALL(Condition c, MemoryAddress memoryAddress) = 0;
-    virtual void CALL(MemoryAddress memoryAddress) = 0;
+    virtual void CALL(Condition c, const MemoryAddress memoryAddress) = 0;
+    virtual void CALL( const MemoryAddress memoryAddress) = 0;
 
     virtual void CCF() = 0;
 
     virtual void CP(std::uint8_t val) = 0;
     virtual void CP(Rgstr val) = 0;
-    virtual void CP(MemoryAddress memoryAddress) = 0;
+    virtual void CP( const MemoryAddress memoryAddress) = 0;
 
     virtual void CPD() = 0;
 
@@ -84,16 +84,16 @@ public:
      */
     virtual void DEC(Rgstr r) = 0;
     virtual void DEC(RegisterPair r) = 0;
-    virtual void DEC(MemoryAddress memoryAddress) = 0;
+    virtual void DEC(const MemoryAddress memoryAddress) = 0;
 
     virtual void DI() = 0;
 
-    virtual void DJNZ(MemoryAddress memoryAddress) = 0;
+    virtual void DJNZ(const MemoryAddress memoryAddress) = 0;
 
     virtual void EI() = 0;
 
     virtual void EX(RegisterPair de, RegisterPair hl) = 0;
-    virtual void EX(MemoryAddress memoryAddress, RegisterPair ix) = 0;
+    virtual void EX(const MemoryAddress memoryAddress, RegisterPair ix) = 0;
 
     virtual void EXX() = 0;
 
@@ -101,11 +101,11 @@ public:
 
     virtual void IM(std::uint8_t im) = 0;
 
-    virtual void in(Rgstr a, MemoryAddress i) = 0;
+    virtual void in(Rgstr a, const MemoryAddress& i) = 0;
 
     virtual void INC(Rgstr r) = 0;
     virtual void INC(RegisterPair r) = 0;
-    virtual void INC(MemoryAddress memoryAddress) = 0;
+    virtual void INC(const MemoryAddress memoryAddress) = 0;
 
     virtual void IND() = 0;
 
@@ -238,13 +238,13 @@ public:
 
     virtual std::uint8_t fetchInstruction() = 0;
 
-    virtual Memory* getMemory() = 0;
+    virtual Memory& getMemory() = 0;
 
-    virtual void setMemory(Memory* memory) = 0;
+    virtual void setMemory(Memory& memory) = 0;
 
-    virtual IO* getIO() = 0;
+    virtual IO& getIO() = 0;
 
-    virtual void setIO(IO* io) = 0;
+    virtual void setIO(IO& io) = 0;
     
     virtual std::uint16_t getRegisterPairValue(RegisterPair register) = 0;
 

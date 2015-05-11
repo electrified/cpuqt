@@ -41,8 +41,8 @@ class BaseProcessor : public Processor
 {
 protected:
     Logger logger;
-    Memory* memory;
-    IO* io;
+    Memory& memory;
+    IO& io;
     std::uint16_t addressBus;
 
     /*
@@ -54,15 +54,15 @@ protected:
  */
     std::uint16_t PC;
 public:
-    BaseProcessor();
+    BaseProcessor(Memory& memory, IO& io);
     ~BaseProcessor();
     void placeProgramCounterOnAddressBus();
     std::uint16_t getPC();
     void setPC(std::uint16_t pC);
-    Memory* getMemory();
-    void setMemory(Memory* memory);
-    IO* getIO();
-    void setIO(IO* io);
+    Memory& getMemory();
+    void setMemory(Memory& memory);
+    IO& getIO();
+    void setIO(IO& io);
     std::uint8_t fetchInstruction();
     std::uint8_t instructionByteCount = 0;
     std::uint8_t getNextByte();

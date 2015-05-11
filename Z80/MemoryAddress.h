@@ -46,12 +46,12 @@ public:
     MemoryAddress(Rgstr r);
     MemoryAddress(RegisterPair rp);
     MemoryAddress(RegisterPair rp, std::uint8_t offset);
-    std::uint16_t getMemoryAddress();
-    std::uint8_t getOffset();
-    Rgstr getRegister();
-    RegisterPair getRegisterPair();
+    const std::uint16_t getMemoryAddress();
+    const std::uint8_t getOffset();
+    const Rgstr getRegister();
+    const RegisterPair getRegisterPair();
 
-    std::string toString();
+    const std::string toString();
 };
 
 #endif // MEMORYADDRESS_H

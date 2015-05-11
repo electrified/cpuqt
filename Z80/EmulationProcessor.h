@@ -29,9 +29,7 @@
 #ifndef EMULATIONPROCESSOR_H
 #define EMULATIONPROCESSOR_H
 
-//#include "Z80/BaseProcessor.h"
 #include "Z80/baseprocessordecoder.h"
-//#include "Z80/InstructionDecoder.h"
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
@@ -39,14 +37,9 @@
 #include "Logger.h"
 
 class EmulationProcessor : public BaseProcessorDecoder {
-    /*
-         * in java all numbers are internally represented as 32 bit. There is also
-         * no unsigned therefore just using ints
-         */
     std::uint8_t A, B, C, D, E, F, H, L, I, R;
     std::uint16_t IX, IY, SP;
     std::uint8_t A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt;
-    IO *io;
     //interrupt enable flip flops
     bool IFF1 = false;
     bool IFF2 = false;
@@ -55,17 +48,16 @@ class EmulationProcessor : public BaseProcessorDecoder {
     std::uint8_t _IM;
     Logger logger;
 public:
-    EmulationProcessor();
-//    EmulationProcessor(InstructionDecoder *decoder);
-//    EmulationProcessor(EmulationProcessor *emulationProcessor);
-    ~EmulationProcessor();
+//     using BaseProcessorDecoder::BaseProcessorDecoder;
+    EmulationProcessor(Memory& memory, IO& io);
+//     ~EmulationProcessor();
     void ADC(RegisterPair hl, RegisterPair bc);
 
     void ADC(Rgstr a, Rgstr b);
 
     void ADC(Rgstr a, std::uint8_t i);
 
-    void ADC(Rgstr a, MemoryAddress memoryAddress);
+    void ADC(Rgstr a, const MemoryAddress memoryAddress);
 
     void ADD(RegisterPair destination, RegisterPair register);
 
@@ -73,23 +65,23 @@ public:
 
     void ADD(Rgstr a, Rgstr b);
 
-    void ADD(Rgstr a, MemoryAddress memoryAddress);
+    void ADD(Rgstr a, const MemoryAddress memoryAddress);
 
     void AND(Rgstr iX2);
 
     void AND(std::uint8_t iX2);
 
-    void AND(MemoryAddress memoryAddress);
+    void AND(const MemoryAddress memoryAddress);
 
     void BIT(std::uint8_t y, Rgstr register);
 
-    void BIT(std::uint8_t i, MemoryAddress memoryAddress);
+    void BIT(std::uint8_t i, const MemoryAddress memoryAddress);
 
     void BIT(std::uint8_t y, std::uint8_t value);
 
-    void CALL(Condition c, MemoryAddress memoryAddress);
+    void CALL(Condition c, const MemoryAddress memoryAddress);
 
-    void CALL(MemoryAddress memoryAddress);
+    void CALL(const MemoryAddress memoryAddress);
 
     void CCF();
 
@@ -97,7 +89,7 @@ public:
 
     void CP(Rgstr val);
 
-    void CP(MemoryAddress memoryAddress);
+    void CP(const MemoryAddress memoryAddress);
 
     void CPD();
 
@@ -119,17 +111,17 @@ public:
 
     void DEC(RegisterPair r);
 
-    void DEC(MemoryAddress memoryAddress);
+    void DEC(const MemoryAddress memoryAddress);
 
     void DI();
 
-    void DJNZ(MemoryAddress memoryAddress);
+    void DJNZ(const MemoryAddress memoryAddress);
 
     void EI();
 
     void EX(RegisterPair de, RegisterPair hl);
 
-    void EX(MemoryAddress memoryAddress, RegisterPair ix);
+    void EX(const MemoryAddress memoryAddress, RegisterPair ix);
 
     void EXX();
 
@@ -137,13 +129,13 @@ public:
 
     void IM(std::uint8_t im);
 
-    void in(Rgstr a, MemoryAddress i);
+    void in(Rgstr a,const MemoryAddress& i);
 
     void INC(Rgstr r);
 
     void INC(RegisterPair r);
 
-    void INC(MemoryAddress memoryAddress);
+    void INC(const MemoryAddress memoryAddress);
 
     void IND();
 
@@ -298,20 +290,9 @@ public:
     void XOR(std::uint8_t val);
     void XOR(MemoryAddress memoryAddress);
 
-//    std::uint8_t fetchInstruction();
-
-//    Memory *getMemory();
-
-//      void setMemory(int[] memory);
-
-//    void setMemory(Memory *memory);
-
     std::uint16_t getRegisterPairValue(RegisterPair register);
 
     std::uint8_t getRegisterValue(Rgstr register);
-
-//    void placeProgramCounterOnAddressBus();
-
 
     std::uint8_t getA();
     void setA(std::uint8_t a);
@@ -379,10 +360,10 @@ public:
     void process();
     void process(std::uint8_t count);
 
-private:
-    IO *getIo();
 
-    void setIo(IO* io);
+//     IO *getIo();
+// 
+//     void setIo(IO* io);
 
     bool getNFlag();
 
@@ -423,7 +404,10 @@ private:
     void setIFF2(bool iFF2);
 
 
+    void setRegister(Rgstr register, std::uint8_t value);
 
+    void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
+private:
     void pushPCtoStack();
 
     std::uint8_t readIO(std::uint16_t address);
@@ -432,9 +416,6 @@ private:
 
     void setFlags(std::uint8_t value);
 
-    void setRegister(Rgstr register, std::uint8_t value);
-
-    void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
 
     void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 

@@ -4,9 +4,9 @@ using namespace std;
 
 #include "tools/Case.hpp"
 
-#include <tools/FinalNode.hpp>
-#include <tools/Instruction.hpp>
-#include <tools/Switch.hpp>
+//#include <tools/FinalNode.hpp>
+//#include <tools/Instruction.hpp>
+//#include <tools/Switch.hpp>
 #include <tools/GetData.hpp>
 
 Case::Case()

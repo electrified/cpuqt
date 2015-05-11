@@ -30,33 +30,33 @@
 #include "EmulationProcessor.h"
 #include <boost/utility/binary.hpp>
 #include <iostream>
-#include <cstdint>
+//#include <cstdint>
+//
+//#include "Z80/baseprocessordecoder.h"
+//#include "Z80/Processor.h"
+//#include "Z80/Register.hpp"
+//#include "Z80/RegisterPair.hpp"
+//#include "Z80/Condition.hpp"
+//#include "Z80/Memory.h"
+//#include "Z80/MemoryAddress.h"
+//#include "Z80/IO.h"
 
-#include "Z80/Processor.h"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
-#include "Z80/Condition.hpp"
-#include "Z80/Memory.h"
-#include "Z80/MemoryAddress.h"
-#include "Z80/IO.h"
-
-EmulationProcessor::EmulationProcessor() {
-//    EmulationProcessor::EmulationProcessor(new InstructionDecoderGenerated());
-//    setMemory(new BadgerMemory());
+EmulationProcessor::EmulationProcessor(Memory& memory, IO& io) : BaseProcessorDecoder::BaseProcessorDecoder(memory, io){
 }
 
 //EmulationProcessor::EmulationProcessor(InstructionDecoder* decoder) : BaseProcessor() {
 //    std::cout << "EmulationProcessor ctr" << std::endl;
 //    instructionDecoder = decoder;
 //    io = new BadgerIO();
+//    io = new BadgerIO();
 //    instructionDecoder->setProcessor(this);
 //}
 
 
-EmulationProcessor::~EmulationProcessor() {
-//    delete memory;
-//    delete instructionDecoder;
-}
+// EmulationProcessor::~EmulationProcessor() {
+// //    delete memory;
+// //    delete instructionDecoder;
+// }
 
 
 void EmulationProcessor::ADC(RegisterPair hl, RegisterPair bc) {
@@ -75,7 +75,7 @@ void EmulationProcessor::ADC(Rgstr rgstr, std::uint8_t val) {
 
 
 void EmulationProcessor::ADC(Rgstr rgstr, MemoryAddress memoryAddress) {
-    setRegister(rgstr, this->getRegisterValue(rgstr) + getMemory()->read(getMemoryAddress(memoryAddress)) + (getCFlag() ? 1 : 0));
+    setRegister(rgstr, this->getRegisterValue(rgstr) + getMemory().read(getMemoryAddress(memoryAddress)) + (getCFlag() ? 1 : 0));
 }
 
 //
@@ -120,7 +120,7 @@ void EmulationProcessor::ADD(Rgstr destination, Rgstr source) {
 
 
 void EmulationProcessor::ADD(Rgstr destination, MemoryAddress memoryAddress) {
-    setRegister(destination, getRegisterValue(destination) + getMemory()->read(getMemoryAddress(memoryAddress)));
+    setRegister(destination, getRegisterValue(destination) + getMemory().read(getMemoryAddress(memoryAddress)));
 }
 
 
@@ -135,7 +135,7 @@ void EmulationProcessor::AND(std::uint8_t value) {
 
 
 void EmulationProcessor::AND(MemoryAddress memoryAddress) {
-    setA(getA() & getMemory()->read(getMemoryAddress(memoryAddress)));
+    setA(getA() & getMemory().read(getMemoryAddress(memoryAddress)));
 }
 
 /**
@@ -158,7 +158,7 @@ void EmulationProcessor::BIT(std::uint8_t y, Rgstr rgstr) {
 
 
 void EmulationProcessor::BIT(std::uint8_t i, MemoryAddress memoryAddress) {
-    std::uint8_t value = getMemory()->read(getMemoryAddress(memoryAddress));
+    std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress));
     BIT(i, value);
 }
 
@@ -270,7 +270,7 @@ void EmulationProcessor::CP(Rgstr val) {
 
 
 void EmulationProcessor::CP(MemoryAddress memoryAddress) {
-    CP(getMemory()->read(getMemoryAddress(memoryAddress)));
+    CP(getMemory().read(getMemoryAddress(memoryAddress)));
 }
 
 
@@ -319,9 +319,9 @@ void EmulationProcessor::DAA() {
 
 void EmulationProcessor::DEC(MemoryAddress memoryAddress) {
     std::uint16_t address = getMemoryAddress(memoryAddress);
-    std::uint8_t newvalue = getMemory()->read(address) - 1;
+    std::uint8_t newvalue = getMemory().read(address) - 1;
 
-    getMemory()->write(address, newvalue);
+    getMemory().write(address, newvalue);
 
     if (newvalue < 0) {
         setSignFlag(true);
@@ -415,24 +415,24 @@ void EmulationProcessor::EI() {
 
 
 void EmulationProcessor::EX(MemoryAddress memoryAddress, RegisterPair rgstr) {
-    std::uint8_t loMemVal = getMemory()->read(getMemoryAddress(memoryAddress));
-    std::uint8_t hiMemVal = getMemory()->read(getMemoryAddress(memoryAddress) + 1);
+    std::uint8_t loMemVal = getMemory().read(getMemoryAddress(memoryAddress));
+    std::uint8_t hiMemVal = getMemory().read(getMemoryAddress(memoryAddress) + 1);
 
     switch (rgstr) {
         case RegisterPair::HL:
-        getMemory()->write(getSP(), getL());
-        getMemory()->write(getSP() + 1, getH());
+        getMemory().write(getSP(), getL());
+        getMemory().write(getSP() + 1, getH());
         setL(loMemVal);
         setH(hiMemVal);
         break;
     case RegisterPair::IX:
-        getMemory()->write(getSP(), getIXL());
-        getMemory()->write(getSP() + 1, getIXH());
+        getMemory().write(getSP(), getIXL());
+        getMemory().write(getSP() + 1, getIXH());
         setIX((hiMemVal << 8) | loMemVal);
         break;
     case RegisterPair::IY:
-        getMemory()->write(getSP(), getIYL());
-        getMemory()->write(getSP() + 1, getIYH());
+        getMemory().write(getSP(), getIYL());
+        getMemory().write(getSP() + 1, getIYH());
         setIY((hiMemVal << 8) | loMemVal);
         break;
     }
@@ -494,9 +494,8 @@ void EmulationProcessor::IM(std::uint8_t im) {
  * @param i
  */
 
-void EmulationProcessor::in(Rgstr rgstr, MemoryAddress i) {
-    //(getB() << 8) |
-    setRegister(rgstr, getIo()->read(getMemoryAddress(i)));
+void EmulationProcessor::in(Rgstr rgstr, const MemoryAddress& i) {
+    setRegister(rgstr, getIO().read(getMemoryAddress(i)));
 }
 
 
@@ -521,12 +520,12 @@ void EmulationProcessor::in(Rgstr rgstr, MemoryAddress i) {
  */
 
 void EmulationProcessor::INC(MemoryAddress memoryAddress) {
-    if (getMemory()->read(getMemoryAddress(memoryAddress)) == 0x7F) {
+    if (getMemory().read(getMemoryAddress(memoryAddress)) == 0x7F) {
         setParityOverflowFlag(true);
     }
 
-    std::uint8_t newValue = (getMemory()->read(getMemoryAddress(memoryAddress)) + 1) & 0xff;
-    getMemory()->write(getMemoryAddress(memoryAddress), newValue);
+    std::uint8_t newValue = (getMemory().read(getMemoryAddress(memoryAddress)) + 1) & 0xff;
+    getMemory().write(getMemoryAddress(memoryAddress), newValue);
 
     if (newValue < 0) {
         setSignFlag(true);
@@ -645,32 +644,32 @@ void EmulationProcessor::LD(RegisterPair rgstrPair, std::uint8_t immediateValue)
 
 
 void EmulationProcessor::LD(MemoryAddress memoryAddress, Rgstr rgstr) {
-    getMemory()->write(getMemoryAddress(memoryAddress), getRegisterValue(rgstr));
+    getMemory().write(getMemoryAddress(memoryAddress), getRegisterValue(rgstr));
 }
 
 
 void EmulationProcessor::LD(Rgstr a, MemoryAddress memoryAddress) {
-    std::uint8_t value = getMemory()->read(getMemoryAddress(memoryAddress));
+    std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress));
     setRegister(a, value);
     setFlags(value);
 }
 
 
 void EmulationProcessor::LD(MemoryAddress memoryAddress, RegisterPair rgstr) {
-    getMemory()->write(getMemoryAddress(memoryAddress), getRegisterPairValue(rgstr) & 0xff);
-    getMemory()->write(getMemoryAddress(memoryAddress) + 1, getRegisterPairValue(rgstr) >> 8);
+    getMemory().write(getMemoryAddress(memoryAddress), getRegisterPairValue(rgstr) & 0xff);
+    getMemory().write(getMemoryAddress(memoryAddress) + 1, getRegisterPairValue(rgstr) >> 8);
 }
 
 
 void EmulationProcessor::LD(RegisterPair rgstrPair, MemoryAddress memoryAddress) {
-    std::uint8_t value = getMemory()->read(getMemoryAddress(memoryAddress)) | (getMemory()->read(getMemoryAddress(memoryAddress) + 1) << 8);
+    std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress)) | (getMemory().read(getMemoryAddress(memoryAddress) + 1) << 8);
     setRegisterPair(rgstrPair, value);
     setFlags(value);
 }
 
 
 void EmulationProcessor::LD(MemoryAddress memoryAddress, std::uint8_t i) {
-    getMemory()->write(getMemoryAddress(memoryAddress), i);
+    getMemory().write(getMemoryAddress(memoryAddress), i);
     setFlags(i);
 }
 
@@ -835,10 +834,10 @@ void EmulationProcessor::OUTI() {
 
 void EmulationProcessor::POP(RegisterPair rgstr) {
 
-    std::uint8_t lo = getMemory()->read(getSP());
+    std::uint8_t lo = getMemory().read(getSP());
 
     incrementSP();
-    std::uint8_t hi = getMemory()->read(getSP());
+    std::uint8_t hi = getMemory().read(getSP());
     incrementSP();
     setRegisterPair(rgstr, lo, hi);
 }
@@ -858,9 +857,9 @@ void EmulationProcessor::POP(RegisterPair rgstr) {
 void EmulationProcessor::PUSH(RegisterPair valueRegister) {
     std::uint16_t value = getRegisterPairValue(valueRegister);
     decrementSP();
-    getMemory()->write(getSP(), value >> 8);
+    getMemory().write(getSP(), value >> 8);
     decrementSP();
-    getMemory()->write(getSP(), value & 0xff);
+    getMemory().write(getSP(), value & 0xff);
 }
 
 
@@ -908,9 +907,9 @@ void EmulationProcessor::RET(Condition condition) {
 void EmulationProcessor::RET() {
     // TODO: this doesn't quite follow what the spec says.
     // shouldn't wipe out high order when setting low order
-    setPC(getMemory()->read(getSP())); // set low order
+    setPC(getMemory().read(getSP())); // set low order
     incrementSP();
-    setPC(getMemory()->read(getSP()) << 8 | getPC()); // set
+    setPC(getMemory().read(getSP()) << 8 | getPC()); // set
     // high
     // order
     incrementSP();
@@ -1042,12 +1041,12 @@ void EmulationProcessor::RRCA() {
  */
 
 void EmulationProcessor::RRD() {
-    std::uint8_t priorMemory = getMemory()->read(getHL());
+    std::uint8_t priorMemory = getMemory().read(getHL());
     std::uint8_t priorAccumulator = getA();
 
     setA((priorMemory & BOOST_BINARY(1111)) | (priorAccumulator & BOOST_BINARY(11110000)));
 
-    getMemory()->write(getHL(),
+    getMemory().write(getHL(),
                       (priorMemory >> 4) | ((priorAccumulator & BOOST_BINARY(1111)) << 4));
 }
 
@@ -1128,8 +1127,8 @@ void EmulationProcessor::SET(std::uint8_t y, Rgstr rgstr) {
 
 
 void EmulationProcessor::SET(std::uint8_t i, MemoryAddress memoryAddress) {
-    std::uint8_t currentMemoryContents = getMemory()->read(getMemoryAddress(memoryAddress));
-    getMemory()->write(getMemoryAddress(memoryAddress), currentMemoryContents | (1 << i));
+    std::uint8_t currentMemoryContents = getMemory().read(getMemoryAddress(memoryAddress));
+    getMemory().write(getMemoryAddress(memoryAddress), currentMemoryContents | (1 << i));
 }
 
 
@@ -1598,13 +1597,13 @@ std::uint8_t EmulationProcessor::getIYL() {
     return IY & BOOST_BINARY(11111111);
 }
 
-IO* EmulationProcessor::getIo() {
-    return io;
-}
-
-void EmulationProcessor::setIo(IO* io) {
-    this->io = io;
-}
+// IO* EmulationProcessor::getIo() {
+//     return io;
+// }
+// 
+// void EmulationProcessor::setIo(IO* io) {
+//     this->io = io;
+// }
 
 /**
  * @return the l
@@ -1699,8 +1698,8 @@ std::uint16_t EmulationProcessor::getRegisterPairValue(RegisterPair rgstr) {
         return getHL_alt();
     case RegisterPair::AF_prime:
         return getAF_alt();
-//    default:
-//        throw new RuntimeException("Invalid rgstr " + rgstr);
+    default:
+        throw UnknownRegisterPairException();
     }
 }
 
@@ -1734,8 +1733,8 @@ std::uint8_t EmulationProcessor::getRegisterValue(Rgstr rgstr) {
         return getR();
     case Rgstr::I:
         return getI();
-//    default:
-//        throw new RuntimeException("Invalid rgstr " + rgstr);
+    default:
+        throw UnknownRegisterPairException();
     }
 }
 
@@ -1874,9 +1873,9 @@ void EmulationProcessor::process(std::uint8_t count) {
 
 void EmulationProcessor::pushPCtoStack() {
     decrementSP();
-    getMemory()->write(getSP(), (getPC() >> 8));
+    getMemory().write(getSP(), (getPC() >> 8));
     decrementSP();
-    getMemory()->write(getSP(), (getPC() & 0xff));
+    getMemory().write(getSP(), (getPC() & 0xff));
 }
 
 /**
@@ -1884,7 +1883,7 @@ void EmulationProcessor::pushPCtoStack() {
  * @return
  */
 std::uint8_t EmulationProcessor::readIO(std::uint16_t address) {
-    return io->read(address);
+    return getIO().read(address);
 }
 
 /**
@@ -2039,7 +2038,7 @@ void EmulationProcessor::unimplemented() {
  */
 void EmulationProcessor::writeIO(std::uint16_t address, std::uint8_t value) {
 //    logger.debug("Writing IO: addr:" + address + " val:" + value);
-    io->write(address, value);
+    getIO().write(address, value);
 }
 
 std::uint16_t EmulationProcessor::getMemoryAddress(MemoryAddress memoryAddress) {

@@ -34,7 +34,7 @@ set(Z80_SRC
     #Z80/InstructionDecoder.cpp Z80/InstructionDecoder.h Z80/InstructionDecoderGenerated.cpp Z80/InstructionDecoderGenerated.h
 )
 
-set(tooltests_SRC catch.hpp tools/Test.cpp)
+set(tooltests_SRC tools/Test.cpp)
 
 add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC})
 

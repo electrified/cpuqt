@@ -1,4 +1,14 @@
 #pragma once
+#include <exception>
+
+class UnknownRegisterPairException: public std::exception
+{
+    virtual const char* what() const throw()
+    {
+        return "My exception happened";
+    }
+};
+
 
 enum class RegisterPair {
     unknown,

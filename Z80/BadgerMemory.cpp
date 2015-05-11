@@ -3,7 +3,7 @@
 //
 #include "BadgerMemory.h"
 #include <iostream>
-#include <cstdint>
+//#include <cstdint>
 
 
 BadgerMemory::BadgerMemory() {
