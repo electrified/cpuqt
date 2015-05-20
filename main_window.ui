@@ -20,9 +20,9 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QToolButton" name="toolButton">
+     <widget class="QToolButton" name="loadRomButton">
       <property name="text">
-       <string>...</string>
+       <string>Load ROM</string>
       </property>
      </widget>
     </item>
@@ -133,5 +133,25 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>loadRomButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadRom()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>144</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>loadRom()</slot>
+ </slots>
 </ui>

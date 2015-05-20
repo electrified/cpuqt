@@ -1,12 +1,12 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.0.2)
 
 project(testproject)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
-
+# set(CMAKE_AUTOMOC ON)
+# set(CMAKE_AUTOUIC ON)
 # Find the QtWidgets library
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 #set(Boost_DEBUG OFF)
@@ -18,7 +18,29 @@ find_package(Boost COMPONENTS regex system filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 #message(${Boost_LIBRARIES})
-set(cpuqt2_SRCS cpuqt2.cpp main.cpp MainWindow.h )
+
+
+set (GuiLib_src ${PROJECT_SOURCE_DIR}/main_window.cpp)
+set (GuiLib_hdr ${PROJECT_SOURCE_DIR}/main_window.h)
+set (GuiLib_ui  ${PROJECT_SOURCE_DIR}/main_window.ui)
+set (GuiBin_src ${PROJECT_SOURCE_DIR}/main.cpp)
+
+qt5_wrap_cpp(GuiLib_hdr_moc ${GuiLib_hdr})
+qt5_wrap_ui (GuiLib_ui_moc  ${GuiLib_ui})
+
+include_directories (${PROJECT_SOURCE_DIR})
+include_directories (${PROJECT_BINARY_DIR})
+
+# add_library(main_window main_window.cpp)
+add_library (GuiLib SHARED 
+    ${GuiLib_src}
+    ${GuiLib_hdr_moc}
+    ${GuiLib_ui_moc}
+)
+
+qt5_use_modules(GuiLib Widgets)
+
+# set(cpuqt2_SRCS cpuqt2.cpp main.cpp )
 
 set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp tools/Case.cpp tools/Case.hpp)
 
@@ -36,7 +58,7 @@ set(Z80_SRC
 
 set(tooltests_SRC tools/Test.cpp)
 
-add_executable(cpuqt2 ${cpuqt2_SRCS} ${Z80_SRC})
+add_executable(cpuqt2 ${GuiBin_src} ${Z80_SRC})
 
 add_executable(tool ${tools_SRC} ${Z80_SRC})
 
@@ -52,7 +74,7 @@ set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(tool ${Boost_LIBRARIES})
-target_link_libraries(cpuqt2 Qt5::Widgets)
+target_link_libraries(cpuqt2 GuiLib)
 target_link_libraries(tooltests ${Boost_LIBRARIES})
 
 if (WIN32)
