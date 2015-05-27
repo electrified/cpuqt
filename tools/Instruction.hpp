@@ -26,19 +26,11 @@ public:
     unsigned long long getScore() const;
     virtual string getMnemonic() const;
     virtual void setMnemonic(string mnemonic);
-//    virtual int32_t* getSize();
-//    virtual void setSize(int32_t* size);
     virtual vector<int> getOpcodes() const;
     virtual void setOpcodes(vector<int> opcodes);
-//    virtual vector<uint8_t>* getClock();
-//    virtual void setClock(vector<uint8_t>* clock);
-//    virtual string* getFlags();
-//    virtual void setFlags(string* flags);
-//    virtual string* getEffect();
-//    virtual void setEffect(string* effect);
     virtual string getFunctionisedMethodName();
     vector<string> getMethodParams();
-    
+
     static const string useCondition[];
     static const string registers[];
     static const string registerpairs[];
@@ -47,7 +39,7 @@ public:
 private:
     string getParam(string part, bool indirect, uint32_t dataParamsUsed, vector< uint32_t > dataParams);
     int32_t paramsRequired(string part);
-    vector< uint32_t > dataParams();
+    vector<uint32_t> dataParams();
 
 
 public:

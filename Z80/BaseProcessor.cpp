@@ -54,17 +54,17 @@ Memory& BaseProcessor::getMemory() {
     return memory;
 }
 
-void BaseProcessor::setMemory(Memory& memory) {
-    this->memory = memory;
-}
+// void BaseProcessor::setMemory(Memory& memory) {
+//     this->memory = memory;
+// }
 
 IO& BaseProcessor::getIO() {
     return io;
 }
 
-void BaseProcessor::setIO(IO& io) {
-    this->io = io;
-}
+// void BaseProcessor::setIO(IO& io) {
+//     this->io = io;
+// }
 
 std::uint8_t BaseProcessor::fetchInstruction() {
     return getMemory().read(addressBus);

@@ -48,7 +48,6 @@ class EmulationProcessor : public BaseProcessorDecoder {
     std::uint8_t _IM;
     Logger logger;
 public:
-//     using BaseProcessorDecoder::BaseProcessorDecoder;
     EmulationProcessor(Memory& memory, IO& io);
 //     ~EmulationProcessor();
     void ADC(RegisterPair hl, RegisterPair bc);
@@ -186,17 +185,10 @@ public:
 
     void NEG();
 
-    /**
-     * NOP - 0
-     */
     void NOP();
 
     void OR(Rgstr iX2);
 
-    /**
-     * OR n - f6 n
-     * @param immediateValue
-     */
     void OR(std::uint8_t immediateValue);
 
     void OR(MemoryAddress memoryAddress);
@@ -400,6 +392,8 @@ public:
     void setRegister(Rgstr register, std::uint8_t value);
 
     void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
+    
+    void doOneScreenRefreshesWorth();
 private:
     void pushPCtoStack();
 
@@ -419,7 +413,5 @@ private:
     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
 
     void decrementSP();
-
-    void doOneScreenRefreshesWorth();
 };
 #endif // EMULATIONPROCESSOR_H

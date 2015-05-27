@@ -26,15 +26,22 @@
  *
  */
 
-#ifndef MEMORY_H
-#define MEMORY_H
-#include <cstdint>
-class Memory
+#ifndef DISASSEMBLYMODEL_H
+#define DISASSEMBLYMODEL_H
+#include <QAbstractTableModel>
+#include "Z80/Memory.h"
+
+class DisassemblyModel : public QAbstractTableModel
 {
+    Q_OBJECT
 public:
-    virtual std::uint8_t read(std::uint16_t address) = 0;
-    virtual void write(std::uint16_t address, std::uint8_t value) = 0;
-    virtual std::uint16_t size() = 0;
+    DisassemblyModel(Memory& memory, QObject *parent);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE ;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+private:
+    Memory& memory;
 };
 
-#endif // MEMORY_H
+#endif // DISASSEMBLYMODEL_H

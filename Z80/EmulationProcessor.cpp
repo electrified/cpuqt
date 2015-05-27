@@ -38,38 +38,17 @@ void EmulationProcessor::ADC(RegisterPair hl, RegisterPair bc) {
     unimplemented();
 }
 
-
 void EmulationProcessor::ADC(Rgstr a, Rgstr b) {
     setRegister(a, this->getRegisterValue(a) + this->getRegisterValue(b) + (getCFlag() ? 1 : 0));
 }
-
 
 void EmulationProcessor::ADC(Rgstr rgstr, std::uint8_t val) {
     setRegister(rgstr, this->getRegisterValue(rgstr) + val + (getCFlag() ? 1 : 0));
 }
 
-
 void EmulationProcessor::ADC(Rgstr rgstr, MemoryAddress memoryAddress) {
     setRegister(rgstr, this->getRegisterValue(rgstr) + getMemory().read(getMemoryAddress(memoryAddress)) + (getCFlag() ? 1 : 0));
 }
-
-//
-//     void ADC(RegisterPair rp2) {
-//        setHL(getHL() + getRegisterPairValue(rp2) + (getCFlag() ? 1 : 0));
-//    }
-
-/**
- * @param val
- */
-//
-//     void ADCA(Rgstr val) {
-//        ADCA(getRegisterValue(val));
-//    }
-//
-//
-//     void ADCA(std::uint8_t val) {
-//        this.setA(this.getA() + val + (getCFlag() ? 1 : 0));
-//    }
 
 /**
  * The contents of rgstr pair ss (any of rgstr
@@ -470,7 +449,7 @@ void EmulationProcessor::IM(std::uint8_t im) {
  */
 
 void EmulationProcessor::in(Rgstr rgstr, const MemoryAddress& i) {
-    setRegister(rgstr, getIO().read(getMemoryAddress(i)));
+    setRegister(rgstr, io.read(getMemoryAddress(i)));
 }
 
 
@@ -1184,9 +1163,10 @@ void EmulationProcessor::decrementSP() {
 
 void EmulationProcessor::doOneScreenRefreshesWorth() {
     // At 4Mhz, 20 milliseconds of execution corresponds to 80,000 cycles
-    for (std::uint8_t i = 0; i < 80000; i++) {
+    for (std::uint32_t i = 0; i < 80000; i++) {
         process();
     }
+    cout << "doone" << endl;
 }
 
 /**
@@ -1902,14 +1882,6 @@ void EmulationProcessor::setFlags(std::uint8_t value) {
     setParityOverflowFlag(isIFF2());
     setNFlag(false); // N
 }
-
-/**
- * @param memory the memory to set
- */
-
-//void EmulationProcessor::setMemory(Memory* memory) {
-//    this->memory = memory;
-//}
 
 void EmulationProcessor::setRegister(Rgstr rgstr, std::uint8_t value) {
 //    logger.debug("Setting value 0x" + value + " for rgstr " + rgstr);

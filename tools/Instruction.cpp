@@ -93,16 +93,6 @@ void Instruction::setMnemonic(string mnemonic)
     this->mnemonic = mnemonic;
 }
 
-//int32_t* Instruction::getSize()
-//{
-//    return size;
-//}
-//
-//void Instruction::setSize(int32_t* size)
-//{
-//    this->size = size;
-//}
-
 vector<int> Instruction::getOpcodes() const
 {
     return opcodes;
@@ -112,36 +102,6 @@ void Instruction::setOpcodes(vector<int> opcodes)
 {
     this->opcodes = opcodes;
 }
-//
-//vector<uint8_t>* Instruction::getClock()
-//{
-//    return clocks;
-//}
-//
-//void Instruction::setClock(vector<uint8_t>* clock)
-//{
-//    this->clocks = clock;
-//}
-//
-//std::string* Instruction::getFlags()
-//{
-//    return flags;
-//}
-//
-//void Instruction::setFlags(string* flags)
-//{
-//    this->flags = flags;
-//}
-//
-//std::string* Instruction::getEffect()
-//{
-//    return effect;
-//}
-//
-//void Instruction::setEffect(string* effect)
-//{
-//    this->effect = effect;
-//}
 
 std::string Instruction::getFunctionisedMethodName()
 {

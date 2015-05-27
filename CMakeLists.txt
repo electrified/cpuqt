@@ -20,8 +20,8 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 #message(${Boost_LIBRARIES})
 
 
-set (GuiLib_src ${PROJECT_SOURCE_DIR}/main_window.cpp)
-set (GuiLib_hdr ${PROJECT_SOURCE_DIR}/main_window.h)
+set (GuiLib_src ${PROJECT_SOURCE_DIR}/main_window.cpp ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp)
+set (GuiLib_hdr ${PROJECT_SOURCE_DIR}/main_window.h ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h)
 set (GuiLib_ui  ${PROJECT_SOURCE_DIR}/main_window.ui)
 set (GuiBin_src ${PROJECT_SOURCE_DIR}/main.cpp)
 
@@ -63,6 +63,9 @@ add_executable(cpuqt2 ${GuiBin_src} ${Z80_SRC})
 add_executable(tool ${tools_SRC} ${Z80_SRC})
 
 add_executable(tooltests ${Z80_SRC} ${tooltests_SRC})
+
+set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
+set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
 
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)

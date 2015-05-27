@@ -36,6 +36,7 @@
 #include "Z80/Condition.hpp"
 #include "Z80/MemoryAddress.h"
 #include "Z80/Memory.h"
+#include "Z80/IO.h"
 
 class Processor
 {
@@ -240,11 +241,11 @@ public:
 
     virtual Memory& getMemory() = 0;
 
-    virtual void setMemory(Memory& memory) = 0;
+//     virtual void setMemory(Memory& memory) = 0;
 
     virtual IO& getIO() = 0;
 
-    virtual void setIO(IO& io) = 0;
+//     virtual void setIO(IO& io) = 0;
     
     virtual std::uint16_t getRegisterPairValue(RegisterPair register) = 0;
 

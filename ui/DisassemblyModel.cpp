@@ -26,15 +26,53 @@
  *
  */
 
-#ifndef MEMORY_H
-#define MEMORY_H
-#include <cstdint>
-class Memory
-{
-public:
-    virtual std::uint8_t read(std::uint16_t address) = 0;
-    virtual void write(std::uint16_t address, std::uint8_t value) = 0;
-    virtual std::uint16_t size() = 0;
-};
+#include "DisassemblyModel.h"
+#include "Logger.h"
 
-#endif // MEMORY_H
+
+DisassemblyModel::DisassemblyModel(Memory& memory, QObject *parent)
+    : memory(memory), QAbstractTableModel(parent)
+{
+}
+
+int DisassemblyModel::rowCount(const QModelIndex & /*parent*/) const
+{
+   return this->memory.size();
+}
+
+int DisassemblyModel::columnCount(const QModelIndex & /*parent*/) const
+{
+    return 2;
+}
+
+QVariant DisassemblyModel::headerData(int section, Qt::Orientation orientation, int role) const{
+    if(orientation == Qt::Horizontal) {
+
+        if (role == Qt::DisplayRole)
+    {
+        switch(section) {
+            case 0:
+                return QString("Memory address");
+            case 1:
+                return QString("Value");
+        }
+    }
+    }
+    return QAbstractTableModel::headerData(section, orientation, role);
+}
+
+QVariant DisassemblyModel::data(const QModelIndex &index, int role) const
+{
+    if (role == Qt::DisplayRole)
+    {
+        switch(index.column()) {
+            case 0:
+                return QString("%1")
+                   .arg(index.row());
+            case 1:
+                return QString("%1")
+                   .arg(this->memory.read(index.row()));
+        }
+    }
+    return QVariant();
+}

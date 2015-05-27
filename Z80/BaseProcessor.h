@@ -59,9 +59,9 @@ public:
     std::uint16_t getPC();
     void setPC(std::uint16_t pC);
     Memory& getMemory();
-    void setMemory(Memory& memory);
+//     void setMemory(Memory& memory);
     IO& getIO();
-    void setIO(IO& io);
+//     void setIO(IO& io);
     std::uint8_t fetchInstruction();
     std::uint8_t instructionByteCount = 0;
     std::uint8_t getNextByte();
