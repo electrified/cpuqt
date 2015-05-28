@@ -151,12 +151,17 @@ void MainWindow::update_register_values() {
     this->ui->ix_value->setText(int_to_hex(emulationProcessor->getIX()));
     this->ui->iy_value->setText(int_to_hex(emulationProcessor->getIY()));
     this->ui->hl_value->setText(int_to_hex(emulationProcessor->getHL()));
+    this->ui->a_value->setText(int_to_hex(emulationProcessor->getA()));
+    this->ui->b_value->setText(int_to_hex(emulationProcessor->getB()));
+    this->ui->c_value->setText(int_to_hex(emulationProcessor->getC()));
+    this->ui->d_value->setText(int_to_hex(emulationProcessor->getD()));
+    this->ui->e_value->setText(int_to_hex(emulationProcessor->getE()));
+    this->ui->f_value->setText(int_to_hex(emulationProcessor->getF()));
     std::cout << "updating display " << std::endl;
 }
 
 void MainWindow::step()
 {
-    QMessageBox::information(this, tr("filename"), "step");
     emulationProcessor->process();
     update_register_values();
 }

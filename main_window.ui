@@ -408,7 +408,7 @@
    <sender>actionStep</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>stop()</slot>
+   <slot>step()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -428,5 +428,6 @@
   <slot>run()</slot>
   <slot>stop()</slot>
   <slot>reset()</slot>
+  <slot>step()</slot>
  </slots>
 </ui>
