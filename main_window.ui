@@ -30,7 +30,7 @@
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>29</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -41,7 +41,6 @@
      <property name="title">
       <string>Recent</string>
      </property>
-     <addaction name="actionTest_2"/>
     </widget>
     <addaction name="actionLoad_ROM"/>
     <addaction name="actionQuit"/>
@@ -60,6 +59,7 @@
     <addaction name="actionRun"/>
     <addaction name="actionStop"/>
     <addaction name="actionReset"/>
+    <addaction name="actionStep"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmu_Control"/>
@@ -74,18 +74,158 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QLabel" name="label">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="pc_label">
        <property name="text">
         <string>PC</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="pcLabel">
+     <item row="0" column="1">
+      <widget class="QLabel" name="pc_value">
        <property name="text">
-        <string/>
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="sp_label">
+       <property name="text">
+        <string>SP</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="ix_label">
+       <property name="text">
+        <string>IX</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="iy_label">
+       <property name="text">
+        <string>IY</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="sp_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="ix_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="iy_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="a_label">
+       <property name="text">
+        <string>A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="b_label">
+       <property name="text">
+        <string>B</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="c_label">
+       <property name="text">
+        <string>C</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="d_label">
+       <property name="text">
+        <string>D</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="a_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLabel" name="b_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLabel" name="c_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLabel" name="d_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="e_label">
+       <property name="text">
+        <string>E</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLabel" name="e_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLabel" name="f_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="f_label">
+       <property name="text">
+        <string>F</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="hl_label">
+       <property name="text">
+        <string>HL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="hl_value">
+       <property name="text">
+        <string>0</string>
        </property>
       </widget>
      </item>
@@ -95,7 +235,7 @@
   <widget class="QDockWidget" name="dockWidget_2">
    <property name="minimumSize">
     <size>
-     <width>96</width>
+     <width>102</width>
      <height>183</height>
     </size>
    </property>
@@ -126,6 +266,7 @@
    <addaction name="actionQuit"/>
    <addaction name="actionLoad_ROM"/>
    <addaction name="actionRun"/>
+   <addaction name="actionStep"/>
    <addaction name="actionStop"/>
    <addaction name="actionAbout"/>
   </widget>
@@ -159,14 +300,9 @@
     <string>R&amp;eset</string>
    </property>
   </action>
-  <action name="actionTest">
+  <action name="actionStep">
    <property name="text">
-    <string>Test</string>
-   </property>
-  </action>
-  <action name="actionTest_2">
-   <property name="text">
-    <string>Test</string>
+    <string>Step</string>
    </property>
   </action>
  </widget>
@@ -257,6 +393,22 @@
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>reset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionStep</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stop()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

@@ -1,7 +1,9 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 
+#include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <QString>
 #include <QFileDialog>
@@ -24,13 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
     
     model2 = new DisassemblyModel(*bm, this);
 
-        Logger l;
-    l.debug("MainWindow::MainWindow");
-
     // Attach the model to the view
     ui->disassemblyView->setModel(model2);
-    
-//     timer = new QTimer(this);
+
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     
     initial_recent_menu_population();
@@ -64,8 +62,6 @@ void MainWindow::update_recents_list(QString rom_path)
         settings.setValue("path",rom_path);
         settings.endArray();
         settings.sync();
-        
-
     }
 }
 
@@ -125,6 +121,7 @@ void MainWindow::update()
 {
     l.debug("update!");
     emulationProcessor->doOneScreenRefreshesWorth();
+    update_register_values();
 }
 
 void MainWindow::showAboutBox() {
@@ -146,4 +143,35 @@ std::vector<char> MainWindow::ReadAllBytes(char const* filename)
     ifs.read(&result[0], pos);
 
     return result;
+}
+
+void MainWindow::update_register_values() {
+    this->ui->pc_value->setText(int_to_hex(emulationProcessor->getPC()));
+    this->ui->sp_value->setText(int_to_hex(emulationProcessor->getSP()));
+    this->ui->ix_value->setText(int_to_hex(emulationProcessor->getIX()));
+    this->ui->iy_value->setText(int_to_hex(emulationProcessor->getIY()));
+    this->ui->hl_value->setText(int_to_hex(emulationProcessor->getHL()));
+    std::cout << "updating display " << std::endl;
+}
+
+void MainWindow::step()
+{
+    QMessageBox::information(this, tr("filename"), "step");
+    emulationProcessor->process();
+    update_register_values();
+}
+
+void MainWindow::reset()
+{
+    emulationProcessor->reset();
+    update_register_values();
+}
+
+template<typename T> QString MainWindow::int_to_hex( T i )
+{
+  std::stringstream stream;
+  stream << std::showbase
+         << std::setfill ('0') << std::setw(sizeof(T)*2)
+         << std::hex << i;
+  return QString::fromStdString(stream.str());
 }

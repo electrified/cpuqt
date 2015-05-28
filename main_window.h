@@ -5,6 +5,7 @@
 #include "ui/DisassemblyModel.h"
 #include <QStandardItemModel>
 #include <QTimer>
+#include <iomanip>
 #include "Logger.h"
 
 namespace Ui {
@@ -22,14 +23,13 @@ public:
 private:
     Ui::MainWindow *ui;
     EmulationProcessor *emulationProcessor;
-    // QStandardItemModel provides a classic 
-    // item-based approach to working with the model.
-//     QStandardItemModel *model;
     DisassemblyModel *model2;
     QTimer timer;
     Logger l;
     void initial_recent_menu_population();
     void add_recent_menu_item(QString rom_path);
+    void update_register_values();
+    template< typename T > QString int_to_hex( T i );
 private slots:
     void loadRom();
     void loadRom(QString file_path);
@@ -39,5 +39,7 @@ private slots:
     void stop();
     void update();
     void update_recents_list(QString rom_path);
+    void step();
+    void reset();
 };
 

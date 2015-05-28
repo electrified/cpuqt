@@ -394,12 +394,13 @@ public:
     void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
     
     void doOneScreenRefreshesWorth();
+    void reset();
 private:
     void pushPCtoStack();
 
     std::uint8_t readIO(std::uint16_t address);
 
-    void reset();
+
 
     void setFlags(std::uint8_t value);
 

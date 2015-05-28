@@ -17,8 +17,6 @@ find_package(Boost COMPONENTS regex system filesystem REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-#message(${Boost_LIBRARIES})
-
 
 set (GuiLib_src ${PROJECT_SOURCE_DIR}/main_window.cpp ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp)
 set (GuiLib_hdr ${PROJECT_SOURCE_DIR}/main_window.h ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h)
@@ -31,17 +29,6 @@ qt5_wrap_ui (GuiLib_ui_moc  ${GuiLib_ui})
 include_directories (${PROJECT_SOURCE_DIR})
 include_directories (${PROJECT_BINARY_DIR})
 
-# add_library(main_window main_window.cpp)
-add_library (GuiLib SHARED 
-    ${GuiLib_src}
-    ${GuiLib_hdr_moc}
-    ${GuiLib_ui_moc}
-)
-
-qt5_use_modules(GuiLib Widgets)
-
-# set(cpuqt2_SRCS cpuqt2.cpp main.cpp )
-
 set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp tools/Case.cpp tools/Case.hpp)
 
 set(Z80_SRC
@@ -53,8 +40,19 @@ set(Z80_SRC
     Z80/baseprocessordecoder.cpp Z80/baseprocessordecoder.h
     Z80/badgerio.cpp Z80/badgerio.h  Z80/BadgerMemory.cpp Z80/BadgerMemory.h
     Logger.cpp Logger.h
-    #Z80/InstructionDecoder.cpp Z80/InstructionDecoder.h Z80/InstructionDecoderGenerated.cpp Z80/InstructionDecoderGenerated.h
 )
+
+add_library(Z80 SHARED
+    ${Z80_SRC}
+)
+
+add_library (GuiLib STATIC
+    ${GuiLib_src}
+    ${GuiLib_hdr_moc}
+    ${GuiLib_ui_moc}
+)
+
+qt5_use_modules(GuiLib Widgets)
 
 set(tooltests_SRC tools/Test.cpp)
 
@@ -67,6 +65,9 @@ add_executable(tooltests ${Z80_SRC} ${tooltests_SRC})
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
 
+set_property(TARGET Z80 PROPERTY CXX_STANDARD 11)
+set_property(TARGET Z80 PROPERTY CXX_STANDARD_REQUIRED ON)
+
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
@@ -77,7 +78,7 @@ set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(tool ${Boost_LIBRARIES})
-target_link_libraries(cpuqt2 GuiLib)
+target_link_libraries(cpuqt2 GuiLib Z80)
 target_link_libraries(tooltests ${Boost_LIBRARIES})
 
 if (WIN32)
