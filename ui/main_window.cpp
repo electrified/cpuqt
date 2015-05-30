@@ -11,7 +11,7 @@
 #include <QtWidgets/QTableView>
 #include <QSettings>
 
-#include "Z80/badgerio.h"
+#include "ui/badgerio.h"
 #include "Z80/BadgerMemory.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->disassemblyView->setModel(model2);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    
+    connect(bo, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
     initial_recent_menu_population();
 }
 
@@ -125,7 +125,7 @@ void MainWindow::update()
 }
 
 void MainWindow::showAboutBox() {
-    
+    QMessageBox::about(this,"Badgersoft","Z80 Emulator (c) 2015 Badgersoft");
 }
 
 void MainWindow::quit() {
@@ -179,4 +179,9 @@ template<typename T> QString MainWindow::int_to_hex( T i )
          << std::setfill ('0') << std::setw(sizeof(T)*2)
          << std::hex << i;
   return QString::fromStdString(stream.str());
+}
+
+void MainWindow::outputCharacterToConsole(char value)
+{
+    this->ui->plainTextEdit->insertPlainText(QString(value));
 }

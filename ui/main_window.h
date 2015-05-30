@@ -41,5 +41,6 @@ private slots:
     void update_recents_list(QString rom_path);
     void step();
     void reset();
+    void outputCharacterToConsole(char value);
 };
 

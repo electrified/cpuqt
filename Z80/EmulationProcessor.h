@@ -50,43 +50,43 @@ class EmulationProcessor : public BaseProcessorDecoder {
 public:
     EmulationProcessor(Memory& memory, IO& io);
 //     ~EmulationProcessor();
-    void ADC(RegisterPair hl, RegisterPair bc);
+    void ADC(const RegisterPair hl, const RegisterPair bc);
 
-    void ADC(Rgstr a, Rgstr b);
+    void ADC(const Rgstr a, const Rgstr b);
 
-    void ADC(Rgstr a, std::uint8_t i);
+    void ADC(const Rgstr a, const std::uint8_t i);
 
-    void ADC(Rgstr a, const MemoryAddress memoryAddress);
+    void ADC(const Rgstr a, const MemoryAddress memoryAddress);
 
-    void ADD(RegisterPair destination, RegisterPair register);
+    void ADD(const RegisterPair destination, const RegisterPair register);
 
-    void ADD(Rgstr a, std::uint8_t nextByte);
+    void ADD(const Rgstr a, const std::uint8_t nextByte);
 
-    void ADD(Rgstr a, Rgstr b);
+    void ADD(const Rgstr a, const Rgstr b);
 
-    void ADD(Rgstr a, const MemoryAddress memoryAddress);
+    void ADD(const Rgstr a, const MemoryAddress memoryAddress);
 
-    void AND(Rgstr iX2);
+    void AND(const Rgstr iX2);
 
-    void AND(std::uint8_t iX2);
+    void AND(const std::uint8_t iX2);
 
     void AND(const MemoryAddress memoryAddress);
 
-    void BIT(std::uint8_t y, Rgstr register);
+    void BIT(const std::uint8_t y, const Rgstr register);
 
-    void BIT(std::uint8_t i, const MemoryAddress memoryAddress);
+    void BIT(const std::uint8_t i, const MemoryAddress memoryAddress);
 
-    void BIT(std::uint8_t y, std::uint8_t value);
+    void BIT(const std::uint8_t y, const std::uint8_t value);
 
-    void CALL(Condition c, const MemoryAddress memoryAddress);
+    void CALL(const Condition c, const MemoryAddress memoryAddress);
 
     void CALL(const MemoryAddress memoryAddress);
 
     void CCF();
 
-    void CP(std::uint8_t val);
+    void CP(const std::uint8_t val);
 
-    void CP(Rgstr val);
+    void CP(const Rgstr val);
 
     void CP(const MemoryAddress memoryAddress);
 
@@ -106,9 +106,9 @@ public:
      * DEC B - 5
      * @param r
      */
-    void DEC(Rgstr r);
+    void DEC(const Rgstr r);
 
-    void DEC(RegisterPair r);
+    void DEC(const RegisterPair r);
 
     void DEC(const MemoryAddress memoryAddress);
 
@@ -118,21 +118,21 @@ public:
 
     void EI();
 
-    void EX(RegisterPair de, RegisterPair hl);
+    void EX(const RegisterPair de, const RegisterPair hl);
 
-    void EX(const MemoryAddress memoryAddress, RegisterPair ix);
+    void EX(const MemoryAddress memoryAddress, const RegisterPair ix);
 
     void EXX();
 
     void HALT();
 
-    void IM(std::uint8_t im);
+    void IM(const std::uint8_t im);
 
-    void in(Rgstr a,const MemoryAddress& i);
+    void in(const Rgstr a,const MemoryAddress& i);
 
-    void INC(Rgstr r);
+    void INC(const Rgstr r);
 
-    void INC(RegisterPair r);
+    void INC(const RegisterPair r);
 
     void INC(const MemoryAddress memoryAddress);
 
@@ -144,36 +144,36 @@ public:
 
     void INIR();
 
-    void JP(Condition c, MemoryAddress i);
+    void JP(const Condition c, const MemoryAddress i);
 
-    void JP(MemoryAddress memoryAddress);
+    void JP(const MemoryAddress memoryAddress);
 
-    void JR(Condition nz, MemoryAddress memoryAddress);
+    void JR(const Condition nz, const MemoryAddress memoryAddress);
 
-    void JR(MemoryAddress memoryAddress);
+    void JR(const MemoryAddress memoryAddress);
 
-    void LD(Rgstr register, std::uint8_t memoryAddress);
+    void LD(const Rgstr register, const std::uint8_t memoryAddress);
 
-    void LD(Rgstr r1, Rgstr r2);
+    void LD(const Rgstr r1, const Rgstr r2);
 
-    void LD(RegisterPair r1, RegisterPair r2);
+    void LD(const RegisterPair r1, const RegisterPair r2);
 
     /**
      * LD SP,nn - 31 n n
      * @param registerPair
      * @param immediateValue
      */
-    void LD(RegisterPair registerPair, std::uint8_t immediateValue);
+    void LD(const RegisterPair registerPair, const std::uint16_t immediateValue);
 
-    void LD(MemoryAddress memoryAddress, Rgstr a);
+    void LD(const MemoryAddress memoryAddress, const Rgstr a);
 
-    void LD(Rgstr a, MemoryAddress memoryAddress);
+    void LD(const Rgstr a, const MemoryAddress memoryAddress);
 
-    void LD(MemoryAddress memoryAddress, RegisterPair hl);
+    void LD(const MemoryAddress memoryAddress, const RegisterPair hl);
 
-    void LD(RegisterPair hl, MemoryAddress memoryAddress);
+    void LD(const RegisterPair hl, const MemoryAddress memoryAddress);
 
-    void LD(MemoryAddress memoryAddress, std::uint8_t i);
+    void LD(const MemoryAddress memoryAddress, const std::uint8_t i);
 
     void LDD();
 
@@ -187,31 +187,31 @@ public:
 
     void NOP();
 
-    void OR(Rgstr iX2);
+    void OR(const Rgstr iX2);
 
-    void OR(std::uint8_t immediateValue);
+    void OR(const std::uint8_t immediateValue);
 
-    void OR(MemoryAddress memoryAddress);
+    void OR(const MemoryAddress memoryAddress);
 
     void OTDR();
 
     void OTIR();
 
-    void out(MemoryAddress address, Rgstr register);
+    void out(const MemoryAddress address, const Rgstr register);
 
     void OUTD();
 
     void OUTI();
 
-    void POP(RegisterPair iy);
+    void POP(const RegisterPair iy);
 
-    void PUSH(RegisterPair valueRegister);
+    void PUSH(const RegisterPair valueRegister);
 
-    void RES(std::uint8_t i, Rgstr b);
+    void RES(const std::uint8_t i, const Rgstr b);
 
-    void RES(std::uint8_t i, MemoryAddress memoryAddress);
+    void RES(const std::uint8_t i, const MemoryAddress memoryAddress);
 
-    void RET(Condition p);
+    void RET(const Condition p);
 
     void RET();
 
@@ -219,68 +219,68 @@ public:
 
     void RETN();
 
-    void RL(Rgstr r);
+    void RL(const Rgstr r);
 
-    void RL(MemoryAddress memoryAddress);
+    void RL(const MemoryAddress memoryAddress);
 
     void RLA();
 
-    void RLC(Rgstr register);
+    void RLC(const Rgstr register);
 
-    void RLC(MemoryAddress memoryAddress);
+    void RLC(const MemoryAddress memoryAddress);
 
     void RLCA();
 
     void RLD();
 
-    void RR(Rgstr r);
+    void RR(const Rgstr r);
 
-    void RR(MemoryAddress memoryAddress);
+    void RR(const MemoryAddress memoryAddress);
 
     void RRA();
 
-    void RRC(Rgstr r);
+    void RRC(const Rgstr r);
 
-    void RRC(MemoryAddress memoryAddress);
+    void RRC(const MemoryAddress memoryAddress);
 
     void RRCA();
 
     void RRD();
 
-    void RST(std::uint8_t i);
+    void RST(const std::uint8_t i);
 
-    void SBC(Rgstr a, std::uint8_t nextByte);
+    void SBC(const Rgstr a, const std::uint8_t nextByte);
 
-    void SBC(Rgstr a, Rgstr b);
+    void SBC(const Rgstr a, const Rgstr b);
 
-    void SBC(RegisterPair hl, RegisterPair hl1);
+    void SBC(const RegisterPair hl, const RegisterPair hl1);
 
-    void SBC(Rgstr a, MemoryAddress memoryAddress);
+    void SBC(const Rgstr a, const MemoryAddress memoryAddress);
 
     void SCF();
 
-    void SET(std::uint8_t y, Rgstr register);
+    void SET(const std::uint8_t y, const Rgstr register);
 
-    void SET(std::uint8_t i, MemoryAddress memoryAddress);
+    void SET(const std::uint8_t i, const MemoryAddress memoryAddress);
 
-    void SLA(Rgstr r);
+    void SLA(const Rgstr r);
 
-    void SLA(MemoryAddress memoryAddress);
+    void SLA(const MemoryAddress memoryAddress);
 
-    void SRA(Rgstr r);
+    void SRA(const Rgstr r);
 
-    void SRA(MemoryAddress memoryAddress);
+    void SRA(const MemoryAddress memoryAddress);
 
-    void SRL(Rgstr r);
-    void SRL(MemoryAddress memoryAddress);
+    void SRL(const Rgstr r);
+    void SRL(const MemoryAddress memoryAddress);
 
-    void SUB(Rgstr iX2);
-    void SUB(std::uint8_t iX2);
-    void SUB(MemoryAddress memoryAddress);
+    void SUB(const Rgstr iX2);
+    void SUB(const std::uint8_t iX2);
+    void SUB(const MemoryAddress memoryAddress);
 
-    void XOR(Rgstr val);
-    void XOR(std::uint8_t val);
-    void XOR(MemoryAddress memoryAddress);
+    void XOR(const Rgstr val);
+    void XOR(const std::uint8_t val);
+    void XOR(const MemoryAddress memoryAddress);
 
     std::uint16_t getRegisterPairValue(RegisterPair register);
 
@@ -400,10 +400,7 @@ private:
 
     std::uint8_t readIO(std::uint16_t address);
 
-
-
     void setFlags(std::uint8_t value);
-
 
     void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 

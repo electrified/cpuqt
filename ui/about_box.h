@@ -26,47 +26,20 @@
  *
  */
 
-#include "BaseProcessor.h"
-#include <iostream>
+#ifndef ABOUT_BOX_H
+#define ABOUT_BOX_H
 
-BaseProcessor::BaseProcessor(Memory& memory, IO& io) : io(io), memory(memory){
-    PC = 0;
+
+namespace Ui {
+class about_box;
 }
 
-BaseProcessor::~BaseProcessor() {
+class about_box
+{
+private:
+    Ui::about_box *ui;
+public:
+    about_box::about_box();
+};
 
-}
-
-void BaseProcessor::placeProgramCounterOnAddressBus() {
-    addressBus = this->getPC();
-    ++PC;
-}
-
-std::uint16_t BaseProcessor::getPC() {
-    return PC;
-}
-
-void BaseProcessor::setPC(std::uint16_t pc) {
-    PC = pc;
-}
-
-Memory& BaseProcessor::getMemory() {
-    return memory;
-}
-
-IO& BaseProcessor::getIO() {
-    return io;
-}
-
-std::uint8_t BaseProcessor::fetchInstruction() {
-    return getMemory().read(addressBus);
-}
-
-std::uint8_t BaseProcessor::getNextByte() {
-    ++instructionByteCount;
-    placeProgramCounterOnAddressBus();
-//     cout << "address bus " << addressBus << std::endl;
-
-    return fetchInstruction();
-}
-
+#endif // ABOUT_BOX_H

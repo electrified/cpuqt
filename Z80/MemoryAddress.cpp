@@ -37,22 +37,22 @@ MemoryAddress::MemoryAddress() {
     rgstr = Rgstr::unknown;
 }
 
-MemoryAddress::MemoryAddress(std::uint16_t  memoryAddress) : MemoryAddress() {
-    memoryAddress = memoryAddress;
+MemoryAddress::MemoryAddress(const std::uint16_t  memoryAddress) : MemoryAddress() {
+    this->memoryAddress = memoryAddress;
 }
 
-MemoryAddress::MemoryAddress(Rgstr rgstr) : MemoryAddress() {
-    rgstr = rgstr;
+MemoryAddress::MemoryAddress(const Rgstr rgstr) : MemoryAddress() {
+    this->rgstr = rgstr;
 }
 
-MemoryAddress::MemoryAddress(RegisterPair rgstrPair) : MemoryAddress() {
-    registerPair = rgstrPair;
+MemoryAddress::MemoryAddress(const RegisterPair rgstrPair) : MemoryAddress() {
+    this->registerPair = rgstrPair;
 }
 
-MemoryAddress::MemoryAddress(RegisterPair rgstrPair, std::uint8_t  offset) {
+MemoryAddress::MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
     MemoryAddress();
-    registerPair = rgstrPair;
-    offset = offset;
+    this->registerPair = rgstrPair;
+    this->offset = offset;
 }
 
 const std::uint16_t  MemoryAddress::getMemoryAddress() {

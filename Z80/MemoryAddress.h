@@ -42,15 +42,14 @@ class MemoryAddress
     RegisterPair registerPair;
 public:
     MemoryAddress();
-    MemoryAddress(std::uint16_t i);
-    MemoryAddress(Rgstr r);
-    MemoryAddress(RegisterPair rp);
-    MemoryAddress(RegisterPair rp, std::uint8_t offset);
+    MemoryAddress(const std::uint16_t i);
+    MemoryAddress(const Rgstr r);
+    MemoryAddress(const RegisterPair rp);
+    MemoryAddress(const RegisterPair rp, const std::uint8_t offset);
     const std::uint16_t getMemoryAddress();
     const std::uint8_t getOffset();
     const Rgstr getRegister();
     const RegisterPair getRegisterPair();
-
     const std::string toString();
 };
 

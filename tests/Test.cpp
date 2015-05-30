@@ -13,8 +13,6 @@ EmulationProcessor* setupProcessor() {
     BadgerMemory memory;
     TestIO io;
     EmulationProcessor* proc = new EmulationProcessor(memory, io);
-//     proc->setMemory();
-//     proc->setIO();
     return proc;
 }
 
@@ -135,7 +133,7 @@ TEST_CASE("BITb_IXplusd_Test") {
    proc->getMemory().write(0x3, BOOST_BINARY(01110110));
    proc->getMemory().write(0x2004, BOOST_BINARY(1101100));
    proc->setIX(0x2000);
-   proc->process(5);
+   proc->process();
    REQUIRE_FALSE(proc->getZeroFlag());
    REQUIRE((proc->getMemory().read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
 }
@@ -194,7 +192,6 @@ TEST_CASE("DECr8BitTest") {
    REQUIRE(proc->getD() == 0x29);
 }
 
-
 TEST_CASE("DECssTest") {
    EmulationProcessor* proc = setupProcessor();
    proc->getMemory().write(0x0, BOOST_BINARY(00101011));
@@ -203,7 +200,6 @@ TEST_CASE("DECssTest") {
    REQUIRE(proc->getHL() == 0x1000);
 }
 
-
 TEST_CASE("DITest") {
 
    EmulationProcessor* proc = setupProcessor();
@@ -211,7 +207,6 @@ TEST_CASE("DITest") {
    REQUIRE_FALSE(proc->isIFF1());
    REQUIRE_FALSE(proc->isIFF2());
 }
-
 
 TEST_CASE("DJNZeTest") {
    EmulationProcessor* proc = setupProcessor();
@@ -701,35 +696,34 @@ TEST_CASE("LDARTest") {
 
 
 TEST_CASE("LDddnnTest") {
-   EmulationProcessor* proc = setupProcessor();
-   proc->getMemory().write(0x0, 0x1);
+    EmulationProcessor* proc = setupProcessor();
+    proc->getMemory().write(0x0, 0x1);
     proc->getMemory().write(0x1, 0x45);
     proc->getMemory().write(0x2, 0xd);
-   proc->getMemory().write(0x3,  BOOST_BINARY(0010001));
+    proc->getMemory().write(0x3, BOOST_BINARY(0010001));
     proc->getMemory().write(0x4, 0x23);
     proc->getMemory().write(0x5, 0x43);
     proc->getMemory().write(0x6, BOOST_BINARY(0100001));
     proc->getMemory().write(0x7, 0xf5);
-   proc->getMemory().write(0x8, 0x61);
-   proc->getMemory().write(0x9, BOOST_BINARY(0110001));
-   proc->getMemory().write(0xA, 0xfc);
-   proc->getMemory().write(0xB, 0x21);
+    proc->getMemory().write(0x8, 0x61);
+    proc->getMemory().write(0x9, BOOST_BINARY(0110001));
+    proc->getMemory().write(0xA, 0xfc);
+    proc->getMemory().write(0xB, 0x21);
 
-   proc->process();
+    proc->process();
+    REQUIRE(proc->getC() == 0x45);
+    REQUIRE(proc->getB() == 0xd);
 
-   REQUIRE(proc->getC() == 0x45);
-   REQUIRE( proc->getB() == 0xd);
+    proc->process();
+    REQUIRE(proc->getE() == 0x23);
+    REQUIRE(proc->getD() == 0x43);
 
-   proc->process();
-   REQUIRE( proc->getE() == 0x23);
-   REQUIRE( proc->getD() == 0x43);
+    proc->process();
+    REQUIRE(proc->getL() == 0xf5);
+    REQUIRE(proc->getH() == 0x61);
 
-   proc->process();
-   REQUIRE(proc->getL() == 0xf5);
-   REQUIRE( proc->getH() == 0x61);
-
-   proc->process();
-   REQUIRE( proc->getSP() == 0x21fc);
+    proc->process();
+    REQUIRE(proc->getSP() == 0x21fc);
 }
 
 
@@ -740,19 +734,19 @@ TEST_CASE("LDHL_nn_Test") {
     * instruction LD HL , (2045H) the HL register pair contains A137H .
     */
 
-   EmulationProcessor* proc = setupProcessor();
+    EmulationProcessor* proc = setupProcessor();
     proc->getMemory().write(0x0, 0x2a);
     proc->getMemory().write(0x1, 0x45);
-    proc->getMemory().write(0x2, 0x20 );
+    proc->getMemory().write(0x2, 0x20);
 
-   proc->getMemory().write(0x2045, 0x37);
-   proc->getMemory().write(0x2046, 0xA1);
+    proc->getMemory().write(0x2045, 0x37);
+    proc->getMemory().write(0x2046, 0xA1);
 
-   REQUIRE(proc->getHL() == 0x0);
+    REQUIRE(proc->getHL() == 0x0);
 
-   proc->process();
+    proc->process();
 
-   REQUIRE( proc->getHL() == 0xA137);
+    REQUIRE( proc->getHL() == 0xA137);
 }
 
 
@@ -1066,7 +1060,6 @@ TEST_CASE("RLATest") {
    REQUIRE(proc->getA() == BOOST_BINARY(11101101));
 }
 
-
 TEST_CASE("RLCATest") {
    EmulationProcessor* proc = setupProcessor();
    // increment BC
@@ -1176,7 +1169,6 @@ TEST_CASE("SETb_IYplusd_Test") {
    proc->process(4);
    REQUIRE((proc->getMemory().read(0x2003) & 1) == 1);
 }
-
 
 TEST_CASE("SETbrTest") {
    EmulationProcessor* proc = setupProcessor();

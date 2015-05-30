@@ -31,7 +31,13 @@
 #include <boost/utility/binary.hpp>
 #include <iostream>
 
-EmulationProcessor::EmulationProcessor(Memory& memory, IO& io) : BaseProcessorDecoder::BaseProcessorDecoder(memory, io){
+EmulationProcessor::EmulationProcessor(Memory& memory, IO& io) : 
+A(0), B(0), C(0), D(0), E(0), F(0), H(0), L(0), I(0), R(0),
+IX(0), IY(0), SP(0),
+A_alt(0), B_alt(0), C_alt(0), D_alt(0), E_alt(0), F_alt(0), H_alt(0), L_alt(0),
+BaseProcessorDecoder::BaseProcessorDecoder(memory, io)
+{
+    std::cout << "EmulationProcessor ctor" << std::endl;
 }
 
 void EmulationProcessor::ADC(RegisterPair hl, RegisterPair bc) {
@@ -592,7 +598,7 @@ void EmulationProcessor::LD(RegisterPair r1, RegisterPair r2) {
 }
 
 
-void EmulationProcessor::LD(RegisterPair rgstrPair, std::uint8_t immediateValue) {
+void EmulationProcessor::LD(RegisterPair rgstrPair, std::uint16_t immediateValue) {
     setRegisterPair(rgstrPair, immediateValue);
 }
 
@@ -616,7 +622,7 @@ void EmulationProcessor::LD(MemoryAddress memoryAddress, RegisterPair rgstr) {
 
 
 void EmulationProcessor::LD(RegisterPair rgstrPair, MemoryAddress memoryAddress) {
-    std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress)) | (getMemory().read(getMemoryAddress(memoryAddress) + 1) << 8);
+    std::uint16_t value = getMemory().read(getMemoryAddress(memoryAddress)) | (getMemory().read(getMemoryAddress(memoryAddress) + 1) << 8);
     setRegisterPair(rgstrPair, value);
     setFlags(value);
 }
