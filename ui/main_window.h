@@ -5,7 +5,8 @@
 #include "ui/DisassemblyModel.h"
 #include <QStandardItemModel>
 #include <QTimer>
-#include <iomanip>
+#include <QSignalMapper>
+
 #include "Logger.h"
 
 namespace Ui {
@@ -25,11 +26,11 @@ private:
     EmulationProcessor *emulationProcessor;
     DisassemblyModel *model2;
     QTimer timer;
+    QSignalMapper recentItemsSignalMapper;
     Logger l;
     void initial_recent_menu_population();
     void add_recent_menu_item(QString rom_path);
     void update_register_values();
-    template< typename T > QString int_to_hex( T i );
 private slots:
     void loadRom();
     void loadRom(QString file_path);

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
+
 #include <vector>
 #include <QString>
 #include <QFileDialog>
@@ -13,6 +13,7 @@
 
 #include "ui/badgerio.h"
 #include "Z80/BadgerMemory.h"
+#include "utils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     BadgerIO* bo = new BadgerIO();
 
     emulationProcessor = new EmulationProcessor(*bm, *bo);
-    
+
     model2 = new DisassemblyModel(*bm, this);
 
     // Attach the model to the view
@@ -31,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(bo, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+    QObject::connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
+    
     initial_recent_menu_population();
 }
 
@@ -39,14 +42,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::update_recents_list(QString rom_path) 
+void MainWindow::update_recents_list(QString rom_path)
 {
-    QSettings settings;     
+    QSettings settings;
     int size = settings.beginReadArray("recentroms");
-    
+
     bool found = false;
-    
-    for (int i = 0; i < size; i++) 
+
+    for (int i = 0; i < size; i++)
     {
         settings.setArrayIndex(i);
         QString existing_path = settings.value("path").toString();
@@ -55,21 +58,23 @@ void MainWindow::update_recents_list(QString rom_path)
         }
     }
     settings.endArray();
-    
+
     if (!found) {
-        settings.beginReadArray("recentroms");
+        settings.beginWriteArray("recentroms");
         settings.setArrayIndex(size);
         settings.setValue("path",rom_path);
         settings.endArray();
         settings.sync();
+        add_recent_menu_item(rom_path);
     }
 }
 
 void MainWindow::initial_recent_menu_population() {
- QSettings settings;     
+    QSettings settings;
+    std::cout << settings.fileName().toStdString() << std::endl;
     int size = settings.beginReadArray("recentroms");
-    
-    for (int i = 0; i < size; i++) 
+    std::cout << "reading vals from config file " << size << std::endl;
+    for (int i = 0; i < size; ++i)
     {
         settings.setArrayIndex(i);
         QString existing_path = settings.value("path").toString();
@@ -79,19 +84,22 @@ void MainWindow::initial_recent_menu_population() {
 }
 
 void MainWindow::add_recent_menu_item(QString rom_path) {
+    std::cout << "adding to menu " << rom_path.toStdString() << std::endl;
     QAction* actionLoad_ROM = new QAction(this);
     actionLoad_ROM->setObjectName(rom_path);
+    actionLoad_ROM->setText(rom_path);
 //         actionLoad_ROM.setData(rom_path);
     ui->menuRecent->addAction(actionLoad_ROM);
-    QObject::connect(actionLoad_ROM, SIGNAL(triggered()), this, SLOT(loadRom(rom_path)));
+    recentItemsSignalMapper.setMapping(actionLoad_ROM, rom_path);
+    QObject::connect(actionLoad_ROM, SIGNAL(triggered()), &recentItemsSignalMapper, SLOT(map()));
 }
 
 void MainWindow::loadRom() {
     Logger l;
     l.debug("Loadrom called");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open ROM"), QDir::homePath(), tr("ROM Files (*.rom *.bin)"),0, QFileDialog::DontUseNativeDialog);
-    
-    if (fileName != NULL ) {    
+
+    if (fileName != NULL ) {
         update_recents_list(fileName);
         loadRom(fileName);
     }
@@ -100,7 +108,7 @@ void MainWindow::loadRom() {
 void MainWindow::loadRom(QString file_path) {
     QMessageBox::information(this, tr("filename"), file_path);
     auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
-    
+
     for (int i = 0; i < data.size(); ++i) {
         emulationProcessor->getMemory().write(i, data.at(i));
     }
@@ -146,17 +154,17 @@ std::vector<char> MainWindow::ReadAllBytes(char const* filename)
 }
 
 void MainWindow::update_register_values() {
-    this->ui->pc_value->setText(int_to_hex(emulationProcessor->getPC()));
-    this->ui->sp_value->setText(int_to_hex(emulationProcessor->getSP()));
-    this->ui->ix_value->setText(int_to_hex(emulationProcessor->getIX()));
-    this->ui->iy_value->setText(int_to_hex(emulationProcessor->getIY()));
-    this->ui->hl_value->setText(int_to_hex(emulationProcessor->getHL()));
-    this->ui->a_value->setText(int_to_hex(emulationProcessor->getA()));
-    this->ui->b_value->setText(int_to_hex(emulationProcessor->getB()));
-    this->ui->c_value->setText(int_to_hex(emulationProcessor->getC()));
-    this->ui->d_value->setText(int_to_hex(emulationProcessor->getD()));
-    this->ui->e_value->setText(int_to_hex(emulationProcessor->getE()));
-    this->ui->f_value->setText(int_to_hex(emulationProcessor->getF()));
+    this->ui->pc_value->setText(utils::int_to_hex(emulationProcessor->getPC()));
+    this->ui->sp_value->setText(utils::int_to_hex(emulationProcessor->getSP()));
+    this->ui->ix_value->setText(utils::int_to_hex(emulationProcessor->getIX()));
+    this->ui->iy_value->setText(utils::int_to_hex(emulationProcessor->getIY()));
+    this->ui->hl_value->setText(utils::int_to_hex(emulationProcessor->getHL()));
+    this->ui->a_value->setText(utils::int_to_hex(emulationProcessor->getA()));
+    this->ui->b_value->setText(utils::int_to_hex(emulationProcessor->getB()));
+    this->ui->c_value->setText(utils::int_to_hex(emulationProcessor->getC()));
+    this->ui->d_value->setText(utils::int_to_hex(emulationProcessor->getD()));
+    this->ui->e_value->setText(utils::int_to_hex(emulationProcessor->getE()));
+    this->ui->f_value->setText(utils::int_to_hex(emulationProcessor->getF()));
     std::cout << "updating display " << std::endl;
 }
 
@@ -170,15 +178,6 @@ void MainWindow::reset()
 {
     emulationProcessor->reset();
     update_register_values();
-}
-
-template<typename T> QString MainWindow::int_to_hex( T i )
-{
-  std::stringstream stream;
-  stream << std::showbase
-         << std::setfill ('0') << std::setw(sizeof(T)*2)
-         << std::hex << i;
-  return QString::fromStdString(stream.str());
 }
 
 void MainWindow::outputCharacterToConsole(char value)

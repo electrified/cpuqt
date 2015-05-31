@@ -26,51 +26,22 @@
  *
  */
 
-#include "DisassemblyModel.h"
-#include "Logger.h"
-#include "utils.h"
+#pragma once
+#include <QString>
+#include <iostream>
+// #include <fstream>
+#include <iomanip>
+#include <sstream>
 
-DisassemblyModel::DisassemblyModel(Memory& memory, QObject *parent)
-    : memory(memory), QAbstractTableModel(parent)
-{
-}
-
-int DisassemblyModel::rowCount(const QModelIndex & /*parent*/) const
-{
-   return this->memory.size();
-}
-
-int DisassemblyModel::columnCount(const QModelIndex & /*parent*/) const
-{
-    return 2;
-}
-
-QVariant DisassemblyModel::headerData(int section, Qt::Orientation orientation, int role) const{
-    if(orientation == Qt::Horizontal) {
-
-        if (role == Qt::DisplayRole)
+namespace utils {
+    template<typename T> QString int_to_hex( T i )
     {
-        switch(section) {
-            case 0:
-                return QString("Memory address");
-            case 1:
-                return QString("Value");
-        }
+        std::stringstream stream;
+        stream << std::hex 
+        << "0x"
+               << std::setfill ('0') 
+            << std::setw(sizeof(T)*2)
+<< +i; //http://stackoverflow.com/questions/23575381/behavior-of-cout-hex-with-uint8-and-uint16
+        return QString::fromStdString(stream.str());
     }
-    }
-    return QAbstractTableModel::headerData(section, orientation, role);
-}
-
-QVariant DisassemblyModel::data(const QModelIndex &index, int role) const
-{
-    if (role == Qt::DisplayRole)
-    {
-        switch(index.column()) {
-            case 0:
-                return utils::int_to_hex(index.row());
-            case 1:
-                return utils::int_to_hex(this->memory.read(index.row()));
-        }
-    }
-    return QVariant();
 }

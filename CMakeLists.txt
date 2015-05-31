@@ -18,8 +18,19 @@ find_package(Boost COMPONENTS regex system filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-set (GuiLib_src ${PROJECT_SOURCE_DIR}/ui/main_window.cpp ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp ${PROJECT_SOURCE_DIR}/ui/badgerio.cpp)
-set (GuiLib_hdr ${PROJECT_SOURCE_DIR}/ui/main_window.h ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h ${PROJECT_SOURCE_DIR}/ui/badgerio.h)
+set (GuiLib_src 
+${PROJECT_SOURCE_DIR}/ui/main_window.cpp 
+${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp 
+${PROJECT_SOURCE_DIR}/ui/badgerio.cpp 
+)
+
+set (GuiLib_hdr 
+${PROJECT_SOURCE_DIR}/ui/utils.h
+${PROJECT_SOURCE_DIR}/ui/main_window.h 
+${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h
+${PROJECT_SOURCE_DIR}/ui/badgerio.h
+)
+
 set (GuiLib_ui  ${PROJECT_SOURCE_DIR}/ui/main_window.ui)
 set (GuiBin_src ${PROJECT_SOURCE_DIR}/main.cpp)
 
@@ -38,7 +49,6 @@ set(Z80_SRC
     Z80/IO.cpp Z80/IO.h Z80/TestIO.h Z80/TestIO.cpp
     Z80/BaseProcessor.cpp Z80/BaseProcessor.h
     Z80/baseprocessordecoder.cpp Z80/baseprocessordecoder.h
-#     Z80/badgerio.cpp Z80/badgerio.h
     Z80/BadgerMemory.cpp Z80/BadgerMemory.h
     Logger.cpp Logger.h
 )
