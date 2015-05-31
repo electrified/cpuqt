@@ -1980,7 +1980,7 @@ void EmulationProcessor::setRegisterPair(RegisterPair rgstr, std::uint8_t lowOrd
 }
 
 void EmulationProcessor::unimplemented() {
-    //throw new RuntimeException("Unimplemented instruction");
+    throw  UnimplementedInstructionException();
 }
 
 /**

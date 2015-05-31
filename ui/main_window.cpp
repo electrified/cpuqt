@@ -14,6 +14,7 @@
 #include "ui/badgerio.h"
 #include "Z80/BadgerMemory.h"
 #include "utils.h"
+#include "ui/cpm_io.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     BadgerMemory* bm = new BadgerMemory();
     BadgerIO* bo = new BadgerIO();
 
-    emulationProcessor = new EmulationProcessor(*bm, *bo);
+    emulationProcessor = new cpm_io(*bm, *bo);
 
     model2 = new DisassemblyModel(*bm, this);
 
@@ -32,7 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(bo, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
-    QObject::connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
+    
+    connect((cpm_io*)emulationProcessor, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
+    
+    connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
     
     initial_recent_menu_population();
 }
@@ -110,8 +114,17 @@ void MainWindow::loadRom(QString file_path) {
     auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
 
     for (int i = 0; i < data.size(); ++i) {
-        emulationProcessor->getMemory().write(i, data.at(i));
+        emulationProcessor->getMemory().write(i + 0x100, data.at(i));
     }
+    
+    // HAX
+    emulationProcessor->getMemory().write(0,0xd3);       /* OUT N, A */
+    emulationProcessor->getMemory().write(1,0x00);
+
+    emulationProcessor->getMemory().write(5,0xdb);       /* IN A, N */
+    emulationProcessor->getMemory().write(6,0x00);
+    emulationProcessor->getMemory().write(7,0xc9);
+    emulationProcessor->setPC(0x100);
 }
 
 void MainWindow::run()

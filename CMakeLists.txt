@@ -22,6 +22,7 @@ set (GuiLib_src
 ${PROJECT_SOURCE_DIR}/ui/main_window.cpp 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp 
 ${PROJECT_SOURCE_DIR}/ui/badgerio.cpp 
+${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp 
 )
 
 set (GuiLib_hdr 
@@ -29,6 +30,7 @@ ${PROJECT_SOURCE_DIR}/ui/utils.h
 ${PROJECT_SOURCE_DIR}/ui/main_window.h 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h
 ${PROJECT_SOURCE_DIR}/ui/badgerio.h
+${PROJECT_SOURCE_DIR}/ui/cpm_io.h
 )
 
 set (GuiLib_ui  ${PROJECT_SOURCE_DIR}/ui/main_window.ui)

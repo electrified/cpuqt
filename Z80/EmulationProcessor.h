@@ -36,6 +36,15 @@
 #include "Z80/IO.h"
 #include "Logger.h"
 
+class UnimplementedInstructionException: public std::exception
+{
+    virtual const char* what() const throw()
+    {
+        return "Unimplemented instruction";
+    }
+};
+
+
 class EmulationProcessor : public BaseProcessorDecoder {
     std::uint8_t A, B, C, D, E, F, H, L, I, R;
     std::uint16_t IX, IY, SP;
@@ -395,7 +404,7 @@ public:
     
     void doOneScreenRefreshesWorth();
     void reset();
-private:
+protected:
     void pushPCtoStack();
 
     std::uint8_t readIO(std::uint16_t address);
