@@ -725,7 +725,8 @@ void EmulationProcessor::OR(std::uint8_t immediateValue) {
 
 
 void EmulationProcessor::OR(MemoryAddress memoryAddress) {
-    unimplemented();
+    setA((getA() | getMemory().read(getMemoryAddress(memoryAddress))));
+    setFlags(getA());
 }
 
 
