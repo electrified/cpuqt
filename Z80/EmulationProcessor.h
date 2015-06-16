@@ -345,6 +345,7 @@ public:
     void setH_alt(std::uint8_t h_alt);
     std::uint8_t getI();
     void setI(std::uint8_t i);
+    std::uint8_t getIM();
     std::uint16_t getIX();
     void setIX(std::uint16_t iX);
     std::uint8_t getIXH();
@@ -404,18 +405,18 @@ public:
     
     void doOneScreenRefreshesWorth();
     void reset();
+
 protected:
     void pushPCtoStack();
 
     std::uint8_t readIO(std::uint16_t address);
+    void writeIO(std::uint16_t address, std::uint8_t value);
 
     void setFlags(std::uint8_t value);
 
     void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 
     void unimplemented();
-
-    void writeIO(std::uint16_t address, std::uint8_t value);
 
     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
 

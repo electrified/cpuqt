@@ -57,6 +57,16 @@ TEST_CASE("ADCAnTest") {
 }
 
 
+TEST_CASE("ADCAnTest2") {
+    EmulationProcessor* proc = setupProcessor();
+    proc->getMemory().write(0x0, 0xCE);
+    proc->getMemory().write(0x1, 0xA5); // immediate value
+    proc->setA(0x17);
+    proc->setCFlag(true);
+    proc->process();
+    REQUIRE(proc->getA() == 0xbd);
+}
+
 TEST_CASE("ADCArTest") {
     EmulationProcessor* proc = setupProcessor();
 
@@ -69,6 +79,15 @@ TEST_CASE("ADCArTest") {
     REQUIRE(proc->getA() == 0xB0);
 }
 
+TEST_CASE("ADCArTest2") {
+    EmulationProcessor* proc = setupProcessor();
+    proc->getMemory().write(0x0,BOOST_BINARY(10001011)); // E register
+    proc->setE(0x16);
+    proc->setA(0xa8);
+    proc->setCFlag(true);
+    proc->process();
+    REQUIRE(proc->getA() == 0xbf);
+}
 
 
 TEST_CASE("ADDHLssTest") {
@@ -177,6 +196,18 @@ TEST_CASE("CPrTest") {
     REQUIRE_FALSE(proc->getParityOverflowFlag());
 }
 
+TEST_CASE("CPrTest2") {
+    EmulationProcessor* proc = setupProcessor();
+    proc->getMemory().write(0x0, BOOST_BINARY(10111101));
+    proc->getMemory().write(0x1, BOOST_BINARY(10111101)); // L
+    proc->setA(0x17);
+    proc->setL(0x17);
+    proc->process();
+    REQUIRE(proc->getZeroFlag());
+    proc->setA(0xFF);
+    proc->process();
+    REQUIRE_FALSE(proc->getZeroFlag());
+}
 
 
 TEST_CASE("DECr8BitTest") {
@@ -1187,28 +1218,6 @@ TEST_CASE("XORsTest") {
     REQUIRE(proc->getA() == BOOST_BINARY(11001011));
 }
 
-TEST_CASE("ADCArTest") {
-    EmulationProcessor* proc = setupProcessor();
-    proc->getMemory().write(0x0,BOOST_BINARY(10001011)); // E register
-    proc->setE(0x16);
-    proc->setA(0xa8);
-    proc->setCFlag(true);
-    proc->process();
-    REQUIRE(proc->getA() == 0xbf);
-}
-
-
-TEST_CASE("ADCAnTest") {
-    EmulationProcessor* proc = setupProcessor();
-    proc->getMemory().write(0x0, 0xCE);
-    proc->getMemory().write(0x1, 0xA5); // immediate value
-    proc->setA(0x17);
-    proc->setCFlag(true);
-    proc->process();
-    REQUIRE(proc->getA() == 0xbd);
-}
-
-
 TEST_CASE("ADCA_hl_Test") {
     EmulationProcessor* proc = setupProcessor();
     proc->getMemory().write(0x0, 0x8e);
@@ -1324,7 +1333,7 @@ TEST_CASE("AND_ixplusd_Test") {
     proc->getMemory().write(0x0, 0xdd);
     proc->getMemory().write(0x1, 0xa6);
     proc->getMemory().write(0x2, 0x3);
-    proc->getMemory().write(0x10, 0b01111011);
+    proc->getMemory().write(0xA, 0b01111011);
     proc->setA(0b11000011);
     proc->setIX(0x7);
     proc->process();
@@ -1504,18 +1513,6 @@ TEST_CASE("CPIRTest") {
 
 
 
-TEST_CASE("CPrTest") {
-    EmulationProcessor* proc = setupProcessor();
-    proc->getMemory().write(0x0, BOOST_BINARY(10111101));
-    proc->getMemory().write(0x1, BOOST_BINARY(10111101)); // L
-    proc->setA(0x17);
-    proc->setL(0x17);
-    proc->process();
-    REQUIRE(proc->getZeroFlag());
-    proc->setA(0xFF);
-    proc->process();
-    REQUIRE_FALSE(proc->getZeroFlag());
-}
 
 
 TEST_CASE("CPnTest") {
@@ -1727,7 +1724,7 @@ TEST_CASE("IN_C_Test") {
 
 TEST_CASE("INr_C_Test") {
     EmulationProcessor* proc = setupProcessor();
-    proc->getIo().write(0x7, 0x7b);
+    proc->getIO().write(0x7, 0x7b);
     proc->getMemory().write(0x0, 0xED);
     proc->getMemory().write(0x1, BOOST_BINARY(01010000));
     proc->setC(0x07);
@@ -1942,9 +1939,9 @@ TEST_CASE("SUBTest") {
 }
 
 
-TEST_CASE("DITest") {
-    REQUIRE(true == false);
-}
+// TEST_CASE("DITest") {
+//     REQUIRE(true == false);
+// }
 
 
 
@@ -1974,10 +1971,5 @@ TEST_CASE("INITest") {
 
 
 TEST_CASE("ORTest") {
-    REQUIRE(true == false);
-}
-
-
-TEST_CASE("svgIcon") {
     REQUIRE(true == false);
 }

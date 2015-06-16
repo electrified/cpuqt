@@ -40,8 +40,8 @@ BaseProcessorDecoder::BaseProcessorDecoder(memory, io)
     std::cout << "EmulationProcessor ctor" << std::endl;
 }
 
-void EmulationProcessor::ADC(RegisterPair hl, RegisterPair bc) {
-    unimplemented();
+void EmulationProcessor::ADC(RegisterPair rp1, RegisterPair rp2) {
+    setRegisterPair(rp1, this->getRegisterPairValue(rp1) + this->getRegisterPairValue(rp2) + (getCFlag() ? 1 : 0));
 }
 
 void EmulationProcessor::ADC(Rgstr a, Rgstr b) {
@@ -1165,7 +1165,7 @@ void EmulationProcessor::XOR(MemoryAddress memoryAddress) {
 }
 
 void EmulationProcessor::decrementSP() {
-    setSP((getSP() - 1) & 0xffff);
+    setSP(getSP() - 1);
 }
 
 void EmulationProcessor::doOneScreenRefreshesWorth() {
@@ -1482,6 +1482,10 @@ void EmulationProcessor::setI(std::uint8_t i) {
     I = i;
 }
 
+std::uint8_t EmulationProcessor::getIM() {
+    return _IM;
+}
+
 /**
  * @return the iX
  */
@@ -1661,6 +1665,7 @@ std::uint16_t EmulationProcessor::getRegisterPairValue(RegisterPair rgstr) {
     case RegisterPair::AF_prime:
         return getAF_alt();
     default:
+//         logger.debug("Unknnown rgstr " + rgstr);
         throw UnknownRegisterPairException();
     }
 }
@@ -1695,6 +1700,7 @@ std::uint8_t EmulationProcessor::getRegisterValue(Rgstr rgstr) {
     case Rgstr::I:
         return getI();
     default:
+//         logger.debug("Unknnown rgstr " + rgstr);
         throw UnknownRegisterPairException();
     }
 }
