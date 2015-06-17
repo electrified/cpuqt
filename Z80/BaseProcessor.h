@@ -57,7 +57,7 @@ public:
     ~BaseProcessor();
     void placeProgramCounterOnAddressBus();
     std::uint16_t getPC();
-    void setPC(std::uint16_t pC);
+    void setPC(std::uint16_t pc);
     Memory& getMemory();
     IO& getIO();
     std::uint8_t fetchInstruction();

@@ -1,4 +1,3 @@
-using namespace std;
 #include <fstream>
 #include<boost/format.hpp>
 

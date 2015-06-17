@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-
+set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
 # Find includes in corresponding build directories

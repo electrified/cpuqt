@@ -53,7 +53,11 @@ void EmulationProcessor::ADC(Rgstr rgstr, std::uint8_t val) {
 }
 
 void EmulationProcessor::ADC(Rgstr rgstr, MemoryAddress memoryAddress) {
-    setRegister(rgstr, this->getRegisterValue(rgstr) + getMemory().read(getMemoryAddress(memoryAddress)) + (getCFlag() ? 1 : 0));
+    std::uint8_t flag = (getCFlag() ? 1 : 0);
+    std::uint16_t memoryAdd = getMemoryAddress(memoryAddress);
+    Memory& mem = getMemory();
+//    std::uint8_t memoryValue = mem.read(memoryAdd);
+//    setRegister(rgstr, this->getRegisterValue(rgstr) + memoryValue + flag);
 }
 
 /**
@@ -395,6 +399,8 @@ void EmulationProcessor::EX(MemoryAddress memoryAddress, RegisterPair rgstr) {
         getMemory().write(getSP() + 1, getIYH());
         setIY((hiMemVal << 8) | loMemVal);
         break;
+    default:
+        throw UnknownRegisterPairException();
     }
 
 }
@@ -1929,8 +1935,8 @@ void EmulationProcessor::setRegister(Rgstr rgstr, std::uint8_t value) {
     case Rgstr::I:
         setI(value);
         break;
-//    default:
-//        throw new RuntimeException("Invalid rgstr " + rgstr);
+    default:
+        throw UnknownRegisterException();
     }
 }
 

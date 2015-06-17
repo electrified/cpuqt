@@ -16,6 +16,7 @@ public:
     std::uint8_t read(std::uint16_t address);
     void write(std::uint16_t address, std::uint8_t value);
     std::uint16_t size();
+    virtual ~BadgerMemory();
 };
 
 

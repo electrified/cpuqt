@@ -50,7 +50,6 @@ MemoryAddress::MemoryAddress(const RegisterPair rgstrPair) : MemoryAddress() {
 }
 
 MemoryAddress::MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) : MemoryAddress() {
-    MemoryAddress();
     this->registerPair = rgstrPair;
     this->offset = offset;
 }
