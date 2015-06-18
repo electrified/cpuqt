@@ -40,6 +40,11 @@ BaseProcessorDecoder::BaseProcessorDecoder(memory, io)
     std::cout << "EmulationProcessor ctor" << std::endl;
 }
 
+EmulationProcessor::~EmulationProcessor() {
+    delete &memory;
+    delete &io;
+}
+
 void EmulationProcessor::ADC(RegisterPair rp1, RegisterPair rp2) {
     setRegisterPair(rp1, this->getRegisterPairValue(rp1) + this->getRegisterPairValue(rp2) + (getCFlag() ? 1 : 0));
 }
@@ -56,8 +61,8 @@ void EmulationProcessor::ADC(Rgstr rgstr, MemoryAddress memoryAddress) {
     std::uint8_t flag = (getCFlag() ? 1 : 0);
     std::uint16_t memoryAdd = getMemoryAddress(memoryAddress);
     Memory& mem = getMemory();
-//    std::uint8_t memoryValue = mem.read(memoryAdd);
-//    setRegister(rgstr, this->getRegisterValue(rgstr) + memoryValue + flag);
+   std::uint8_t memoryValue = mem.read(memoryAdd);
+   setRegister(rgstr, this->getRegisterValue(rgstr) + memoryValue + flag);
 }
 
 /**
@@ -223,7 +228,7 @@ void EmulationProcessor::CP(std::uint8_t val) {
     this->setZeroFlag(result == 0);
     this->setSignFlag(result < 0);
     // this.setHFlag(flag);
-    // this.setParityOverflowFlag(flag);
+//     // this.setParityOverflowFlag(flag);
     this->setNFlag(true);
 }
 
@@ -237,24 +242,60 @@ void EmulationProcessor::CP(MemoryAddress memoryAddress) {
     CP(getMemory().read(getMemoryAddress(memoryAddress)));
 }
 
-
+/*
+ * The contents of the memory location addressed by the HL register pair is
+compared with the contents of the Accumulator. In case of a true
+compare, a condition bit is set. The HL and Byte Counter (register pair
+BC) are decremented.
+*/
 void EmulationProcessor::CPD() {
-    unimplemented();
+    CP(getMemory().read(getHL()));
+    
+    DEC(RegisterPair::HL);
+    DEC(RegisterPair::BC);
+    
+    setParityOverflowFlag(getBC() != 0);
 }
 
-
+/*
+ * The contents of the memory location addressed by the HL register pair is
+compared with the contents of the Accumulator. In case of a true compare,
+a condition bit is set. The HL and BC (Byte Counter) register pairs are
+decremented. If decrementing causes the BC to go to zero or if A = (HL),
+the instruction is terminated. If BC is not zero and A = (HL), the program
+counter is decremented by two and the instruction is repeated. Interrupts are
+recognized and two refresh cycles execute after each data transfer. When
+BC is set to zero, prior to instruction execution, the instruction loops
+through 64 Kbytes if no match is found.
+*/
 void EmulationProcessor::CPDR() {
-    unimplemented();
+    CPD();
+    if ( getBC() != 0 && getZeroFlag() == 0) {
+        setPC(getPC() - 2); //repeat instruction
+    }
 }
 
-
+/*
+ * The contents of the memory location addressed by the HL register is
+compared with the contents of the Accumulator. In case of a true compare,
+a condition bit is set. Then HL is incremented and the Byte Counter
+(register pair BC) is decremented.
+*/
 void EmulationProcessor::CPI() {
-    unimplemented();
+    CP(getMemory().read(getHL()));
+
+    INC(RegisterPair::HL);
+    DEC(RegisterPair::BC);
+        
+    setParityOverflowFlag(getBC() != 0);
 }
 
 
 void EmulationProcessor::CPIR() {
-    unimplemented();
+    CPI();
+    if ( getBC() != 0 && getZeroFlag() == 0) {
+        setPC(getPC() - 2); //repeat instruction
+    }
 }
 
 /**
@@ -345,16 +386,6 @@ void EmulationProcessor::DI() {
  * decrementing leaves B with a zero value, the next instruction executed is
  * taken from the location following this instruction
  */
-//
-//     void DJNZ(std::uint8_t jump) {
-//        setB(getB() - 1);
-//
-//        if (getB() > 0) {
-//            logger.debug("B rgstr > 0");
-//            setPC(getPC() + jump);
-//        }
-//    }
-
 void EmulationProcessor::DJNZ(MemoryAddress memoryAddress) {
     setB(getB() - 1);
 

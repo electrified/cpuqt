@@ -58,7 +58,7 @@ class EmulationProcessor : public BaseProcessorDecoder {
     Logger logger;
 public:
     EmulationProcessor(Memory& memory, IO& io);
-//     ~EmulationProcessor();
+    ~EmulationProcessor();
     void ADC(const RegisterPair hl, const RegisterPair bc);
 
     void ADC(const Rgstr a, const Rgstr b);
@@ -67,7 +67,7 @@ public:
 
     void ADC(const Rgstr a, const MemoryAddress memoryAddress);
 
-    void ADD(const RegisterPair destination, const RegisterPair register);
+    void ADD(const RegisterPair destination, const RegisterPair rgstr);
 
     void ADD(const Rgstr a, const std::uint8_t nextByte);
 
@@ -81,7 +81,7 @@ public:
 
     void AND(const MemoryAddress memoryAddress);
 
-    void BIT(const std::uint8_t y, const Rgstr register);
+    void BIT(const std::uint8_t y, const Rgstr rgstr);
 
     void BIT(const std::uint8_t i, const MemoryAddress memoryAddress);
 

@@ -5,9 +5,9 @@
 
 class BaseProcessorDecoder : public BaseProcessor {
 public:
-    BaseProcessorDecoder(Memory& memory, IO& io) : BaseProcessor::BaseProcessor(memory, io){
+    BaseProcessorDecoder(Memory& memory, IO& io) : BaseProcessor::BaseProcessor(memory, io)
+    {
     }
-
 
     void decode();
 };

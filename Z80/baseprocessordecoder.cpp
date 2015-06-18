@@ -7,7 +7,7 @@
 //#include "Z80/Memory.h"
 
 void BaseProcessorDecoder::decode() {
-std::uint8_t currentInstruction[4];
+std::uint8_t currentInstruction[4] = {};
 // get opcode
 currentInstruction[0] = getNextByte();
 switch (currentInstruction[0]) {
