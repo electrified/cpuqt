@@ -291,9 +291,9 @@ public:
     void XOR(const std::uint8_t val);
     void XOR(const MemoryAddress memoryAddress);
 
-    std::uint16_t getRegisterPairValue(RegisterPair register);
+    std::uint16_t getRegisterPairValue(const RegisterPair register);
 
-    std::uint8_t getRegisterValue(Rgstr register);
+    std::uint8_t getRegisterValue(const Rgstr register);
 
     std::uint8_t getA();
     void setA(std::uint8_t a);

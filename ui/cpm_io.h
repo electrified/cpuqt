@@ -39,7 +39,7 @@ public:
         cpm_io(Memory& memory, IO& io);
 //     cpm_io();
 //     ~cpm_io();
-void in(Rgstr rgstr, const MemoryAddress& i);
+void in(const Rgstr rgstr, const MemoryAddress& i);
 signals:
     void consoleTextOutput(char character);
 };

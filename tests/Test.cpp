@@ -803,7 +803,7 @@ TEST_CASE("LDIATest") {
     proc->process();
 
     REQUIRE( proc->getI() == 0xf9);
-    REQUIRE( proc->getF() == 0b10000000);
+    REQUIRE( proc->getF() == BOOST_BINARY(10000000));
 }
 
 
@@ -833,7 +833,7 @@ TEST_CASE("LDrn_Test") {
      */
 
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    proc->getMemory().write(0x0, 0b00011110);
+    proc->getMemory().write(0x0, BOOST_BINARY(00011110));
     proc->getMemory().write(0x1, 0xA5);
 
     REQUIRE(proc->getE() == 0x0);
@@ -853,7 +853,7 @@ TEST_CASE("LDRR_altTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
 
     // load a' into a
-    proc->getMemory().write(0x0, 0b01100111);
+    proc->getMemory().write(0x0, BOOST_BINARY(01100111));
     proc->setA(0xf9);
 
     REQUIRE(proc->getH() == 0x0);
@@ -909,10 +909,10 @@ TEST_CASE("NEGTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xED);
     proc->getMemory().write(0x1, 0x44);
-    proc->setA(0b10011000);
+    proc->setA(BOOST_BINARY(10011000));
     proc->process();
     proc->process();
-    REQUIRE(proc->getA() == 0b01100111);
+    REQUIRE(proc->getA() == BOOST_BINARY(01100111));
 }
 
 
@@ -925,7 +925,7 @@ TEST_CASE("OUT_C_rTest") {
      */
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xED);
-    proc->getMemory().write(0x1, 0b01010001);
+    proc->getMemory().write(0x1, BOOST_BINARY(01010001));
     proc->setC(0x01);
     proc->setD(0x5A);
     proc->process();
@@ -992,7 +992,7 @@ TEST_CASE("POPIYTest") {
 
 TEST_CASE("POPqqTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    proc->getMemory().write(0x0, 0b11100001); // HL
+    proc->getMemory().write(0x0, BOOST_BINARY(11100001)); // HL
     proc->getMemory().write(0x1000, 0x55);
     proc->getMemory().write(0x1001, 0x33);
     proc->setSP(0x1000);
@@ -1210,7 +1210,7 @@ TEST_CASE("SETb_IYplusd_Test") {
 TEST_CASE("SETbrTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xCB);
-    proc->getMemory().write(0x1, 0b11100111);
+    proc->getMemory().write(0x1, BOOST_BINARY(11100111));
     proc->process(2);
     REQUIRE((proc->getA() & BOOST_BINARY(10000)) == BOOST_BINARY(10000));
 }
@@ -1303,7 +1303,7 @@ TEST_CASE("ANDnTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xe6);
     proc->getMemory().write(0x1, BOOST_BINARY(01111011));
-    proc->setA(0b11000011);
+    proc->setA(BOOST_BINARY(11000011));
     proc->process();
     REQUIRE(proc->getA() == BOOST_BINARY(01000011));
 }
@@ -1316,7 +1316,7 @@ TEST_CASE("AND_HL_Test") {
     proc->getMemory().write(0x2, 0);
     proc->getMemory().write(0x3, 0);
     proc->getMemory().write(0x4, BOOST_BINARY(01111011));
-    proc->setA(0b11000011);
+    proc->setA(BOOST_BINARY(11000011));
     proc->setHL(0x4);
     proc->process();
     REQUIRE(proc->getA() == BOOST_BINARY(01000011));
@@ -1328,8 +1328,8 @@ TEST_CASE("AND_ixplusd_Test") {
     proc->getMemory().write(0x0, 0xdd);
     proc->getMemory().write(0x1, 0xa6);
     proc->getMemory().write(0x2, 0x3);
-    proc->getMemory().write(0xA, 0b01111011);
-    proc->setA(0b11000011);
+    proc->getMemory().write(0xA, BOOST_BINARY(01111011));
+    proc->setA(BOOST_BINARY(11000011));
     proc->setIX(0x7);
     proc->process();
     REQUIRE(proc->getA() == BOOST_BINARY(01000011));
@@ -1940,7 +1940,7 @@ TEST_CASE("SRLTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xCB);
     proc->getMemory().write(0x1, BOOST_BINARY(111000));
-    proc->setB(0b10001111);
+    proc->setB(BOOST_BINARY(10001111));
     REQUIRE_FALSE(proc->getCFlag());
     proc->process();
     REQUIRE(proc->getCFlag());

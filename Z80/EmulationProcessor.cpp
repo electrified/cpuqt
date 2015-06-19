@@ -35,7 +35,7 @@ EmulationProcessor::EmulationProcessor(Memory& memory, IO& io) :
 A(0), B(0), C(0), D(0), E(0), F(0), H(0), L(0), I(0), R(0),
 IX(0), IY(0), SP(0),
 A_alt(0), B_alt(0), C_alt(0), D_alt(0), E_alt(0), F_alt(0), H_alt(0), L_alt(0),
-BaseProcessorDecoder::BaseProcessorDecoder(memory, io)
+BaseProcessorDecoder(memory, io)
 {
     std::cout << "EmulationProcessor ctor" << std::endl;
 }

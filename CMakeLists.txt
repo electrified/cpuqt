@@ -91,7 +91,7 @@ set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(tool ${Boost_LIBRARIES})
-target_link_libraries(cpuqt2 GuiLib Z80)
+target_link_libraries(cpuqt2 GuiLib) # Z80
 target_link_libraries(tooltests ${Boost_LIBRARIES})
 
 if (WIN32)
