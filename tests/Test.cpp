@@ -385,13 +385,12 @@ TEST_CASE("EXXTest") {
     REQUIRE(proc->getHL_alt() == 0x8859);
 }
 
+/*
+ * If the contents of the Accumulator are 23H , and byte 7BH is
+ * available at the peripheral device mapped to I/O port 7BH .
+ * At execution of INA, (01H) the Accumulator contains 7BH.
+ */
 TEST_CASE("INA_n_Test") {
-    /*
-     * If the contents of the Accumulator are 23H , and byte 7BH is
-     * available at the peripheral device mapped to I/O port 7BH .
-     * At execution of INA, (01H) the Accumulator contains 7BH.
-
-     */
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xDB);
     proc->getMemory().write(0x1, 0x01);
@@ -412,7 +411,6 @@ TEST_CASE("INCr16BitTest") {
     REQUIRE(proc->getBC() == 51);
 }
 
-
 TEST_CASE("INCr8BitTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, BOOST_BINARY(00111100));
@@ -420,7 +418,6 @@ TEST_CASE("INCr8BitTest") {
     proc->process();
     REQUIRE(proc->getA() == 51);
 }
-
 
 TEST_CASE("INCssTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
@@ -430,7 +427,6 @@ TEST_CASE("INCssTest") {
     proc->process();
     REQUIRE(proc->getBC() == 51);
 }
-
 
 TEST_CASE("JPHLTest") {
 
@@ -2165,6 +2161,21 @@ TEST_CASE("SBCTest") {
     REQUIRE(true == false);
 }
 
+/*
+ * If the contents of the HL, register pair are 9999H, the contents of register
+pair DE are 1111H, and the Carry flag is set. At execution of SBC HL, DE
+the contents of HL are 8887H.*/
+TEST_CASE("SBCHLTest") {
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, BOOST_BINARY(01100010));
+    proc->setHL(0x9999);
+    proc->setDE(0x1111);
+    proc->setCFlag(true); //carry
+    proc->process();
+    REQUIRE(proc->getHL() == 0x8887);
+}
+
 TEST_CASE("SLATest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
@@ -2182,7 +2193,6 @@ TEST_CASE("SRATest") {
  * at execution of SRL B the contents of register B and the Carry flag are
  * 0b010001111
  */
-
 TEST_CASE("SRLTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xCB);
@@ -2194,9 +2204,17 @@ TEST_CASE("SRLTest") {
     REQUIRE(proc->getB() == BOOST_BINARY(01000111));
 }
 
+/**
+ * If the Accumulator contents are 29H, and register D contains 11H, at
+ * execution of SUB D the Accumulator contains 18H.
+ */
 TEST_CASE("SUBTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, BOOST_BINARY(10010010));
+    proc->setA(0x29);
+    proc->setD(0x11);
+    proc->process();
+    REQUIRE(proc->getA() == 0x18);
 }
 
 // TEST_CASE("DITest") {

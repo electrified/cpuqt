@@ -1,6 +1,3 @@
-//
-// Created by ed on 30/04/15.
-//
 #include "BadgerMemory.h"
 #include <iostream>
 

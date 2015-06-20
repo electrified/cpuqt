@@ -1,31 +1,3 @@
-/*
- * Copyright (c) 2015, <copyright holder> <email>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *     names of its contributors may be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY <copyright holder> <email> ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <copyright holder> <email> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- */
-
 #include "cpm_io.h"
 #include <iostream>
 
@@ -35,29 +7,17 @@ cpm_io::cpm_io(Memory& memory, IO& io) : EmulationProcessor(memory, io){
 void cpm_io::in(Rgstr rgstr, const MemoryAddress& i) {
     this->setRegister(rgstr, this->getIO().read(this->getMemoryAddress(i)));
 
-        if (this->getC() == 2) {
-//                 std::cout << this->getE() << std::endl;
-                            emit consoleTextOutput(this->getE());
+    if (this->getC() == 2) {
+        emit consoleTextOutput(this->getE());
+    }
+    else if (this->getC() == 9) {
+
+        int     i, c;
+
+        for (i = this->getDE(), c = 0;
+             this->getMemory().read(i) != '$';
+             i++) {
+            emit consoleTextOutput(this->getMemory().read(i & 0xffff));
         }
-        else if (this->getC() == 9) {
-
-                int     i, c;
-
-                for (i = this->getDE(), c = 0; 
-                        this->getMemory().read(i) != '$';
-                        i++) {
-
-//                         std::cout << this->getMemory().read(i & 0xffff) << std::endl;
-                            emit consoleTextOutput(this->getMemory().read(i & 0xffff));
-//                         if (c++ > MAXIMUM_STRING_LENGTH) {
-// 
-//                                 fprintf(stderr,
-//                                         "String to print is too long!\n");
-//                                 exit(EXIT_FAILURE);
-// 
-//                         }
-
-                }
-
-        }
+    }
 }

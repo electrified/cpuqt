@@ -114,12 +114,19 @@ void MainWindow::loadRom(QString file_path) {
 
     auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
 
+    bool tests = false;
+        if (file_path.endsWith(QString("zexdoc.bin"))) {
+            tests = true;
+        }
+
+    std::uint16_t offset = (tests ? 0x100 : 0);
+
     for (int i = 0; i < data.size(); ++i) {
-        emulationProcessor->getMemory().write(i + 0x100, data.at(i));
+        emulationProcessor->getMemory().write(i + offset, data.at(i));
     }
     
     // HAX
-    if (file_path.endsWith(QString("zexdoc.bin"))) {
+    if (tests) {
         l.debug("patching zexdoc");
         emulationProcessor->getMemory().write(0,0xd3);       /* OUT N, A */
         emulationProcessor->getMemory().write(1,0x00);

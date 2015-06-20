@@ -51,6 +51,6 @@ Logger::~Logger()
 void Logger::debug(string toLog)
 {
     #ifndef NDEBUG
-     std::cout << "DEBUG: " << toLog << std::endl;
+    std::cout << "DEBUG: " << toLog << std::endl;
     #endif
 }

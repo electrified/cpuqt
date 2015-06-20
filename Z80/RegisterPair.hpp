@@ -9,7 +9,6 @@ class UnknownRegisterPairException: public std::exception
     }
 };
 
-
 enum class RegisterPair {
     unknown,
     AF,

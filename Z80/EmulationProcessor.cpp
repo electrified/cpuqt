@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2015, <copyright holder> <email>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *     names of its contributors may be used to endorse or promote products
- *     derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY <copyright holder> <email> ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <copyright holder> <email> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- */
-
-
 #include "EmulationProcessor.h"
 #include <boost/utility/binary.hpp>
 #include <iostream>
@@ -92,7 +63,6 @@ void EmulationProcessor::AND(Rgstr iX2) {
     AND(getRegisterValue(iX2));
 }
 
-
 void EmulationProcessor::AND(std::uint8_t value) {
     setA(getA() & value);
 }
@@ -119,12 +89,6 @@ void EmulationProcessor::BIT(std::uint8_t i, MemoryAddress memoryAddress) {
     std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress));
     BIT(i, value);
 }
-
-//
-//     void BIT(std::uint8_t y, std::uint8_t displacement, RegisterPair rgstr) {
-//        std::uint8_t value = getMemory().read(getRegisterPairValue(rgstr) + displacement);
-//        BIT(y, value);
-//    }
 
 /*-
  * 765432  10
@@ -174,7 +138,6 @@ condition bits in the Flag Rgstr (rgstr F).
  * Because this is a 3-byte instruction, the Program Counter was incremented
  * by three before the push is executed.
  */
-
 void EmulationProcessor::CALL(Condition c, MemoryAddress memoryAddress) {
     if (isConditionTrue(c)) {
         pushPCtoStack();
@@ -438,16 +401,6 @@ void EmulationProcessor::in(Rgstr rgstr, const MemoryAddress& i) {
     setRegister(rgstr, io.read(getMemoryAddress(i)));
 }
 
-
-/**
- * The operand n is placed on the bottom half (A0 through A7) of the address
- * bus to select the I/O device at one of 256 possible ports. The contents
- * of the Accumulator also appear on the top half (A8 through A15) of the
- * address bus at this time. Then one byte from the selected port is placed
- * on the data bus and written to the Accumulator (rgstr A) in the CPU
- */
-
-
 /**
  * - Rgstr r is incremented and rgstr r identifies any of the
  * rgstrs A, B, C, D, E, H, or L, assembled as follows in the object
@@ -458,7 +411,6 @@ void EmulationProcessor::in(Rgstr rgstr, const MemoryAddress& i) {
  * is set if r was 7FH before operation; reset otherwise N is reset C is not
  * affected
  */
-
 void EmulationProcessor::INC(MemoryAddress memoryAddress) {
     if (getMemory().read(getMemoryAddress(memoryAddress)) == 0x7F) {
         setParityOverflowFlag(true);
@@ -476,7 +428,6 @@ void EmulationProcessor::INC(MemoryAddress memoryAddress) {
 
     setNFlag(false);
 }
-
 
 void EmulationProcessor::INC(Rgstr reg) {
 
@@ -648,7 +599,7 @@ void EmulationProcessor::LDD() {
 
 void EmulationProcessor::LDDR() {
     LDD();
-    if (!getZeroFlag()) {
+    if (getParityOverflowFlag()) {
         setPC(getPC() -2);
     }
 }
@@ -678,7 +629,7 @@ data transfer. When BC is set to zero prior to instruction execution, the
 instruction loops through 64 Kbytes.*/
 void EmulationProcessor::LDIR() {
     LDI();
-    if (!getZeroFlag()) {
+    if (getParityOverflowFlag()) {
         setPC(getPC() -2);
     }
 }
@@ -723,7 +674,6 @@ void EmulationProcessor::NEG() {
 void EmulationProcessor::NOP() {
 //        unimplemented();
 }
-
 
 void EmulationProcessor::OR(Rgstr rgstr) {
     setA((getA() | getRegisterValue(rgstr)));
@@ -1038,7 +988,17 @@ void EmulationProcessor::RST(std::uint8_t p) {
     setPC(p);
 }
 
-
+/*
+ * The contents of the register pair ss (any of register pairs BC, DE, HL, or
+SP) and the Carry Flag (C flag in the F register) are subtracted from the
+contents of register pair HL, and the result is stored in HL. Operand ss is
+specified as follows in the assembled object code.
+Register
+Pair ss
+BC 00
+DE 01
+HL 10
+SP 11*/
 void EmulationProcessor::SBC(RegisterPair hl, RegisterPair hl1) {
     unimplemented();
 }
@@ -1119,11 +1079,12 @@ void EmulationProcessor::SRL(Rgstr m) {
     setRegister(m, val >> 1);
 }
 
-void EmulationProcessor::SUB(Rgstr iX2) {
-    unimplemented();
+void EmulationProcessor::SUB(Rgstr reg) {
+    std::int8_t result = getA() - getRegisterValue(reg);
+    setA(result);
 }
 
-void EmulationProcessor::SUB(std::uint8_t iX2) {
+void EmulationProcessor::SUB(std::uint8_t n) {
     unimplemented();
 }
 

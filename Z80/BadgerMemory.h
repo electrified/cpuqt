@@ -1,7 +1,3 @@
-//
-// Created by ed on 30/04/15.
-//
-
 #ifndef TESTPROJECT_BADGERMEMORY_H
 #define TESTPROJECT_BADGERMEMORY_H
 
@@ -18,6 +14,5 @@ public:
     std::uint16_t size();
     virtual ~BadgerMemory();
 };
-
 
 #endif //TESTPROJECT_BADGERMEMORY_H
