@@ -1001,7 +1001,6 @@ TEST_CASE("POPqqTest") {
     REQUIRE(proc->getSP() == 0x1002);
 }
 
-
 TEST_CASE("PUSHIXTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x0, 0xDD);
@@ -1014,7 +1013,6 @@ TEST_CASE("PUSHIXTest") {
     REQUIRE(proc->getMemory().read(0x1005) == 0x33);
     REQUIRE(proc->getSP() == 0x1005);
 }
-
 
 TEST_CASE("PUSHIYTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
@@ -1029,24 +1027,38 @@ TEST_CASE("PUSHIYTest") {
     REQUIRE(proc->getSP() == 0x1005);
 }
 
+/*
+ * If the AF register pair contains 2233H
+ * and the Stack Pointer contains 1007H,
+ * at instruction PUSH AF memory address 1006H contains 22H,
+ * memory address 1005H contains 33H,
+ * and the Stack Pointer contains 1005H.
+*/
+TEST_CASE("PUSHTest") {
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    proc->getMemory().write(0x0, BOOST_BINARY(11110101));
+    proc->setAF(0x2233);
+    proc->setSP(0x1007);
+    proc->process();
+    REQUIRE(proc->getMemory().read(0x1006) == 0x22);
+    REQUIRE(proc->getMemory().read(0x1005) == 0x33);
+    REQUIRE(proc->getSP() == 0x1005);
+}
 
-
+/*
+ * If the S flag in the F register is set, the contents of the Program
+ * Counter are 3535H, the contents of the Stack Pointer are 2000H , the
+ * contents of memory location 2000H are B5H , and the contents of
+ * memory location 2001H are 18H . At execution of RET M the contents of
+ * the Stack Pointer is 2002H , and the contents of the Program Counter
+ * is 18B5H , pointing to the address of the next program Op Code to be
+ * fetched.
+ */
 TEST_CASE("RETccTest") {
-
-    /*
-     * If the S flag in the F register is set, the contents of the Program
-     * Counter are 3535H, the contents of the Stack Pointer are 2000H , the
-     * contents of memory location 2000H are B5H , and the contents of
-     * memory location 2001H are 18H . At execution of RET M the contents of
-     * the Stack Pointer is 2002H , and the contents of the Program Counter
-     * is 18B5H , pointing to the address of the next program Op Code to be
-     * fetched.
-     */
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->setSignFlag(true);
     proc->setPC(0x3535);
     proc->setSP(0x2000);
-//    proc->setMemory(new int[64 * 1024]);
     proc->getMemory().write(0x2000, 0xB5);
     proc->getMemory().write(0x2001, 0x18);
     proc->getMemory().write(0x3535, BOOST_BINARY(11111000));
@@ -1056,25 +1068,20 @@ TEST_CASE("RETccTest") {
 
 }
 
-// RLC RRC RL RR SLA SRA SLL SRL
-//
-// TEST_CASE("ROTrTest") {
-// Processor proc = new Processor();
-// proc->setMemory(new int[] {});
-// REQUIRE(true, false);
-// }
+ TEST_CASE("ROTrTest") {
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    REQUIRE(true == false);
+ }
 
-
-
+/*
+ * If the contents of the Program Counter are 3535H , the contents of
+ * the Stack Pointer are 2000H, the contents of memory location 2000H
+ * are B5H, and the contents of memory location of memory location 2001H
+ * are 18H . At execution of RET the contents of the Stack Pointer is
+ * 2002H, and the contents of the Program Counter is 18B5H, pointing to
+ * the address of the next program Op Code to be fetched.
+ */
 TEST_CASE("RETTest") {
-    /*
-     * If the contents of the Program Counter are 3535H , the contents of
-     * the Stack Pointer are 2000H, the contents of memory location 2000H
-     * are B5H, and the contents of memory location of memory location 2001H
-     * are 18H . At execution of RET the contents of the Stack Pointer is
-     * 2002H, and the contents of the Program Counter is 18B5H, pointing to
-     * the address of the next program Op Code to be fetched.
-     */
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     proc->getMemory().write(0x3535, 0xC9);
     proc->getMemory().write(0x2000, 0xB5);
@@ -1341,7 +1348,8 @@ TEST_CASE("AND_iyplusd_Test") {
     proc->getMemory().write(0x0, 0xfd);
     proc->getMemory().write(0x1, 0xa6);
     proc->getMemory().write(0x2, 0x3);
-    proc->getMemory().write(0x10, BOOST_BINARY(01111011));
+
+    proc->getMemory().write(0xA, BOOST_BINARY(01111011));
     proc->setA(BOOST_BINARY(11000011));
     proc->setIY(0x7);
     proc->process();
@@ -1731,10 +1739,19 @@ TEST_CASE("IM2Test") {
     REQUIRE(proc->getIM() == 2);
 }
 
-
-TEST_CASE("IN_C_Test") {
+/*
+ * If the contents of the Accumulator are 23H, and byte 7BH is available at the
+peripheral device mapped to I/O port address 01H. At execution of INA,
+(01H) the Accumulator contains 7BH.
+*/
+TEST_CASE("INa_n_Test") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getIO().write(0x1, 0x7b);
+    proc->getMemory().write(0x0, 0xDB);
+    proc->getMemory().write(0x1, BOOST_BINARY(1));
+    proc->setA(0x23);
+    proc->process();
+    REQUIRE(proc->getA() == 0x7B);
 }
 
 /**
@@ -1754,33 +1771,153 @@ TEST_CASE("INr_C_Test") {
     REQUIRE(proc->getD() == 0x7B);
 }
 
-
-
+/*
+ * If the HL register pair contains 1114H, the DE register pair contains
+2225H, the BC register pair contains 0003H, and memory locations have
+these contents:
+(1114H) contains A5H (2225H) contains C5H
+(1113H) contains 36H (2224H) contains 59H
+(1112H) contains 88H (2223H) contains 66H
+Then at execution of LDDR the contents of register pairs and memory
+locations are:
+HL contains 1111H
+DE contains 2222H
+DC contains 0000H
+(1114H) contains A5H (2225H) contains A5H
+(1113H) contains 36H (2224H) contains 36H
+(1112H) contains 88H (2223H) contains 88H
+*/
 TEST_CASE("LDDRTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xB8);
+    proc->setHL(0x1114);
+    proc->setDE(0x2225);
+    proc->setBC(0x003);
+
+    proc->getMemory().write(0x1114, 0xA5);
+    proc->getMemory().write(0x1113, 0x36);
+    proc->getMemory().write(0x1112, 0x88);
+    proc->getMemory().write(0x2225, 0xC5);
+    proc->getMemory().write(0x2224, 0x59);
+    proc->getMemory().write(0x2223, 0x66);
+    proc->process(3);
+
+    REQUIRE(proc->getHL() == 0x1111);
+    REQUIRE(proc->getDE() == 0x2222);
+    REQUIRE(proc->getBC() == 0x0000);
+    REQUIRE(proc->getMemory().read(0x1114) == 0xA5);
+    REQUIRE(proc->getMemory().read(0x1113) == 0x36);
+    REQUIRE(proc->getMemory().read(0x1112) == 0x88);
+    REQUIRE(proc->getMemory().read(0x2225) == 0xA5);
+    REQUIRE(proc->getMemory().read(0x2224) == 0x36);
+    REQUIRE(proc->getMemory().read(0x2223) == 0x88);
 }
 
-
+/*
+ * If the HL register pair contains 1111H, memory location 1111H contains
+byte 88H, the DE register pair contains 2222H, memory location 2222H
+contains byte 66H, and the BC register pair contains 7H, then instruction
+LDD results in the following contents in register pairs and memory
+addresses:
+HL contains 1110H
+(1111H) contains 88H
+DE contains 2221H
+(2222H) contains 88H
+BC contains 6H*/
 TEST_CASE("LDDTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xA8);
+
+    proc->setHL(0x1111);
+    proc->getMemory().write(0x1111, 0x88);
+
+    proc->setDE(0x2222);
+    proc->getMemory().write(0x2222, 0x66);
+
+    proc->setBC(0x7);
+
+    proc->process();
+    REQUIRE(proc->getHL() == 0x1110);
+    REQUIRE(proc->getMemory().read(0x1111) == 0x88);
+    REQUIRE(proc->getDE() == 0x2221);
+    REQUIRE(proc->getMemory().read(0x2222) == 0x88);
+    REQUIRE(proc->getBC() == 0x6);
 }
 
-
-
+/*If the HL register pair contains 11111H, the DE register pair contains
+2222H, the BC register pair contains 0003H, and memory locations have
+these contents:
+(1111H) contains 88H (2222H) contains 66H
+(1112H) contains 36H (2223H) contains 59H
+(1113H) contains A5H (2224H) contains C5H
+then at execution of LDIR the contents of register pairs and memory
+locations are:
+HL contains 1114H
+DE contains 2225H
+BC contains 0000H
+(1111H) contains 88H (2222H) contains 88H
+(1112H) contains 36H (2223H) contains 36H
+(1113H) contains A5H (2224H) contains A5H
+*/
 TEST_CASE("LDIRTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xB0);
+    proc->setHL(0x1111);
+    proc->setDE(0x2222);
+    proc->setBC(0x003);
+
+    proc->getMemory().write(0x1111, 0x88);
+    proc->getMemory().write(0x1112, 0x36);
+    proc->getMemory().write(0x1113, 0xA5);
+    proc->getMemory().write(0x2222, 0x66);
+    proc->getMemory().write(0x2223, 0x59);
+    proc->getMemory().write(0x2224, 0xc5);
+    proc->process(3);
+
+    REQUIRE(proc->getHL() == 0x1114);
+    REQUIRE(proc->getDE() == 0x2225);
+    REQUIRE(proc->getBC() == 0x0000);
+    REQUIRE(proc->getMemory().read(0x1111) == 0x88);
+    REQUIRE(proc->getMemory().read(0x1112) == 0x36);
+    REQUIRE(proc->getMemory().read(0x1113) == 0xA5);
+    REQUIRE(proc->getMemory().read(0x2222) == 0x88);
+    REQUIRE(proc->getMemory().read(0x2223) == 0x36);
+    REQUIRE(proc->getMemory().read(0x2224) == 0xA5);
 }
 
-
+/*
+ * If the HL register pair contains 1111H, memory location 1111H contains
+byte 88H, the DE register pair contains 2222H, the memory location 2222H
+contains byte 66H, and the BC register pair contains 7H, then the instruction
+LDI results in the following contents in register pairs and memory addresses:
+HL contains 1112H
+(1111H) contains 88H
+DE contains 2223H
+(2222H) contains 88H
+BC contains 6H*/
 TEST_CASE("LDITest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xA0);
+
+    proc->setHL(0x1111);
+    proc->getMemory().write(0x1111, 0x88);
+
+    proc->setDE(0x2222);
+    proc->getMemory().write(0x2222, 0x66);
+
+    proc->setBC(0x7);
+
+    proc->process();
+    REQUIRE(proc->getHL() == 0x1112);
+    REQUIRE(proc->getMemory().read(0x1111) == 0x88);
+    REQUIRE(proc->getDE() == 0x2223);
+    REQUIRE(proc->getMemory().read(0x2222) == 0x88);
+    REQUIRE(proc->getBC() == 0x6);
 }
-
-
 
 TEST_CASE("NOPTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
@@ -1790,22 +1927,85 @@ TEST_CASE("NOPTest") {
     // assert all registers are the same and nothing has happened!
 }
 
-
-TEST_CASE("ORsTest") {
+/* If the H register contains 48H (0100 0100), and the Accumulator contains
+12H (0001 0010), at execution of OR H the Accumulator contains 5AH
+(0101 1010).*/
+TEST_CASE("ORTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, BOOST_BINARY(10110100));
+    proc->setH(BOOST_BINARY(01000100));
+    proc->setA(BOOST_BINARY(00010010));
+    proc->process();
+    REQUIRE(proc->getA() == BOOST_BINARY(01010110));
+
+    //TODO check other variants
 }
 
-
+/* If the contents of register C are 07H, the contents of register B are 03H, the
+contents of the HL register pair are 1000H, and memory locations have the
+following contents:
+0FFEH contains 51H
+0FFFH contains A9H
+1000H contains 03H
+then at execution of OTDR the HL register pair contain 0FFDH, register B
+contains zero, and a group of bytes is written to the peripheral device
+mapped to I/O port address 07H in the following sequence:
+03H
+A9H
+51H*/
 TEST_CASE("OTDRTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xBB);
+    proc->setC(0x07);
+    proc->setB(0x03);
+    proc->setHL(0x1000);
+    proc->getMemory().write(0xFFE, 0x51);
+    proc->getMemory().write(0xFFF, 0xA9);
+    proc->getMemory().write(0x1000, 0x03);
+
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0x03);
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0xA9);
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0x51);
+    REQUIRE(proc->getHL() == 0x0FFD);
+    REQUIRE(proc->getB() == 0x0);
 }
 
-
+/*
+ * If the contents of register C are 07H, the contents of register B are 03H, the
+contents of the HL register pair are 1000H, and memory locations have the
+following contents:
+1000H contains 51H
+1001H contains A9H
+1002H contains 03H
+then at execution of OTIR the HL register pair contains 1003H, register B
+contains zero, and a group of bytes is written to the peripheral device
+mapped to I/O port address 07H in the following sequence:
+51H
+A9H
+03H*/
 TEST_CASE("OTIRTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xB3);
+    proc->setC(0x07);
+    proc->setB(0x03);
+    proc->setHL(0x1000);
+    proc->getMemory().write(0x1000, 0x51);
+    proc->getMemory().write(0x1001, 0xA9);
+    proc->getMemory().write(0x1002, 0x03);
+
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0x51);
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0xA9);
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0x03);
+    REQUIRE(proc->getHL() == 0x01003);
+    REQUIRE(proc->getB() == 0x0);
 }
 
 /**
@@ -1814,82 +2014,126 @@ TEST_CASE("OTIRTest") {
  location 1000H are 59H, at execution of OUTD register B contains 0FH, the
  HL register pair contains 0FFFH, and byte 59H is written to the peripheral
  device mapped to I/O port address 07H.
-
  */
-
 TEST_CASE("OUTDTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xAB);
+    proc->setC(0x07);
+    proc->setB(0x10);
+    proc->setHL(0x1000);
+    proc->getMemory().write(0x1000, 0x59);
+
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0x59);
+    REQUIRE(proc->getHL() == 0x0FFF);
+    REQUIRE(proc->getB() == 0x0F);
 }
 
-
+/*
+ * If the contents of register C are 07H,
+ * the contents of register B are 10H,
+ * the contents of the HL register pair are 1000H,
+ * and the contents of memory address 1000H are 59H,
+then after the execution of OUTI
+register B contains 0FH,
+the HL register pair contains 1001H,
+and byte 59H is written to the peripheral device mapped to I/O port address 07H.*/
 TEST_CASE("OUTITest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xA3);
+    proc->setC(0x07);
+    proc->setB(0x10);
+    proc->setHL(0x1000);
+    proc->getMemory().write(0x1000, 0x59);
+
+    proc->process();
+    REQUIRE(proc->getIO().read(0x7) == 0x59);
+    REQUIRE(proc->getHL() == 0x1001);
+    REQUIRE(proc->getB() == 0x0F);
 }
 
-
-TEST_CASE("PUSHTest") {
-    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
-}
-
-
+/* At execution of RES 6, D, bit 6 in register D resets. Bit 0 in register D is the
+least-significant bit.*/
 TEST_CASE("RESTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
-    REQUIRE(true == false);
+    proc->getMemory().write(0x0, 0xCB);
+    proc->getMemory().write(0x1, BOOST_BINARY(10110010));
+    proc->setD(BOOST_BINARY(11111111));
+    proc->process();
+    REQUIRE(proc->getD() == BOOST_BINARY(10111111));
 }
 
-
-
+/* Given: Two interrupting devices, with A and B connected in a daisy-chain
+configuration and A having a higher priority than B.
+B generates an interrupt and is acknowledged. The interrupt
+enable out, IEO, of B goes Low, blocking any lower priority
+devices from interrupting while B is being serviced. Then A generates
+an interrupt, suspending service of B. The IEO of A goes
+Low, indicating that a higher priority device is being serviced.
+The A routine is completed and a RETI is issued resetting the IEO
+of A, allowing the B routine to continue. A second RETI is issued
+on completion of the B routine and the IE0 of B is reset (high)
+allowing lower priority devices interrupt access.*/
 TEST_CASE("RETITest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
 
-
+/* If the contents of the Stack Pointer are 1000H, and the contents of the
+Program Counter are 1A45H, when a non maskable interrupt (NMI) signal
+is received, the CPU ignores the next instruction and instead restarts to
+memory address 0066H. The current Program Counter contents of 1A45H
+is pushed onto the external stack address of 0FFFH and 0FFEH, high orderbyte
+first, and 0066H is loaded onto the Program Counter. That address
+begins an interrupt service routine that ends with a RETN instruction.
+Upon the execution of RETN the former Program Counter contents are
+popped off the external memory stack, low order first, resulting in a Stack
+Pointer contents again of 1000H. The program flow continues where it
+left off with an Op Code fetch to address 1A45H, order-byte first, and
+0066H is loaded onto the Program Counter. That address begins an
+interrupt service routine that ends with a RETN instruction. At execution of
+RETN the former Program Counter contents are popped off the external
+memory stack, low order first, resulting in a Stack Pointer contents again of
+1000H. The program flow continues where it left off with an Op Code fetch
+to address 1A45H.
+*/
 TEST_CASE("RETNTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
-
 
 TEST_CASE("RLCTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
 
-
 TEST_CASE("RLDTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
-
 
 TEST_CASE("RRCTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
 
-
-
 TEST_CASE("RRTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
 
+/*-
+If the contents of register D and the Carry flag are
+C76543210
+010001111
 
+at execution of RL D the contents of register D and the Carry flag are
+C76543210
+100011110
+ */
 TEST_CASE("RLTest") {
-    /*-
-    If the contents of register D and the Carry flag are
-    C76543210
-    010001111
-
-    at execution of RL D the contents of register D and the Carry flag are
-    C76543210
-    100011110
-
-     */
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
@@ -1909,9 +2153,13 @@ TEST_CASE("RSTpTest") {
     proc->getMemory().write(0x15B3, BOOST_BINARY(11011111));
     proc->setPC(0x15B3);
     proc->process();
-//     REQUIRE(proc->getPC() == 0x18);
+    REQUIRE(proc->getPC() == 0x18);
 }
 
+/*
+ * If the Accumulator contains 16H, the carry flag is set, the HL register pair
+contains 3433H, and address 3433H contains 05H, at execution of
+SBC A, (HL) the Accumulator contains 10H.*/
 TEST_CASE("SBCTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
@@ -1921,7 +2169,6 @@ TEST_CASE("SLATest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
-
 
 TEST_CASE("SRATest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
@@ -1947,46 +2194,118 @@ TEST_CASE("SRLTest") {
     REQUIRE(proc->getB() == BOOST_BINARY(01000111));
 }
 
-
 TEST_CASE("SUBTest") {
     std::unique_ptr<EmulationProcessor> proc = setupProcessor();
     REQUIRE(true == false);
 }
 
-
 // TEST_CASE("DITest") {
 //     REQUIRE(true == false);
 // }
 
-
-
-TEST_CASE("DJNZTest") {
-    REQUIRE(true == false);
-}
-
-
+/*
+ * If the contents of register C are 07H, the contents of register B are 10H, the
+contents of the HL register pair are 1000H, and byte 7BH is available at the
+peripheral device mapped to I/O port address 07H. At execution of IND
+memory location 1000H contains 7BH, the HL register pair contains
+0FFFH, and register B contains 0FH.*/
 TEST_CASE("INDTest") {
-    REQUIRE(true == false);
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xAA);
+    proc->setC(0x07);
+    proc->setB(0x10);
+    proc->setHL(0x1000);
+    proc->getIO().write(0x7, 0x7B);
+    proc->process();
+    REQUIRE(proc->getMemory().read(0x1000) == 0x7b);
+    REQUIRE(proc->getHL() == 0xFFF);
+    REQUIRE(proc->getB() == 0xF);
 }
 
-
+/*
+ * If the contents of register C are 07H, the contents of register B are 03H, the
+contents of the HL register pair are 1000H, and the following sequence of
+bytes are available at the peripheral device mapped to I/O port address 07H:
+51H
+A9H
+03H
+then at execution of INDR the HL register pair contains 0FFDH, register B
+contains zero, and memory locations contain the following:
+0FFEH contains 03H
+0FFFH contains A9H
+1000H contains 51H
+*/
 TEST_CASE("INDRTest") {
-    REQUIRE(true == false);
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xBA);
+    proc->setC(0x07);
+    proc->setB(0x3);
+    proc->setHL(0x1000);
+    proc->getIO().write(0x7, 0x51);
+    proc->process();
+    proc->getIO().write(0x7, 0xA9);
+    proc->process();
+    proc->getIO().write(0x7, 0x03);
+    proc->process();
+    REQUIRE(proc->getMemory().read(0xFFE) == 0x03);
+    REQUIRE(proc->getMemory().read(0xFFF) == 0xa9);
+    REQUIRE(proc->getMemory().read(0x1000) == 0x51);
+    REQUIRE(proc->getHL() == 0xFFD);
+    REQUIRE(proc->getB() == 0x0);
 }
 
-
+/*
+ * If the contents of register C are 07H, the contents of register B are 03H,
+the contents of the HL register pair are 1000H, and the following
+sequence of bytes are available at the peripheral device mapped to I/O
+port of address 07H:
+51H
+A9H
+03H
+then at execution of INIR the HL register pair contains 1003H, register B
+contains zero, and memory locations contain the following:
+1000H contains 51H
+1001H contains A9H
+1002H contains 03H*/
 TEST_CASE("INIRTest") {
-    REQUIRE(true == false);
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xB2);
+    proc->setC(0x07);
+    proc->setB(0x3);
+    proc->setHL(0x1000);
+    proc->getIO().write(0x7, 0x51);
+    proc->process();
+    proc->getIO().write(0x7, 0xA9);
+    proc->process();
+    proc->getIO().write(0x7, 0x03);
+    proc->process();
+    REQUIRE(proc->getMemory().read(0x1002) == 0x03);
+    REQUIRE(proc->getMemory().read(0x1001) == 0xa9);
+    REQUIRE(proc->getMemory().read(0x1000) == 0x51);
+    REQUIRE(proc->getHL() == 0x1003);
+    REQUIRE(proc->getB() == 0x0);
 }
 
-
+/* If the contents of register C are 07H, the contents of register B are 10H, the
+contents of the HL register pair are 1000H, and byte 7BH is available at the
+peripheral device mapped to I /O port address 07H. At execution of INI
+memory location 1000H contains 7BH, the HL register pair contains
+1001H, and register B contains 0FH.*/
 TEST_CASE("INITest") {
-    REQUIRE(true == false);
-}
-
-
-TEST_CASE("ORTest") {
-    REQUIRE(true == false);
+    std::unique_ptr<EmulationProcessor> proc = setupProcessor();
+    proc->getMemory().write(0x0, 0xED);
+    proc->getMemory().write(0x1, 0xA2);
+    proc->setC(0x07);
+    proc->setB(0x10);
+    proc->setHL(0x1000);
+    proc->getIO().write(0x7, 0x7B);
+    proc->process();
+    REQUIRE(proc->getMemory().read(0x1000) == 0x7b);
+    REQUIRE(proc->getHL() == 0x1001);
+    REQUIRE(proc->getB() == 0xF);
 }
 
 /**

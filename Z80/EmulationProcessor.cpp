@@ -72,26 +72,21 @@ void EmulationProcessor::ADC(Rgstr rgstr, MemoryAddress memoryAddress) {
  * Operand ss is specified as follows in the assembled
  * object code.
  */
-
 void EmulationProcessor::ADD(RegisterPair destination, RegisterPair rgstr) {
     setRegisterPair(destination, getRegisterPairValue(destination) + getRegisterPairValue(rgstr));
 }
-
 
 void EmulationProcessor::ADD(Rgstr destination, std::uint8_t nextByte) {
     setRegister(destination, getRegisterValue(destination) + nextByte);
 }
 
-
 void EmulationProcessor::ADD(Rgstr destination, Rgstr source) {
     setRegister(destination, getRegisterValue(destination) + getRegisterValue(source));
 }
 
-
 void EmulationProcessor::ADD(Rgstr destination, MemoryAddress memoryAddress) {
     setRegister(destination, getRegisterValue(destination) + getMemory().read(getMemoryAddress(memoryAddress)));
 }
-
 
 void EmulationProcessor::AND(Rgstr iX2) {
     AND(getRegisterValue(iX2));
@@ -102,7 +97,6 @@ void EmulationProcessor::AND(std::uint8_t value) {
     setA(getA() & value);
 }
 
-
 void EmulationProcessor::AND(MemoryAddress memoryAddress) {
     setA(getA() & getMemory().read(getMemoryAddress(memoryAddress)));
 }
@@ -111,20 +105,15 @@ void EmulationProcessor::AND(MemoryAddress memoryAddress) {
  * This instruction tests bit b in rgstr r and sets the Z flag
  * accordingly.
  *
- * @param y
- * @param value
  */
-//
 void EmulationProcessor::BIT(std::uint8_t y, std::uint8_t value) {
     setZeroFlag(!((value & (1 << y)) == (1 << y)));
 }
-
 
 void EmulationProcessor::BIT(std::uint8_t y, Rgstr rgstr) {
     std::uint8_t rgstrValue = getRegisterValue(rgstr);
     BIT(y, rgstrValue);
 }
-
 
 void EmulationProcessor::BIT(std::uint8_t i, MemoryAddress memoryAddress) {
     std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress));
@@ -170,12 +159,6 @@ by three before the push is executed.
 Condition cc is programmed as one of eight status that corresponds to
 condition bits in the Flag Rgstr (rgstr F).
  */
-//
-//     void CALL(Condition cc, std::uint8_t i) {
-//        if (isConditionTrue(cc)) {
-//            CALL(i);
-//        }
-//    }
 
 /**
  * The current contents of the Program Counter (PC) are pushed onto the top
@@ -199,15 +182,10 @@ void EmulationProcessor::CALL(Condition c, MemoryAddress memoryAddress) {
     }
 }
 
-
 void EmulationProcessor::CALL(MemoryAddress memoryAddress) {
     pushPCtoStack();
     setPC(getMemoryAddress(memoryAddress));
 }
-
-/**
- *
- */
 
 void EmulationProcessor::CCF() {
     /* The Carry flag in the F rgstr is inverted. */
@@ -217,10 +195,6 @@ void EmulationProcessor::CCF() {
 
     setNFlag(false);
 }
-
-/**
- * @param val
- */
 
 void EmulationProcessor::CP(std::uint8_t val) {
     std::uint8_t result = this->getA() - val;
@@ -232,11 +206,9 @@ void EmulationProcessor::CP(std::uint8_t val) {
     this->setNFlag(true);
 }
 
-
 void EmulationProcessor::CP(Rgstr val) {
     CP(getRegisterValue(val));
 }
-
 
 void EmulationProcessor::CP(MemoryAddress memoryAddress) {
     CP(getMemory().read(getMemoryAddress(memoryAddress)));
@@ -270,7 +242,7 @@ through 64 Kbytes if no match is found.
 */
 void EmulationProcessor::CPDR() {
     CPD();
-    if ( getBC() != 0 && getZeroFlag() == 0) {
+    if (!getZeroFlag()) {
         setPC(getPC() - 2); //repeat instruction
     }
 }
@@ -290,10 +262,9 @@ void EmulationProcessor::CPI() {
     setParityOverflowFlag(getBC() != 0);
 }
 
-
 void EmulationProcessor::CPIR() {
     CPI();
-    if ( getBC() != 0 && getZeroFlag() == 0) {
+    if (!getZeroFlag()) {
         setPC(getPC() - 2); //repeat instruction
     }
 }
@@ -302,14 +273,11 @@ void EmulationProcessor::CPIR() {
  * The contents of the Accumulator (rgstr A) are inverted (one’s
  * complement).
  */
-
 void EmulationProcessor::CPL() {
-
     setA(getA() ^ BOOST_BINARY(11111111));
     setNFlag(true);
     setHFlag(true);
 }
-
 
 void EmulationProcessor::DAA() {
     unimplemented();
@@ -321,34 +289,26 @@ void EmulationProcessor::DAA() {
  * is set if m was 80H before operation; reset otherwise N is set C is not
  * affected
  */
-
 void EmulationProcessor::DEC(MemoryAddress memoryAddress) {
     std::uint16_t address = getMemoryAddress(memoryAddress);
     std::uint8_t newvalue = getMemory().read(address) - 1;
 
     getMemory().write(address, newvalue);
 
-    if (newvalue < 0) {
-        setSignFlag(true);
-    } else if (newvalue == 0) {
-        setZeroFlag(true);
-    }
+    setSignFlag(newvalue < 0);
+    setZeroFlag(newvalue == 0);
     // H ??
 
     setNFlag(false);
 }
 
-
 void EmulationProcessor::DEC(Rgstr rgstr) {
     setRegister(rgstr, getRegisterValue(rgstr) - 1);
 
-    if (getRegisterValue(rgstr) < 0) {
-        setSignFlag(true);
-    } else if (getRegisterValue(rgstr) == 0) {
-        setZeroFlag(true);
-    }
-    // H ??
+    setSignFlag(getRegisterValue(rgstr) < 0);
+    setZeroFlag(getRegisterValue(rgstr) == 0);
 
+    // H ??
     setNFlag(false);
 }
 
@@ -357,21 +317,15 @@ void EmulationProcessor::DEC(Rgstr rgstr) {
  * pairs BC, DE, HL, or SP) are decremented. Operand ss
  * is specified as follows in the assembled object code.
  */
-
 void EmulationProcessor::DEC(RegisterPair rgstrPair) {
     setRegisterPair(rgstrPair,
                     getRegisterPairValue(rgstrPair) - 1);
 }
 
-/**
- *
- */
-
 void EmulationProcessor::DI() {
     setIFF1(false);
     setIFF2(false);
 }
-
 
 /**
  * This instruction is similar to the conditional jump instructions except
@@ -401,13 +355,11 @@ void EmulationProcessor::DJNZ(MemoryAddress memoryAddress) {
  * interrupt. Note that during the execution of this instruction and the
  * following instruction, maskable interrupts are disabled.
  */
-
 void EmulationProcessor::EI() {
 
     setIFF1(true);
     setIFF2(true);
 }
-
 
 void EmulationProcessor::EX(MemoryAddress memoryAddress, RegisterPair rgstr) {
     std::uint8_t loMemVal = getMemory().read(getMemoryAddress(memoryAddress));
@@ -440,7 +392,6 @@ void EmulationProcessor::EX(MemoryAddress memoryAddress, RegisterPair rgstr) {
  * The 2-byte contents of the rgstr pairs AF and AF' are exchanged.
  * Rgstr pair AF consists of rgstrs A' and F'
  */
-
 void EmulationProcessor::EX(RegisterPair a, RegisterPair b) {
     std::uint16_t aval = getRegisterPairValue(a);
     setRegisterPair(a, getRegisterPairValue(b));
@@ -451,7 +402,6 @@ void EmulationProcessor::EX(RegisterPair a, RegisterPair b) {
  * Each 2-byte value in rgstr pairs BC, DE, and HL is exchanged with the
  * 2-byte value in BC', DE', and HL', respectively.
  */
-
 void EmulationProcessor::EXX() {
     std::uint16_t temp = getBC();
     setBC(getBC_alt());
@@ -466,16 +416,13 @@ void EmulationProcessor::EXX() {
     setHL_alt(temp);
 }
 
-
 void EmulationProcessor::HALT() {
     halted = true;
 }
 
-
 void EmulationProcessor::IM(std::uint8_t im) {
     this->_IM = im;
 }
-
 
 /**
  * The contents of rgstr C are placed on the bottom half (A0 through A7) of
@@ -486,11 +433,7 @@ void EmulationProcessor::IM(std::uint8_t im) {
  * the CPU rgstrs shown in the following table, which also indicates the
  * corresponding 3-bit r field for each. The flags are affected, checking the
  * input data.
- *
- * @param rgstr
- * @param i
  */
-
 void EmulationProcessor::in(Rgstr rgstr, const MemoryAddress& i) {
     setRegister(rgstr, io.read(getMemoryAddress(i)));
 }
@@ -558,30 +501,50 @@ void EmulationProcessor::INC(Rgstr reg) {
  * pairs BC, DE, HL, or SP) are incremented. Operand ss
  * is specified as follows in the assembled object code.
  */
-
 void EmulationProcessor::INC(RegisterPair rgstrPair) {
     setRegisterPair(rgstrPair,
                     getRegisterPairValue(rgstrPair) + 1);
 }
 
-
+/*
+ * The contents of register C are placed on the bottom half (A0 through A7) of
+the address bus to select the I/O device at one of 256 possible ports.
+Register B may be used as a byte counter, and its contents are placed on the
+top half (A8 through A15) of the address bus at this time. Then one byte
+from the selected port is placed on the data bus and written to the CPU. The
+contents of the HL register pair are placed on the address bus and the input
+byte is written to the corresponding location of memory. Finally, the byte
+counter and register pair HL are decremented.*/
 void EmulationProcessor::IND() {
-    unimplemented();
+    std::uint8_t value = getIO().read(getC());
+    getMemory().write(getHL(), value);
+    DEC(Rgstr::B);
+    DEC(RegisterPair::HL);
+    setNFlag(true);
+    setZeroFlag(getB() == 0);
 }
-
 
 void EmulationProcessor::INDR() {
-    unimplemented();
+    IND();
+    if (!getZeroFlag()) {
+        setPC(getPC() -2);
+    }
 }
-
 
 void EmulationProcessor::INI() {
-    unimplemented();
+    std::uint8_t value = getIO().read(getC());
+    getMemory().write(getHL(), value);
+    DEC(Rgstr::B);
+    INC(RegisterPair::HL);
+    setNFlag(true);
+    setZeroFlag(getB() == 0);
 }
 
-
 void EmulationProcessor::INIR() {
-    unimplemented();
+    INI();
+    if (!getZeroFlag()) {
+        setPC(getPC() -2);
+    }
 }
 
 /**
@@ -589,11 +552,9 @@ void EmulationProcessor::INIR() {
  * instruction is fetched from the location designated by the new contents
  * of the PC.
  */
-
 void EmulationProcessor::JP(MemoryAddress memoryAddress) {
     setPC(getMemoryAddress(memoryAddress));
 }
-
 
 void EmulationProcessor::JP(Condition condition, MemoryAddress memoryAddress) {
     if (isConditionTrue(condition)) {
@@ -609,13 +570,11 @@ void EmulationProcessor::JP(Condition condition, MemoryAddress memoryAddress) {
  * address of the instruction Op Code and has a range of-126 to +129 bytes.
  * The assembler automatically adjusts for the twice incremented PC.
  */
-
 void EmulationProcessor::JR(Condition condition, MemoryAddress memoryAddress) {
     if (isConditionTrue(condition)) {
         JR(memoryAddress);
     }
 }
-
 
 void EmulationProcessor::JR(MemoryAddress memoryAddress) {
     setPC(getMemoryAddress(memoryAddress));
@@ -628,22 +587,17 @@ void EmulationProcessor::JR(MemoryAddress memoryAddress) {
  * portion of HL (rgstr H). The first n operand after the Op Code is
  * the low order byte of nn .
  */
-
-
 void EmulationProcessor::LD(RegisterPair r1, RegisterPair r2) {
     setRegisterPair(r1, getRegisterPairValue(r2));
 }
-
 
 void EmulationProcessor::LD(RegisterPair rgstrPair, std::uint16_t immediateValue) {
     setRegisterPair(rgstrPair, immediateValue);
 }
 
-
 void EmulationProcessor::LD(MemoryAddress memoryAddress, Rgstr rgstr) {
     getMemory().write(getMemoryAddress(memoryAddress), getRegisterValue(rgstr));
 }
-
 
 void EmulationProcessor::LD(Rgstr a, MemoryAddress memoryAddress) {
     std::uint8_t value = getMemory().read(getMemoryAddress(memoryAddress));
@@ -651,12 +605,10 @@ void EmulationProcessor::LD(Rgstr a, MemoryAddress memoryAddress) {
     setFlags(value);
 }
 
-
 void EmulationProcessor::LD(MemoryAddress memoryAddress, RegisterPair rgstr) {
     getMemory().write(getMemoryAddress(memoryAddress), getRegisterPairValue(rgstr) & 0xff);
     getMemory().write(getMemoryAddress(memoryAddress) + 1, getRegisterPairValue(rgstr) >> 8);
 }
-
 
 void EmulationProcessor::LD(RegisterPair rgstrPair, MemoryAddress memoryAddress) {
     std::uint16_t value = getMemory().read(getMemoryAddress(memoryAddress)) | (getMemory().read(getMemoryAddress(memoryAddress) + 1) << 8);
@@ -664,21 +616,14 @@ void EmulationProcessor::LD(RegisterPair rgstrPair, MemoryAddress memoryAddress)
     setFlags(value);
 }
 
-
 void EmulationProcessor::LD(MemoryAddress memoryAddress, std::uint8_t i) {
     getMemory().write(getMemoryAddress(memoryAddress), i);
     setFlags(i);
 }
 
-/**
- * The 8-bit integer n is loaded to any rgstr r, where r
- * identifies rgstr A, B, C, D, E, H, or L,
- */
-
 void EmulationProcessor::LD(Rgstr rgstr, std::uint8_t immediateValue) {
     setRegister(rgstr, immediateValue);
 }
-
 
 void EmulationProcessor::LD(Rgstr destRegister, Rgstr sourceRegister) {
     std::uint8_t value = getRegisterValue(sourceRegister);
@@ -686,24 +631,56 @@ void EmulationProcessor::LD(Rgstr destRegister, Rgstr sourceRegister) {
     setFlags(value);
 }
 
-
+/*
+ * This 2-byte instruction transfers a byte of data from the memory location
+addressed by the contents of the HL register pair to the memory location
+addressed by the contents of the DE register pair. Then both of these register
+pairs including the BC (Byte Counter) register pair are decremented*/
 void EmulationProcessor::LDD() {
-    unimplemented();
+    getMemory().write(getDE(), getMemory().read(getHL()));
+    DEC(RegisterPair::HL);
+    DEC(RegisterPair::DE);
+    DEC(RegisterPair::BC);
+    setHFlag(false);
+    setNFlag(false);
+    setParityOverflowFlag(getBC() != 0);
 }
-
 
 void EmulationProcessor::LDDR() {
-    unimplemented();
+    LDD();
+    if (!getZeroFlag()) {
+        setPC(getPC() -2);
+    }
 }
 
-
+/* A byte of data is transferred from the memory location addressed, by the
+contents of the HL register pair to the memory location addressed by the
+contents of the DE register pair. Then both these register pairs are
+incremented and the BC (Byte Counter) register pair is decremented.*/
 void EmulationProcessor::LDI() {
-    unimplemented();
+    getMemory().write(getDE(), getMemory().read(getHL()));
+    INC(RegisterPair::HL);
+    INC(RegisterPair::DE);
+    DEC(RegisterPair::BC);
+    setHFlag(false);
+    setNFlag(false);
+    setParityOverflowFlag(getBC() != 0);
 }
 
-
+/* This 2-byte instruction transfers a byte of data from the memory location
+addressed by the contents of the HL register pair to the memory location
+addressed by the DE register pair. Both these register pairs are incremented
+and the BC (Byte Counter) register pair is decremented. If decrementing
+causes the BC to go to zero, the instruction is terminated. If BC is not zero,
+the program counter is decremented by two and the instruction is repeated.
+Interrupts are recognized and two refresh cycles are executed after each
+data transfer. When BC is set to zero prior to instruction execution, the
+instruction loops through 64 Kbytes.*/
 void EmulationProcessor::LDIR() {
-    unimplemented();
+    LDI();
+    if (!getZeroFlag()) {
+        setPC(getPC() -2);
+    }
 }
 
 /**
@@ -733,7 +710,6 @@ void EmulationProcessor::LDIR() {
  * if Accumulator was 80H before operation; reset otherwise N is set C is
  * set if Accumulator was not 00H before operation; reset otherwise
  */
-
 void EmulationProcessor::NEG() {
     setSignFlag((getA() & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
     setParityOverflowFlag(getA() == 0x80);
@@ -744,7 +720,6 @@ void EmulationProcessor::NEG() {
     // setHFlag(false);
 }
 
-
 void EmulationProcessor::NOP() {
 //        unimplemented();
 }
@@ -754,46 +729,45 @@ void EmulationProcessor::OR(Rgstr rgstr) {
     setA((getA() | getRegisterValue(rgstr)));
 }
 
-
 void EmulationProcessor::OR(std::uint8_t immediateValue) {
     setA((getA() | immediateValue));
     setFlags(getA());
 }
-
 
 void EmulationProcessor::OR(MemoryAddress memoryAddress) {
     setA((getA() | getMemory().read(getMemoryAddress(memoryAddress))));
     setFlags(getA());
 }
 
-
+/*
+ * The contents of the HL register pair are placed on the address bus to select a
+location in memory. The byte contained in this memory location is temporarily
+stored in the CPU. Then, after the byte counter (B) is decremented,
+the contents of register C are placed on the bottom half (A0 through A7) of
+the address bus to select the I/O device at one of 256 possible ports. Register
+B may be used as a byte counter, and its decremented value is placed on
+the top half (A8 through A15) of the address bus at this time. Next, the byte
+to be output is placed on the data bus and written to the selected peripheral
+device. Then, register pair HL is decremented and if the decremented B
+register is not zero, the Program Counter (PC) is decremented by two and
+the instruction is repeated. If B has gone to zero, the instruction is terminated.
+Interrupts are recognized and two refresh cycles are executed after
+each data transfer.
+Note: When B is set to zero prior to instruction execution, the instruction
+outputs 256 bytes of data.*/
 void EmulationProcessor::OTDR() {
-    unimplemented();
+    OUTD();
+    if (getB() != 0) {
+        setPC(getPC() -2);
+    }
 }
-
 
 void EmulationProcessor::OTIR() {
-    unimplemented();
+    OUTI();
+    if (getB() != 0) {
+        setPC(getPC() -2);
+    }
 }
-
-/**
- * @param rgstr
- */
-//
-//     void OUT(Rgstr rgstr) {
-//        /*
-//		 * The contents of rgstr C are placed on the bottom half (A0 through
-//		 * A7) of the address bus to select the I/O device at one of 256
-//		 * possible ports. The contents of Rgstr B are placed on the top half
-//		 * (A8 through A15) of the address bus at this time. Then the byte
-//		 * contained in rgstr r is placed on the data bus and written to the
-//		 * selected peripheral device.
-//		 */
-//
-////        logger.debug(String.format("OUT (C), %s", rgstr));
-//        addressBus = getC() | (getB() << 8);
-//        io.write(addressBus, getRegisterValue(rgstr));
-//    }
 
 /**
  * The operand n is placed on the bottom half (A0 through A7) of the address
@@ -803,20 +777,44 @@ void EmulationProcessor::OTIR() {
  * Accumulator is placed on the data bus and written to the selected
  * peripheral device.
  */
-
 void EmulationProcessor::out(MemoryAddress address, Rgstr rgstr) {
-//        writeIO(address | (getA() << 8), getRegisterValue(rgstr));
     writeIO(getMemoryAddress(address), getRegisterValue(rgstr));
 }
 
-
+/**
+ * The contents of the HL register pair are placed on the address bus to select a
+location in memory. The byte contained in this memory location is
+temporarily stored in the CPU. Then, after the byte counter (B) is
+decremented, the contents of register C are placed on the bottom half (A0
+through A7) of the address bus to select the I/O device at one of 256
+possible ports. Register B may be used as a byte counter, and its
+decremented value is placed on the top half (A8 through A15) of the
+address bus at this time. Next, the byte to be output is placed on the data bus
+and written to the selected peripheral device. Finally, the register pair HL is
+decremented.
+*/
 void EmulationProcessor::OUTD() {
-    unimplemented();
+    std::uint8_t value = getMemory().read(getHL());
+    DEC(Rgstr::B);
+    writeIO(getC(), value);
+    DEC(RegisterPair::HL);
 }
 
-
+/*
+ * The contents of the HL register pair are placed on the address bus to select a
+location in memory. The byte contained in this memory location is
+temporarily stored in the CPU. Then, after the byte counter (B) is
+decremented, the contents of register C are placed on the bottom half (A0
+through A7) of the address bus to select the I/O device at one of 256
+possible ports. Register B may be used as a byte counter, and its
+decremented value is placed on the top half (A8 through A15) of the
+address bus. The byte to be output is placed on the data bus and written to a
+selected peripheral device. Finally, the register pair HL is incremented.*/
 void EmulationProcessor::OUTI() {
-    unimplemented();
+    std::uint8_t value = getMemory().read(getHL());
+    DEC(Rgstr::B);
+    writeIO(getC(), value);
+    INC(RegisterPair::HL);
 }
 
 /**
@@ -829,11 +827,8 @@ void EmulationProcessor::OUTI() {
  * location are loaded to the high order portion of qq and the SP is now
  * incremented again.
  */
-
 void EmulationProcessor::POP(RegisterPair rgstr) {
-
     std::uint8_t lo = getMemory().read(getSP());
-
     incrementSP();
     std::uint8_t hi = getMemory().read(getSP());
     incrementSP();
@@ -849,9 +844,7 @@ void EmulationProcessor::POP(RegisterPair rgstr) {
  * the low order byte to the memory location corresponding to this new
  * address in SP.
  *
- * @param valueRegister
  */
-
 void EmulationProcessor::PUSH(RegisterPair valueRegister) {
     std::uint16_t value = getRegisterPairValue(valueRegister);
     decrementSP();
@@ -860,14 +853,14 @@ void EmulationProcessor::PUSH(RegisterPair valueRegister) {
     getMemory().write(getSP(), value & 0xff);
 }
 
-
-void EmulationProcessor::RES(std::uint8_t i, Rgstr b) {
-    unimplemented();
+/* resets a bit */
+void EmulationProcessor::RES(std::uint8_t y, Rgstr rgstr) {
+    setRegister(rgstr, getRegisterValue(rgstr) & (BOOST_BINARY(11111111) ^ (1 << y)));
 }
 
-
 void EmulationProcessor::RES(std::uint8_t i, MemoryAddress memoryAddress) {
-    unimplemented();
+    std::uint8_t currentMemoryContents = getMemory().read(getMemoryAddress(memoryAddress));
+    getMemory().write(getMemoryAddress(memoryAddress), currentMemoryContents & (BOOST_BINARY(11111111) ^ (1 << i)));
 }
 
 /**
@@ -901,7 +894,6 @@ void EmulationProcessor::RET(Condition condition) {
     }
 }
 
-
 void EmulationProcessor::RET() {
     // TODO: this doesn't quite follow what the spec says.
     // shouldn't wipe out high order when setting low order
@@ -913,16 +905,13 @@ void EmulationProcessor::RET() {
     incrementSP();
 }
 
-
 void EmulationProcessor::RETI() {
     unimplemented();
 }
 
-
 void EmulationProcessor::RETN() {
     unimplemented();
 }
-
 
 void EmulationProcessor::RL(MemoryAddress memoryAddress) {
     unimplemented();
@@ -932,10 +921,7 @@ void EmulationProcessor::RL(MemoryAddress memoryAddress) {
  * The contents of the m operand are rotated left 1-bit position. The content of
  * bit 7 is copied to the Carry flag and the previous content of the Carry flag is
  * copied to bit 0.
- *
- * @param r
  */
-
 void EmulationProcessor::RL(Rgstr r) {
     unimplemented();
 }
@@ -945,14 +931,11 @@ void EmulationProcessor::RL(Rgstr r) {
  * position through the Carry flag. The previous content of the Carry flag
  * is copied to bit 0. Bit 0 is the least-significant bit.
  */
-
 void EmulationProcessor::RLA() {
-
     std::uint8_t tempA = getA();
     setA(((getA() << 1) & BOOST_BINARY(11111111)) | (getCFlag() ? 1 : 0));
     setCFlag((tempA & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
 }
-
 
 void EmulationProcessor::RLC(MemoryAddress memoryAddress) {
     unimplemented();
@@ -971,23 +954,18 @@ void EmulationProcessor::RLC(Rgstr rgstr) {
  * S is not affected Z is not affected H is reset P/V is not affected N is
  * reset C is data from bit 7 of Accumulator
  */
-
 void EmulationProcessor::RLCA() {
-
     setA(((getA() << 1) & BOOST_BINARY(11111111)) | ((getA() >> (8 - 1)) & BOOST_BINARY(00000001)));
     setCFlag((getA() & BOOST_BINARY(1)) == 1);
 }
-
 
 void EmulationProcessor::RLD() {
     unimplemented();
 }
 
-
 void EmulationProcessor::RR(MemoryAddress memoryAddress) {
     unimplemented();
 }
-
 
 void EmulationProcessor::RR(Rgstr r) {
     unimplemented();
@@ -998,7 +976,6 @@ void EmulationProcessor::RR(Rgstr r) {
  * position through the Carry flag. The previous content of the Carry flag
  * is copied to bit 7. Bit 0 is the least-significant bit.
  */
-
 void EmulationProcessor::RRA() {
 
     std::uint8_t f2 = getCFlag() ? BOOST_BINARY(1) : 0;
@@ -1006,11 +983,9 @@ void EmulationProcessor::RRA() {
     setA((getA() >> 1) | (f2 << (8 - 1)));
 }
 
-
 void EmulationProcessor::RRC(MemoryAddress memoryAddress) {
     unimplemented();
 }
-
 
 void EmulationProcessor::RRC(Rgstr r) {
     unimplemented();
@@ -1021,7 +996,6 @@ void EmulationProcessor::RRC(Rgstr r) {
  * position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is
  * the least- significant bit.
  */
-
 void EmulationProcessor::RRCA() {
 
     setCFlag((BOOST_BINARY(1) & getA()) == 1);
@@ -1037,7 +1011,6 @@ void EmulationProcessor::RRCA() {
  * (HL) are copied to the low order four bits of (HL). The contents of the
  * high order bits of the Accumulator are unaffected.
  */
-
 void EmulationProcessor::RRD() {
     std::uint8_t priorMemory = getMemory().read(getHL());
     std::uint8_t priorAccumulator = getA();
@@ -1059,10 +1032,7 @@ void EmulationProcessor::RRD() {
  * Restart instruction allows for a jump to one of eight addresses indicated in
  * the table below. The operand p is assembled to the object code using the
  * corresponding T state.
- *
- * @param p
  */
-
 void EmulationProcessor::RST(std::uint8_t p) {
     pushPCtoStack();
     setPC(p);
@@ -1073,24 +1043,17 @@ void EmulationProcessor::SBC(RegisterPair hl, RegisterPair hl1) {
     unimplemented();
 }
 
-
 void EmulationProcessor::SBC(Rgstr a, MemoryAddress memoryAddress) {
     unimplemented();
 }
-
 
 void EmulationProcessor::SBC(Rgstr a, std::uint8_t nextByte) {
     unimplemented();
 }
 
-
 void EmulationProcessor::SBC(Rgstr a, Rgstr b) {
     unimplemented();
 }
-
-/**
- *
- */
 
 void EmulationProcessor::SCF() {
     /* The Carry flag in the F rgstr is set. */
@@ -1114,41 +1077,31 @@ void EmulationProcessor::SCF() {
  * <p/>
  * Bit b in the memory location addressed by the contents of rgstr pair
  * HL is set.
- *
- * @param y
- * @param rgstr
  */
-
 void EmulationProcessor::SET(std::uint8_t y, Rgstr rgstr) {
     setRegister(rgstr, getRegisterValue(rgstr) | (1 << y));
 }
-
 
 void EmulationProcessor::SET(std::uint8_t i, MemoryAddress memoryAddress) {
     std::uint8_t currentMemoryContents = getMemory().read(getMemoryAddress(memoryAddress));
     getMemory().write(getMemoryAddress(memoryAddress), currentMemoryContents | (1 << i));
 }
 
-
 void EmulationProcessor::SLA(MemoryAddress memoryAddress) {
     unimplemented();
 }
-
 
 void EmulationProcessor::SLA(Rgstr r) {
     unimplemented();
 }
 
-
 void EmulationProcessor::SRA(MemoryAddress memoryAddress) {
     unimplemented();
 }
 
-
 void EmulationProcessor::SRA(Rgstr r) {
     unimplemented();
 }
-
 
 void EmulationProcessor::SRL(MemoryAddress memoryAddress) {
     unimplemented();
@@ -1159,43 +1112,32 @@ void EmulationProcessor::SRL(MemoryAddress memoryAddress) {
  * bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least-
  * significant bit.
  *
- * @param m
  */
-
 void EmulationProcessor::SRL(Rgstr m) {
     std::uint8_t val = getRegisterValue(m);
     setCFlag((val & 1) == 1);
     setRegister(m, val >> 1);
 }
 
-
 void EmulationProcessor::SUB(Rgstr iX2) {
     unimplemented();
 }
-
 
 void EmulationProcessor::SUB(std::uint8_t iX2) {
     unimplemented();
 }
 
-
 void EmulationProcessor::SUB(MemoryAddress memoryAddress) {
     unimplemented();
 }
-
-/**
- * @param val
- */
 
 void EmulationProcessor::XOR(Rgstr val) {
     XOR(getRegisterValue(val));
 }
 
-
 void EmulationProcessor::XOR(std::uint8_t val) {
     setA((getA() ^ val));
 }
-
 
 void EmulationProcessor::XOR(MemoryAddress memoryAddress) {
     unimplemented();
@@ -1213,16 +1155,10 @@ void EmulationProcessor::doOneScreenRefreshesWorth() {
     cout << "doone" << endl;
 }
 
-/**
- * @return the a
- */
 std::uint8_t EmulationProcessor::getA() {
     return A;
 }
 
-/**
- * @param a the a to set
- */
 void EmulationProcessor::setA(std::uint8_t a) {
     A = a;
 }
@@ -1245,30 +1181,18 @@ void EmulationProcessor::setAF_alt(std::uint16_t value) {
     setF_alt(value & 0xff);
 }
 
-/**
- * @return the a_alt
- */
 std::uint8_t EmulationProcessor::getA_alt() {
     return A_alt;
 }
 
-/**
- * @param a_alt the a_alt to set
- */
 void EmulationProcessor::setA_alt(std::uint8_t a_alt) {
     A_alt = a_alt;
 }
 
-/**
- * @return the b
- */
 std::uint8_t EmulationProcessor::getB() {
     return B;
 }
 
-/**
- * @param b the b to set
- */
 void EmulationProcessor::setB(std::uint8_t b) {
     this->B = b;
 }
@@ -1291,30 +1215,18 @@ void EmulationProcessor::setBC_alt(std::uint16_t value) {
     setC_alt(value & 0xff);
 }
 
-/**
- * @return the b_alt
- */
 std::uint8_t EmulationProcessor::getB_alt() {
     return B_alt;
 }
 
-/**
- * @param b_alt the b_alt to set
- */
 void EmulationProcessor::setB_alt(std::uint8_t b_alt) {
     B_alt = b_alt;
 }
 
-/**
- * @return the c
- */
 std::uint8_t EmulationProcessor::getC() {
     return C;
 }
 
-/**
- * @param c the c to set
- */
 void EmulationProcessor::setC(std::uint8_t c) {
     this->C = c;
 }
@@ -1331,30 +1243,18 @@ void EmulationProcessor::setCFlag(bool flag) {
     }
 }
 
-/**
- * @return the c_alt
- */
 std::uint8_t EmulationProcessor::getC_alt() {
     return C_alt;
 }
 
-/**
- * @param c_alt the c_alt to set
- */
 void EmulationProcessor::setC_alt(std::uint8_t c_alt) {
     C_alt = c_alt;
 }
 
-/**
- * @return the d
- */
 std::uint8_t EmulationProcessor::getD() {
     return D;
 }
 
-/**
- * @param d the d to set
- */
 void EmulationProcessor::setD(std::uint8_t d) {
     this->D = d;
 }
@@ -1377,86 +1277,50 @@ void EmulationProcessor::setDE_alt(std::uint16_t value) {
     setE_alt(value & 0xff);
 }
 
-/**
- * @return the d_alt
- */
 std::uint8_t EmulationProcessor::getD_alt() {
     return D_alt;
 }
 
-/**
- * @param d_alt the d_alt to set
- */
 void EmulationProcessor::setD_alt(std::uint8_t d_alt) {
     D_alt = d_alt;
 }
 
-/**
- * @return the e
- */
 std::uint8_t EmulationProcessor::getE() {
     return E;
 }
 
-/**
- * @param e the e to set
- */
 void EmulationProcessor::setE(std::uint8_t e) {
     this->E = e;
 }
 
-/**
- * @return the e_alt
- */
 std::uint8_t EmulationProcessor::getE_alt() {
     return E_alt;
 }
 
-/**
- * @param e_alt the e_alt to set
- */
 void EmulationProcessor::setE_alt(std::uint8_t e_alt) {
     E_alt = e_alt;
 }
 
-/**
- * @return the f
- */
 std::uint8_t EmulationProcessor::getF() {
     return F;
 }
 
-/**
- * @param f the f to set
- */
 void EmulationProcessor::setF(std::uint8_t f) {
     this->F = f;
 }
 
-/**
- * @return the f_alt
- */
 std::uint8_t EmulationProcessor::getF_alt() {
     return F_alt;
 }
 
-/**
- * @param f_alt the f_alt to set
- */
 void EmulationProcessor::setF_alt(std::uint8_t f_alt) {
     F_alt = f_alt;
 }
 
-/**
- * @return the h
- */
 std::uint8_t EmulationProcessor::getH() {
     return H;
 }
 
-/**
- * @param h the h to set
- */
 void EmulationProcessor::setH(std::uint8_t h) {
     this->H = h;
 }
@@ -1491,30 +1355,18 @@ void EmulationProcessor::setHL_alt(std::uint16_t value) {
     setL_alt(value & 0xff);
 }
 
-/**
- * @return the h_alt
- */
 std::uint8_t EmulationProcessor::getH_alt() {
     return H_alt;
 }
 
-/**
- * @param h_alt the h_alt to set
- */
 void EmulationProcessor::setH_alt(std::uint8_t h_alt) {
     H_alt = h_alt;
 }
 
-/**
- * @return the i
- */
 std::uint8_t EmulationProcessor::getI() {
     return I;
 }
 
-/**
- * @param i the i to set
- */
 void EmulationProcessor::setI(std::uint8_t i) {
     I = i;
 }
@@ -1523,71 +1375,26 @@ std::uint8_t EmulationProcessor::getIM() {
     return _IM;
 }
 
-/**
- * @return the iX
- */
 std::uint16_t EmulationProcessor::getIX() {
     return IX;
 }
 
-/**
- * @param iX the iX to set
- */
 void EmulationProcessor::setIX(std::uint16_t iX) {
     IX = iX;
 }
 
-/**
- * @return upper byte of IX
- */
 std::uint8_t EmulationProcessor::getIXH() {
     return IX >> 8;
 }
 
-/**
- * @return lower byte of IX
- */
 std::uint8_t EmulationProcessor::getIXL() {
     return IX & 0xff;
 }
 
-//
-//     void CP(AlgorithmicInstructionDecoder.BlockInstructionOp bli) {
-//        std::uint8_t result = getA() - getMemory().read(getHL());
-//
-//        setSignFlag((result & 0b10000000) == 0b10000000);
-//        setZeroFlag(result == 0);
-//        setHFlag(false); //H is set if borrow from bit 4; reset otherwise
-//        setParityOverflowFlag(isIFF2()); //        P/V is set if BC -1 x 0; reset otherwise
-//        setNFlag(true); // N
-//
-//        if (result == 0) {
-//            setBC(getBC() - 1);
-//            switch (bli) {
-//                case D:
-//                    setHL(getHL() - 1);
-////                    break;
-//                case DR:
-//                    break;
-//                case I:
-//                    setHL(getHL() + 1);
-////                    break;
-//                case IR:
-//                    break;
-//            }
-//        }
-//    }
-
-/**
- * @return the iY
- */
 std::uint16_t EmulationProcessor::getIY() {
     return IY;
 }
 
-/**
- * @param iY the iY to set
- */
 void EmulationProcessor::setIY(std::uint16_t iY) {
     IY = iY;
 }
@@ -1600,38 +1407,18 @@ std::uint8_t EmulationProcessor::getIYL() {
     return IY & BOOST_BINARY(11111111);
 }
 
-// IO* EmulationProcessor::getIo() {
-//     return io;
-// }
-// 
-// void EmulationProcessor::setIo(IO* io) {
-//     this->io = io;
-// }
-
-/**
- * @return the l
- */
 std::uint8_t EmulationProcessor::getL() {
     return L;
 }
 
-/**
- * @param l the l to set
- */
 void EmulationProcessor::setL(std::uint8_t l) {
     L = l;
 }
 
-/**
- * @return the l_alt
- */
 std::uint8_t EmulationProcessor::getL_alt() {
     return L_alt;
 }
 
-/**
- * @param EmulationProcessor::l_alt the l_alt to set
- */
 void EmulationProcessor::setL_alt(std::uint8_t l_alt) {
     L_alt = l_alt;
 }
@@ -1660,16 +1447,10 @@ void EmulationProcessor::setParityOverflowFlag(bool flag) {
     }
 }
 
-/**
- * @return the r
- */
 std::uint8_t EmulationProcessor::getR() {
     return R;
 }
 
-/**
- * @param r the r to set
- */
 void EmulationProcessor::setR(std::uint8_t r) {
     R = r;
 }
@@ -1724,10 +1505,6 @@ std::uint8_t EmulationProcessor::getRegisterValue(Rgstr rgstr) {
         return getH();
     case Rgstr::L:
         return getL();
-//            case HL:
-//                return getMemory().read(getHL());
-//            case IX:
-//                return getIX();
     case Rgstr::IXL:
         return getIXL();
     case Rgstr::IXH:
@@ -1742,18 +1519,10 @@ std::uint8_t EmulationProcessor::getRegisterValue(Rgstr rgstr) {
     }
 }
 
-/**
- * @return the sP
- */
-//
 std::uint16_t EmulationProcessor::getSP() {
     return SP;
 }
 
-/**
- * @param sP the sP to set
- */
-//
 void EmulationProcessor::setSP(std::uint16_t sP) {
     SP = sP;
 }
@@ -1832,30 +1601,18 @@ bool EmulationProcessor::isConditionTrue(Condition condition) {
     return retval;
 }
 
-/**
- * @return the iFF1
- */
 bool EmulationProcessor::isIFF1() {
     return IFF1;
 }
 
-/**
- * @param iFF1 the iFF1 to set
- */
 void EmulationProcessor::setIFF1(bool iFF1) {
     IFF1 = iFF1;
 }
 
-/**
- * @return the iFF2
- */
 bool EmulationProcessor::isIFF2() {
     return IFF2;
 }
 
-/**
- * @param iFF2 the iFF2 to set
- */
 void EmulationProcessor::setIFF2(bool iFF2) {
     IFF2 = iFF2;
 }
@@ -1881,10 +1638,6 @@ void EmulationProcessor::pushPCtoStack() {
     getMemory().write(getSP(), (getPC() & 0xff));
 }
 
-/**
- * @param address
- * @return
- */
 std::uint8_t EmulationProcessor::readIO(std::uint16_t address) {
     return getIO().read(address);
 }
@@ -1903,7 +1656,6 @@ std::uint8_t EmulationProcessor::readIO(std::uint16_t address) {
  * <p/>
  * The Z80 CPU will execute instruction at address 0000h
  */
-//
 void EmulationProcessor::reset() {
     setPC(0x0);
     setI(0x0);
@@ -1911,9 +1663,6 @@ void EmulationProcessor::reset() {
     _IM = 0;
 }
 
-/**
- * @param value
- */
 void EmulationProcessor::setFlags(std::uint8_t value) {
 
     /*- S is set if I-Rgstr is negative; reset otherwise
@@ -1957,9 +1706,6 @@ void EmulationProcessor::setRegister(Rgstr rgstr, std::uint8_t value) {
     case Rgstr::L:
         setL(value);
         break;
-//            case HL:
-//                setHL(value);
-//                break;
     case Rgstr::R:
         setR(value);
         break;
@@ -2027,10 +1773,6 @@ void EmulationProcessor::unimplemented() {
     throw  UnimplementedInstructionException();
 }
 
-/**
- * @param address
- * @param value
- */
 void EmulationProcessor::writeIO(std::uint16_t address, std::uint8_t value) {
 //    logger.debug("Writing IO: addr:" + address + " val:" + value);
     getIO().write(address, value);
@@ -2051,6 +1793,5 @@ std::uint16_t EmulationProcessor::getMemoryAddress(MemoryAddress memoryAddress) 
     } else if (memoryAddress.getMemoryAddress() > 0) {
         address = memoryAddress.getMemoryAddress();
     }
-
     return address;
 }

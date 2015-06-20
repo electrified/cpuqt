@@ -111,6 +111,7 @@ void MainWindow::loadRom() {
 
 void MainWindow::loadRom(QString file_path) {
     QMessageBox::information(this, tr("filename"), file_path);
+
     auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
 
     for (int i = 0; i < data.size(); ++i) {
@@ -118,13 +119,16 @@ void MainWindow::loadRom(QString file_path) {
     }
     
     // HAX
-    emulationProcessor->getMemory().write(0,0xd3);       /* OUT N, A */
-    emulationProcessor->getMemory().write(1,0x00);
+    if (file_path.endsWith(QString("zexdoc.bin"))) {
+        l.debug("patching zexdoc");
+        emulationProcessor->getMemory().write(0,0xd3);       /* OUT N, A */
+        emulationProcessor->getMemory().write(1,0x00);
 
-    emulationProcessor->getMemory().write(5,0xdb);       /* IN A, N */
-    emulationProcessor->getMemory().write(6,0x00);
-    emulationProcessor->getMemory().write(7,0xc9);
-    emulationProcessor->setPC(0x100);
+        emulationProcessor->getMemory().write(5,0xdb);       /* IN A, N */
+        emulationProcessor->getMemory().write(6,0x00);
+        emulationProcessor->getMemory().write(7,0xc9);
+        emulationProcessor->setPC(0x100);
+    }
 }
 
 void MainWindow::run()
