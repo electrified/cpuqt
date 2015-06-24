@@ -21,7 +21,8 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 set (GuiLib_src 
 ${PROJECT_SOURCE_DIR}/ui/main_window.cpp 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp 
-${PROJECT_SOURCE_DIR}/ui/badgerio.cpp 
+${PROJECT_SOURCE_DIR}/ui/badgerio.cpp
+${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.cpp
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp 
 )
 
@@ -30,6 +31,7 @@ ${PROJECT_SOURCE_DIR}/ui/utils.h
 ${PROJECT_SOURCE_DIR}/ui/main_window.h 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h
 ${PROJECT_SOURCE_DIR}/ui/badgerio.h
+${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.h
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.h
 )
 
@@ -42,20 +44,34 @@ qt5_wrap_ui (GuiLib_ui_moc  ${GuiLib_ui})
 include_directories (${PROJECT_SOURCE_DIR})
 include_directories (${PROJECT_BINARY_DIR})
 
-set(tools_SRC tools/FinalNode.cpp tools/FinalNode.hpp tools/GetData.cpp tools/GetData.hpp tools/Switch.cpp tools/Switch.hpp tools/Instruction.cpp tools/Instruction.hpp tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp tools/Case.cpp tools/Case.hpp)
+set(tools_SRC
+tools/FinalNode.cpp tools/FinalNode.hpp
+tools/GetData.cpp tools/GetData.hpp
+tools/Switch.cpp tools/Switch.hpp
+tools/Instruction.cpp tools/Instruction.hpp
+tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp
+tools/Case.cpp tools/Case.hpp
+)
 
 set(Z80_SRC
-    Z80/EmulationProcessor.cpp Z80/EmulationProcessor.h Z80/Condition.cpp Z80/Condition.hpp Z80/DisassemblerProcessor.cpp Z80/DisassemblerProcessor.h
+    Z80/Condition.cpp Z80/Condition.hpp
+    Z80/disassembler.cpp Z80/disassembler.h
     Z80/Memory.cpp Z80/Memory.h
-    Z80/MemoryAddress.cpp Z80/MemoryAddress.h Z80/Processor.cpp Z80/Processor.h Z80/Register.cpp Z80/Register.hpp Z80/RegisterPair.cpp Z80/RegisterPair.hpp
+    Z80/MemoryAddress.cpp Z80/MemoryAddress.h
+    Z80/processor.cpp Z80/processor.h
+    Z80/Register.cpp Z80/Register.hpp
+    Z80/RegisterPair.cpp Z80/RegisterPair.hpp
     Z80/IO.cpp Z80/IO.h Z80/TestIO.h Z80/TestIO.cpp
-    Z80/BaseProcessor.cpp Z80/BaseProcessor.h
-    Z80/baseprocessordecoder.cpp Z80/baseprocessordecoder.h
+    Z80/decoder.cpp Z80/decoder.h
+    Z80/alu.h
+    Z80/emu_alu.cpp Z80/emu_alu.h
+    Z80/disass_alu.cpp Z80/disass_alu.h
     Z80/BadgerMemory.cpp Z80/BadgerMemory.h
+    Z80/registers.h Z80/registers.cpp
     Logger.cpp Logger.h
 )
 
-add_library(Z80 SHARED
+add_library(Z80 STATIC
     ${Z80_SRC}
 )
 
@@ -67,13 +83,16 @@ add_library (GuiLib STATIC
 
 qt5_use_modules(GuiLib Widgets)
 
-set(tooltests_SRC tests/Test.cpp)
+set (tooltests_SRC
+tests/test_computer.h tests/test_computer.cpp
+tests/Test.cpp
+)
 
-add_executable(cpuqt2 ${GuiBin_src} ${Z80_SRC})
+add_executable(cpuqt2 ${GuiBin_src}) # ${Z80_SRC}
 
-add_executable(tool ${tools_SRC} ${Z80_SRC})
+add_executable(tool ${tools_SRC}) # ${Z80_SRC}
 
-add_executable(tooltests ${Z80_SRC} ${tooltests_SRC})
+add_executable(tooltests ${tooltests_SRC}) #${Z80_SRC}
 
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
@@ -90,9 +109,9 @@ set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_link_libraries(tool ${Boost_LIBRARIES})
-target_link_libraries(cpuqt2 GuiLib) # Z80
-target_link_libraries(tooltests ${Boost_LIBRARIES})
+target_link_libraries(tool ${Boost_LIBRARIES} Z80)
+target_link_libraries(cpuqt2 GuiLib Z80) # Z80
+target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
 
 if (WIN32)
  # disable autolinking in boost
@@ -141,6 +160,7 @@ file(COPY z80sean.txt DESTINATION .)
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
 install(TARGETS tool RUNTIME DESTINATION bin)
 install(TARGETS tooltests RUNTIME DESTINATION bin)
+#install(TARGETS Z80 RUNTIME DESTINATION bin)
 
 if(WIN32)
         option(COPY_BOOST_BINARIES "Copy boost DLL files to local path" 1)

@@ -1,10 +1,12 @@
 #ifndef EMULATIONPROCESSOR_H
 #define EMULATIONPROCESSOR_H
 
-#include "Z80/baseprocessordecoder.h"
+#include "Z80/Processor.h"
+#include "Z80/decoder.h"
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
+#include "Z80/registers.h"
 #include "Z80/IO.h"
 #include "Logger.h"
 
@@ -16,21 +18,15 @@ class UnimplementedInstructionException: public std::exception
     }
 };
 
-
-class EmulationProcessor : public BaseProcessorDecoder {
-    std::uint8_t A, B, C, D, E, F, H, L, I, R;
-    std::uint16_t IX, IY, SP;
-    std::uint8_t A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt;
-    //interrupt enable flip flops
-    bool IFF1 = false;
-    bool IFF2 = false;
-    bool halted = false;
-    //interrupt mode
-    std::uint8_t _IM;
+class EmuAlu : public Alu {
+protected:
     Logger logger;
+    Memory& memory;
+    IO& io;
+    Registers& registers;
 public:
-    EmulationProcessor(Memory& memory, IO& io);
-    ~EmulationProcessor();
+    EmuAlu(Memory& memory, IO& io, Registers& registers);
+    ~EmuAlu();
     void ADC(const RegisterPair hl, const RegisterPair bc);
 
     void ADC(const Rgstr a, const Rgstr b);
@@ -83,10 +79,6 @@ public:
 
     void DAA();
 
-    /**
-     * DEC B - 5
-     * @param r
-     */
     void DEC(const Rgstr r);
 
     void DEC(const RegisterPair r);
@@ -139,11 +131,6 @@ public:
 
     void LD(const RegisterPair r1, const RegisterPair r2);
 
-    /**
-     * LD SP,nn - 31 n n
-     * @param registerPair
-     * @param immediateValue
-     */
     void LD(const RegisterPair registerPair, const std::uint16_t immediateValue);
 
     void LD(const MemoryAddress memoryAddress, const Rgstr a);
@@ -263,135 +250,23 @@ public:
     void XOR(const std::uint8_t val);
     void XOR(const MemoryAddress memoryAddress);
 
-    std::uint16_t getRegisterPairValue(const RegisterPair register);
-
-    std::uint8_t getRegisterValue(const Rgstr register);
-
-    std::uint8_t getA();
-    void setA(std::uint8_t a);
-    std::uint16_t getAF();
-    void setAF(std::uint16_t value);
-    std::uint16_t getAF_alt();
-    void setAF_alt(std::uint16_t value);
-    std::uint8_t getA_alt();
-    void setA_alt(std::uint8_t a_alt);
-    std::uint8_t getB();
-    void setB(std::uint8_t b);
-    std::uint16_t getBC();
-    void setBC(std::uint16_t value);
-    std::uint16_t getBC_alt();
-    void setBC_alt(std::uint16_t value);
-    std::uint8_t getB_alt();
-    void setB_alt(std::uint8_t b_alt);
-    std::uint8_t getC();
-    void setC(std::uint8_t c);
-    bool getCFlag();
-    void setCFlag(bool flag);
-    std::uint8_t getC_alt();
-    void setC_alt(std::uint8_t c_alt);
-    std::uint8_t getD();
-    void setD(std::uint8_t d);
-    std::uint16_t getDE();
-    void setDE(std::uint16_t value);
-    std::uint16_t getDE_alt();
-    void setDE_alt(std::uint16_t value);
-    std::uint8_t getD_alt();
-    void setD_alt(std::uint8_t d_alt);
-    std::uint8_t getE();
-    void setE(std::uint8_t e);
-    std::uint8_t getE_alt();
-    void setE_alt(std::uint8_t e_alt);
-    std::uint8_t getF();
-    void setF(std::uint8_t f);
-    std::uint8_t getF_alt();
-    void setF_alt(std::uint8_t f_alt);
-    std::uint8_t getH();
-    void setH(std::uint8_t h);
-    bool getHFlag();
-    void setHFlag(bool flag);
-    std::uint16_t getHL();
-    void setHL(std::uint16_t value);
-    std::uint16_t getHL_alt();
-    void setHL_alt(std::uint16_t value);
-    std::uint8_t getH_alt();
-    void setH_alt(std::uint8_t h_alt);
-    std::uint8_t getI();
-    void setI(std::uint8_t i);
-    std::uint8_t getIM();
-    std::uint16_t getIX();
-    void setIX(std::uint16_t iX);
-    std::uint8_t getIXH();
-    std::uint8_t getIXL();
-    std::uint16_t getIY();
-    void setIY(std::uint16_t iY);
-    std::uint8_t getIYH();
-    std::uint8_t getIYL();
-    std::uint8_t getL();
-    void setL(std::uint8_t l);
-    std::uint8_t getL_alt();
-    void setL_alt(std::uint8_t l_alt);
-
-    void process();
-    void process(std::uint8_t count);
-
-    bool getNFlag();
-
-    void setNFlag(bool flag);
-
-    bool getParityOverflowFlag();
-
-    void setParityOverflowFlag(bool flag);
-
-    std::uint8_t getR();
-
-    void setR(std::uint8_t r);
-
-    std::uint16_t getSP();
-
-    void setSP(std::uint16_t sP);
-
-    bool getSignFlag();
-
-    void setSignFlag(bool flag);
-
-    bool getZeroFlag();
-
-    void setZeroFlag(bool flag);
-
     void incrementSP();
 
     bool isConditionTrue(Condition condition);
-
-    bool isIFF1();
-
-    void setIFF1(bool iFF1);
-
-    bool isIFF2();
-
-    void setIFF2(bool iFF2);
-
-
-    void setRegister(Rgstr register, std::uint8_t value);
-
-    void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
-    
-    void doOneScreenRefreshesWorth();
-    void reset();
-
 protected:
     void pushPCtoStack();
 
     std::uint8_t readIO(std::uint16_t address);
     void writeIO(std::uint16_t address, std::uint8_t value);
 
-    void setFlags(std::uint8_t value);
-
-    void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 
     void unimplemented();
 
     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
 
     void decrementSP();
+
+    void setFlags(std::uint8_t value);
+
 };
 #endif // EMULATIONPROCESSOR_H

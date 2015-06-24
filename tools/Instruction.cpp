@@ -1,24 +1,15 @@
-#include <tools/Instruction.hpp>
-//#include <string>
+#include "tools/Instruction.hpp"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-//#include <vector>
-
 #include <boost/format.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string.hpp>
-//#include <boost/algorithm/string/predicate.hpp>
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/regex.hpp>
 
-//#include "Z80/Condition.hpp"
-//#include "Z80/Register.hpp"
-//#include "Z80/RegisterPair.hpp"
-
 using namespace std;
-
 
 const string Instruction::useCondition[useConditionCount] = {  "JP","RET","CALL","JR"};
 
@@ -161,11 +152,9 @@ vector<string> Instruction::getMethodParams()
 
 string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed, vector<uint32_t> dataParams)
 {
-//     cout << "part " << part;
     stringstream param;
     boost::replace_all(part, "'", "_prime");
     if( boost::regex_match(part, boost::regex("[A-Z]*")) || boost::ends_with(part, "_prime")) {
-//         cout << " match1 " <<endl;
         if(contains(part, registers, registerCount) && !contains(getFunctionisedMethodName(), useCondition, useConditionCount)) {
             param << "Rgstr::" << part;
         } else if(contains(part, registerpairs, registerPairCount)) {
@@ -186,8 +175,6 @@ string Instruction::getParam(string part, bool indirect, uint32_t dataParamsUsed
 }
 
 bool Instruction::contains(std::string testString, const string possibles[], const int itemCount) {
-//     cout << "looking for matches to" << testString <<endl;
-//     cout << itemCount << endl;
     for (int i =0; i < itemCount; i++) {
 //         cout << "possible match: " << possibles[i] << endl;
         if (testString ==possibles[i]) {
@@ -260,7 +247,6 @@ std::string Instruction::getOpcodesAsHex()
 
 void Instruction::write(std::ofstream* writer)
 {
-    *writer << boost::format("// %s - %s") % this->getMnemonic() % this->getOpcodesAsHex() << endl;
     *writer << boost::format("logger.debug(\"%s - %s\");") % this->getMnemonic() % this->getOpcodesAsHex()<< endl;
-    *writer << boost::format("%s;") % this->getFunctionCall()<< endl;
+    *writer << boost::format("processor.%s;") % this->getFunctionCall()<< endl;
 }

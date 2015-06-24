@@ -1,4 +1,4 @@
-#include <tools/InstructionTableToCode.hpp>
+#include "tools/InstructionTableToCode.hpp"
 
 #include "tools/Case.hpp"
 #include "tools/GetData.hpp"
@@ -116,12 +116,6 @@ void InstructionTableToCode::writeHeader(
     std::ofstream* writer)
 {
    *writer << "#include \"Z80/baseprocessordecoder.h\"" << endl;
-   *writer << "#include <cstdint>" << endl;
-   *writer << "#include \"Z80/MemoryAddress.h\"" << endl;
-   *writer << "#include \"Z80/Register.hpp\"" << endl;
-   *writer << "#include \"Z80/RegisterPair.hpp\"" << endl;
-   *writer << "#include \"Z80/Condition.hpp\"" << endl;
-   *writer << "#include \"Z80/Memory.h\"" << endl << endl;
    
     *writer << "void BaseProcessorDecoder::decode() {" << endl;
     *writer << "std::uint8_t currentInstruction[4];" << endl;
@@ -177,9 +171,7 @@ Switch* InstructionTableToCode::groupOpcodes(std::vector<Instruction>* instructi
             }
 
             if (depth == instruction.getIndexOfLastOpcode()) {
-//                 cout << "hello" <<endl;
                 currentNode->instruction = instruction;                
-//                 cout << "hello2" <<endl;
             }
             depth++;
         }

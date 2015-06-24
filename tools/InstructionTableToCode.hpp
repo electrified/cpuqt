@@ -1,13 +1,10 @@
-// Generated from /org.maidavale.cpu/src/main/java/org/maidavale/cpu/tools/InstructionTableToCode.java
-
 #pragma once
 
-#include"tools/Switch.hpp"
-#include"tools/Instruction.hpp"
+#include "tools/Switch.hpp"
+#include "tools/Instruction.hpp"
 
 class InstructionTableToCode
 {
-
 public:
     void main();
 

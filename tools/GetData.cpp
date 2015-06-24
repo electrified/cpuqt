@@ -1,6 +1,5 @@
-#include<fstream>
-//#include<cstdint>
-#include<boost/format.hpp>
+#include <fstream>
+#include <boost/format.hpp>
 
 #include "tools/GetData.hpp"
 
@@ -11,6 +10,5 @@ GetData::GetData(uint8_t level)
 
 void GetData::write(std::ofstream* writer)
 {
-    *writer << "//GetData" <<std::endl;
-   *writer << boost::format("currentInstruction[%1%] = getNextByte();") % int(this->level) <<std::endl;
+   *writer << boost::format("currentInstruction[%1%] = memory.read(++pc);") % int(this->level) <<std::endl;
 }

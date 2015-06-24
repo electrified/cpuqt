@@ -9,11 +9,11 @@ BadgerMemory::~BadgerMemory() {
      std::cout << "destroying badgermemory" << std::endl;
 }
 
-std::uint8_t BadgerMemory::read(std::uint16_t address){
+std::uint8_t BadgerMemory::read(const std::uint16_t address){
     return memory[address];
 }
 
-void BadgerMemory::write(std::uint16_t address, std::uint8_t value){
+void BadgerMemory::write(const std::uint16_t address,const std::uint8_t value){
     memory[address] = value;
 }
 

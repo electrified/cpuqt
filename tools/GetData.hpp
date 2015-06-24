@@ -1,5 +1,4 @@
 #pragma once
-// class FinalNode;
 #include <cstdint>
 
 #include "tools/FinalNode.hpp"

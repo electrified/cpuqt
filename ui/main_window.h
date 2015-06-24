@@ -1,7 +1,7 @@
 #pragma once
 #include <QMainWindow>
-#include "Z80/Processor.h"
-#include "Z80/EmulationProcessor.h"
+#include "Z80/processor.h"
+#include "Z80/emu_alu.h"
 #include "ui/DisassemblyModel.h"
 #include <QStandardItemModel>
 #include <QTimer>
@@ -23,7 +23,7 @@ public:
     static std::vector<char> ReadAllBytes(char const* filename);
 private:
     Ui::MainWindow *ui;
-    EmulationProcessor *emulationProcessor;
+    Processor *emulationProcessor;
     DisassemblyModel *model2;
     QTimer timer;
     QSignalMapper recentItemsSignalMapper;
@@ -43,5 +43,9 @@ private slots:
     void step();
     void reset();
     void outputCharacterToConsole(char value);
+    void print_debug_stats();
+    void moveDebuggerToPC(std::uint16_t address);
+signals:
+    void programCounterUpdated(std::uint16_t address);
 };
 

@@ -1,12 +1,8 @@
 #include <fstream>
-#include<boost/format.hpp>
+#include <boost/format.hpp>
 
 #include "tools/Case.hpp"
-
-//#include <tools/FinalNode.hpp>
-//#include <tools/Instruction.hpp>
-//#include <tools/Switch.hpp>
-#include <tools/GetData.hpp>
+#include "tools/GetData.hpp"
 
 Case::Case()
 {

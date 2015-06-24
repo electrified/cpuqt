@@ -1,8 +1,10 @@
 #ifndef DISASSEMBLERPROCESSOR_H
 #define DISASSEMBLERPROCESSOR_H
 
-class DisassemblerProcessor
-{
+#include "alu.h"
+
+class DisassAlu : public Alu {
 };
+
 
 #endif // DISASSEMBLERPROCESSOR_H
