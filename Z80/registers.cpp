@@ -5,7 +5,6 @@ Registers::Registers()
 
 }
 
-
 std::uint16_t Registers::getPC() {
     return PC;
 }
@@ -13,7 +12,6 @@ std::uint16_t Registers::getPC() {
 void Registers::setPC(std::uint16_t pc) {
     PC = pc;
 }
-
 
 std::uint8_t Registers::getA() {
     return A;

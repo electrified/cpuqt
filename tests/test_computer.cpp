@@ -11,6 +11,11 @@ TestComputer::TestComputer()
 
 TestComputer::~TestComputer()
 {
+    delete io;
+    delete memory;
+    delete registers;
+    delete alu;
+    delete processor;
 }
 
 BadgerMemory* TestComputer::getMemory() {

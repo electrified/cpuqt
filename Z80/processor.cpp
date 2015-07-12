@@ -6,18 +6,12 @@ Processor::Processor(Memory* memory, IO* io, Alu* alu, Registers* registers) :
 io(io), memory(memory), alu(alu), registers(registers)
 {
     std::cout << "Processor ctor" << std::endl;
+    decoder = new Decoder();
 }
 
-// Processor::Processor(Memory& memory, IO& io) :
-// io(io), memory(memory), registers(*new Registers()) 
-// {
-//     // alu(*new EmuAlu()),
-//     std::cout << "Processor ctor" << std::endl;
-// }
-
 Processor::~Processor() {
-    delete &memory;
-    delete &io;
+//     delete &memory;
+//     delete &io;
 }
 
 void Processor::doOneScreenRefreshesWorth() {
@@ -26,15 +20,13 @@ void Processor::doOneScreenRefreshesWorth() {
         process();
     }
     ++refreshes;
-//    cout << "doone" << endl;
 }
-
 
 void Processor::process() {
 //        if (halted) {
 //            decode(); //NOP
 //        } else {
-//     decode();
+    decoder->decode(*memory, *alu, registers->PC);
 //        }
 }
 

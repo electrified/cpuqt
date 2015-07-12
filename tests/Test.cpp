@@ -11,9 +11,6 @@
 #include "tests/test_computer.h"
 
 std::unique_ptr<TestComputer> setupComputer() {
-//    BadgerMemory* memory = new BadgerMemory();
-//    TestIO* io = new TestIO();
-//     EmulationProcessor* proc = new EmulationProcessor(*memory, *io);
     std::unique_ptr<TestComputer> proc(new TestComputer());
     return proc;
 }

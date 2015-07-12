@@ -15,8 +15,8 @@ io(io), memory(memory), registers(registers)
 }
 
 EmuAlu::~EmuAlu() {
-    delete &memory;
-    delete &io;
+//     delete &memory;
+//     delete &io;
 }
 
 void EmuAlu::ADC(RegisterPair rp1, RegisterPair rp2) {

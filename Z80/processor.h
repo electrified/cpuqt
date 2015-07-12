@@ -3,14 +3,15 @@
 
 #include <cstdint>
 
-#include "Z80/RegisterPair.hpp"
-#include "Z80/Register.hpp"
-#include "Z80/Condition.hpp"
-#include "Z80/MemoryAddress.h"
-#include "Z80/Memory.h"
-#include "Z80/IO.h"
-#include "Z80/alu.h"
-#include "Z80/registers.h"
+#include "RegisterPair.hpp"
+#include "Register.hpp"
+#include "Condition.hpp"
+#include "MemoryAddress.h"
+#include "Memory.h"
+#include "IO.h"
+#include "alu.h"
+#include "registers.h"
+#include "decoder.h"
 
 class Processor
 {
@@ -18,6 +19,7 @@ class Processor
     IO* io;
     Alu* alu;
     Registers* registers;
+    Decoder* decoder;
 public:
     Processor(Memory* memory, IO* io, Alu* alu, Registers* registers);
     Processor(Memory* memory, IO* io);

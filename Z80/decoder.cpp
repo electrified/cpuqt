@@ -1,11 +1,6 @@
-#include "Z80/decoder.h"
-#include "Z80/alu.h"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
-#include "Z80/MemoryAddress.h"
-#include "Z80/Condition.hpp"
+#include "decoder.h"
 
-void Decoder::decode(Memory& memory, Alu& alu, std::uint8_t& pc) {
+void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     std::uint8_t currentInstruction[4];
     // get opcode
     currentInstruction[0] = memory.read(++pc);

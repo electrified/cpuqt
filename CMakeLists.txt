@@ -54,13 +54,13 @@ tools/Case.cpp tools/Case.hpp
 )
 
 set(Z80_SRC
-    Z80/Condition.cpp Z80/Condition.hpp
+    Z80/Condition.hpp
     Z80/disassembler.cpp Z80/disassembler.h
     Z80/Memory.cpp Z80/Memory.h
     Z80/MemoryAddress.cpp Z80/MemoryAddress.h
     Z80/processor.cpp Z80/processor.h
-    Z80/Register.cpp Z80/Register.hpp
-    Z80/RegisterPair.cpp Z80/RegisterPair.hpp
+    Z80/Register.hpp
+    Z80/RegisterPair.hpp
     Z80/IO.cpp Z80/IO.h Z80/TestIO.h Z80/TestIO.cpp
     Z80/decoder.cpp Z80/decoder.h
     Z80/alu.h
