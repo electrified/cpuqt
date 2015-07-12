@@ -1,7 +1,7 @@
 #ifndef EMULATIONPROCESSOR_H
 #define EMULATIONPROCESSOR_H
 
-#include "Z80/Processor.h"
+#include "Z80/processor.h"
 #include "Z80/decoder.h"
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
@@ -21,11 +21,11 @@ class UnimplementedInstructionException: public std::exception
 class EmuAlu : public Alu {
 protected:
     Logger logger;
-    Memory& memory;
-    IO& io;
-    Registers& registers;
+    Memory* memory;
+    IO* io;
+    Registers* registers;
 public:
-    EmuAlu(Memory& memory, IO& io, Registers& registers);
+    EmuAlu(Memory* memory, IO* io, Registers* registers);
     ~EmuAlu();
     void ADC(const RegisterPair hl, const RegisterPair bc);
 

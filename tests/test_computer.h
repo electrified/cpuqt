@@ -8,14 +8,17 @@
 
 class TestComputer
 {
-    TestIO& io = *new TestIO();
-    BadgerMemory& memory = *new BadgerMemory();
-    Processor& processor = *new Processor(memory, io);
+    TestIO* io;
+    BadgerMemory* memory;
+    Registers* registers;
+    EmuAlu* alu;
+    Processor* processor;
 public:
     TestComputer();
-    Memory& getMemory();
-    IO& getIO();
-    Processor& getProcessor();
+    ~TestComputer();
+    BadgerMemory* getMemory();
+    TestIO* getIO();
+    Processor* getProcessor();
 };
 
 #endif // TESTCOMPUTER_H

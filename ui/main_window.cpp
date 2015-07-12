@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QtBadgerMemory* bm = new QtBadgerMemory();
     BadgerIO* bo = new BadgerIO();
     Registers* registers = new Registers();
-    Alu* alu = new cpm_io(*bm, *bo, *registers);
-    emulationProcessor = new Processor(*bm, *bo, *alu, *registers);
+    Alu* alu = new cpm_io(bm, bo, registers);
+    emulationProcessor = new Processor(bm, bo, alu, registers);
 
     model2 = new DisassemblyModel(*bm, this);
 
@@ -123,19 +123,19 @@ void MainWindow::loadRom(QString file_path) {
     std::uint16_t offset = (tests ? 0x100 : 0);
 
     for (int i = 0; i < data.size(); ++i) {
-        emulationProcessor->getMemory().write(i + offset, data.at(i));
+        emulationProcessor->getMemory()->write(i + offset, data.at(i));
     }
     
     // HAX
     if (tests) {
         l.debug("patching zexdoc");
-        emulationProcessor->getMemory().write(0,0xd3);       /* OUT N, A */
-        emulationProcessor->getMemory().write(1,0x00);
+        emulationProcessor->getMemory()->write(0,0xd3);       /* OUT N, A */
+        emulationProcessor->getMemory()->write(1,0x00);
 
-        emulationProcessor->getMemory().write(5,0xdb);       /* IN A, N */
-        emulationProcessor->getMemory().write(6,0x00);
-        emulationProcessor->getMemory().write(7,0xc9);
-        emulationProcessor->getRegisters().setPC(0x100);
+        emulationProcessor->getMemory()->write(5,0xdb);       /* IN A, N */
+        emulationProcessor->getMemory()->write(6,0x00);
+        emulationProcessor->getMemory()->write(7,0xc9);
+        emulationProcessor->getRegisters()->setPC(0x100);
     }
 }
 
@@ -155,7 +155,7 @@ void MainWindow::update()
 //    l.debug("update!");
     emulationProcessor->doOneScreenRefreshesWorth();
     update_register_values();
-    emit programCounterUpdated(emulationProcessor->getRegisters().getPC());
+    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
 }
 
 void MainWindow::showAboutBox() {
@@ -180,17 +180,17 @@ std::vector<char> MainWindow::ReadAllBytes(char const* filename)
 }
 
 void MainWindow::update_register_values() {
-    this->ui->pc_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getPC()));
-    this->ui->sp_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getSP()));
-    this->ui->ix_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getIX()));
-    this->ui->iy_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getIY()));
-    this->ui->hl_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getHL()));
-    this->ui->a_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getA()));
-    this->ui->b_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getB()));
-    this->ui->c_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getC()));
-    this->ui->d_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getD()));
-    this->ui->e_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getE()));
-    this->ui->f_value->setText(utils::int_to_hex(emulationProcessor->getRegisters().getF()));
+    this->ui->pc_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getPC()));
+    this->ui->sp_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getSP()));
+    this->ui->ix_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getIX()));
+    this->ui->iy_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getIY()));
+    this->ui->hl_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getHL()));
+    this->ui->a_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getA()));
+    this->ui->b_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getB()));
+    this->ui->c_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getC()));
+    this->ui->d_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getD()));
+    this->ui->e_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getE()));
+    this->ui->f_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getF()));
 //    std::cout << "updating display " << std::endl;
 }
 
@@ -198,7 +198,7 @@ void MainWindow::step()
 {
     emulationProcessor->process();
     update_register_values();
-    emit programCounterUpdated(emulationProcessor->getRegisters().getPC());
+    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
 }
 
 void MainWindow::reset()

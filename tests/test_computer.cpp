@@ -2,19 +2,25 @@
 
 TestComputer::TestComputer()
 {
-//    memory = ;
-//    io = ;
-//    processor = new Processor(*memory, *io);
+    io = new TestIO();
+    memory = new BadgerMemory();
+    registers = new Registers();
+    alu = new EmuAlu(memory, io, registers);
+    processor = new Processor(memory, io, alu, registers);
 }
 
-Memory& TestComputer::getMemory() {
+TestComputer::~TestComputer()
+{
+}
+
+BadgerMemory* TestComputer::getMemory() {
     return memory;
 }
 
-IO& TestComputer::getIO() {
+TestIO* TestComputer::getIO() {
     return io;
 }
 
-Processor& TestComputer::getProcessor() {
+Processor* TestComputer::getProcessor() {
     return processor;
 }

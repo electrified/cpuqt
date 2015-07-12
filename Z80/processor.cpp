@@ -2,17 +2,18 @@
 #include "Z80/emu_alu.h"
 #include <iostream>
 
-Processor::Processor(Memory& memory, IO& io, Alu& alu, Registers& registers) :
+Processor::Processor(Memory* memory, IO* io, Alu* alu, Registers* registers) :
 io(io), memory(memory), alu(alu), registers(registers)
 {
     std::cout << "Processor ctor" << std::endl;
 }
 
-Processor::Processor(Memory& memory, IO& io) :
-io(io), memory(memory), alu(*new EmuAlu()), registers(*new Registers())
-{
-    std::cout << "Processor ctor" << std::endl;
-}
+// Processor::Processor(Memory& memory, IO& io) :
+// io(io), memory(memory), registers(*new Registers()) 
+// {
+//     // alu(*new EmuAlu()),
+//     std::cout << "Processor ctor" << std::endl;
+// }
 
 Processor::~Processor() {
     delete &memory;
@@ -43,15 +44,15 @@ void Processor::process(std::uint8_t count) {
     }
 }
 
-Memory& Processor::getMemory() {
+Memory* Processor::getMemory() {
     return memory;
 }
 
-IO& Processor::getIO() {
+IO* Processor::getIO() {
     return io;
 }
 
-Registers& Processor::getRegisters() {
+Registers* Processor::getRegisters() {
     return registers;
 }
 
@@ -70,9 +71,9 @@ Registers& Processor::getRegisters() {
  * The Z80 CPU will execute instruction at address 0000h
  */
 void Processor::reset() {
-    registers.setPC(0x0);
-    registers.setI(0x0);
-    registers.setR(0x0);
+    registers->setPC(0x0);
+    registers->setI(0x0);
+    registers->setR(0x0);
 //    registers._IM = 0;
 }
 

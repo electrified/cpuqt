@@ -14,22 +14,22 @@
 
 class Processor
 {
-    Memory& memory;
-    IO& io;
-    Alu& alu;
-    Registers& registers;
+    Memory* memory;
+    IO* io;
+    Alu* alu;
+    Registers* registers;
 public:
-    Processor(Memory& memory, IO& io, Alu& alu, Registers& registers);
-    Processor(Memory& memory, IO& io);
+    Processor(Memory* memory, IO* io, Alu* alu, Registers* registers);
+    Processor(Memory* memory, IO* io);
     ~Processor();
 
     void process();
     void process(std::uint8_t count);
 
     void doOneScreenRefreshesWorth();
-    Memory& getMemory();
-    IO& getIO();
-    Registers& getRegisters();
+    Memory* getMemory();
+    IO* getIO();
+    Registers* getRegisters();
 //    virtual std::uint8_t fetchInstruction() = 0;
 //    virtual Memory& getMemory() = 0;
 //    virtual IO& getIO() = 0;

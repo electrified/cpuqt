@@ -8,7 +8,7 @@ class cpm_io :public QObject, public EmuAlu
 {
     Q_OBJECT
 public:
-    cpm_io(Memory& memory, IO& io, Registers& registers);
+    cpm_io(Memory* memory, IO* io, Registers* registers);
 //     ~cpm_io();
     void in(const Rgstr rgstr, const MemoryAddress& i);
 signals:
