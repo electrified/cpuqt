@@ -9,16 +9,17 @@
 
 class Registers {
     Logger logger;
-    std::uint8_t A, B, C, D, E, F, H, L, I, R;
-    std::uint16_t IX, IY, SP;
-    std::uint8_t A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt;
+    std::uint8_t A, B, C, D, E, F, H, L, I, R = 0;
+    std::uint16_t IX, IY, SP = 0;
+    std::uint8_t A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt = 0;
     //interrupt enable flip flops
     bool IFF1 = false;
     bool IFF2 = false;
     bool halted = false;
     //interrupt mode
-    std::uint8_t _IM;
-    std::uint16_t addressBus;
+    std::uint8_t _IM = 0;
+    std::uint16_t addressBus = 0;
+    
 public:
     /*
 * Program Counter (PC) The program counter holds the 16-bit address of the
@@ -27,8 +28,7 @@ public:
 * lines. When a program jump occurs, the new value is automatically placed
 * in the PC, overriding the incrementer.
 */
-    std::uint16_t PC;
-
+    std::uint16_t PC = 0;
     Registers();
 
     std::uint16_t getPC();

@@ -2,11 +2,9 @@
 #include <boost/utility/binary.hpp>
 #include <iostream>
 //#include "utils.h"
-//for hex output
-#include <iostream>
+//for hex outpu
 #include <iomanip>
 #include <sstream>
-#include "Z80/registers.h"
 
 EmuAlu::EmuAlu(Memory* memory, IO* io, Registers* registers) :
 io(io), memory(memory), registers(registers)

@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_DisassemblyModel.cpp">
+      <sourceFolder url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_DisassemblyModel.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_badgerio.cpp">
+      <sourceFolder url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_badgerio.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_cpm_io.cpp">
+      <sourceFolder url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_cpm_io.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_main_window.cpp">
+      <sourceFolder url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_main_window.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_qtbadgermemory.cpp">
+      <sourceFolder url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_qtbadgermemory.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_utils.cpp">
+      <sourceFolder url="file://$USER_HOME$/.clion10/system/cmake/generated/31baf3b0/31baf3b0/Debug/ui/moc_utils.cpp" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

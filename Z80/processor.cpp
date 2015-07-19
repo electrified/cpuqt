@@ -1,12 +1,14 @@
 #include "Z80/processor.h"
-#include "Z80/emu_alu.h"
+//#include "Z80/emu_alu.h"
 #include <iostream>
 
-Processor::Processor(Memory* memory, IO* io, Alu* alu, Registers* registers) :
-io(io), memory(memory), alu(alu), registers(registers)
+Processor::Processor(Memory* memory, IO* io, Alu* alu, Registers* rgstrs) :
+io(io), memory(memory), alu(alu)
 {
+//    , registers(registers)
     std::cout << "Processor ctor" << std::endl;
     decoder = new Decoder();
+    registers = rgstrs;
 }
 
 Processor::~Processor() {

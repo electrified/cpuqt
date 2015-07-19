@@ -7,6 +7,6 @@
 class Decoder {
     Logger logger;
 public:
-    void decode(Memory& memory, Alu& alu,std::uint16_t& pc);
+    void decode(Memory& memory, Alu& alu, std::uint16_t& pc);
 };
 #endif
