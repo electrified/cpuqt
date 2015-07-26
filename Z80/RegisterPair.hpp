@@ -1,5 +1,6 @@
 #pragma once
 #include <exception>
+#include <string>
 
 class UnknownRegisterPairException: public std::exception
 {
@@ -24,3 +25,7 @@ enum class RegisterPair {
     PC,
     SP,
 };
+
+namespace registers {
+    std::string toString(RegisterPair c);
+}

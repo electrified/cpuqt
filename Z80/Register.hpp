@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include <string>
 
 class UnknownRegisterException: public std::exception
 {
@@ -26,3 +27,7 @@ enum class Rgstr {
     L,
     R,
 };
+
+namespace registers {
+    std::string toString(Rgstr c);
+}

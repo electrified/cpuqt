@@ -2,18 +2,17 @@
 #include "decoder.h"
 
 void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
-    std::cout << "Decoder::decode";
     std::uint8_t currentInstruction[4];
     // get opcode
-    currentInstruction[0] = memory.read(pc++);
+    currentInstruction[0] = next(memory, pc);
     switch (currentInstruction[0]) {
     case 0x00:
     logger.debug("NOP - 0 ");
     alu.NOP();
     break;
     case 0x01:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD BC,nn - 1 n n ");
     alu.LD(RegisterPair::BC, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
@@ -34,7 +33,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::B);
     break;
     case 0x06:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD B,n - 6 n ");
     alu.LD(Rgstr::B, currentInstruction[1]);
     break;
@@ -67,7 +66,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::C);
     break;
     case 0x0E:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD C,n - e n ");
     alu.LD(Rgstr::C, currentInstruction[1]);
     break;
@@ -76,13 +75,13 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.RRCA();
     break;
     case 0x10:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("DJNZ (PC+e) - 10 n ");
     alu.DJNZ(MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
     case 0x11:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD DE,nn - 11 n n ");
     alu.LD(RegisterPair::DE, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
@@ -103,7 +102,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::D);
     break;
     case 0x16:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD D,n - 16 n ");
     alu.LD(Rgstr::D, currentInstruction[1]);
     break;
@@ -112,7 +111,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.RLA();
     break;
     case 0x18:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("JR (PC+e) - 18 n ");
     alu.JR(MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
@@ -137,7 +136,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::E);
     break;
     case 0x1E:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD E,n - 1e n ");
     alu.LD(Rgstr::E, currentInstruction[1]);
     break;
@@ -146,19 +145,19 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.RRA();
     break;
     case 0x20:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("JR NZ,(PC+e) - 20 n ");
     alu.JR(Condition::NZ, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
     case 0x21:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD HL,nn - 21 n n ");
     alu.LD(RegisterPair::HL, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
     case 0x22:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (nn),HL - 22 n n ");
     alu.LD(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]), RegisterPair::HL);
     break;
@@ -175,7 +174,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::H);
     break;
     case 0x26:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD H,n - 26 n ");
     alu.LD(Rgstr::H, currentInstruction[1]);
     break;
@@ -184,7 +183,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DAA();
     break;
     case 0x28:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("JR Z,(PC+e) - 28 n ");
     alu.JR(Condition::Z, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
@@ -193,8 +192,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::HL, RegisterPair::HL);
     break;
     case 0x2A:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD HL,(nn) - 2a n n ");
     alu.LD(RegisterPair::HL, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -211,7 +210,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::L);
     break;
     case 0x2E:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD L,n - 2e n ");
     alu.LD(Rgstr::L, currentInstruction[1]);
     break;
@@ -220,19 +219,19 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.CPL();
     break;
     case 0x30:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("JR NC,(PC+e) - 30 n ");
     alu.JR(Condition::NC, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
     case 0x31:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD SP,nn - 31 n n ");
     alu.LD(RegisterPair::SP, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
     case 0x32:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (nn),A - 32 n n ");
     alu.LD(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]), Rgstr::A);
     break;
@@ -249,7 +248,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(MemoryAddress(RegisterPair::HL));
     break;
     case 0x36:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD (HL),n - 36 n ");
     alu.LD(MemoryAddress(RegisterPair::HL), currentInstruction[1]);
     break;
@@ -258,7 +257,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.SCF();
     break;
     case 0x38:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("JR C,(PC+e) - 38 n ");
     alu.JR(Condition::C, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
@@ -267,8 +266,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::HL, RegisterPair::SP);
     break;
     case 0x3A:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD A,(nn) - 3a n n ");
     alu.LD(Rgstr::A, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -285,7 +284,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(Rgstr::A);
     break;
     case 0x3E:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("LD A,n - 3e n ");
     alu.LD(Rgstr::A, currentInstruction[1]);
     break;
@@ -814,20 +813,20 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.POP(RegisterPair::BC);
     break;
     case 0xC2:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP NZ,(nn) - c2 n n ");
     alu.JP(Condition::NZ, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xC3:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP (nn) - c3 n n ");
     alu.JP(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xC4:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL NZ,(nn) - c4 n n ");
     alu.CALL(Condition::NZ, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -836,7 +835,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.PUSH(RegisterPair::BC);
     break;
     case 0xC6:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("ADD A,n - c6 n ");
     alu.ADD(Rgstr::A, currentInstruction[1]);
     break;
@@ -853,14 +852,14 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.RET();
     break;
     case 0xCA:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP Z,(nn) - ca n n ");
     alu.JP(Condition::Z, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xCB:
     // get opcode
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     switch (currentInstruction[1]) {
     case 0x00:
     logger.debug("RLC B - cb 0 ");
@@ -1857,19 +1856,19 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     }
     break;
     case 0xCC:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL Z,(nn) - cc n n ");
     alu.CALL(Condition::Z, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xCD:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL (nn) - cd n n ");
     alu.CALL(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xCE:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("ADC A,n - ce n ");
     alu.ADC(Rgstr::A, currentInstruction[1]);
     break;
@@ -1886,19 +1885,19 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.POP(RegisterPair::DE);
     break;
     case 0xD2:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP NC,(nn) - d2 n n ");
     alu.JP(Condition::NC, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xD3:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("OUT (n),A - d3 n ");
     alu.out(MemoryAddress(currentInstruction[1]), Rgstr::A);
     break;
     case 0xD4:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL NC,(nn) - d4 n n ");
     alu.CALL(Condition::NC, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -1907,7 +1906,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.PUSH(RegisterPair::DE);
     break;
     case 0xD6:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("SUB n - d6 n ");
     alu.SUB(currentInstruction[1]);
     break;
@@ -1924,25 +1923,25 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.EXX();
     break;
     case 0xDA:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP C,(nn) - da n n ");
     alu.JP(Condition::C, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xDB:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("IN A,(n) - db n ");
     alu.in(Rgstr::A, MemoryAddress(currentInstruction[1]));
     break;
     case 0xDC:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL C,(nn) - dc n n ");
     alu.CALL(Condition::C, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xDD:
     // get opcode
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     switch (currentInstruction[1]) {
     case 0x09:
     logger.debug("ADD IX,BC - dd 9 ");
@@ -1953,14 +1952,14 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::IX, RegisterPair::DE);
     break;
     case 0x21:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD IX,nn - dd 21 n n ");
     alu.LD(RegisterPair::IX, (currentInstruction[3] << 8) | currentInstruction[2]);
     break;
     case 0x22:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (nn),IX - dd 22 n n ");
     alu.LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::IX);
     break;
@@ -1973,8 +1972,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::IX, RegisterPair::IX);
     break;
     case 0x2A:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD IX,(nn) - dd 2a n n ");
     alu.LD(RegisterPair::IX, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
@@ -1983,18 +1982,18 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(RegisterPair::IX);
     break;
     case 0x34:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("INC (IX+d) - dd 34 n ");
     alu.INC(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x35:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("DEC (IX+d) - dd 35 n ");
     alu.DEC(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x36:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (IX+d),n - dd 36 n n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), currentInstruction[3]);
     break;
@@ -2003,119 +2002,119 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::IX, RegisterPair::SP);
     break;
     case 0x46:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD B,(IX+d) - dd 46 n ");
     alu.LD(Rgstr::B, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x4E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD C,(IX+d) - dd 4e n ");
     alu.LD(Rgstr::C, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x56:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD D,(IX+d) - dd 56 n ");
     alu.LD(Rgstr::D, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x5E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD E,(IX+d) - dd 5e n ");
     alu.LD(Rgstr::E, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x66:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD H,(IX+d) - dd 66 n ");
     alu.LD(Rgstr::H, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x6E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD L,(IX+d) - dd 6e n ");
     alu.LD(Rgstr::L, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x70:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),B - dd 70 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::B);
     break;
     case 0x71:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),C - dd 71 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::C);
     break;
     case 0x72:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),D - dd 72 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::D);
     break;
     case 0x73:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),E - dd 73 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::E);
     break;
     case 0x74:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),H - dd 74 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::H);
     break;
     case 0x75:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),L - dd 75 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::L);
     break;
     case 0x77:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IX+d),A - dd 77 n ");
     alu.LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::A);
     break;
     case 0x7E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD A,(IX+d) - dd 7e n ");
     alu.LD(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x86:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("ADD A,(IX+d) - dd 86 n ");
     alu.ADD(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x8E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("ADC A,(IX+d) - dd 8e n ");
     alu.ADC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x96:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("SUB (IX+d) - dd 96 n ");
     alu.SUB(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x9E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("SBC A,(IX+d) - dd 9e n ");
     alu.SBC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0xA6:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("AND (IX+d) - dd a6 n ");
     alu.AND(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0xAE:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("XOR (IX+d) - dd ae n ");
     alu.XOR(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0xB6:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("OR (IX+d) - dd b6 n ");
     alu.OR(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0xBE:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CP (IX+d) - dd be n ");
     alu.CP(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0xCB:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     // get opcode
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[3] = next(memory, pc);
     switch (currentInstruction[3]) {
     case 0x06:
     logger.debug("RLC (IX+d) - dd cb n 6 ");
@@ -2266,7 +2265,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     }
     break;
     case 0xDE:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("SBC A,n - de n ");
     alu.SBC(Rgstr::A, currentInstruction[1]);
     break;
@@ -2283,8 +2282,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.POP(RegisterPair::HL);
     break;
     case 0xE2:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP PO,(nn) - e2 n n ");
     alu.JP(Condition::PO, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -2293,8 +2292,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.EX(MemoryAddress(RegisterPair::SP), RegisterPair::HL);
     break;
     case 0xE4:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL PO,(nn) - e4 n n ");
     alu.CALL(Condition::PO, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -2303,7 +2302,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.PUSH(RegisterPair::HL);
     break;
     case 0xE6:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("AND n - e6 n ");
     alu.AND(currentInstruction[1]);
     break;
@@ -2320,8 +2319,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.JP(MemoryAddress(RegisterPair::HL));
     break;
     case 0xEA:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP PE,(nn) - ea n n ");
     alu.JP(Condition::PE, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -2330,14 +2329,14 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.EX(RegisterPair::DE, RegisterPair::HL);
     break;
     case 0xEC:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL PE,(nn) - ec n n ");
     alu.CALL(Condition::PE, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xED:
     // get opcode
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     switch (currentInstruction[1]) {
     case 0x40:
     logger.debug("IN B,(C) - ed 40 ");
@@ -2352,8 +2351,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.SBC(RegisterPair::HL, RegisterPair::BC);
     break;
     case 0x43:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (nn),BC - ed 43 n n ");
     alu.LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::BC);
     break;
@@ -2386,8 +2385,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADC(RegisterPair::HL, RegisterPair::BC);
     break;
     case 0x4B:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD BC,(nn) - ed 4b n n ");
     alu.LD(RegisterPair::BC, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
@@ -2412,8 +2411,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.SBC(RegisterPair::HL, RegisterPair::DE);
     break;
     case 0x53:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (nn),DE - ed 53 n n ");
     alu.LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::DE);
     break;
@@ -2438,8 +2437,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADC(RegisterPair::HL, RegisterPair::DE);
     break;
     case 0x5B:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD DE,(nn) - ed 5b n n ");
     alu.LD(RegisterPair::DE, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
@@ -2464,8 +2463,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.SBC(RegisterPair::HL, RegisterPair::HL);
     break;
     case 0x63:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (nn),HL - ed 63 n n ");
     alu.LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::HL);
     break;
@@ -2486,8 +2485,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADC(RegisterPair::HL, RegisterPair::HL);
     break;
     case 0x6B:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD HL,(nn) - ed 6b n n ");
     alu.LD(RegisterPair::HL, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
@@ -2500,8 +2499,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.SBC(RegisterPair::HL, RegisterPair::SP);
     break;
     case 0x73:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (nn),SP - ed 73 n n ");
     alu.LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::SP);
     break;
@@ -2518,8 +2517,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADC(RegisterPair::HL, RegisterPair::SP);
     break;
     case 0x7B:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD SP,(nn) - ed 7b n n ");
     alu.LD(RegisterPair::SP, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
@@ -2590,7 +2589,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     }
     break;
     case 0xEE:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("XOR n - ee n ");
     alu.XOR(currentInstruction[1]);
     break;
@@ -2607,8 +2606,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.POP(RegisterPair::AF);
     break;
     case 0xF2:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP P,(nn) - f2 n n ");
     alu.JP(Condition::P, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -2617,8 +2616,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DI();
     break;
     case 0xF4:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL P,(nn) - f4 n n ");
     alu.CALL(Condition::P, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -2627,7 +2626,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.PUSH(RegisterPair::AF);
     break;
     case 0xF6:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("OR n - f6 n ");
     alu.OR(currentInstruction[1]);
     break;
@@ -2644,8 +2643,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.LD(RegisterPair::SP, RegisterPair::HL);
     break;
     case 0xFA:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("JP M,(nn) - fa n n ");
     alu.JP(Condition::M, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
@@ -2654,14 +2653,14 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.EI();
     break;
     case 0xFC:
-    currentInstruction[1] = memory.read(pc++);
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CALL M,(nn) - fc n n ");
     alu.CALL(Condition::M, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0xFD:
     // get opcode
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     switch (currentInstruction[1]) {
     case 0x09:
     logger.debug("ADD IY,BC - fd 9 ");
@@ -2672,14 +2671,14 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::IY, RegisterPair::DE);
     break;
     case 0x21:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD IY,nn - fd 21 n n ");
     alu.LD(RegisterPair::IY, (currentInstruction[3] << 8) | currentInstruction[2]);
     break;
     case 0x22:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (nn),IY - fd 22 n n ");
     alu.LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::IY);
     break;
@@ -2692,8 +2691,8 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::IY, RegisterPair::IY);
     break;
     case 0x2A:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD IY,(nn) - fd 2a n n ");
     alu.LD(RegisterPair::IY, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
@@ -2702,18 +2701,18 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.DEC(RegisterPair::IY);
     break;
     case 0x34:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("INC (IY+d) - fd 34 n ");
     alu.INC(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x35:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("DEC (IY+d) - fd 35 n ");
     alu.DEC(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x36:
-    currentInstruction[2] = memory.read(pc++);
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
+    currentInstruction[3] = next(memory, pc);
     logger.debug("LD (IY+d),n - fd 36 n n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), currentInstruction[3]);
     break;
@@ -2722,119 +2721,119 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(RegisterPair::IY, RegisterPair::SP);
     break;
     case 0x46:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD B,(IY+d) - fd 46 n ");
     alu.LD(Rgstr::B, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x4E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD C,(IY+d) - fd 4e n ");
     alu.LD(Rgstr::C, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x56:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD D,(IY+d) - fd 56 n ");
     alu.LD(Rgstr::D, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x5E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD E,(IY+d) - fd 5e n ");
     alu.LD(Rgstr::E, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x66:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD H,(IY+d) - fd 66 n ");
     alu.LD(Rgstr::H, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x6E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD L,(IY+d) - fd 6e n ");
     alu.LD(Rgstr::L, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x70:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),B - fd 70 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::B);
     break;
     case 0x71:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),C - fd 71 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::C);
     break;
     case 0x72:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),D - fd 72 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::D);
     break;
     case 0x73:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),E - fd 73 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::E);
     break;
     case 0x74:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),H - fd 74 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::H);
     break;
     case 0x75:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),L - fd 75 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::L);
     break;
     case 0x77:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD (IY+d),A - fd 77 n ");
     alu.LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::A);
     break;
     case 0x7E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("LD A,(IY+d) - fd 7e n ");
     alu.LD(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x86:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("ADD A,(IY+d) - fd 86 n ");
     alu.ADD(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x8E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("ADC A,(IY+d) - fd 8e n ");
     alu.ADC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x96:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("SUB (IY+d) - fd 96 n ");
     alu.SUB(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x9E:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("SBC A,(IY+d) - fd 9e n ");
     alu.SBC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0xA6:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("AND (IY+d) - fd a6 n ");
     alu.AND(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0xAE:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("XOR (IY+d) - fd ae n ");
     alu.XOR(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0xB6:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("OR (IY+d) - fd b6 n ");
     alu.OR(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0xBE:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     logger.debug("CP (IY+d) - fd be n ");
     alu.CP(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0xCB:
-    currentInstruction[2] = memory.read(pc++);
+    currentInstruction[2] = next(memory, pc);
     // get opcode
-    currentInstruction[3] = memory.read(pc++);
+    currentInstruction[3] = next(memory, pc);
     switch (currentInstruction[3]) {
     case 0x06:
     logger.debug("RLC (IY+d) - fd cb n 6 ");
@@ -2985,7 +2984,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     }
     break;
     case 0xFE:
-    currentInstruction[1] = memory.read(pc++);
+    currentInstruction[1] = next(memory, pc);
     logger.debug("CP n - fe n ");
     alu.CP(currentInstruction[1]);
     break;
@@ -2994,7 +2993,4 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.RST(0x38);
     break;
     }
-    //currentInstruction = ArrayUtils.subarray(currentInstruction, 0, instructionByteCount);
-//    instructionByteCount = 0;
-    //return currentInstruction;
 }

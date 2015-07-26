@@ -27,18 +27,18 @@ MainWindow::MainWindow(QWidget *parent) :
     Alu* alu = new cpm_io(bm, bo, registers);
     emulationProcessor = new Processor(bm, bo, alu, registers);
 
-    model2 = new DisassemblyModel(*bm, this);
+    disassemblyModel = new DisassemblyModel(bm, this);
 
     // Attach the model to the view
-    ui->disassemblyView->setModel(model2);
+    ui->disassemblyView->setModel(disassemblyModel);
     ui->disassemblyView->setColumnWidth(0, 50);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(bo, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
-    connect((cpm_io*)emulationProcessor, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
+    connect((cpm_io*)alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
     connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
-    connect(bm, SIGNAL(memoryUpdated(std::uint16_t)), model2, SLOT(memoryUpdated(std::uint16_t)));
-    connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), model2, SLOT(programCounterUpdated(std::uint16_t)));
+    connect(bm, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
+    connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
     initial_recent_menu_population();
 }
@@ -137,6 +137,8 @@ void MainWindow::loadRom(QString file_path) {
         emulationProcessor->getMemory()->write(7,0xc9);
         emulationProcessor->getRegisters()->setPC(0x100);
     }
+    
+    disassemblyModel->forceDisassembly();
 }
 
 void MainWindow::run()
@@ -219,5 +221,5 @@ void MainWindow::print_debug_stats()
 }
 
 void MainWindow::moveDebuggerToPC(std::uint16_t address) {
-    this->ui->disassemblyView->scrollTo(model2->index(address, 0));
+    this->ui->disassemblyView->scrollTo(disassemblyModel->index(address, 0));
 }

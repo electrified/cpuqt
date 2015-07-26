@@ -24,7 +24,7 @@ public:
 private:
     Ui::MainWindow *ui;
     Processor *emulationProcessor;
-    DisassemblyModel *model2;
+    DisassemblyModel *disassemblyModel;
     QTimer timer;
     QSignalMapper recentItemsSignalMapper;
     Logger l;

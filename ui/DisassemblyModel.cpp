@@ -3,14 +3,15 @@
 #include "utils.h"
 
 
-DisassemblyModel::DisassemblyModel(QtBadgerMemory& memory, QObject *parent)
+DisassemblyModel::DisassemblyModel(QtBadgerMemory* memory, QObject *parent)
     : memory(memory), QAbstractTableModel(parent)
 {
+    this->disassembler = new Disassembler(memory);
 }
 
 int DisassemblyModel::rowCount(const QModelIndex & /*parent*/) const
 {
-   return this->memory.size();
+   return this->memory->size();
 }
 
 int DisassemblyModel::columnCount(const QModelIndex & /*parent*/) const
@@ -53,22 +54,27 @@ QVariant DisassemblyModel::data(const QModelIndex &index, int role) const
             case 1:
                 return utils::int_to_hex(index.row());
             case 2:
-                return utils::int_to_hex(this->memory.read(index.row()));
+                return utils::int_to_hex(this->memory->read(index.row()));
             case 3:
-                return QString();
+                std::string mnemonic = this->disassembler->getDisassembly(index.row());
+                return QString::fromStdString(mnemonic);
         }
     }
     return QVariant();
 }
 
-void DisassemblyModel::memoryUpdated(std::uint16_t address) {
+void DisassemblyModel::memoryUpdated(const std::uint16_t address) {
 //    QModelIndex start = );
 //    QModelIndex end = );
     emit dataChanged(createIndex(address, 0), createIndex(address, 3));
 }
 
-void DisassemblyModel::programCounterUpdated(std::uint16_t newPC) {
+void DisassemblyModel::programCounterUpdated(const std::uint16_t newPC) {
     emit dataChanged(createIndex(pc, 0), createIndex(pc, 0));
     pc = newPC;
     emit dataChanged(createIndex(pc, 0), createIndex(pc, 0));
+}
+
+void DisassemblyModel::forceDisassembly() {
+    this->disassembler->disassemble();
 }

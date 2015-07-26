@@ -96,8 +96,7 @@ std::vector<Instruction> InstructionTableToCode::parse()
     return theInstructions;
 }
 
-void InstructionTableToCode::writeCode(
-    Switch* rootSwitch)
+void InstructionTableToCode::writeCode(Switch* rootSwitch)
 {
     string javaPath = "baseprocessordecoder.cpp";
     if (boost::filesystem::exists(javaPath)) {

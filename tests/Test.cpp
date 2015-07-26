@@ -603,7 +603,7 @@ TEST_CASE("LD_nn_HLTest") {
 }
 
 
-TEST_CASE("LDA_BC_Test") {
+TEST_CASE("LDA (BC)") {
     /*
      * If the BC register pair contains the number 4747H , and memory
      * address 4747H contains int 12H , then the instruction LD A , (BC)

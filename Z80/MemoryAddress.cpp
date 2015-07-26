@@ -1,7 +1,8 @@
-#include<string>
+#include <string>
 #include "Z80/MemoryAddress.h"
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
+#include "Z80/utils.h"
 
 MemoryAddress::MemoryAddress() {
     memoryAddress = 0;
@@ -27,37 +28,37 @@ MemoryAddress::MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t of
     this->offset = offset;
 }
 
-const std::uint16_t  MemoryAddress::getMemoryAddress() {
+std::uint16_t  MemoryAddress::getMemoryAddress() const {
     return memoryAddress;
 }
 
-const std::uint8_t  MemoryAddress::getOffset() {
+std::uint8_t  MemoryAddress::getOffset() const {
     return offset;
 }
 
-const Rgstr MemoryAddress::getRegister() {
+Rgstr MemoryAddress::getRegister() const {
     return rgstr;
 }
 
-const RegisterPair MemoryAddress::getRegisterPair() {
+RegisterPair MemoryAddress::getRegisterPair() const {
     return registerPair;
 }
 
-const std::string MemoryAddress::toString() {
+std::string MemoryAddress::toString() const {
          string address = "";
-//         if(getRegister() != null) {
-//             address = getRegister().name();
-//             if (getOffset() != null) {
-//                 address = address + "+" + "0x" + Integer.toHexString(getOffset());
-//             }
-//         } else if (getRegisterPair() != null) {
-//             address = getRegisterPair().name();
-//             if (getOffset() != null) {
-//                 address = address + "+" + "0x" + Integer.toHexString(getOffset());
-//             }
-//         } else if (getMemoryAddress() != null) {
-//             address = "0x" + Integer.toHexString(getMemoryAddress());
-//         }
+        if(getRegister() != Rgstr::unknown) {
+            address = registers::toString(getRegister());
+            if (getOffset() != 0) {
+                address = address + "+" + utils::int_to_hex(getOffset());
+            }
+        } else if (getRegisterPair() != RegisterPair::unknown) {
+            address = registers::toString(getRegisterPair());
+            if (getOffset() != 0) {
+                address = address + "+" + utils::int_to_hex(getOffset());
+            }
+        } else {// if (getMemoryAddress() != 0) {
+            address = utils::int_to_hex(getMemoryAddress());
+        }
 
          return address;
 }

@@ -1,4 +1,7 @@
 #pragma once
+
+#include <string>
+
 enum class Condition {
         C,
         M,
@@ -9,3 +12,7 @@ enum class Condition {
         PO,
         Z,
     };
+
+namespace registers {
+    std::string toString(Condition c);
+}

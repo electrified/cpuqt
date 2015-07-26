@@ -70,20 +70,3 @@ void Processor::reset() {
     registers->setR(0x0);
 //    registers._IM = 0;
 }
-
-//void EmuAlu::placeProgramCounterOnAddressBus() {
-//    addressBus = this->getPC();
-//    ++PC;
-//}
-
-//std::uint8_t EmuAlu::fetchInstruction() {
-//    return getMemory().read(addressBus);
-//}
-
-//std::uint8_t EmuAlu::getNextByte() {
-//    ++instructionByteCount;
-//    placeProgramCounterOnAddressBus();
-////     cout << "address bus " << addressBus << std::endl;
-
-//    return fetchInstruction();
-//}

@@ -8,5 +8,9 @@ class Decoder {
     Logger logger;
 public:
     void decode(Memory& memory, Alu& alu, std::uint16_t& pc);
+private:
+    static std::uint8_t next(Memory& memory, std::uint16_t& pc) {
+      return memory.read(pc++);
+    }
 };
 #endif

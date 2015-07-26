@@ -1,5 +1,4 @@
 #include "cpm_io.h"
-#include <iostream>
 
 cpm_io::cpm_io(Memory* memory, IO* io, Registers* registers) : EmuAlu(memory, io, registers){
 
