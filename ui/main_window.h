@@ -45,6 +45,7 @@ private slots:
     void outputCharacterToConsole(char value);
     void print_debug_stats();
     void moveDebuggerToPC(std::uint16_t address);
+    void setPC(std::uint16_t address);
 signals:
     void programCounterUpdated(std::uint16_t address);
 };

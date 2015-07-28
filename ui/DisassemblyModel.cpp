@@ -43,21 +43,32 @@ QVariant DisassemblyModel::headerData(int section, Qt::Orientation orientation, 
 
 QVariant DisassemblyModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole)
+    switch (role)
     {
-        switch(index.column()) {
-            case 0:
-                if (pc == index.row()) {
-                    return QString(">");
-                }
-                break;
-            case 1:
-                return utils::int_to_hex(index.row());
-            case 2:
-                return utils::int_to_hex(this->memory->read(index.row()));
-            case 3:
-                std::string mnemonic = this->disassembler->getDisassembly(index.row());
-                return QString::fromStdString(mnemonic);
+        case Qt::DisplayRole: {
+            switch(index.column()) {
+                case 0:
+                    if (pc == index.row()) {
+                        return QString(">");
+                    }
+                    break;
+                case 1:
+                    return utils::int_to_hex(index.row());
+                case 2:
+                    return utils::int_to_hex(this->memory->read(index.row()));
+                case 3:
+                    std::string mnemonic = this->disassembler->getDisassembly(index.row());
+                    return QString::fromStdString(mnemonic);
+            }
+        } case Qt::CheckStateRole:
+
+        if (index.column() == 0) //add a checkbox to cell(1,0)
+        {
+            if  (pc == index.row()) {
+                return Qt::Checked;
+            } else {
+                return Qt::Unchecked;
+            }
         }
     }
     return QVariant();
@@ -77,4 +88,27 @@ void DisassemblyModel::programCounterUpdated(const std::uint16_t newPC) {
 
 void DisassemblyModel::forceDisassembly() {
     this->disassembler->disassemble();
+}
+
+bool DisassemblyModel::setData(const QModelIndex & index, const QVariant & value, int role) {
+        if (role == Qt::CheckStateRole) //Qt::EditRole
+    {
+        if (index.column() == 0) {
+            if (value.toBool()) {
+                emit programManuallySet(index.row());  
+            }
+        }
+    }
+    return true;
+}
+
+Qt::ItemFlags DisassemblyModel::flags(const QModelIndex &index) const
+{
+    
+    switch (index.column()) {
+        case 0:
+            return Qt::ItemIsEditable | QAbstractTableModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+        default:
+            return Qt::ItemIsEnabled;
+    }
 }

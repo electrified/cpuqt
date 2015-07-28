@@ -20,6 +20,6 @@ void Logger::debug(const std::string toLog)
 void Logger::info(const std::string toLog)
 {
     if (loglevel == LogLevel::info || loglevel == LogLevel::debug) {
-        std::cout << "INFO: " << toLog << std::endl;
+//         std::cout << "INFO: " << toLog << std::endl;
     }
 }

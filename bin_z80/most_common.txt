@@ -1,0 +1,118 @@
+[ed@orinoco build]$ sort out.txt | uniq -c | sort -nr           
+  59492 DEBUG: JP NZ,(nn) - c2 n n ok
+  40948 DEBUG: RRCA - f            ok
+  37843 DEBUG: LD C,A - 4f         ok
+  30968 DEBUG: LD (HL),A - 77      
+  30748 DEBUG: LD B,(HL) - 46      
+  29250 DEBUG: PUSH HL - e5        
+  29247 DEBUG: POP HL - e1         
+  28210 DEBUG: DEC B - 5           need to work on half carry / borrow implementations
+  26556 DEBUG: CP n - fe n         
+  26025 DEBUG: LD A,(HL) - 7e      
+  25394 DEBUG: PUSH BC - c5        
+  25393 DEBUG: POP BC - c1         
+  24328 DEBUG: PUSH AF - f5        
+  24328 DEBUG: POP AF - f1         
+  24108 DEBUG: LD A,n - 3e n       
+  21549 DEBUG: LD HL,nn - 21 n n   
+  21392 DEBUG: INC DE - 13         
+  20471 DEBUG: XOR C - a9          
+  20471 DEBUG: CALL C,(nn) - dc n n
+  19930 DEBUG: INC HL - 23         
+  19184 DEBUG: LD HL,(nn) - 2a n n 
+  18722 DEBUG: False               
+  17374 DEBUG: RLCA - 7            
+  17372 DEBUG: AND C - a1          
+  17334 DEBUG: LD A,(DE) - 1a      
+  17052 DEBUG: RET Z - c8          
+  17052 DEBUG: RET cc[y]           
+  17052 DEBUG: LD A,B - 78         
+  15611 DEBUG: ADD HL,DE - 19      
+  13696 DEBUG: XOR B - a8          
+  13696 DEBUG: DEC C - d           
+  13425 DEBUG: 0x1be9 MET          
+  13213 DEBUG: 0x1c29 MET          
+  12832 DEBUG: LD DE,nn - 11 n n   
+  11978 DEBUG: RET - c9            
+  10272 DEBUG: 0x1e6c MET          
+   9719 DEBUG: JP Z,(nn) - ca n n  
+   8347 DEBUG: CALL (nn) - cd n n  
+   8343 DEBUG: PUSH DE - d5        
+   8342 DEBUG: POP DE - d1         
+   7281 DEBUG: EX DE,HL - eb       
+   6848 DEBUG: ADD HL,HL - 29      
+   4590 DEBUG: LD A,C - 79         
+   4487 DEBUG: 0x1bcc MET          
+   4271 DEBUG: LD C,(HL) - 4e      
+   4270 DEBUG: LD (DE),A - 12      
+   3845 DEBUG: LD B,n - 6 n        
+   3843 DEBUG: 0x1bac MET          
+   3630 DEBUG: 0x1bbb MET          
+   3428 DEBUG: LD BC,nn - 1 n n    
+   3427 DEBUG: LD L,A - 6f         
+   3426 DEBUG: LD H,n - 26 n       
+   3424 DEBUG: XOR (HL) - ae       
+   3424 DEBUG: 0x1e6c NOT          
+   3210 DEBUG: 0x1d78 MET          
+   2559 DEBUG: LD (nn),HL - 22 n n 
+   2353 DEBUG: 0x1bd8 MET          
+   1922 DEBUG: 0x1c05 MET          
+   1918 DEBUG: 0x1bd8 NOT          
+   1917 DEBUG: 0x1be9 NOT          
+   1704 DEBUG: 0x1c29 NOT          
+    641 DEBUG: 0x1bcc NOT          
+    641 DEBUG: 0x1bbb NOT          
+    432 DEBUG: AND n - e6 n        
+    429 DEBUG: LD (nn),A - 32 n n  
+    428 DEBUG: NOP - 0             
+    428 DEBUG: LD SP,(nn) - ed 7b n
+    428 DEBUG: LD SP,nn - 31 n n   
+    428 DEBUG: LD (nn),SP - ed 73 n
+    428 DEBUG: CALL NZ,(nn) - c4 n 
+    427 DEBUG: 0x1bac NOT          
+    320 DEBUG: LD A,E - 7b         
+    280 DEBUG: 0x1c67 MET          
+    224 DEBUG: 0x1c5e MET          
+    216 DEBUG: LD B,A - 47         
+    214 DEBUG: PUSH IY - fd e5     
+    214 DEBUG: PUSH IX - dd e5     
+    214 DEBUG: POP IY - fd e1      
+    214 DEBUG: POP IX - dd e1      
+    214 DEBUG: LD A,(nn) - 3a n n  
+    214 DEBUG: JP (nn) - c3 n n    
+    214 DEBUG: INC (HL) - 34       
+    214 DEBUG: EI - fb             
+    214 DEBUG: DI - f3             
+    214 DEBUG: AND B - a0          
+    214 DEBUG: 0x1d78 NOT          
+    214 DEBUG: 0x1ca2 MET          
+    214 DEBUG: 0x1c9c NOT          
+    214 DEBUG: 0x1b48 MET          
+    214 DEBUG: 0x1b36 MET          
+    214 DEBUG: 0x1b2f NOT          
+    213 DEBUG: 0x1c05 NOT          
+     98 DEBUG: LDIR - ed b0        
+     96 DEBUG: INC D - 14          
+     96 DEBUG: 0x1c5e NOT          
+     40 DEBUG: LD E,(HL) - 5e      
+     40 DEBUG: 0x1c67 NOT          
+     38 DEBUG: 0x1c6c MET          
+      4 DEBUG: LD C,n - e n        
+      4 DEBUG: LD A,D - 7a         
+      3 DEBUG: LD (HL),n - 36 n    
+      3 DEBUG: 0x1e81 MET          
+      2 DEBUG: LD E,L - 5d         
+      2 DEBUG: LD D,n - 16 n       
+      2 DEBUG: LD D,H - 54         
+      2 DEBUG: INC A - 3c          
+      2 DEBUG: IN A,(n) - db n     
+      2 DEBUG: DEC BC - b          
+      2 DEBUG: 0x1c81 NOT          
+      2 DEBUG: 0x1c6c NOT          
+      1 DEBUG: OR (HL) - b6        
+      1 DEBUG: LD SP,HL - f9       
+      1 DEBUG: LD H,(HL) - 66      
+      1 DEBUG: DEC HL - 2b         
+      1 DEBUG: 0x1e81 NOT          
+      1 DEBUG: 0x0128 NOT          
+[ed@orinoco build]$ 

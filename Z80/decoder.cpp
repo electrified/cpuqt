@@ -581,35 +581,35 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.ADD(Rgstr::A, Rgstr::A);
     break;
     case 0x88:
-    logger.debug("ADC A,B - 88 ");
+    logger.info("ADC A,B - 88 ");
     alu.ADC(Rgstr::A, Rgstr::B);
     break;
     case 0x89:
-    logger.debug("ADC A,C - 89 ");
+    logger.info("ADC A,C - 89 ");
     alu.ADC(Rgstr::A, Rgstr::C);
     break;
     case 0x8A:
-    logger.debug("ADC A,D - 8a ");
+    logger.info("ADC A,D - 8a ");
     alu.ADC(Rgstr::A, Rgstr::D);
     break;
     case 0x8B:
-    logger.debug("ADC A,E - 8b ");
+    logger.info("ADC A,E - 8b ");
     alu.ADC(Rgstr::A, Rgstr::E);
     break;
     case 0x8C:
-    logger.debug("ADC A,H - 8c ");
+    logger.info("ADC A,H - 8c ");
     alu.ADC(Rgstr::A, Rgstr::H);
     break;
     case 0x8D:
-    logger.debug("ADC A,L - 8d ");
+    logger.info("ADC A,L - 8d ");
     alu.ADC(Rgstr::A, Rgstr::L);
     break;
     case 0x8E:
-    logger.debug("ADC A,(HL) - 8e ");
+    logger.info("ADC A,(HL) - 8e ");
     alu.ADC(Rgstr::A, MemoryAddress(RegisterPair::HL));
     break;
     case 0x8F:
-    logger.debug("ADC A,A - 8f ");
+    logger.info("ADC A,A - 8f ");
     alu.ADC(Rgstr::A, Rgstr::A);
     break;
     case 0x90:
@@ -645,35 +645,35 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.SUB(Rgstr::A);
     break;
     case 0x98:
-    logger.debug("SBC A,B - 98 ");
+    logger.info("SBC A,B - 98 ");
     alu.SBC(Rgstr::A, Rgstr::B);
     break;
     case 0x99:
-    logger.debug("SBC A,C - 99 ");
+    logger.info("SBC A,C - 99 ");
     alu.SBC(Rgstr::A, Rgstr::C);
     break;
     case 0x9A:
-    logger.debug("SBC A,D - 9a ");
+    logger.info("SBC A,D - 9a ");
     alu.SBC(Rgstr::A, Rgstr::D);
     break;
     case 0x9B:
-    logger.debug("SBC A,E - 9b ");
+    logger.info("SBC A,E - 9b ");
     alu.SBC(Rgstr::A, Rgstr::E);
     break;
     case 0x9C:
-    logger.debug("SBC A,H - 9c ");
+    logger.info("SBC A,H - 9c ");
     alu.SBC(Rgstr::A, Rgstr::H);
     break;
     case 0x9D:
-    logger.debug("SBC A,L - 9d ");
+    logger.info("SBC A,L - 9d ");
     alu.SBC(Rgstr::A, Rgstr::L);
     break;
     case 0x9E:
-    logger.debug("SBC A,(HL) - 9e ");
+    logger.info("SBC A,(HL) - 9e ");
     alu.SBC(Rgstr::A, MemoryAddress(RegisterPair::HL));
     break;
     case 0x9F:
-    logger.debug("SBC A,A - 9f ");
+    logger.info("SBC A,A - 9f ");
     alu.SBC(Rgstr::A, Rgstr::A);
     break;
     case 0xA0:
@@ -1869,7 +1869,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     break;
     case 0xCE:
     currentInstruction[1] = next(memory, pc);
-    logger.debug("ADC A,n - ce n ");
+    logger.info("ADC A,n - ce n ");
     alu.ADC(Rgstr::A, currentInstruction[1]);
     break;
     case 0xCF:
@@ -2078,7 +2078,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     break;
     case 0x8E:
     currentInstruction[2] = next(memory, pc);
-    logger.debug("ADC A,(IX+d) - dd 8e n ");
+    logger.info("ADC A,(IX+d) - dd 8e n ");
     alu.ADC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0x96:
@@ -2088,7 +2088,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     break;
     case 0x9E:
     currentInstruction[2] = next(memory, pc);
-    logger.debug("SBC A,(IX+d) - dd 9e n ");
+    logger.info("SBC A,(IX+d) - dd 9e n ");
     alu.SBC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
     break;
     case 0xA6:
@@ -2266,7 +2266,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     break;
     case 0xDE:
     currentInstruction[1] = next(memory, pc);
-    logger.debug("SBC A,n - de n ");
+    logger.info("SBC A,n - de n ");
     alu.SBC(Rgstr::A, currentInstruction[1]);
     break;
     case 0xDF:
@@ -2347,7 +2347,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::B);
     break;
     case 0x42:
-    logger.debug("SBC HL,BC - ed 42 ");
+    logger.info("SBC HL,BC - ed 42 ");
     alu.SBC(RegisterPair::HL, RegisterPair::BC);
     break;
     case 0x43:
@@ -2381,7 +2381,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::C);
     break;
     case 0x4A:
-    logger.debug("ADC HL,BC - ed 4a ");
+    logger.info("ADC HL,BC - ed 4a ");
     alu.ADC(RegisterPair::HL, RegisterPair::BC);
     break;
     case 0x4B:
@@ -2407,7 +2407,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::D);
     break;
     case 0x52:
-    logger.debug("SBC HL,DE - ed 52 ");
+    logger.info("SBC HL,DE - ed 52 ");
     alu.SBC(RegisterPair::HL, RegisterPair::DE);
     break;
     case 0x53:
@@ -2433,7 +2433,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::E);
     break;
     case 0x5A:
-    logger.debug("ADC HL,DE - ed 5a ");
+    logger.info("ADC HL,DE - ed 5a ");
     alu.ADC(RegisterPair::HL, RegisterPair::DE);
     break;
     case 0x5B:
@@ -2459,7 +2459,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::H);
     break;
     case 0x62:
-    logger.debug("SBC HL,HL - ed 62 ");
+    logger.info("SBC HL,HL - ed 62 ");
     alu.SBC(RegisterPair::HL, RegisterPair::HL);
     break;
     case 0x63:
@@ -2481,7 +2481,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::L);
     break;
     case 0x6A:
-    logger.debug("ADC HL,HL - ed 6a ");
+    logger.info("ADC HL,HL - ed 6a ");
     alu.ADC(RegisterPair::HL, RegisterPair::HL);
     break;
     case 0x6B:
@@ -2495,7 +2495,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.RLD();
     break;
     case 0x72:
-    logger.debug("SBC HL,SP - ed 72 ");
+    logger.info("SBC HL,SP - ed 72 ");
     alu.SBC(RegisterPair::HL, RegisterPair::SP);
     break;
     case 0x73:
@@ -2513,7 +2513,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     alu.out(MemoryAddress(Rgstr::C), Rgstr::A);
     break;
     case 0x7A:
-    logger.debug("ADC HL,SP - ed 7a ");
+    logger.info("ADC HL,SP - ed 7a ");
     alu.ADC(RegisterPair::HL, RegisterPair::SP);
     break;
     case 0x7B:
@@ -2797,7 +2797,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     break;
     case 0x8E:
     currentInstruction[2] = next(memory, pc);
-    logger.debug("ADC A,(IY+d) - fd 8e n ");
+    logger.info("ADC A,(IY+d) - fd 8e n ");
     alu.ADC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0x96:
@@ -2807,7 +2807,7 @@ void Decoder::decode(Memory& memory, Alu& alu, std::uint16_t& pc) {
     break;
     case 0x9E:
     currentInstruction[2] = next(memory, pc);
-    logger.debug("SBC A,(IY+d) - fd 9e n ");
+    logger.info("SBC A,(IY+d) - fd 9e n ");
     alu.SBC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
     break;
     case 0xA6:

@@ -19,6 +19,7 @@ EmuAlu::~EmuAlu() {
 
 void EmuAlu::ADC(RegisterPair rp1, RegisterPair rp2) {
     registers->setRegisterPair(rp1, registers->getRegisterPairValue(rp1) + registers->getRegisterPairValue(rp2) + (registers->getCFlag() ? 1 : 0));
+    setFlags(registers->getRegisterPairValue(rp1));
 }
 
 void EmuAlu::ADC(Rgstr a, Rgstr b) {
@@ -247,10 +248,12 @@ void EmuAlu::DAA() {
 }
 
 /**
- * - S is set if result is negative; reset otherwise Z is set if result is
- * zero; reset otherwise H is set if borrow from bit 4, reset otherwise P/V
- * is set if m was 80H before operation; reset otherwise N is set C is not
- * affected
+ * - S is set if result is negative; reset otherwise 
+ * Z is set if result is zero; reset otherwise 
+ * H is set if borrow from bit 4, reset otherwise 
+ * P/V is set if m was 80H before operation; reset otherwise 
+ * N is set 
+ * C is not affected
  */
 void EmuAlu::DEC(MemoryAddress memoryAddress) {
     std::uint16_t address = getMemoryAddress(memoryAddress);
@@ -266,13 +269,20 @@ void EmuAlu::DEC(MemoryAddress memoryAddress) {
 }
 
 void EmuAlu::DEC(Rgstr rgstr) {
-    std::uint8_t newvalue =registers->getRegisterValue(rgstr) - 1;
+    registers->setParityOverflowFlag(registers->getRegisterValue(rgstr) == 0x80);
+    std::uint8_t oldvalue =registers->getRegisterValue(rgstr);
+    std::uint8_t newvalue = oldvalue - 1;
+    
     registers->setRegister(rgstr, newvalue);
 
     registers->setSignFlag(newvalue < 0);
     registers->setZeroFlag(newvalue == 0);
 
-    // H ??
+    //carry for add
+    //registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0));
+    
+    registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0);
+    
     registers->setNFlag(false);
 }
 
@@ -514,10 +524,10 @@ void EmuAlu::JP(Condition condition, MemoryAddress memoryAddress) {
     << std::setw(sizeof(std::uint16_t)*2)<< +registers->getPC();
 
     if (isConditionTrue(condition)) {
-        logger.info(stream.str() + " MET");
+        logger.debug(stream.str() + " MET");
         JP(memoryAddress);
     } else {
-        logger.info(stream.str() + " NOT");
+        logger.debug(stream.str() + " NOT");
     }
 }
 
@@ -957,6 +967,7 @@ void EmuAlu::RRC(Rgstr r) {
 void EmuAlu::RRCA() {
     registers->setCFlag((BOOST_BINARY(1) & registers->getA()) == 1);
     registers->setA((registers->getA() >> 1) | ((registers->getA() << (8 - 1)) & BOOST_BINARY(10000000)));
+    registers->setNFlag(false);
 }
 
 /**
@@ -1007,7 +1018,7 @@ DE 01
 HL 10
 SP 11*/
 void EmuAlu::SBC(RegisterPair h1, RegisterPair h2) {
-    int result =registers->getRegisterPairValue(h1) -registers->getRegisterPairValue(h2) - registers->getCFlag();
+    uint16_t result = registers->getRegisterPairValue(h1) -registers->getRegisterPairValue(h2) - (registers->getCFlag() ? 1 : 0);
     registers->setRegisterPair(h1, result);
 }
 
@@ -1171,6 +1182,7 @@ std::uint8_t EmuAlu::readIO(std::uint16_t address) {
 }
 
 void EmuAlu::unimplemented() {
+    std::cout << "Unimplemented!!!!!!!!!!!!!" << std::endl;
     throw  UnimplementedInstructionException();
 }
 

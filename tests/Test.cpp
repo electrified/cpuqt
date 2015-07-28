@@ -460,18 +460,18 @@ TEST_CASE("JPnnTest") {
 }
 
 
-TEST_CASE("JPNZnnTest") {
-    /*
-     * If condition cc is true, the instruction loads operand nn to register
-     * pair PC (Program Counter), and the program continues with the
-     * instruction beginning at address nn . If condition cc is false, the
-     * Program Counter is incremented as usual, and the program continues
-     * with the next sequential instruction. Condition cc is programmed as
-     * one of eight status that corresponds to condition bits in the Fl ag
-     * Register (register F). These eight status are defined in the table
-     * below that also specifies the corresponding cc bit fields in the
-     * assembled object code.
-     */
+/*
+* If condition cc is true, the instruction loads operand nn to register
+* pair PC (Program Counter), and the program continues with the
+* instruction beginning at address nn . If condition cc is false, the
+* Program Counter is incremented as usual, and the program continues
+* with the next sequential instruction. Condition cc is programmed as
+* one of eight status that corresponds to condition bits in the Fl ag
+* Register (register F). These eight status are defined in the table
+* below that also specifies the corresponding cc bit fields in the
+* assembled object code.
+*/
+TEST_CASE("JP NZ nn Test") {
     std::unique_ptr<TestComputer> comp = setupComputer();
 
     comp->getMemory()->write(0, BOOST_BINARY(11000010));
@@ -782,12 +782,12 @@ TEST_CASE("LDHL_nn_Test") {
     REQUIRE( comp->getProcessor()->getRegisters()->getHL() == 0xA137);
 }
 
-
-TEST_CASE("LDIATest") {
-    /*
+/*
      * The contents of the Accumulator are loaded to the Interrupt Control
      * Vector Register, I.
      */
+TEST_CASE("LDIATest") {
+    
 
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
@@ -820,9 +820,21 @@ TEST_CASE("LDRATest") {
 //		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
 }
 
+TEST_CASE("LD C A Test") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0x4F);
+    comp->getProcessor()->getRegisters()->setA(0xf9);
+
+    REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0x0);
+
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0xf9);
+//		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
+}
+
 TEST_CASE("LDrn_Test") {
     /*
-     * At execution of LD E , A5H the contents of register E are A5H .
+     * At execution of LD E, A5H the contents of register E are A5H .
      */
 
     std::unique_ptr<TestComputer> comp = setupComputer();
@@ -885,7 +897,7 @@ TEST_CASE("LDSPIYTest") {
 }
 
 
-TEST_CASE("LD_IXplusd_rTest") {
+TEST_CASE("LD (IX+d)r Test") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xDD);
     comp->getMemory()->write(0x1, 0x77);
@@ -1060,11 +1072,6 @@ TEST_CASE("RET cc Test") {
 
 }
 
- TEST_CASE("ROT r Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
- }
-
 /**
  * If the contents of the Program Counter are 3535H , the contents of
  * the Stack Pointer are 2000H, the contents of memory location 2000H
@@ -1101,7 +1108,6 @@ TEST_CASE("RLCA Test") {
     comp->getMemory()->write(0x0, 0x07);
     comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10001000));
     comp->getProcessor()->process();
-//    System.out.println(Integer.toBinaryString(comp->getProcessor()->getRegisters()->getA()));
     REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(00010001));
 
     REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
@@ -1117,15 +1123,16 @@ TEST_CASE("RRA Test") {
     REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110000));
 }
 
-TEST_CASE("RRCATest") {
+TEST_CASE("RRCA Test") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0x0F);
     comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11100001));
+    comp->getProcessor()->getRegisters()->setNFlag(true);
+    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010001));
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
-//    System.out.println(Integer.toBinaryString(comp->getProcessor()->getRegisters()->getA()));
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11110000));
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(10001000));
+    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
 }
 
 
@@ -2073,7 +2080,7 @@ The A routine is completed and a RETI is issued resetting the IEO
 of A, allowing the B routine to continue. A second RETI is issued
 on completion of the B routine and the IE0 of B is reset (high)
 allowing lower priority devices interrupt access.*/
-TEST_CASE("RETITest") {
+TEST_CASE("RETI Test") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     REQUIRE(true == false);
 }

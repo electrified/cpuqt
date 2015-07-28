@@ -60,5 +60,5 @@ std::string MemoryAddress::toString() const {
             address = utils::int_to_hex(getMemoryAddress());
         }
 
-         return address;
+         return "(" + address + ")";
 }

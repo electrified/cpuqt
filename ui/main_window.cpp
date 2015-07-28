@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(bm, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
+    connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
     initial_recent_menu_population();
 }
 
@@ -143,21 +144,21 @@ void MainWindow::loadRom(QString file_path) {
 
 void MainWindow::run()
 {
-    timer.start(1000); //50 times per second 1000/50 = 20
+    timer.start(20); //50 times per second 1000/50 = 20
 }
 
 void MainWindow::stop()
 {
     l.debug("Stopping!");
     timer.stop();
+    update_register_values();
+    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
 }
 
 void MainWindow::update()
 {
 //    l.debug("update!");
     emulationProcessor->doOneScreenRefreshesWorth();
-    update_register_values();
-    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
 }
 
 void MainWindow::showAboutBox() {
@@ -222,4 +223,10 @@ void MainWindow::print_debug_stats()
 
 void MainWindow::moveDebuggerToPC(std::uint16_t address) {
     this->ui->disassemblyView->scrollTo(disassemblyModel->index(address, 0));
+}
+
+void MainWindow::setPC(std::uint16_t address) {
+    emulationProcessor->getRegisters()->setPC(address);
+    update_register_values();
+    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
 }
