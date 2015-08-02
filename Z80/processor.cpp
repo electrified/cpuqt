@@ -20,7 +20,9 @@ void Processor::doOneScreenRefreshesWorth() {
     // At 4Mhz, 20 milliseconds of execution corresponds to 80,000 cycles
     for (std::uint32_t i = 0; i < 70000; i++) {
         process();
+        std::cout << i << std::endl;
     }
+//     std::cout << "referesh " << std::endl;
     ++refreshes;
 }
 

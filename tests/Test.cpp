@@ -25,7 +25,6 @@ TEST_CASE("ADCA_HL_Test", "Instructions") {
     TestComputer* comp = new TestComputer();
     comp->getMemory()->write((std::uint16_t)0, (std::uint8_t)0x8E);
     comp->getMemory()->write(0x6666, 0x10);
-    std::cout << comp->getMemory()->read(0x6666);
     comp->getProcessor()->getRegisters()->setA(0x16);
     comp->getProcessor()->getRegisters()->setHL(0x6666);
     comp->getProcessor()->getRegisters()->setCFlag(true);

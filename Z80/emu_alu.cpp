@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "tables.h"
+
 EmuAlu::EmuAlu(Memory* memory, IO* io, Registers* registers) :
 io(io), memory(memory), registers(registers)
 {
@@ -45,6 +47,7 @@ void EmuAlu::ADC(Rgstr rgstr, MemoryAddress memoryAddress) {
  * object code.
  */
 void EmuAlu::ADD(RegisterPair destination, RegisterPair rgstr) {
+    //TODO: Set flags correctly after these operations!!! 
     registers->setRegisterPair(destination,registers->getRegisterPairValue(destination) +registers->getRegisterPairValue(rgstr));
 }
 
@@ -244,7 +247,29 @@ void EmuAlu::CPL() {
 }
 
 void EmuAlu::DAA() {
-    unimplemented();
+    int a, c, d;
+
+    /* The following algorithm is from
+        * comp.sys.sinclair's FAQ. 
+        */
+
+    a = registers->getA();
+    if (a > 0x99 || registers->getCFlag()) {
+        c = registers->getCFlag();
+        d = 0x60;
+    } else {
+        c = d = 0;
+    }
+    
+    if ((a & 0x0f) > 0x09 || registers->getHFlag()) {
+        d += 0x06;
+    }
+    
+    registers->setA( registers->getA() + registers->getNFlag() ? -d : +d);
+    registers->setF(SZYXP_FLAGS_TABLE[registers->getA()]
+            | ((registers->getA() ^ a) & registers->getHFlag())
+            | registers->getNFlag()
+            | c);
 }
 
 /**
@@ -257,14 +282,16 @@ void EmuAlu::DAA() {
  */
 void EmuAlu::DEC(MemoryAddress memoryAddress) {
     std::uint16_t address = getMemoryAddress(memoryAddress);
-    std::uint8_t newvalue = memory->read(address) - 1;
-
+    std::uint8_t oldvalue = memory->read(address) - 1;
+    std::uint8_t newvalue = oldvalue - 1;
+    
     memory->write(address, newvalue);
 
     registers->setSignFlag(newvalue < 0);
     registers->setZeroFlag(newvalue == 0);
-    // H ??
-
+    
+    registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0);
+    
     registers->setNFlag(false);
 }
 
@@ -422,37 +449,28 @@ void EmuAlu::in(Rgstr rgstr, const MemoryAddress& i) {
  * affected
  */
 void EmuAlu::INC(MemoryAddress memoryAddress) {
-    if (memory->read(getMemoryAddress(memoryAddress)) == 0x7F) {
-        registers->setParityOverflowFlag(true);
-    }
+    registers->setParityOverflowFlag(memory->read(getMemoryAddress(memoryAddress)) == 0x7F);
 
     std::uint8_t newValue = (memory->read(getMemoryAddress(memoryAddress)) + 1) & 0xff;
     memory->write(getMemoryAddress(memoryAddress), newValue);
 
-    if (newValue < 0) {
-        registers->setSignFlag(true);
-    } else if (newValue == 0) {
-        registers->setZeroFlag(true);
-    }
+    registers->setSignFlag(newValue < 0);
+    registers->setZeroFlag(newValue == 0);
     // H ??
 
     registers->setNFlag(false);
 }
 
 void EmuAlu::INC(Rgstr reg) {
+    registers->setParityOverflowFlag(registers->getRegisterValue(reg) == 0x7F);
 
-    if (registers->getRegisterValue(reg) == 0x7F) {
-        registers->setParityOverflowFlag(true);
-    }
+    std::uint8_t newValue = ((registers->getRegisterValue(reg) + 1) & 0xff);
+    
+    registers->setRegister(reg, newValue);
 
-    registers->setRegister(reg, ((registers->getRegisterValue(reg) + 1) & 0xff));
-
-    if (registers->getRegisterValue(reg) < 0) {
-        registers->setSignFlag(true);
-    } else if (registers->getRegisterValue(reg) == 0) {
-        registers->setZeroFlag(true);
-    }
-    // H ??
+    registers->setSignFlag(newValue < 0);
+    registers->setZeroFlag(newValue == 0);
+    // Half carry flag setting! ??
 
     registers->setNFlag(false);
 }
@@ -461,10 +479,13 @@ void EmuAlu::INC(Rgstr reg) {
  * The contents of rgstr pair ss (any of rgstr
  * pairs BC, DE, HL, or SP) are incremented. Operand ss
  * is specified as follows in the assembled object code.
+ * 
+ * As per docs no flags are affected.
  */
 void EmuAlu::INC(RegisterPair rgstrPair) {
-    registers->setRegisterPair(rgstrPair,
-                   registers->getRegisterPairValue(rgstrPair) + 1);
+    
+    std::uint16_t newValue = registers->getRegisterPairValue(rgstrPair) + 1;
+    registers->setRegisterPair(rgstrPair,newValue);
 }
 
 /*
@@ -1115,8 +1136,28 @@ void EmuAlu::XOR(Rgstr val) {
     XOR(registers->getRegisterValue(val));
 }
 
+
+/*
+ * S is set if result is negative; reset otherwise
+Z is set if result is zero; reset otherwise
+H is reset
+P/V is set if parity even; reset otherwise
+N is reset
+C is reset
+*/
 void EmuAlu::XOR(std::uint8_t val) {
-    registers->setA((registers->getA() ^ val));
+    //TODO: Update tests to test flags!
+    std::uint8_t newvalue = (registers->getA() ^ val);
+    registers->setA(newvalue);
+
+    registers->setSignFlag(newvalue < 0);
+    registers->setZeroFlag(newvalue == 0);
+    
+    registers->setHFlag(false);
+    registers->setNFlag(false);    
+    registers->setCFlag(false);
+
+    //TODO: set parity flag!
 }
 
 void EmuAlu::XOR(MemoryAddress memoryAddress) {
@@ -1183,7 +1224,7 @@ std::uint8_t EmuAlu::readIO(std::uint16_t address) {
 
 void EmuAlu::unimplemented() {
     std::cout << "Unimplemented!!!!!!!!!!!!!" << std::endl;
-    throw  UnimplementedInstructionException();
+//     throw  UnimplementedInstructionException();
 }
 
 void EmuAlu::writeIO(std::uint16_t address, std::uint8_t value) {

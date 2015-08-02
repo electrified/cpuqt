@@ -776,7 +776,7 @@ tlp1:	call	nz,test		; execute the test instruction
 tlp2:	call	count		; increment the counter
 	call	nz,shift	; shift the scan bit
 	pop	hl		; pointer to test case
-	jp	z,tlp3		; done if shift returned NZ
+	jp	z,tlp3		; done if shift returned NZ 1b45
 	ld	de,20+20+20
 	add	hl,de		; point to expected crc
 	call	cmpcrc
@@ -1052,7 +1052,7 @@ shflp1:	inc	hl
 	inc	de
 	jp	shflp
 
-counter: ds	2*20
+counter: ds	2*20 ; 0x1cda
 shifter: ds	2*20
 
 ; test harness

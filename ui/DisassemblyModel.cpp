@@ -75,8 +75,6 @@ QVariant DisassemblyModel::data(const QModelIndex &index, int role) const
 }
 
 void DisassemblyModel::memoryUpdated(const std::uint16_t address) {
-//    QModelIndex start = );
-//    QModelIndex end = );
     emit dataChanged(createIndex(address, 0), createIndex(address, 3));
 }
 
@@ -91,12 +89,17 @@ void DisassemblyModel::forceDisassembly() {
 }
 
 bool DisassemblyModel::setData(const QModelIndex & index, const QVariant & value, int role) {
-        if (role == Qt::CheckStateRole) //Qt::EditRole
+        if (role == Qt::CheckStateRole) //
     {
         if (index.column() == 0) {
             if (value.toBool()) {
                 emit programManuallySet(index.row());  
             }
+        }
+    } else if (role == Qt::EditRole) {
+        if (index.column() == 2) {
+            memory->write(index.row(), strtoul(value.toString().toUtf8(), nullptr, 16));
+            emit memoryUpdated(index.row());
         }
     }
     return true;
@@ -107,7 +110,9 @@ Qt::ItemFlags DisassemblyModel::flags(const QModelIndex &index) const
     
     switch (index.column()) {
         case 0:
-            return Qt::ItemIsEditable | QAbstractTableModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+            return QAbstractTableModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+        case 2:
+            return Qt::ItemIsEditable | Qt::ItemIsEnabled;
         default:
             return Qt::ItemIsEnabled;
     }

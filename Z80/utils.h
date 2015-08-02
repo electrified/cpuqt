@@ -5,7 +5,7 @@
 #include <string>
 
 namespace utils {
-    template<typename T> string int_to_hex( T i )
+    template<typename T> std::string int_to_hex( T i )
     {
         std::stringstream stream;
         stream << std::hex 

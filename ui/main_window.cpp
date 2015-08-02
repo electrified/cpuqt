@@ -136,6 +136,7 @@ void MainWindow::loadRom(QString file_path) {
         emulationProcessor->getMemory()->write(5,0xdb);       /* IN A, N */
         emulationProcessor->getMemory()->write(6,0x00);
         emulationProcessor->getMemory()->write(7,0xc9);
+//         emulationProcessor->getMemory()->write(0x1b45,0); // replace conditional jp with nop!
         emulationProcessor->getRegisters()->setPC(0x100);
     }
     

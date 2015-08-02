@@ -34,7 +34,7 @@ void Disassembler::disassemble(const std::uint16_t start, const std::uint16_t en
 //         if (fakePC < INT16_MAX) {
 //             ++fakePC;
 //         }
-        std::cout << fakePC << " || " << end << std::endl;
+//         std::cout << fakePC << " || " << end << std::endl;
     }
 }
 
