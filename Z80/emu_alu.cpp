@@ -52,15 +52,24 @@ void EmuAlu::ADD(RegisterPair destination, RegisterPair rgstr) {
 }
 
 void EmuAlu::ADD(Rgstr destination, std::uint8_t nextByte) {
-    registers->setRegister(destination,registers->getRegisterValue(destination) + nextByte);
+    std::uint8_t result = registers->getRegisterValue(destination) + nextByte;
+    registers->setRegister(destination, result);
+    registers->setSignFlag(result < 0);
+    registers->setZeroFlag(result == 0);
+    
+    //     registers->setHFlag(true);
+    //P/V
+    //C
+    
+    registers->setNFlag(false);
 }
 
 void EmuAlu::ADD(Rgstr destination, Rgstr source) {
-    registers->setRegister(destination,registers->getRegisterValue(destination) +registers->getRegisterValue(source));
+    ADD(destination, registers->getRegisterValue(source));
 }
 
 void EmuAlu::ADD(Rgstr destination, MemoryAddress memoryAddress) {
-    registers->setRegister(destination,registers->getRegisterValue(destination) + memory->read(getMemoryAddress(memoryAddress)));
+    ADD(destination, memory->read(getMemoryAddress(memoryAddress)));
 }
 
 void EmuAlu::AND(Rgstr iX2) {
@@ -68,11 +77,21 @@ void EmuAlu::AND(Rgstr iX2) {
 }
 
 void EmuAlu::AND(std::uint8_t value) {
-    registers->setA(registers->getA() & value);
+    std::uint8_t result = registers->getA() & value;
+    registers->setA(result);
+    
+    registers->setSignFlag(result < 0);
+    registers->setZeroFlag(result == 0);
+    
+    registers->setHFlag(true);
+    
+    registers->setNFlag(false);
+    registers->setCFlag(false);
+    // P/V
 }
 
 void EmuAlu::AND(MemoryAddress memoryAddress) {
-    registers->setA(registers->getA() & memory->read(getMemoryAddress(memoryAddress)));
+    AND(memory->read(getMemoryAddress(memoryAddress)));
 }
 
 /**
@@ -146,6 +165,9 @@ void EmuAlu::CALL(Condition c, MemoryAddress memoryAddress) {
     if (isConditionTrue(c)) {
         pushPCtoStack();
         registers->setPC(getMemoryAddress(memoryAddress));
+        std::cout << "Call condition true" << std::endl;
+    } else {
+        std::cout << "Call condition false" << std::endl;
     }
 }
 
@@ -715,17 +737,26 @@ void EmuAlu::NOP() {
 }
 
 void EmuAlu::OR(Rgstr rgstr) {
-    registers->setA((registers->getA() |registers->getRegisterValue(rgstr)));
+   OR(registers->getRegisterValue(rgstr));
 }
 
 void EmuAlu::OR(std::uint8_t immediateValue) {
-    registers->setA((registers->getA() | immediateValue));
-    setFlags(registers->getA());
+    std::uint8_t result = registers->getA() | immediateValue;
+
+    registers->setA(result);
+    
+    registers->setSignFlag(result < 0);
+    registers->setZeroFlag(result == 0);
+    
+    registers->setHFlag(false);
+    
+    registers->setNFlag(false);
+    registers->setCFlag(false);
+    // P/V
 }
 
 void EmuAlu::OR(MemoryAddress memoryAddress) {
-    registers->setA((registers->getA() | memory->read(getMemoryAddress(memoryAddress))));
-    setFlags(registers->getA());
+    OR(memory->read(getMemoryAddress(memoryAddress)));
 }
 
 /*
@@ -1136,7 +1167,6 @@ void EmuAlu::XOR(Rgstr val) {
     XOR(registers->getRegisterValue(val));
 }
 
-
 /*
  * S is set if result is negative; reset otherwise
 Z is set if result is zero; reset otherwise
@@ -1175,37 +1205,21 @@ void EmuAlu::incrementSP() {
 bool EmuAlu::isConditionTrue(Condition condition) {
     bool retval = false;
     if (condition == Condition::NZ) {
-        if (!registers->getZeroFlag()) {
-            retval = true;
-        }
+        retval = !registers->getZeroFlag();
     } else if (condition == Condition::Z) {
-        if (registers->getZeroFlag()) {
-            retval = true;
-        }
+        retval = registers->getZeroFlag();
     } else if (condition == Condition::NC) {
-        if (!registers->getCFlag()) {
-            retval = true;
-        }
+        retval = !registers->getCFlag();
     } else if (condition == Condition::C) {
-        if (registers->getCFlag()) {
-            retval = true;
-        }
+        retval = registers->getCFlag();
     } else if (condition == Condition::PO) {
-        if (!registers->getParityOverflowFlag()) {
-            retval = true;
-        }
+        retval = !registers->getParityOverflowFlag();
     } else if (condition == Condition::PE) {
-        if (registers->getParityOverflowFlag()) {
-            retval = true;
-        }
+        retval = registers->getParityOverflowFlag();
     } else if (condition == Condition::P) {
-        if (!registers->getSignFlag()) {
-            retval = true;
-        }
+        retval = !registers->getSignFlag();
     } else if (condition == Condition::M) {
-        if (registers->getSignFlag()) {
-            retval = true;
-        }
+        retval = registers->getSignFlag();
     }
     logger.debug(retval ? "True" : "False");
     return retval;
@@ -1224,7 +1238,7 @@ std::uint8_t EmuAlu::readIO(std::uint16_t address) {
 
 void EmuAlu::unimplemented() {
     std::cout << "Unimplemented!!!!!!!!!!!!!" << std::endl;
-//     throw  UnimplementedInstructionException();
+    throw  UnimplementedInstructionException();
 }
 
 void EmuAlu::writeIO(std::uint16_t address, std::uint8_t value) {
@@ -1250,9 +1264,7 @@ std::uint16_t EmuAlu::getMemoryAddress(MemoryAddress memoryAddress) {
     return address;
 }
 
-
 void EmuAlu::setFlags(std::uint8_t value) {
-
     /*- S is set if I-Rgstr is negative; reset otherwise
     Z is set if I-Rgstr is zero; reset otherwise
     H is reset

@@ -5,7 +5,6 @@
 Processor::Processor(Memory* memory, IO* io, Alu* alu, Registers* rgstrs) :
 io(io), memory(memory), alu(alu)
 {
-//    , registers(registers)
     std::cout << "Processor ctor" << std::endl;
     decoder = new Decoder();
     registers = rgstrs;
@@ -16,16 +15,6 @@ Processor::~Processor() {
 //     delete &io;
 }
 
-void Processor::doOneScreenRefreshesWorth() {
-    // At 4Mhz, 20 milliseconds of execution corresponds to 80,000 cycles
-    for (std::uint32_t i = 0; i < 70000; i++) {
-        process();
-        std::cout << i << std::endl;
-    }
-//     std::cout << "referesh " << std::endl;
-    ++refreshes;
-}
-
 void Processor::process() {
 //        if (halted) {
 //            decode(); //NOP
@@ -34,6 +23,9 @@ void Processor::process() {
 //        }
 }
 
+/**
+ * Helper for tests etc
+ */
 void Processor::process(std::uint8_t count) {
     for (std::uint8_t i = 0; i < count; i++) {
         process();

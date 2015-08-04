@@ -27,25 +27,11 @@ public:
 
     void process();
     void process(std::uint8_t count);
-
-    void doOneScreenRefreshesWorth();
     Memory* getMemory();
     IO* getIO();
     Registers* getRegisters();
-//    virtual std::uint8_t fetchInstruction() = 0;
-//    virtual Memory& getMemory() = 0;
-//    virtual IO& getIO() = 0;
-//    virtual std::uint16_t getRegisterPairValue(const RegisterPair register) = 0;
-//    virtual std::uint8_t getRegisterValue(const Rgstr register) = 0;
-//    virtual void placeProgramCounterOnAddressBus() = 0;
     void placeProgramCounterOnAddressBus();
-//    std::uint8_t fetchInstruction();
-//    std::uint8_t instructionByteCount = 0;
-//    std::uint8_t getNextByte();
-    std::uint64_t refreshes;
-
     void reset();
-
 };
 
 #endif // PROCESSOR_H

@@ -8,6 +8,7 @@
 #include <QSignalMapper>
 
 #include "Logger.h"
+#include "badgercomputer.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,14 +17,14 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    BadgerComputer* computer;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     static std::vector<char> ReadAllBytes(char const* filename);
 private:
     Ui::MainWindow *ui;
-    Processor *emulationProcessor;
+
     DisassemblyModel *disassemblyModel;
     QTimer timer;
     QSignalMapper recentItemsSignalMapper;
@@ -46,6 +47,8 @@ private slots:
     void print_debug_stats();
     void moveDebuggerToPC(std::uint16_t address);
     void setPC(std::uint16_t address);
+    void haltOnBreakpoint();
+    void resume();
 signals:
     void programCounterUpdated(std::uint16_t address);
 };

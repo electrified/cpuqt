@@ -23,7 +23,8 @@ ${PROJECT_SOURCE_DIR}/ui/main_window.cpp
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp 
 ${PROJECT_SOURCE_DIR}/ui/badgerio.cpp
 ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.cpp
-${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp 
+${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp
+${PROJECT_SOURCE_DIR}/ui/badgercomputer.cpp 
 )
 
 set (GuiLib_hdr 
@@ -33,6 +34,7 @@ ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h
 ${PROJECT_SOURCE_DIR}/ui/badgerio.h
 ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.h
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.h
+${PROJECT_SOURCE_DIR}/ui/badgercomputer.h 
 )
 
 set (GuiLib_ui  ${PROJECT_SOURCE_DIR}/ui/main_window.ui)

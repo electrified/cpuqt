@@ -23,8 +23,8 @@
 	jp	start
 
 ; machine state before test (needs to be at predictably constant address)
-msbt:	ds	14
-spbt:	ds	2
+msbt:	ds	14 ; ED Machine state before test
+spbt:	ds	2 ; ED Stack pointer before test 0x111
 
 ; For the purposes of this test program, the machine state consists of:
 ;	a 2 byte memory operand, followed by
@@ -900,7 +900,7 @@ ncb1:	ld	a,b
 	ret
 	
 ; get next shifter bit in low bit of a
-shfbit:	ds	1
+shfbit:	ds	1 ; ED 1c14
 shfbyt:	ds	2
 
 nxtsbit: push	bc
@@ -1052,8 +1052,8 @@ shflp1:	inc	hl
 	inc	de
 	jp	shflp
 
-counter: ds	2*20 ; 0x1cda
-shifter: ds	2*20
+counter: ds	2*20 ; ED 0x1cda - 1ced - 1d01
+shifter: ds	2*20 ; 1d02 - 1d15 - 1d29
 
 ; test harness
 test:	push	af
@@ -1233,9 +1233,9 @@ cce:	pop	hl
 ; exit:  crc updated
 updcrc:	push	af
 	push	bc
-	push	de
+	push	de ; 1e49
 	push	hl
-	push	hl
+	push	hl ; ED updating stack values
 	ld	de,3
 	add	hl,de	; point to low byte of old crc
 	xor	a,(hl)	; xor with new byte
@@ -1285,7 +1285,7 @@ icrclp:	ld	(hl),a
 	pop	af
 	ret
 
-crcval	ds	4
+crcval	ds	4 ;1e85
 
 crctab:	db	000h,000h,000h,000h
 	db	077h,007h,030h,096h

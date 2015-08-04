@@ -125,7 +125,7 @@ public:
 
     void JR(const MemoryAddress memoryAddress);
 
-    void LD(const Rgstr register, const std::uint8_t memoryAddress);
+    void LD(const Rgstr rgstr, const std::uint8_t memoryAddress);
 
     void LD(const Rgstr r1, const Rgstr r2);
 
@@ -259,7 +259,6 @@ protected:
     std::uint8_t readIO(std::uint16_t address);
     void writeIO(std::uint16_t address, std::uint8_t value);
 
-
     void unimplemented();
 
     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
@@ -267,6 +266,5 @@ protected:
     void decrementSP();
 
     void setFlags(std::uint8_t value);
-
 };
 #endif // EMULATIONPROCESSOR_H

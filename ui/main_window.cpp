@@ -21,26 +21,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QtBadgerMemory* bm = new QtBadgerMemory();
-    BadgerIO* bo = new BadgerIO();
-    Registers* registers = new Registers();
-    Alu* alu = new cpm_io(bm, bo, registers);
-    emulationProcessor = new Processor(bm, bo, alu, registers);
 
-    disassemblyModel = new DisassemblyModel(bm, this);
+    computer = new BadgerComputer();
+    
+    disassemblyModel = new DisassemblyModel(computer->memory, this);
 
     // Attach the model to the view
     ui->disassemblyView->setModel(disassemblyModel);
     ui->disassemblyView->setColumnWidth(0, 50);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    connect(bo, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
-    connect((cpm_io*)alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
+    connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+    connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
     connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
-    connect(bm, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
+    connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
     connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
+    connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
     initial_recent_menu_population();
 }
 
@@ -124,20 +122,20 @@ void MainWindow::loadRom(QString file_path) {
     std::uint16_t offset = (tests ? 0x100 : 0);
 
     for (int i = 0; i < data.size(); ++i) {
-        emulationProcessor->getMemory()->write(i + offset, data.at(i));
+        computer->memory->write(i + offset, data.at(i));
     }
     
     // HAX
     if (tests) {
         l.debug("patching zexdoc");
-        emulationProcessor->getMemory()->write(0,0xd3);       /* OUT N, A */
-        emulationProcessor->getMemory()->write(1,0x00);
+        computer->memory->write(0,0xd3);       /* OUT N, A */
+        computer->memory->write(1,0x00);
 
-        emulationProcessor->getMemory()->write(5,0xdb);       /* IN A, N */
-        emulationProcessor->getMemory()->write(6,0x00);
-        emulationProcessor->getMemory()->write(7,0xc9);
+        computer->memory->write(5,0xdb);       /* IN A, N */
+        computer->memory->write(6,0x00); //this val gets used for the stack location
+        computer->memory->write(7,0xc9);
 //         emulationProcessor->getMemory()->write(0x1b45,0); // replace conditional jp with nop!
-        emulationProcessor->getRegisters()->setPC(0x100);
+        computer->processor->getRegisters()->setPC(0x100);
     }
     
     disassemblyModel->forceDisassembly();
@@ -153,17 +151,17 @@ void MainWindow::stop()
     l.debug("Stopping!");
     timer.stop();
     update_register_values();
-    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
+    emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
 void MainWindow::update()
 {
 //    l.debug("update!");
-    emulationProcessor->doOneScreenRefreshesWorth();
+    computer->doOneScreenRefreshesWorth();
 }
 
 void MainWindow::showAboutBox() {
-    QMessageBox::about(this,"Badgersoft","Z80 Emulator (c) 2015 Badgersoft");
+    QMessageBox::about(this,"Badgersoft","Z80 Emulator (c) 2015 Badgersoft AKA Crumpy Computing AKA Cheese Dream Technologies");
 }
 
 void MainWindow::quit() {
@@ -184,30 +182,30 @@ std::vector<char> MainWindow::ReadAllBytes(char const* filename)
 }
 
 void MainWindow::update_register_values() {
-    this->ui->pc_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getPC()));
-    this->ui->sp_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getSP()));
-    this->ui->ix_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getIX()));
-    this->ui->iy_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getIY()));
-    this->ui->hl_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getHL()));
-    this->ui->a_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getA()));
-    this->ui->b_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getB()));
-    this->ui->c_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getC()));
-    this->ui->d_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getD()));
-    this->ui->e_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getE()));
-    this->ui->f_value->setText(utils::int_to_hex(emulationProcessor->getRegisters()->getF()));
+    this->ui->pc_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getPC()));
+    this->ui->sp_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getSP()));
+    this->ui->ix_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIX()));
+    this->ui->iy_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIY()));
+    this->ui->hl_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getHL()));
+    this->ui->a_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getA()));
+    this->ui->b_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getB()));
+    this->ui->c_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getC()));
+    this->ui->d_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getD()));
+    this->ui->e_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getE()));
+    this->ui->f_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getF()));
 //    std::cout << "updating display " << std::endl;
 }
 
 void MainWindow::step()
 {
-    emulationProcessor->process();
+    computer->step();
     update_register_values();
-    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
+    emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
 void MainWindow::reset()
 {
-    emulationProcessor->reset();
+    computer->reset();
     update_register_values();
 }
 
@@ -227,7 +225,14 @@ void MainWindow::moveDebuggerToPC(std::uint16_t address) {
 }
 
 void MainWindow::setPC(std::uint16_t address) {
-    emulationProcessor->getRegisters()->setPC(address);
+    computer->processor->getRegisters()->setPC(address);
     update_register_values();
-    emit programCounterUpdated(emulationProcessor->getRegisters()->getPC());
+    emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+}
+
+void MainWindow::haltOnBreakpoint() {
+    stop();
+}
+
+void MainWindow::resume() {
 }

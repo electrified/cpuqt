@@ -267,6 +267,7 @@
    <addaction name="actionLoad_ROM"/>
    <addaction name="actionRun"/>
    <addaction name="actionStep"/>
+   <addaction name="actionContinue"/>
    <addaction name="actionStop"/>
    <addaction name="actionDebug_stats"/>
    <addaction name="actionAbout"/>
@@ -293,7 +294,7 @@
   </action>
   <action name="actionStop">
    <property name="text">
-    <string>&amp;Stop</string>
+    <string>&amp;Pause</string>
    </property>
   </action>
   <action name="actionReset">
@@ -309,6 +310,11 @@
   <action name="actionDebug_stats">
    <property name="text">
     <string>Debug stats</string>
+   </property>
+  </action>
+  <action name="actionContinue">
+   <property name="text">
+    <string>Continue</string>
    </property>
   </action>
  </widget>
@@ -442,6 +448,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionContinue</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>resume()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>loadRom()</slot>
@@ -452,5 +474,6 @@
   <slot>reset()</slot>
   <slot>step()</slot>
   <slot>print_debug_stats()</slot>
+  <slot>resume()</slot>
  </slots>
 </ui>
