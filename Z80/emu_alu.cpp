@@ -104,13 +104,11 @@ void EmuAlu::BIT(std::uint8_t y, std::uint8_t value) {
 }
 
 void EmuAlu::BIT(std::uint8_t y, Rgstr rgstr) {
-    std::uint8_t rgstrValue =registers->getRegisterValue(rgstr);
-    BIT(y, rgstrValue);
+    BIT(y, registers->getRegisterValue(rgstr));
 }
 
 void EmuAlu::BIT(std::uint8_t i, MemoryAddress memoryAddress) {
-    std::uint8_t value = memory->read(getMemoryAddress(memoryAddress));
-    BIT(i, value);
+    BIT(i, memory->read(getMemoryAddress(memoryAddress)));
 }
 
 /*-
@@ -165,9 +163,9 @@ void EmuAlu::CALL(Condition c, MemoryAddress memoryAddress) {
     if (isConditionTrue(c)) {
         pushPCtoStack();
         registers->setPC(getMemoryAddress(memoryAddress));
-        std::cout << "Call condition true" << std::endl;
+//         std::cout << "Call condition true" << std::endl;
     } else {
-        std::cout << "Call condition false" << std::endl;
+//         std::cout << "Call condition false" << std::endl;
     }
 }
 
@@ -505,7 +503,6 @@ void EmuAlu::INC(Rgstr reg) {
  * As per docs no flags are affected.
  */
 void EmuAlu::INC(RegisterPair rgstrPair) {
-    
     std::uint16_t newValue = registers->getRegisterPairValue(rgstrPair) + 1;
     registers->setRegisterPair(rgstrPair,newValue);
 }
@@ -614,7 +611,6 @@ void EmuAlu::LD(MemoryAddress memoryAddress, Rgstr rgstr) {
 void EmuAlu::LD(Rgstr a, MemoryAddress memoryAddress) {
     std::uint8_t value = memory->read(getMemoryAddress(memoryAddress));
     registers->setRegister(a, value);
-    setFlags(value);
 }
 
 void EmuAlu::LD(MemoryAddress memoryAddress, RegisterPair rgstr) {
@@ -625,12 +621,10 @@ void EmuAlu::LD(MemoryAddress memoryAddress, RegisterPair rgstr) {
 void EmuAlu::LD(RegisterPair rgstrPair, MemoryAddress memoryAddress) {
     std::uint16_t value = memory->read(getMemoryAddress(memoryAddress)) | (memory->read(getMemoryAddress(memoryAddress) + 1) << 8);
     registers->setRegisterPair(rgstrPair, value);
-    setFlags(value);
 }
 
 void EmuAlu::LD(MemoryAddress memoryAddress, std::uint8_t i) {
     memory->write(getMemoryAddress(memoryAddress), i);
-    setFlags(i);
 }
 
 void EmuAlu::LD(Rgstr rgstr, std::uint8_t immediateValue) {
@@ -640,7 +634,10 @@ void EmuAlu::LD(Rgstr rgstr, std::uint8_t immediateValue) {
 void EmuAlu::LD(Rgstr destRegister, Rgstr sourceRegister) {
     std::uint8_t value =registers->getRegisterValue(sourceRegister);
     registers->setRegister(destRegister, value);
-    setFlags(value);
+    
+    if (destRegister == Rgstr::A && (sourceRegister == Rgstr::I || sourceRegister == Rgstr::R)) {
+        setFlags(value);
+    }
 }
 
 /*
@@ -695,22 +692,6 @@ void EmuAlu::LDIR() {
     }
 }
 
-/**
- * The contents of the low order portion of rgstr pair HL (rgstr L)
- * are loaded to memory address ( nn ), and the contents of the high order
- * portion of HL (rgstr H) are loaded to the next highest memory address
- * ( nn +1). The first n operand after the Op Code is the low order byte of
- * nn .
- */
-//
-//     void LD(RegisterPair rgstrPair, std::uint8_t lowOrder, std::uint8_t highOrder) {
-//        std::uint8_t memAddress = (highOrder << 8)|lowOrder;
-//
-//        std::uint8_t value =registers->getRegisterPairValue(rgstrPair);
-//
-//        memory->write(memAddress, value & 0xff);
-//        memory->write(++memAddress, value >> 8);
-//    }
 
 /**
  * The contents of the Accumulator are negated (two’s complement). This is
@@ -882,17 +863,6 @@ void EmuAlu::RES(std::uint8_t i, MemoryAddress memoryAddress) {
     std::uint8_t currentMemoryContents = memory->read(getMemoryAddress(memoryAddress));
     memory->write(getMemoryAddress(memoryAddress), currentMemoryContents & (BOOST_BINARY(11111111) ^ (1 << i)));
 }
-
-/**
- * The byte at the memory location specified by the contents of the Stack
- * Pointer (SP) rgstr pair is moved to the low order eight bits of the
- * Program Counter (PC). The SP is now incremented and the byte at the
- * memory location specified by the new contents of this instruction is
- * fetched from the memory location specified by the PC. This instruction is
- * normally used to return to the main line program at the completion of a
- * routine entered by a CALL instruction.
- * @param p
- */
 
 /**
  * If condition cc is true, the byte at the memory location specified by the

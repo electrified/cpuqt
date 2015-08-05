@@ -30,6 +30,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->disassemblyView->setModel(disassemblyModel);
     ui->disassemblyView->setColumnWidth(0, 50);
 
+    QHeaderView *verticalHeader = ui->disassemblyView->verticalHeader();
+    verticalHeader->sectionResizeMode(QHeaderView::Fixed);
+    verticalHeader->setDefaultSectionSize(15);
+    
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
@@ -221,7 +225,9 @@ void MainWindow::print_debug_stats()
 }
 
 void MainWindow::moveDebuggerToPC(std::uint16_t address) {
-    this->ui->disassemblyView->scrollTo(disassemblyModel->index(address, 0));
+    if (this->scrollMemory) {
+        this->ui->disassemblyView->scrollTo(disassemblyModel->index(address, 0));
+    }
 }
 
 void MainWindow::setPC(std::uint16_t address) {
@@ -235,4 +241,8 @@ void MainWindow::haltOnBreakpoint() {
 }
 
 void MainWindow::resume() {
+}
+
+void MainWindow::toggleScrollMemory(bool scroll) {
+    this->scrollMemory = scroll;
 }

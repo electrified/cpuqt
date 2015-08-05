@@ -70,6 +70,7 @@ QVariant DisassemblyModel::data(const QModelIndex &index, int role) const
                 return Qt::Unchecked;
             }
         }
+        break;
     }
     return QVariant();
 }

@@ -29,6 +29,7 @@ private:
     QTimer timer;
     QSignalMapper recentItemsSignalMapper;
     Logger l;
+    bool scrollMemory = true;
     void initial_recent_menu_population();
     void add_recent_menu_item(QString rom_path);
     void update_register_values();
@@ -49,6 +50,7 @@ private slots:
     void setPC(std::uint16_t address);
     void haltOnBreakpoint();
     void resume();
+    void toggleScrollMemory(bool scroll);
 signals:
     void programCounterUpdated(std::uint16_t address);
 };

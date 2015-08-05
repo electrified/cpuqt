@@ -61,8 +61,15 @@
     <addaction name="actionReset"/>
     <addaction name="actionStep"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionScroll_memory_with_PC"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmu_Control"/>
+   <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -232,11 +239,11 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_2">
+  <widget class="QDockWidget" name="memoryDockWidget">
    <property name="minimumSize">
     <size>
-     <width>102</width>
-     <height>183</height>
+     <width>196</width>
+     <height>198</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -246,9 +253,26 @@
     <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QTableView" name="disassemblyView"/>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="5" column="0" colspan="2">
+      <widget class="QTableView" name="disassemblyView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -304,7 +328,7 @@
   </action>
   <action name="actionStep">
    <property name="text">
-    <string>Ste&amp;p</string>
+    <string>&amp;Step</string>
    </property>
   </action>
   <action name="actionDebug_stats">
@@ -315,6 +339,17 @@
   <action name="actionContinue">
    <property name="text">
     <string>Continue</string>
+   </property>
+  </action>
+  <action name="actionScroll_memory_with_PC">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Scroll memory with PC</string>
    </property>
   </action>
  </widget>
@@ -464,6 +499,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionScroll_memory_with_PC</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>toggleScrollMemory(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>loadRom()</slot>
@@ -475,5 +526,6 @@
   <slot>step()</slot>
   <slot>print_debug_stats()</slot>
   <slot>resume()</slot>
+  <slot>toggleScrollMemory(bool)</slot>
  </slots>
 </ui>

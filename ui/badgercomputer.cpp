@@ -14,9 +14,10 @@ BadgerComputer::BadgerComputer()
     alu = new cpm_io(memory, io, registers);
     processor = new Processor(memory, io, alu, registers);
     
-    addBreakpoint(0x1b3e); //inc counter
-    addBreakpoint(0x1b41); //shift
-    addBreakpoint(0x1b45); //check shift
+//     addBreakpoint(0x1b3e); //inc counter
+//     addBreakpoint(0x1b41); //shift
+//     addBreakpoint(0x1b45); //check shift
+    addBreakpoint(0x1cad); 
 //     addBreakpoint(0x1be4);
 }
 
@@ -44,7 +45,7 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
         {
             skipBreakpoint = false;
             processor->process();
-            std::cout << utils::int_to_hex(processor->getRegisters()->getPC()).toStdString() << std::endl;
+//             std::cout << utils::int_to_hex(processor->getRegisters()->getPC()).toStdString() << std::endl;
         }
     }
 }
