@@ -1,0 +1,137 @@
+Z80 instruction exerciser
+
+<adc,sbc> hl,<bc,de,hl,sp>....  ERROR **** crc expected:f_b[eaa` found:_YaZa\af
+
+add hl,<bc,de,hl,sp>..........  ERROR **** crc expected:_`fdb]Z\ found:aXbZb_dX
+
+add ix,<bc,de,ix,sp>..........  ERROR **** crc expected:cXZZ^`Wb found:]]a`ZaX_
+
+add iy,<bc,de,iy,sp>..........  ERROR **** crc expected:e__X^b`e found:ZYZXZ[]X
+
+aluop a,nn....................  ERROR **** crc expected:[_^``Z]W found:]ccabc``
+
+aluop a,<b,c,d,e,h,l,(hl),a>..  ERROR **** crc expected:fe[ZbWX] found:d``Yc`Xf
+
+aluop a,<ixh,ixl,iyh,iyl>.....  ERROR **** crc expected:a[WY]d\a found:[`_\a]d]
+
+aluop a,(<ix,iy>+1)...........  ERROR **** crc expected:e_[`]^]e found:_b]^Z[eW
+
+bit n,(<ix,iy>+1).............  ERROR **** crc expected:a_eeW_]^ found:YY\ZXe_Y
+
+bit n,<b,c,d,e,h,l,(hl),a>....  ERROR **** crc expected:^b\\e]c_ found:f^b`YaZZ
+
+cpd<r>........................  ERROR **** crc expected:a_^e]cfa found:X]f]aYZ`
+
+cpi<r>........................  ERROR **** crc expected:W]debZ\] found:^e_fZZWY
+
+<daa,cpl,scf,ccf>.............  ERROR **** crc expected:`b[ba]^\ found:[YZae]]\
+
+<inc,dec> a...................  ERROR **** crc expected:dX__X\a[ found:YYY^d]\c
+
+<inc,dec> b...................  ERROR **** crc expected:\f]_YY][ found:ZYXZ^`_a
+
+<inc,dec> bc..................  OK
+
+<inc,dec> c...................  ERROR **** crc expected:cY_[\\[c found:Y`XXeY][
+
+<inc,dec> d...................  ERROR **** crc expected:[\YZdeXW found:Z\aXeWZW
+
+<inc,dec> de..................  OK
+
+<inc,dec> e...................  ERROR **** crc expected:eX^\afcc found:XWaceaXc
+
+<inc,dec> h...................  ERROR **** crc expected:Xced_[^d found:Y\aX_efY
+
+<inc,dec> hl..................  OK
+
+<inc,dec> ix..................  OK
+
+<inc,dec> iy..................  OK
+
+<inc,dec> l...................  ERROR **** crc expected:\]cdW]fZ found:d`]W[acf
+
+<inc,dec> (hl)................  ERROR **** crc expected:b_Zadcef found:Z`[a^d_]
+
+<inc,dec> sp..................  OK
+
+<inc,dec> (<ix,iy>+1).........  ERROR **** crc expected:YW\_X[^W found:Z[eYdZXX
+
+<inc,dec> ixh.................  ERROR **** crc expected:]f[]Z]]Y found:d_eYX\a_
+
+<inc,dec> ixl.................  ERROR **** crc expected:WY^befYc found:c[[_\^Z[
+
+<inc,dec> iyh.................  ERROR **** crc expected:Yd`]]cfZ found:_dY]\ef\
+
+<inc,dec> iyl.................  ERROR **** crc expected:fbcbba`\ found:Z[]Y]Zc`
+
+ld <bc,de>,(nnnn).............  OK
+
+ld hl,(nnnn)..................  OK
+
+ld sp,(nnnn)..................  OK
+
+ld <ix,iy>,(nnnn).............  OK
+
+ld (nnnn),<bc,de>.............  OK
+
+ld (nnnn),hl..................  OK
+
+ld (nnnn),sp..................  OK
+
+ld (nnnn),<ix,iy>.............  OK
+
+ld <bc,de,hl,sp>,nnnn.........  OK
+
+ld <ix,iy>,nnnn...............  OK
+
+ld a,<(bc),(de)>..............  OK
+
+ld <b,c,d,e,h,l,(hl),a>,nn....  OK
+
+ld (<ix,iy>+1),nn.............  OK
+
+ld <b,c,d,e>,(<ix,iy>+1)......  OK
+
+ld <h,l>,(<ix,iy>+1)..........  OK
+
+ld a,(<ix,iy>+1)..............  OK
+
+ld <ixh,ixl,iyh,iyl>,nn.......  ERROR **** crc expected:Y[e__Y_b found:\^YYYYeW
+
+ld <bcdehla>,<bcdehla>........  OK
+
+ld <bcdexya>,<bcdexya>........  ERROR **** crc expected:[^_baZ]b found:bf]`YeZW
+
+ld a,(nnnn) / ld (nnnn),a.....  OK
+
+ldd<r> (1)....................  ERROR **** crc expected:`[f[Y^]` found:cXcd\[aW
+
+ldd<r> (2)....................  ERROR **** crc expected:\a`W^ed[ found:X[e]dc_[
+
+ldi<r> (1)....................  ERROR **** crc expected:`abdf]b\ found:cf_[_\^c
+
+ldi<r> (2)....................  ERROR **** crc expected:eb\`_`Xb found:be]WfadY
+
+neg...........................  ERROR **** crc expected:]aZcZbbd found:W]\]][Zf
+
+<rrd,rld>.....................  ERROR **** crc expected:`\\baZY] found:b\_\abX\
+
+<rlca,rrca,rla,rra>...........  ERROR **** crc expected:Y\XZZWae found:^YWe`cZa
+
+shf/rot (<ix,iy>+1)...........  ERROR **** crc expected:^XZacd_X found:fd]cXZ]d
+
+shf/rot <b,c,d,e,h,l,(hl),a>..  ERROR **** crc expected:eb]W[d\_ found:d^b]\\ZX
+
+<set,res> n,<bcdehl(hl)a>.....  OK
+
+<set,res> n,(<ix,iy>+1).......  OK
+
+ld (<ix,iy>+1),<b,c,d,e>......  OK
+
+ld (<ix,iy>+1),<h,l>..........  OK
+
+ld (<ix,iy>+1),a..............  OK
+
+ld (<bc,de>),a................  OK
+
+Tests completeTests completeTests completeTests

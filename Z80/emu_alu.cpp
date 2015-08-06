@@ -895,14 +895,21 @@ void EmuAlu::RET() {
     incrementSP();
 }
 
+/* Return from Interrupt */
 void EmuAlu::RETI() {
     unimplemented();
 }
 
+/* Return from non maskable interrupt */
 void EmuAlu::RETN() {
     unimplemented();
 }
 
+/*
+ * The contents of the m operand are rotated left 1-bit position. The content of
+bit 7 is copied to the Carry flag and the previous content of the Carry flag is
+copied to bit 0.
+*/
 void EmuAlu::RL(MemoryAddress memoryAddress) {
     unimplemented();
 }
@@ -1208,7 +1215,7 @@ std::uint8_t EmuAlu::readIO(std::uint16_t address) {
 
 void EmuAlu::unimplemented() {
     std::cout << "Unimplemented!!!!!!!!!!!!!" << std::endl;
-    throw  UnimplementedInstructionException();
+//     throw  UnimplementedInstructionException();
 }
 
 void EmuAlu::writeIO(std::uint16_t address, std::uint8_t value) {

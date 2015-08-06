@@ -103,8 +103,6 @@ void MainWindow::add_recent_menu_item(QString rom_path) {
 }
 
 void MainWindow::loadRom() {
-    Logger l;
-    l.debug("Loadrom called");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open ROM"), QDir::homePath(), tr("ROM Files (*.rom *.bin)"),0, QFileDialog::DontUseNativeDialog);
 
     if (fileName != NULL ) {
@@ -114,7 +112,7 @@ void MainWindow::loadRom() {
 }
 
 void MainWindow::loadRom(QString file_path) {
-    QMessageBox::information(this, tr("filename"), file_path);
+//     QMessageBox::information(this, tr("filename"), file_path);
 
     auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
 
@@ -138,7 +136,6 @@ void MainWindow::loadRom(QString file_path) {
         computer->memory->write(5,0xdb);       /* IN A, N */
         computer->memory->write(6,0x00); //this val gets used for the stack location
         computer->memory->write(7,0xc9);
-//         emulationProcessor->getMemory()->write(0x1b45,0); // replace conditional jp with nop!
         computer->processor->getRegisters()->setPC(0x100);
     }
     
@@ -160,7 +157,6 @@ void MainWindow::stop()
 
 void MainWindow::update()
 {
-//    l.debug("update!");
     computer->doOneScreenRefreshesWorth();
 }
 
@@ -197,7 +193,6 @@ void MainWindow::update_register_values() {
     this->ui->d_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getD()));
     this->ui->e_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getE()));
     this->ui->f_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getF()));
-//    std::cout << "updating display " << std::endl;
 }
 
 void MainWindow::step()
