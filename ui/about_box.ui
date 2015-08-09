@@ -2,16 +2,28 @@
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>385</width>
+    <height>274</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>About</string>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -26,37 +38,45 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Ok</set>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>30</y>
-     <width>181</width>
-     <height>21</height>
+     <x>80</x>
+     <y>90</y>
+     <width>211</width>
+     <height>141</height>
     </rect>
    </property>
    <property name="text">
-    <string>Stoatulator v0</string>
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="resources/app.qrc">:/toolbar/badger.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>70</y>
-     <width>59</width>
-     <height>17</height>
+     <x>50</x>
+     <y>10</y>
+     <width>181</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
-    <string>Built on</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Z80 Emulator &amp;copy; 2015 Badgersoft &lt;/p&gt;&lt;p&gt;AKA Crumpy Computing &lt;/p&gt;&lt;p&gt;AKA Cheese Dream Technologies&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources/app.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

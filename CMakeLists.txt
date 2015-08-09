@@ -8,7 +8,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # set(CMAKE_AUTOMOC ON)
 # set(CMAKE_AUTOUIC ON)
 # Find the QtWidgets library
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Svg REQUIRED)
+# find_package(Qt5Svg REQUIRED)
+
 #set(Boost_DEBUG OFF)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -25,6 +27,7 @@ ${PROJECT_SOURCE_DIR}/ui/badgerio.cpp
 ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.cpp
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.cpp 
+${PROJECT_SOURCE_DIR}/ui/about_box.cpp
 )
 
 set (GuiLib_hdr 
@@ -35,13 +38,20 @@ ${PROJECT_SOURCE_DIR}/ui/badgerio.h
 ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.h
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.h
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.h 
+${PROJECT_SOURCE_DIR}/ui/about_box.h
 )
 
-set (GuiLib_ui  ${PROJECT_SOURCE_DIR}/ui/main_window.ui)
+set (GuiLib_ui
+${PROJECT_SOURCE_DIR}/ui/main_window.ui
+${PROJECT_SOURCE_DIR}/ui/about_box.ui
+)
+
 set (GuiBin_src ${PROJECT_SOURCE_DIR}/main.cpp)
 
 qt5_wrap_cpp(GuiLib_hdr_moc ${GuiLib_hdr})
 qt5_wrap_ui (GuiLib_ui_moc  ${GuiLib_ui})
+
+qt5_add_resources(APP_RESOURCES ui/resources/app.qrc)
 
 include_directories (${PROJECT_SOURCE_DIR})
 include_directories (${PROJECT_BINARY_DIR})
@@ -84,18 +94,18 @@ add_library (GuiLib STATIC
     ${GuiLib_ui_moc}
 )
 
-qt5_use_modules(GuiLib Widgets)
+target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg)
 
 set (tooltests_SRC
 tests/test_computer.h tests/test_computer.cpp
 tests/Test.cpp
 )
 
-add_executable(cpuqt2 ${GuiBin_src}) # ${Z80_SRC}
+add_executable(cpuqt2 ${GuiBin_src} ${APP_RESOURCES})
 
-add_executable(tool ${tools_SRC}) # ${Z80_SRC}
+add_executable(tool ${tools_SRC})
 
-add_executable(tooltests ${tooltests_SRC}) #${Z80_SRC}
+add_executable(tooltests ${tooltests_SRC})
 
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
@@ -135,6 +145,7 @@ if (MSVC)
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Widgetsd.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Cored.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Guid.dll" "${CMAKE_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Svg.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icudt53.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuin53.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuuc53.dll" "${CMAKE_BINARY_DIR}"
@@ -164,6 +175,16 @@ install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
 install(TARGETS tool RUNTIME DESTINATION bin)
 install(TARGETS tooltests RUNTIME DESTINATION bin)
 #install(TARGETS Z80 RUNTIME DESTINATION bin)
+
+foreach(plugin ${Qt5Gui_PLUGINS})
+  get_target_property(_loc ${plugin} LOCATION)
+  message("Core Plugin ${plugin} is at location ${_loc}")
+endforeach()
+
+foreach(plugin ${Qt5Svg_PLUGINS})
+  get_target_property(_loc ${plugin} LOCATION)
+  message("Core Plugin ${plugin} is at location ${_loc}")
+endforeach()
 
 if(WIN32)
         option(COPY_BOOST_BINARIES "Copy boost DLL files to local path" 1)

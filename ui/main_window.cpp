@@ -15,6 +15,7 @@
 #include "ui/qtbadgermemory.h"
 #include "utils.h"
 #include "ui/cpm_io.h"
+#include "about_box.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -161,7 +162,8 @@ void MainWindow::update()
 }
 
 void MainWindow::showAboutBox() {
-    QMessageBox::about(this,"Badgersoft","Z80 Emulator (c) 2015 Badgersoft AKA Crumpy Computing AKA Cheese Dream Technologies");
+    Dialog * mw = new Dialog();
+    mw->show();
 }
 
 void MainWindow::quit() {

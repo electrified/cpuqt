@@ -30,7 +30,7 @@
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>29</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -41,9 +41,14 @@
      <property name="title">
       <string>&amp;Recent</string>
      </property>
+     <property name="icon">
+      <iconset resource="resources/app.qrc">
+       <normaloff>:/toolbar/document-open-recent.svg</normaloff>:/toolbar/document-open-recent.svg</iconset>
+     </property>
     </widget>
     <addaction name="actionLoad_ROM"/>
     <addaction name="menuRecent"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -298,7 +303,7 @@
   </widget>
   <action name="actionAbout">
    <property name="icon">
-    <iconset resource="app.qrc">
+    <iconset resource="resources/app.qrc">
      <normaloff>:/toolbar/help-about.svg</normaloff>:/toolbar/help-about.svg</iconset>
    </property>
    <property name="text">
@@ -307,7 +312,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="app.qrc">
+    <iconset resource="resources/app.qrc">
      <normaloff>:/toolbar/application-exit.svg</normaloff>:/toolbar/application-exit.svg</iconset>
    </property>
    <property name="text">
@@ -316,7 +321,7 @@
   </action>
   <action name="actionLoad_ROM">
    <property name="icon">
-    <iconset resource="app.qrc">
+    <iconset resource="resources/app.qrc">
      <normaloff>:/toolbar/document-open.svg</normaloff>:/toolbar/document-open.svg</iconset>
    </property>
    <property name="text">
@@ -325,7 +330,7 @@
   </action>
   <action name="actionRun">
    <property name="icon">
-    <iconset resource="app.qrc">
+    <iconset resource="resources/app.qrc">
      <normaloff>:/toolbar/media-playback-start.svg</normaloff>:/toolbar/media-playback-start.svg</iconset>
    </property>
    <property name="text">
@@ -334,7 +339,7 @@
   </action>
   <action name="actionStop">
    <property name="icon">
-    <iconset resource="app.qrc">
+    <iconset resource="resources/app.qrc">
      <normaloff>:/toolbar/media-playback-stop.svg</normaloff>:/toolbar/media-playback-stop.svg</iconset>
    </property>
    <property name="text">
@@ -347,6 +352,10 @@
    </property>
   </action>
   <action name="actionStep">
+   <property name="icon">
+    <iconset resource="resources/app.qrc">
+     <normaloff>:/toolbar/arrow-right.svg</normaloff>:/toolbar/arrow-right.svg</iconset>
+   </property>
    <property name="text">
     <string>&amp;Step</string>
    </property>
@@ -374,7 +383,7 @@
   </action>
  </widget>
  <resources>
-  <include location="app.qrc"/>
+  <include location="resources/app.qrc"/>
  </resources>
  <connections>
   <connection>
