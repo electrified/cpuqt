@@ -30,11 +30,6 @@ void Disassembler::disassemble(const std::uint16_t start, const std::uint16_t en
     while (fakePC < end) {
         programCounterAtStartOfInstructionExecution = fakePC;
         decoder->decode(*memory, *this, fakePC);
-        
-//         if (fakePC < INT16_MAX) {
-//             ++fakePC;
-//         }
-//         std::cout << fakePC << " || " << end << std::endl;
     }
 }
 

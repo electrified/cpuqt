@@ -10,14 +10,8 @@ private:
     std::string mnemonic;
 public:
     DisassemblyResult(std::uint16_t address, std::string mnemonic);
-
     uint16_t getAddress() const;
-
     const std::string & getMnemonic() const;
-
 };
-
-
-
 
 #endif //TESTPROJECT_DISASSEMBLYRESULT_H

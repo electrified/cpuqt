@@ -21,7 +21,6 @@ class Processor
     Registers* registers;
     Decoder* decoder;
 public:
-    Processor(Memory* memory, IO* io, Alu* alu, Registers* registers);
     Processor(Memory* memory, IO* io);
     ~Processor();
 
@@ -30,6 +29,7 @@ public:
     Memory* getMemory();
     IO* getIO();
     Registers* getRegisters();
+    Alu* getAlu();
     void placeProgramCounterOnAddressBus();
     void reset();
 };

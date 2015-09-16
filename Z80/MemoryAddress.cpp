@@ -45,20 +45,19 @@ RegisterPair MemoryAddress::getRegisterPair() const {
 }
 
 std::string MemoryAddress::toString() const {
-         string address = "";
-        if(getRegister() != Rgstr::unknown) {
-            address = registers::toString(getRegister());
-            if (getOffset() != 0) {
-                address = address + "+" + utils::int_to_hex(getOffset());
-            }
-        } else if (getRegisterPair() != RegisterPair::unknown) {
-            address = registers::toString(getRegisterPair());
-            if (getOffset() != 0) {
-                address = address + "+" + utils::int_to_hex(getOffset());
-            }
-        } else {// if (getMemoryAddress() != 0) {
-            address = utils::int_to_hex(getMemoryAddress());
+    string address = "";
+    if(getRegister() != Rgstr::unknown) {
+        address = registers::toString(getRegister());
+        if (getOffset() != 0) {
+            address = address + "+" + utils::int_to_hex(getOffset());
         }
-
-         return "(" + address + ")";
+    } else if (getRegisterPair() != RegisterPair::unknown) {
+        address = registers::toString(getRegisterPair());
+        if (getOffset() != 0) {
+            address = address + "+" + utils::int_to_hex(getOffset());
+        }
+    } else {// if (getMemoryAddress() != 0) {
+        address = utils::int_to_hex(getMemoryAddress());
+    }
+    return "(" + address + ")";
 }

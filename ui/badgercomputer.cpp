@@ -10,9 +10,7 @@ BadgerComputer::BadgerComputer()
 {
     memory = new QtBadgerMemory();
     io = new BadgerIO();
-    Registers* registers = new Registers();
-    alu = new cpm_io(memory, io, registers);
-    processor = new Processor(memory, io, alu, registers);
+    processor = new Processor(memory, io);
     
 //     addBreakpoint(0x1b3e); //inc counter
 //     addBreakpoint(0x1b41); //shift
@@ -57,7 +55,6 @@ void BadgerComputer::step() {
 void BadgerComputer::addBreakpoint(std::uint16_t pc) {
     breakpoints.insert(pc);
 }
-
 
 void BadgerComputer::removeBreakpoint(std::uint16_t pc) {
     breakpoints.erase(pc);

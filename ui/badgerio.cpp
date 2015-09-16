@@ -9,7 +9,6 @@ BadgerIO::BadgerIO()
 std::uint8_t BadgerIO::read(std::uint16_t address) {
     int returnValue = 0;
     if ((address & UART_PORT) == UART_PORT) {
-//             logger.debug("UART read!!!!");
         switch (address) {
         case BadgerIO::UART_DLL: //case UART_PORT:
 //                    returnValue = DLL;
@@ -42,18 +41,14 @@ std::uint8_t BadgerIO::read(std::uint16_t address) {
     } else {
         returnValue = memory[address];
     }
-//      logger.debug(String.format("read address: 0x%s value: 0x%s 0b%s", Integer.toHexString(address), Integer.toHexString(returnValue), Integer.toBinaryString(returnValue)));
     return returnValue;
 }
 
 void BadgerIO::write(std::uint16_t address, std::uint8_t value) {
-//         logger.debug("write address: 0x" + Integer.toHexString(address));
     if ((address & UART_PORT) == UART_PORT) {
-//             logger.debug("UART write!!!!");
         switch (address) {
         case UART_DLL:
             DLL = value;
-//                     screenOutputPrintStream.write(value);
             emit consoleTextOutput(value);
             break;
         case UART_DLM:

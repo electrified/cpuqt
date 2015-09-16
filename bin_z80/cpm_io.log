@@ -1,0 +1,45 @@
+0000:           ; SYMBOLIC DEFINES
+0000:           ; $8x selects the UART addressing lines
+0000:           UART_PORT	equ 80h	; The UART's data buffer for in/out
+0000:           UART_DLL	equ	80h	; LSB of divisor latch
+0000:           UART_DLM	equ 81h	; MSB of divisor latch (DLAB=1)
+0000:           UART_FCR	equ	82h	; FIFO control register
+0000:           UART_IER	equ	81h	; Interrupt Enable register (DLAB=0)
+0000:           UART_LCR	equ	83h	; Line Control Register
+0000:           UART_MCR	equ 84h	; Modem Control Register (for OUT1/OUT2)
+0000:           UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
+0000:           
+0000:           #target	rom		; ((inserted by zasm))
+0000:           #code	0,$10000	; ((inserted by zasm))
+0000:               org 0
+0000: D300          out (0), A
+0002:           
+0002: 3E02          ld a, 2
+0004: B9            cp c
+0005: CA0F00        jp z, outchar
+0008: 3E09          ld a, 9
+000A: B9            cp c
+000B: CA1C00        jp z, outmulti
+000E: C9            ret
+000F:           outchar:
+000F: F5            PUSH AF
+0010: BB            CP A, E
+0011: D380          OUT (UART_PORT), A
+0013:           ; wait until transmitted
+0013:           oloop:
+0013: DB85          IN A, (UART_LSR)	; read LSR
+0015: CB77          BIT 6, A	; bit 6 is transmitter empty
+0017: CA1300        JP Z, oloop
+001A: F1            POP AF
+001B: C9            RET
+001C:           
+001C:           outmulti:
+001C: 1A            ld a, (de)
+001D: FE24          cp '$'
+001F: CA2900        jp z, end
+0022: C30F00        jp outchar
+0025: 13            inc de
+0026: C31C00        jp outmulti
+0029:           end:
+0029: C9            ret
+002A:           #end			; ((inserted by zasm))

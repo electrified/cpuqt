@@ -1,0 +1,4 @@
+0000:           #target	rom		; ((inserted by zasm))
+0000:           #code	0,$10000	; ((inserted by zasm))
+0000:           .org 0
+0000:           #end			; ((inserted by zasm))

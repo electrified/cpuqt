@@ -167,7 +167,6 @@ public:
 
     void setHalted(bool val);
 
-
     bool isIFF1();
 
     void setIFF1(bool iFF1);

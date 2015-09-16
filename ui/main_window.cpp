@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     computer = new BadgerComputer();
-    
+
     disassemblyModel = new DisassemblyModel(computer->memory, this);
 
     // Attach the model to the view
@@ -34,15 +34,22 @@ MainWindow::MainWindow(QWidget *parent) :
     QHeaderView *verticalHeader = ui->disassemblyView->verticalHeader();
     verticalHeader->sectionResizeMode(QHeaderView::Fixed);
     verticalHeader->setDefaultSectionSize(15);
-    
-    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
-    connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
+
     connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
-    connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
-    connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
-    connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
-    connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
+
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+
+//     connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+
+    //this is ther text output for cp/m
+    connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
+
+//     connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
+//     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
+//     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
+//     connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
+
+
     connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
     initial_recent_menu_population();
 }
@@ -118,16 +125,16 @@ void MainWindow::loadRom(QString file_path) {
     auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
 
     bool tests = false;
-        if (file_path.endsWith(QString("zexdoc.bin"))) {
-            tests = true;
-        }
+    if (file_path.endsWith(QString("zexdoc.bin"))) {
+        tests = true;
+    }
 
     std::uint16_t offset = (tests ? 0x100 : 0);
 
     for (int i = 0; i < data.size(); ++i) {
         computer->memory->write(i + offset, data.at(i));
     }
-    
+
     // HAX
     if (tests) {
         l.debug("patching zexdoc");
@@ -139,7 +146,7 @@ void MainWindow::loadRom(QString file_path) {
         computer->memory->write(7,0xc9);
         computer->processor->getRegisters()->setPC(0x100);
     }
-    
+
     disassemblyModel->forceDisassembly();
 }
 

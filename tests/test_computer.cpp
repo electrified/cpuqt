@@ -6,7 +6,7 @@ TestComputer::TestComputer()
     memory = new BadgerMemory();
     registers = new Registers();
     alu = new EmuAlu(memory, io, registers);
-    processor = new Processor(memory, io, alu, registers);
+    processor = new Processor(memory, io);
 }
 
 TestComputer::~TestComputer()

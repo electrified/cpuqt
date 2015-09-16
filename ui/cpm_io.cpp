@@ -1,23 +1,24 @@
 #include "cpm_io.h"
 
-cpm_io::cpm_io(Memory* memory, IO* io, Registers* registers) : EmuAlu(memory, io, registers){
+cpm_io::cpm_io() {
 
 }
 
-void cpm_io::in(Rgstr rgstr, const MemoryAddress& i) {
-    this->registers->setRegister(rgstr, this->io->read(this->getMemoryAddress(i)));
-
-    if (this->registers->getC() == 2) {
-        emit consoleTextOutput(this->registers->getE());
+/* Emulate CP/M bdos call 5 functions 2 (output character on screen) and 
+ * 9 (output $-terminated string to screen).
+ */
+void cpm_io::in(Rgstr rgstr, const MemoryAddress& i, Registers* registers, Memory* memory) {
+    if (registers->getC() == 2) {
+        // rewrite as code, CP/M BIOS routine
+        emit consoleTextOutput(registers->getE());
     }
-    else if (this->registers->getC() == 9) {
+    else if (registers->getC() == 9) {
+        int i; //, c;
 
-        int     i, c;
-
-        for (i = this->registers->getDE(), c = 0;
-             this->memory->read(i) != '$';
-             i++) {
-            emit consoleTextOutput(this->memory->read(i & 0xffff));
+        // rewrite as code, CP/M BIOS routine
+        for (i = registers->getDE(); memory->read(i) != '$'; i++) {
+            emit consoleTextOutput(memory->read(i & 0xffff));
         }
     }
 }
+
