@@ -1,3 +1,5 @@
+;zasm -v2 -i cpm_io.asm -o cpm_io.rom
+#target bin
 ; SYMBOLIC DEFINES
 ; $8x selects the UART addressing lines
 UART_PORT	equ 80h	; The UART's data buffer for in/out
@@ -11,7 +13,7 @@ UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
 
     org 0
     out (0), A
-
+    defs 5-$
     ld a, 2
     cp c
     jp z, outchar

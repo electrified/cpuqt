@@ -453,8 +453,7 @@ void EmuAlu::IM(std::uint8_t im) {
  * input data.
  */
 void EmuAlu::in(Rgstr rgstr, const MemoryAddress& i) {
-    assert(i.getRegisterPair() == RegisterPair::BC);
-    assert(false);
+//     assert(i.getRegisterPair() == RegisterPair::BC);
     registers->setRegister(rgstr, io->read(getMemoryAddress(i)));
 }
 

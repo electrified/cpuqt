@@ -39,10 +39,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
 
-//     connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+    connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
 
     //this is ther text output for cp/m
-    connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
+//     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
 
 //     connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
 //     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
@@ -136,16 +136,16 @@ void MainWindow::loadRom(QString file_path) {
     }
 
     // HAX
-    if (tests) {
-        l.debug("patching zexdoc");
-        computer->memory->write(0,0xd3);       /* OUT N, A */
-        computer->memory->write(1,0x00);
-
-        computer->memory->write(5,0xdb);       /* IN A, N */
-        computer->memory->write(6,0x00); //this val gets used for the stack location
-        computer->memory->write(7,0xc9);
-        computer->processor->getRegisters()->setPC(0x100);
-    }
+//     if (tests) {
+//         l.debug("patching zexdoc");
+//         computer->memory->write(0,0xd3);       /* OUT N, A */
+//         computer->memory->write(1,0x00);
+// 
+//         computer->memory->write(5,0xdb);       /* IN A, N */
+//         computer->memory->write(6,0x00); //this val gets used for the stack location
+//         computer->memory->write(7,0xc9);
+//         computer->processor->getRegisters()->setPC(0x100);
+//     }
 
     disassemblyModel->forceDisassembly();
 }
