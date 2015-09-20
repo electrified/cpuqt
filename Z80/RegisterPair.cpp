@@ -15,5 +15,6 @@ std::string registers::toString(RegisterPair c) {
         case RegisterPair::IY: return "IY";
         case RegisterPair::PC: return "PC";
         case RegisterPair::SP: return "SP";
+        default: return "UNKNOWN";
     }
 }

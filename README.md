@@ -1,3 +1,15 @@
+Z80 Emulator!
+
+Currently just trying to implement all documented instructions, undocumented ones will follow later.
+
+Features:
+* Written from scratch in C++
+* Suite of tests using Catch
+* Comes with a Qt based UI
+* Disassembler
+* Builds on Linux/OSX/Windows
+
+To
 Modified zexdoc from https://github.com/anotherlin/z80emu
 
 TODO:

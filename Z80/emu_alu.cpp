@@ -22,6 +22,7 @@ EmuAlu::~EmuAlu() {
 
 void EmuAlu::ADC(RegisterPair rp1, RegisterPair rp2) {
     registers->setRegisterPair(rp1, registers->getRegisterPairValue(rp1) + registers->getRegisterPairValue(rp2) + (registers->getCFlag() ? 1 : 0));
+    //TODO: warning: C4244: 'argument' : conversion from 'uint16_t' to 'uint8_t', possible loss of data
     setFlags(registers->getRegisterPairValue(rp1));
 }
 
@@ -285,7 +286,9 @@ void EmuAlu::DAA() {
 
     registers->setA( registers->getA() + registers->getNFlag() ? -d : +d);
     registers->setF(SZYXP_FLAGS_TABLE[registers->getA()]
+            //TODO: warning: C4805: '&' : unsafe mix of type 'int' and type 'bool' in operation
                     | ((registers->getA() ^ a) & registers->getHFlag())
+            //TODO: warning: C4805: '|' : unsafe mix of type 'int' and type 'bool' in operation
                     | registers->getNFlag()
                     | c);
 }
@@ -308,7 +311,8 @@ void EmuAlu::DEC(MemoryAddress memoryAddress) {
     registers->setSignFlag(newvalue < 0);
     registers->setZeroFlag(newvalue == 0);
 
-    registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0);
+    //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
 
     registers->setNFlag(false);
 }
@@ -326,7 +330,7 @@ void EmuAlu::DEC(Rgstr rgstr) {
     //carry for add
     //registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0));
 
-    registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0);
+    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
 
     registers->setNFlag(false);
 }

@@ -16,5 +16,6 @@ std::string registers::toString(Rgstr c) {
         case Rgstr::IYL: return "IYL";
         case Rgstr::L: return "L";
         case Rgstr::R: return "R";
+        default: return "UNKNOWN";
     }
 }

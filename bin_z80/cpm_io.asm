@@ -1,5 +1,5 @@
 ;zasm -v2 -i cpm_io.asm -o cpm_io.rom
-#target bin
+;#target bin
 ; SYMBOLIC DEFINES
 ; $8x selects the UART addressing lines
 UART_PORT	equ 80h	; The UART's data buffer for in/out
@@ -13,13 +13,13 @@ UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
 
     org 0
     out (0), A
-    defs 5-$
-    ld a, 2
-    cp c
-    jp z, outchar
-    ld a, 9
-    cp c
-    jp z, outmulti
+    ;Ensure is at memory address 5, for CP/M BDOS
+    defs 5-$, 0
+    ld a, c
+    cp 2
+    call z, outchar
+    cp 9
+    call z, outmulti
     ret
 outchar:
     PUSH AF
@@ -32,13 +32,12 @@ oloop:
     JP Z, oloop
     POP AF
     RET
-
 outmulti:
     ld a, (de)
-    cp '$'
-    jp z, end
-    jp outchar
+    cp a, '$'
+    jp z, outend
+    call outchar
     inc de
     jp outmulti
-end:
+outend:
     ret

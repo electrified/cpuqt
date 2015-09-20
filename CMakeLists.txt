@@ -68,12 +68,12 @@ tools/Case.cpp tools/Case.hpp
 set(Z80_SRC
     Z80/Condition.hpp Z80/Condition.cpp
     Z80/disassembler.cpp Z80/disassembler.h
-    Z80/Memory.cpp Z80/Memory.h
+    Z80/Memory.h
     Z80/MemoryAddress.cpp Z80/MemoryAddress.h
     Z80/processor.cpp Z80/processor.h
     Z80/Register.hpp Z80/Register.cpp
     Z80/RegisterPair.hpp Z80/RegisterPair.cpp
-    Z80/IO.cpp Z80/IO.h Z80/TestIO.h Z80/TestIO.cpp
+    Z80/IO.h Z80/TestIO.h Z80/TestIO.cpp
     Z80/decoder.cpp Z80/decoder.h
     Z80/alu.h
     Z80/emu_alu.cpp Z80/emu_alu.h
@@ -146,9 +146,9 @@ if (MSVC)
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Cored.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Guid.dll" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/Qt5Svg.dll" "${CMAKE_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icudt53.dll" "${CMAKE_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuin53.dll" "${CMAKE_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuuc53.dll" "${CMAKE_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icudt54.dll" "${CMAKE_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuin54.dll" "${CMAKE_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${QT_INSTALL_BINS}/icuuc54.dll" "${CMAKE_BINARY_DIR}"
     COMMENT "Copying Qt5 dependencies to ${COPY_DEST}"
     VERBATIM)
 

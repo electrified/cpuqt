@@ -10,5 +10,6 @@ std::string registers::toString(Condition c) {
         case Condition::PE: return "PE";
         case Condition::PO: return "PO";
         case Condition::Z: return "Z";
+        default: return "UNKNOWN";
     }
 }
