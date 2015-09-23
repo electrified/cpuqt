@@ -23,7 +23,7 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 set (GuiLib_src 
 ${PROJECT_SOURCE_DIR}/ui/main_window.cpp 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp 
-${PROJECT_SOURCE_DIR}/ui/badgerio.cpp
+${PROJECT_SOURCE_DIR}/ui/qtbadgerio.cpp
 ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.cpp
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.cpp 
@@ -34,7 +34,7 @@ set (GuiLib_hdr
 ${PROJECT_SOURCE_DIR}/ui/utils.h
 ${PROJECT_SOURCE_DIR}/ui/main_window.h 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h
-${PROJECT_SOURCE_DIR}/ui/badgerio.h
+${PROJECT_SOURCE_DIR}/ui/qtbadgerio.h
 ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.h
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.h
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.h 
@@ -81,7 +81,9 @@ set(Z80_SRC
     Z80/registers.h Z80/registers.cpp
     Logger.cpp Logger.h
     Z80/DisassemblyResult.cpp Z80/DisassemblyResult.h
-    Z80/disassembler.cpp Z80/disassembler.h 
+    Z80/disassembler.cpp Z80/disassembler.h
+    computer/badgerio.cpp computer/badgerio.h
+    computer/utils.h
 )
 
 add_library(Z80 STATIC
@@ -98,7 +100,13 @@ target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg)
 
 set (tooltests_SRC
 tests/test_computer.h tests/test_computer.cpp
-tests/Test.cpp
+tests/test.cpp
+)
+
+set (zexrunner_SRC
+computer/consolebadgerio.cpp computer/consolebadgerio.h
+tests/zexrunner.cpp tests/zexrunner.h
+tests/test_computer.h tests/test_computer.cpp
 )
 
 add_executable(cpuqt2 ${GuiBin_src} ${APP_RESOURCES})
@@ -106,6 +114,8 @@ add_executable(cpuqt2 ${GuiBin_src} ${APP_RESOURCES})
 add_executable(tool ${tools_SRC})
 
 add_executable(tooltests ${tooltests_SRC})
+
+add_executable(zexrunner ${zexrunner_SRC})
 
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
 set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
@@ -122,9 +132,14 @@ set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 
+set_property(TARGET zexrunner PROPERTY CXX_STANDARD 11)
+set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
+
+
 target_link_libraries(tool ${Boost_LIBRARIES} Z80)
 target_link_libraries(cpuqt2 GuiLib Z80) # Z80
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
+target_link_libraries(zexrunner  ${Boost_LIBRARIES} Z80)
 
 if (WIN32)
  # disable autolinking in boost

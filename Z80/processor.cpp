@@ -18,7 +18,7 @@ Processor::~Processor() {
 //     delete &io;
 }
 
-void Processor::process() {
+void Processor:: process() {
 //        if (halted) {
 //            decode(); //NOP
 //        } else {

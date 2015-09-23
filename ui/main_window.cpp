@@ -1,21 +1,22 @@
 #include "main_window.h"
 #include "ui_main_window.h"
-
+/*
 #include <iostream>
 #include <fstream>
 
-#include <vector>
+#include <vector>*/
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtWidgets/QTableView>
 #include <QSettings>
 
-#include "ui/badgerio.h"
+#include "ui/qtbadgerio.h"
 #include "ui/qtbadgermemory.h"
 #include "utils.h"
 #include "ui/cpm_io.h"
 #include "about_box.h"
+#include "computer/utils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -39,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
 
-    connect(computer->io, &BadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+    connect((QtBadgerIO*)computer->io, &QtBadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
 
     //this is ther text output for cp/m
 //     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
@@ -122,7 +123,7 @@ void MainWindow::loadRom() {
 void MainWindow::loadRom(QString file_path) {
 //     QMessageBox::information(this, tr("filename"), file_path);
 
-    auto data = MainWindow::ReadAllBytes(file_path.toUtf8().constData());
+    auto data = ReadAllBytes(file_path.toUtf8().constData());
 
     bool tests = false;
     if (file_path.endsWith(QString("zexdoc.bin"))) {
@@ -131,9 +132,7 @@ void MainWindow::loadRom(QString file_path) {
 
     std::uint16_t offset = (tests ? 0x100 : 0);
 
-    for (int i = 0; i < data.size(); ++i) {
-        computer->memory->write(i + offset, data.at(i));
-    }
+    loadIntoMemory(data, computer->memory, offset);
 
     // HAX
 //     if (tests) {
@@ -175,19 +174,6 @@ void MainWindow::showAboutBox() {
 
 void MainWindow::quit() {
     QCoreApplication::exit();
-}
-
-std::vector<char> MainWindow::ReadAllBytes(char const* filename)
-{
-    ifstream ifs(filename, ios::binary|ios::ate);
-    ifstream::pos_type pos = ifs.tellg();
-
-    std::vector<char>  result(pos);
-
-    ifs.seekg(0, ios::beg);
-    ifs.read(&result[0], pos);
-
-    return result;
 }
 
 void MainWindow::update_register_values() {

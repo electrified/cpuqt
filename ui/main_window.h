@@ -21,7 +21,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    static std::vector<char> ReadAllBytes(char const* filename);
 private:
     Ui::MainWindow *ui;
 

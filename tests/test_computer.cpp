@@ -29,3 +29,7 @@ TestIO* TestComputer::getIO() {
 Processor* TestComputer::getProcessor() {
     return processor;
 }
+
+void TestComputer::setIO(IO* io) {
+    io = io;
+}

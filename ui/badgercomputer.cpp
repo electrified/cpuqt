@@ -1,6 +1,6 @@
 #include "badgercomputer.h"
 
-#include "ui/badgerio.h"
+#include "ui/qtbadgerio.h"
 #include "ui/cpm_io.h"
 #include "utils.h"
 #include "Z80/registers.h"
@@ -9,7 +9,7 @@
 BadgerComputer::BadgerComputer()
 {
     memory = new QtBadgerMemory();
-    io = new BadgerIO();
+    io = new QtBadgerIO();
     processor = new Processor(memory, io);
     
 //     addBreakpoint(0x1b3e); //inc counter

@@ -3,14 +3,11 @@
 
 #include <cstdint>
 #include <vector>
-#include <QObject>
 
 #include "Z80/IO.h"
 
-class BadgerIO :public QObject, public IO
+class BadgerIO : public IO
 {
-        Q_OBJECT
-// Q_INTERFACES(IO)
 private:
 
     /*
@@ -45,8 +42,7 @@ public:
     BadgerIO();
     std::uint8_t read(std::uint16_t address);
     void write(std::uint16_t address, std::uint8_t value);
-signals:
-    void consoleTextOutput(char character);
+    virtual void outputCharacter(std::uint8_t value) = 0;
 };
 
 #endif // BADGERIO_H

@@ -49,7 +49,7 @@ void BadgerIO::write(std::uint16_t address, std::uint8_t value) {
         switch (address) {
         case UART_DLL:
             DLL = value;
-            emit consoleTextOutput(value);
+            outputCharacter(value);
             break;
         case UART_DLM:
             DLM = value;

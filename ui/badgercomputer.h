@@ -4,7 +4,7 @@
 #include <cstdint>
 #include "Z80/processor.h"
 #include "ui/qtbadgermemory.h"
-#include "ui/badgerio.h"
+#include "ui/qtbadgerio.h"
 #include "Z80/alu.h"
 #include <set>
 
