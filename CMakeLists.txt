@@ -100,6 +100,7 @@ target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg)
 
 set (tooltests_SRC
 tests/test_computer.h tests/test_computer.cpp
+computer/consolebadgerio.cpp computer/consolebadgerio.h
 tests/test.cpp
 )
 

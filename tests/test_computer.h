@@ -4,11 +4,11 @@
 #include "Z80/emu_alu.h"
 #include "Z80/BadgerMemory.h"
 #include "Z80/TestIO.h"
-
+#include "Z80/IO.h"
 
 class TestComputer
 {
-    TestIO* io;
+    IO* io;
     BadgerMemory* memory;
     Registers* registers;
     EmuAlu* alu;
@@ -17,7 +17,7 @@ public:
     TestComputer();
     ~TestComputer();
     BadgerMemory* getMemory();
-    TestIO* getIO();
+    IO* getIO();
     void setIO(IO* io);
     Processor* getProcessor();
 };

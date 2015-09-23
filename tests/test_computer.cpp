@@ -1,8 +1,10 @@
 #include "test_computer.h"
+#include "computer/consolebadgerio.h"
 
 TestComputer::TestComputer()
 {
-    io = new TestIO();
+//     io = new TestIO();
+    io = new ConsoleBadgerIO();
     memory = new BadgerMemory();
     registers = new Registers();
     alu = new EmuAlu(memory, io, registers);
@@ -22,7 +24,7 @@ BadgerMemory* TestComputer::getMemory() {
     return memory;
 }
 
-TestIO* TestComputer::getIO() {
+IO* TestComputer::getIO() {
     return io;
 }
 
