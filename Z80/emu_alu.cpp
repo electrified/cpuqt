@@ -1047,22 +1047,52 @@ Pair ss
 BC 00
 DE 01
 HL 10
-SP 11*/
+SP 11
+
+S is set if result is negative; reset otherwise
+Z is set if result is zero; reset otherwise
+H is set if borrow from bit 4; reset otherwise
+P/V is reset if overflow; reset otherwise
+N is set
+C is set if borrow; reset otherwise
+
+*/
 void EmuAlu::SBC(RegisterPair h1, RegisterPair h2) {
-    uint16_t result = registers->getRegisterPairValue(h1) -registers->getRegisterPairValue(h2) - (registers->getCFlag() ? 1 : 0);
-    registers->setRegisterPair(h1, result);
+    uint8_t oldvalue = registers->getRegisterPairValue(h1);
+    uint16_t newvalue = oldvalue - registers->getRegisterPairValue(h2) - (registers->getCFlag() ? 1 : 0);
+    registers->setRegisterPair(h1, newvalue);
+    
+    registers->setSignFlag(newvalue < 0);
+    registers->setZeroFlag(newvalue == 0);
+
+    //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
+
+    registers->setNFlag(true);
 }
 
 void EmuAlu::SBC(Rgstr a, MemoryAddress memoryAddress) {
-    unimplemented("SBC");
+    SBC(a, memory->read(getMemoryAddress(memoryAddress)));
 }
 
 void EmuAlu::SBC(Rgstr a, std::uint8_t nextByte) {
-    unimplemented("SBC");
+    uint8_t oldvalue = registers->getRegisterValue(a);
+    uint8_t newvalue = oldvalue - nextByte - (registers->getCFlag() ? 1 : 0);
+    registers->setRegister(a, newvalue);
+    
+    registers->setSignFlag(newvalue < 0);
+    registers->setZeroFlag(newvalue == 0);
+
+    //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
+
+    registers->setNFlag(true);
+    
+    //TODO C flag not set
 }
 
 void EmuAlu::SBC(Rgstr a, Rgstr b) {
-    unimplemented("SBC");
+    SBC(a, registers->getRegisterValue(b));
 }
 
 void EmuAlu::SCF() {

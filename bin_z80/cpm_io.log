@@ -1,4 +1,5 @@
-0000:           #target bin
+0000:           ;zasm -v2 -i cpm_io.asm -o cpm_io.rom
+0000:           ;#target bin
 0000:           ; SYMBOLIC DEFINES
 0000:           ; $8x selects the UART addressing lines
 0000:           UART_PORT	equ 80h	; The UART's data buffer for in/out
@@ -10,36 +11,38 @@
 0000:           UART_MCR	equ 84h	; Modem Control Register (for OUT1/OUT2)
 0000:           UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
 0000:           
+0000:           #target	rom		; ((inserted by zasm))
 0000:           #code	0,$10000	; ((inserted by zasm))
 0000:               org 0
 0000: D300          out (0), A
-0002: 000000        defs 5-$
-0005: 3E02          ld a, 2
-0007: B9            cp c
-0008: CA1200        jp z, outchar
-000B: 3E09          ld a, 9
-000D: B9            cp c
-000E: CA1F00        jp z, outmulti
-0011: C9            ret
-0012:           outchar:
-0012: F5            PUSH AF
-0013: BB            CP A, E
-0014: D380          OUT (UART_PORT), A
-0016:           ; wait until transmitted
-0016:           oloop:
-0016: DB85          IN A, (UART_LSR)	; read LSR
-0018: CB77          BIT 6, A	; bit 6 is transmitter empty
-001A: CA1600        JP Z, oloop
-001D: F1            POP AF
-001E: C9            RET
-001F:           
-001F:           outmulti:
-001F: 1A            ld a, (de)
-0020: FE24          cp '$'
-0022: CA2C00        jp z, end
-0025: C31200        jp outchar
-0028: 13            inc de
-0029: C31F00        jp outmulti
-002C:           end:
-002C: C9            ret
-002D:           #end			; ((inserted by zasm))
+0002:               ;Ensure is at memory address 5, for CP/M BDOS
+0002: 000000        defs 5-$, 0
+0005: F5            PUSH AF
+0006: 79            ld a, c
+0007: FE02          cp 2
+0009: CC1300        call z, outchar
+000C: FE09          cp 9
+000E: CC2000        call z, outmulti
+0011: F1            POP AF
+0012: C9            ret
+0013:           outchar:
+0013: F5            PUSH AF
+0014: BB            cp A, E
+0015: D380          OUT (UART_PORT), A
+0017:           ; wait until transmitted
+0017:           oloop:
+0017: DB85          IN A, (UART_LSR)	; read LSR
+0019: CB77          BIT 6, A	; bit 6 is transmitter empty
+001B: CA1700        JP Z, oloop
+001E: F1            POP AF
+001F: C9            RET
+0020:           outmulti:
+0020: 1A            ld a, (de)
+0021: FE24          cp a, '$'
+0023: CA2D00        jp z, outend
+0026: CD1300        call outchar
+0029: 13            inc de
+002A: C32000        jp outmulti
+002D:           outend:
+002D: C9            ret
+002E:           #end			; ((inserted by zasm))

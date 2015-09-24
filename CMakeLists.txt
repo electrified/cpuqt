@@ -138,9 +138,9 @@ set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
 
 
 target_link_libraries(tool ${Boost_LIBRARIES} Z80)
-target_link_libraries(cpuqt2 GuiLib Z80) # Z80
+target_link_libraries(cpuqt2 GuiLib Z80)
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
-target_link_libraries(zexrunner  ${Boost_LIBRARIES} Z80)
+target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80)
 
 if (WIN32)
  # disable autolinking in boost

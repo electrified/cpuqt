@@ -2161,20 +2161,70 @@ TEST_CASE("RSTpTest") {
     REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18);
 }
 
-/*
- * If the Accumulator contains 16H, the carry flag is set, the HL register pair
-contains 3433H, and address 3433H contains 05H, at execution of
-SBC A, (HL) the Accumulator contains 10H.*/
-TEST_CASE("SBCTest") {
+TEST_CASE("SBC A r") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+    comp->getMemory()->write(0x0, BOOST_BINARY(10011011)); //E
+    comp->getProcessor()->getRegisters()->setE(0xDE);
+    comp->getProcessor()->getRegisters()->setA(0xFF);
+    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
+
+TEST_CASE("SBC A n") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xDE);
+    comp->getMemory()->write(0x1, 0xA9);
+    comp->getProcessor()->getRegisters()->setA(0xFF);
+    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x55);
+}
+
+TEST_CASE("SBC A (HL)") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0x9E);
+    comp->getMemory()->write(0x1, 0xA9);
+    comp->getMemory()->write(0xFFED, 0xDE);
+    comp->getProcessor()->getRegisters()->setA(0xFF);
+    comp->getProcessor()->getRegisters()->setHL(0xFFED);
+    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+}
+
+TEST_CASE("SBC A (IX + d)") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xDD);
+    comp->getMemory()->write(0x0, 0x9E);
+    comp->getMemory()->write(0x1, 0x7);
+    comp->getMemory()->write(0xFFED, 0xDE);
+    comp->getProcessor()->getRegisters()->setA(0xFF);
+    comp->getProcessor()->getRegisters()->setIX(0xFFE6);
+    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+}
+
+TEST_CASE("SBC A (IY + d)") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xFD);
+    comp->getMemory()->write(0x0, 0x9E);
+    comp->getMemory()->write(0x1, 0x7);
+    comp->getMemory()->write(0xFFED, 0xDE);
+    comp->getProcessor()->getRegisters()->setA(0xFF);
+    comp->getProcessor()->getRegisters()->setIY(0xFFE6);
+    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+}
+
 
 /*
  * If the contents of the HL, register pair are 9999H, the contents of register
 pair DE are 1111H, and the Carry flag is set. At execution of SBC HL, DE
 the contents of HL are 8887H.*/
-TEST_CASE("SBCHLTest") {
+TEST_CASE("SBC HL DE") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
@@ -2185,12 +2235,12 @@ TEST_CASE("SBCHLTest") {
     REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x8887);
 }
 
-TEST_CASE("SLATest") {
+TEST_CASE("SLA") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     REQUIRE(true == false);
 }
 
-TEST_CASE("SRATest") {
+TEST_CASE("SRA") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     REQUIRE(true == false);
 }
