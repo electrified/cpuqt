@@ -303,7 +303,7 @@ void EmuAlu::DAA() {
  */
 void EmuAlu::DEC(MemoryAddress memoryAddress) {
     std::uint16_t address = getMemoryAddress(memoryAddress);
-    std::uint8_t oldvalue = memory->read(address) - 1;
+    std::uint8_t oldvalue = memory->read(address);
     std::uint8_t newvalue = oldvalue - 1;
 
     memory->write(address, newvalue);
@@ -319,7 +319,7 @@ void EmuAlu::DEC(MemoryAddress memoryAddress) {
 
 void EmuAlu::DEC(Rgstr rgstr) {
     registers->setParityOverflowFlag(registers->getRegisterValue(rgstr) == 0x80);
-    std::uint8_t oldvalue =registers->getRegisterValue(rgstr);
+    std::uint8_t oldvalue = registers->getRegisterValue(rgstr);
     std::uint8_t newvalue = oldvalue - 1;
 
     registers->setRegister(rgstr, newvalue);
@@ -900,12 +900,12 @@ void EmuAlu::RET() {
 
 /* Return from Interrupt */
 void EmuAlu::RETI() {
-    unimplemented();
+    unimplemented("RETI");
 }
 
 /* Return from non maskable interrupt */
 void EmuAlu::RETN() {
-    unimplemented();
+    unimplemented("RETN");
 }
 
 /*
@@ -914,7 +914,7 @@ bit 7 is copied to the Carry flag and the previous content of the Carry flag is
 copied to bit 0.
 */
 void EmuAlu::RL(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("RL");
 }
 
 /**
@@ -923,7 +923,7 @@ void EmuAlu::RL(MemoryAddress memoryAddress) {
  * copied to bit 0.
  */
 void EmuAlu::RL(Rgstr r) {
-    unimplemented();
+    unimplemented("RL");
 }
 
 /**
@@ -938,11 +938,11 @@ void EmuAlu::RLA() {
 }
 
 void EmuAlu::RLC(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("RLC");
 }
 
 void EmuAlu::RLC(Rgstr rgstr) {
-    unimplemented();
+    unimplemented("RLC");
 }
 
 /**
@@ -959,15 +959,15 @@ void EmuAlu::RLCA() {
 }
 
 void EmuAlu::RLD() {
-    unimplemented();
+    unimplemented("RLD");
 }
 
 void EmuAlu::RR(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("RR");
 }
 
 void EmuAlu::RR(Rgstr r) {
-    unimplemented();
+    unimplemented("RR");
 }
 
 /**
@@ -983,11 +983,11 @@ void EmuAlu::RRA() {
 }
 
 void EmuAlu::RRC(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("RRC");
 }
 
 void EmuAlu::RRC(Rgstr r) {
-    unimplemented();
+    unimplemented("RRC");
 }
 
 /**
@@ -1054,15 +1054,15 @@ void EmuAlu::SBC(RegisterPair h1, RegisterPair h2) {
 }
 
 void EmuAlu::SBC(Rgstr a, MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("SBC");
 }
 
 void EmuAlu::SBC(Rgstr a, std::uint8_t nextByte) {
-    unimplemented();
+    unimplemented("SBC");
 }
 
 void EmuAlu::SBC(Rgstr a, Rgstr b) {
-    unimplemented();
+    unimplemented("SBC");
 }
 
 void EmuAlu::SCF() {
@@ -1098,23 +1098,23 @@ void EmuAlu::SET(std::uint8_t i, MemoryAddress memoryAddress) {
 }
 
 void EmuAlu::SLA(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("SLA");
 }
 
 void EmuAlu::SLA(Rgstr r) {
-    unimplemented();
+    unimplemented("SLA");
 }
 
 void EmuAlu::SRA(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("SRA");
 }
 
 void EmuAlu::SRA(Rgstr r) {
-    unimplemented();
+    unimplemented("SRA");
 }
 
 void EmuAlu::SRL(MemoryAddress memoryAddress) {
-    unimplemented();
+    unimplemented("SRL");
 }
 
 /**
@@ -1129,17 +1129,36 @@ void EmuAlu::SRL(Rgstr m) {
     registers->setRegister(m, val >> 1);
 }
 
+/*
+ * For SUB instructions
+ * S is set if result is negative; reset otherwise
+Z is set if result is zero; reset otherwise
+H is set if borrow from bit 4; reset otherwise
+P/V is set if overflow; reset otherwise
+N is set
+C is set if borrow; reset otherwise
+*/
 void EmuAlu::SUB(Rgstr reg) {
-    std::int8_t result = registers->getA() -registers->getRegisterValue(reg);
-    registers->setA(result);
+    SUB(registers->getRegisterValue(reg));
 }
 
+// TODO: flags incomplete
 void EmuAlu::SUB(std::uint8_t n) {
-    unimplemented();
+    std::int8_t result = registers->getA() - n;
+    registers->setA(result);
+    
+    registers->setSignFlag(result < 0);
+    registers->setZeroFlag(result == 0);
+
+    registers->setHFlag(true);
+
+    registers->setNFlag(true);
+    registers->setCFlag(false);
+    // P/V
 }
 
 void EmuAlu::SUB(MemoryAddress memoryAddress) {
-    unimplemented();
+    SUB(memory->read(getMemoryAddress(memoryAddress)));
 }
 
 void EmuAlu::XOR(Rgstr val) {
@@ -1215,8 +1234,8 @@ std::uint8_t EmuAlu::readIO(std::uint16_t address) {
     return io->read(address);
 }
 
-void EmuAlu::unimplemented() {
-    std::cout << "Unimplemented!!!!!!!!!!!!!" << std::endl;
+void EmuAlu::unimplemented(std::string opcode) {
+    std::cout << "Unimplemented - " << opcode << std::endl;
 //     throw  UnimplementedInstructionException();
 }
 

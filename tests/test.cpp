@@ -9,6 +9,7 @@
 #include "Z80/Register.hpp"
 #include "Z80/RegisterPair.hpp"
 #include "tests/test_computer.h"
+#include "Z80/utils.h"
 
 std::unique_ptr<TestComputer> setupComputer() {
     std::unique_ptr<TestComputer> proc(new TestComputer());
@@ -584,7 +585,7 @@ TEST_CASE("LD_nn_ATest") {
 * 48H .
 */
 
-TEST_CASE("LD_nn_HLTest") {
+TEST_CASE("LD (nn) HL") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0x22);
     comp->getMemory()->write(0x1 , 0x29);
@@ -624,7 +625,7 @@ TEST_CASE("LDA (BC)") {
 }
 
 
-TEST_CASE("LDA_DE_Test") {
+TEST_CASE("LD A (DE)") {
     /*
      * If the DE register pair contains the number 30A2H and memory address
      * 30A2H contains int 22H , then the instruction LD A , (DE) results in
@@ -646,7 +647,7 @@ TEST_CASE("LDA_DE_Test") {
 }
 
 
-TEST_CASE("LDA_nn_Test") {
+TEST_CASE("LD A (nn)") {
     /*
      * If the contents of nn is number 8832H , and the content of memory
      * address 8832H is byte 04H , at instruction LD A , (nn) byte 04H is in
@@ -785,7 +786,7 @@ TEST_CASE("LDHL_nn_Test") {
      * The contents of the Accumulator are loaded to the Interrupt Control
      * Vector Register, I.
      */
-TEST_CASE("LDIATest") {
+TEST_CASE("LD I A") {
     
 
     std::unique_ptr<TestComputer> comp = setupComputer();
@@ -798,7 +799,7 @@ TEST_CASE("LDIATest") {
     comp->getProcessor()->process();
 
     REQUIRE( comp->getProcessor()->getRegisters()->getI() == 0xf9);
-    REQUIRE( comp->getProcessor()->getRegisters()->getF() == BOOST_BINARY(10000000));
+    REQUIRE( comp->getProcessor()->getRegisters()->getF() == 0x0);
 }
 
 TEST_CASE("LDRATest") {
@@ -1659,12 +1660,13 @@ TEST_CASE("DECrTest") {
     REQUIRE(comp->getProcessor()->getRegisters()->getL() == 0xFE);
 }
 
-TEST_CASE("DEC_HL_Test") {
+TEST_CASE("DEC (HL)") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0, 0x35);
     comp->getMemory()->write(0xffed, 0xff);
     comp->getProcessor()->getRegisters()->setHL(0xffed);
     comp->getProcessor()->process();
+    std::cout << utils::int_to_hex(comp->getMemory()->read(0xffed)) << std::endl;
     REQUIRE(comp->getMemory()->read(0xffed) == 0xFE);
 }
 
@@ -1763,7 +1765,7 @@ TEST_CASE("INa_n_Test") {
  * address 07H . After execution of IN D, (C) register D contains 7BH.
  */
 
-TEST_CASE("INr_C_Test") {
+TEST_CASE("IN r (C)") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getIO()->write(0x7, 0x7b);
     comp->getMemory()->write(0x0, 0xED);
@@ -1790,7 +1792,7 @@ DC contains 0000H
 (1113H) contains 36H (2224H) contains 36H
 (1112H) contains 88H (2223H) contains 88H
 */
-TEST_CASE("LDDRTest") {
+TEST_CASE("LDDR") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0xB8);
@@ -1828,7 +1830,7 @@ HL contains 1110H
 DE contains 2221H
 (2222H) contains 88H
 BC contains 6H*/
-TEST_CASE("LDDTest") {
+TEST_CASE("LDD") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0xA8);
@@ -2200,7 +2202,7 @@ TEST_CASE("SRATest") {
  * at execution of SRL B the contents of register B and the Carry flag are
  * 0b010001111
  */
-TEST_CASE("SRLTest") {
+TEST_CASE("SRL") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xCB);
     comp->getMemory()->write(0x1, BOOST_BINARY(111000));
@@ -2215,11 +2217,45 @@ TEST_CASE("SRLTest") {
  * If the Accumulator contents are 29H, and register D contains 11H, at
  * execution of SUB D the Accumulator contains 18H.
  */
-TEST_CASE("SUBTest") {
+TEST_CASE("SUB r") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, BOOST_BINARY(10010010));
     comp->getProcessor()->getRegisters()->setA(0x29);
     comp->getProcessor()->getRegisters()->setD(0x11);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+}
+
+TEST_CASE("SUB (HL)") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0x96);
+    comp->getMemory()->write(0xFFED, 0x11);
+    comp->getProcessor()->getRegisters()->setA(0x29);
+    comp->getProcessor()->getRegisters()->setHL(0xFFED);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+}
+
+TEST_CASE("SUB (IX+d)") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xDD);
+    comp->getMemory()->write(0x1, 0x96);
+    comp->getMemory()->write(0x2, 0x3);
+    comp->getMemory()->write(0xFFED, 0x11);
+    comp->getProcessor()->getRegisters()->setA(0x29);
+    comp->getProcessor()->getRegisters()->setIX(0xFFEA);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+}
+
+TEST_CASE("SUB (IY+d)") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xFD);
+    comp->getMemory()->write(0x1, 0x96);
+    comp->getMemory()->write(0x2, 0x3);
+    comp->getMemory()->write(0xFFED, 0x11);
+    comp->getProcessor()->getRegisters()->setA(0x29);
+    comp->getProcessor()->getRegisters()->setIY(0xFFEA);
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
 }
@@ -2230,7 +2266,7 @@ contents of the HL register pair are 1000H, and byte 7BH is available at the
 peripheral device mapped to I/O port address 07H. At execution of IND
 memory location 1000H contains 7BH, the HL register pair contains
 0FFFH, and register B contains 0FH.*/
-TEST_CASE("INDTest") {
+TEST_CASE("IND") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0xAA);
@@ -2257,7 +2293,7 @@ contains zero, and memory locations contain the following:
 0FFFH contains A9H
 1000H contains 51H
 */
-TEST_CASE("INDRTest") {
+TEST_CASE("INDR") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0xBA);
@@ -2290,7 +2326,7 @@ contains zero, and memory locations contain the following:
 1000H contains 51H
 1001H contains A9H
 1002H contains 03H*/
-TEST_CASE("INIRTest") {
+TEST_CASE("INIR") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0xB2);
@@ -2315,7 +2351,7 @@ contents of the HL register pair are 1000H, and byte 7BH is available at the
 peripheral device mapped to I /O port address 07H. At execution of INI
 memory location 1000H contains 7BH, the HL register pair contains
 1001H, and register B contains 0FH.*/
-TEST_CASE("INITest") {
+TEST_CASE("INI") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0xA2);
@@ -2347,7 +2383,7 @@ correct BCD representation is obtained:
 1100 + 0110 = 0010
  = 42
  */
-TEST_CASE("DAATest") {
+TEST_CASE("DAA") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0x27);
     REQUIRE(true == false);

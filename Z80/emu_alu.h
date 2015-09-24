@@ -259,7 +259,7 @@ protected:
     std::uint8_t readIO(std::uint16_t address);
     void writeIO(std::uint16_t address, std::uint8_t value);
 
-    void unimplemented();
+    void unimplemented(std::string);
 
     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
 

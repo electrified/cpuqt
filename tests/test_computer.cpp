@@ -1,10 +1,10 @@
 #include "test_computer.h"
 #include "computer/consolebadgerio.h"
-
+#include "Z80/TestIO.h"
 TestComputer::TestComputer()
 {
-//     io = new TestIO();
-    io = new ConsoleBadgerIO();
+//      io = new TestIO();
+   io = new ConsoleBadgerIO();
     memory = new BadgerMemory();
     registers = new Registers();
     alu = new EmuAlu(memory, io, registers);
