@@ -6,7 +6,6 @@
 Processor::Processor(Memory* memory, IO* io) :
 io(io), memory(memory)
 {
-    //, Alu* alu, Registers* rgstrs
     std::cout << "Processor ctor" << std::endl;
     decoder = new Decoder();
     registers = new Registers();
