@@ -761,7 +761,7 @@ TEST_CASE("LDddnnTest") {
 
 
 
-TEST_CASE("LDHL_nn_Test") {
+TEST_CASE("LD HL (nn)") {
     /*
      * If address 2045H contains 37H , and address 2046H contains A1H , at
      * instruction LD HL , (2045H) the HL register pair contains A137H .

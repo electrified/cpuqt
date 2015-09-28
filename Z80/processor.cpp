@@ -216,7 +216,7 @@ void Processor::decode() {
     currentInstruction[1] = next();
     currentInstruction[2] = next();
     logger.debug("LD HL,(nn) - 2a n n ");
-    LD(RegisterPair::HL, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
+    LD_indirect(RegisterPair::HL, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
     case 0x2B:
     logger.debug("DEC HL - 2b ");

@@ -9,9 +9,9 @@
 
 class Registers {
     Logger logger;
-    std::uint8_t A, B, C, D, E, F, H, L, I, R = 0;
-    std::uint16_t IX, IY, SP = 0;
-    std::uint8_t A_alt, B_alt, C_alt, D_alt, E_alt, F_alt, H_alt, L_alt = 0;
+    std::uint8_t A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, H = 0, L = 0, I = 0, R = 0;
+    std::uint16_t IX = 0, IY = 0, SP = 0;
+    std::uint8_t A_alt = 0, B_alt = 0, C_alt = 0, D_alt = 0, E_alt = 0, F_alt = 0, H_alt = 0, L_alt = 0;
     //interrupt enable flip flops
     bool IFF1 = false;
     bool IFF2 = false;
