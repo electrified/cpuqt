@@ -10,8 +10,8 @@ class TestComputer
 {
     IO* io;
     BadgerMemory* memory;
-    Registers* registers;
-    EmuAlu* alu;
+//     Registers* registers;
+//     EmuAlu* alu;
     Processor* processor;
 public:
     TestComputer();
