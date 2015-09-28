@@ -8,11 +8,11 @@ cpm_io::cpm_io() {
  * 9 (output $-terminated string to screen).
  */
 void cpm_io::in(Rgstr rgstr, const MemoryAddress& i, Registers* registers, Memory* memory) {
-    if (registers->getC() == 2) {
+    if (registers->C == 2) {
         // rewrite as code, CP/M BIOS routine
-        emit consoleTextOutput(registers->getE());
+        emit consoleTextOutput(registers->E);
     }
-    else if (registers->getC() == 9) {
+    else if (registers->C == 9) {
         int i; //, c;
 
         // rewrite as code, CP/M BIOS routine

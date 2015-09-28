@@ -159,7 +159,7 @@ void MainWindow::stop()
     l.debug("Stopping!");
     timer.stop();
     update_register_values();
-    emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+    emit programCounterUpdated(computer->processor->getRegisters()->PC);
 }
 
 void MainWindow::update()
@@ -177,24 +177,24 @@ void MainWindow::quit() {
 }
 
 void MainWindow::update_register_values() {
-    this->ui->pc_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getPC()));
-    this->ui->sp_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getSP()));
-    this->ui->ix_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIX()));
-    this->ui->iy_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIY()));
+    this->ui->pc_value->setText(utils::int_to_hex(computer->processor->getRegisters()->PC));
+    this->ui->sp_value->setText(utils::int_to_hex(computer->processor->getRegisters()->SP));
+    this->ui->ix_value->setText(utils::int_to_hex(computer->processor->getRegisters()->IX));
+    this->ui->iy_value->setText(utils::int_to_hex(computer->processor->getRegisters()->IY));
     this->ui->hl_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getHL()));
-    this->ui->a_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getA()));
-    this->ui->b_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getB()));
-    this->ui->c_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getC()));
-    this->ui->d_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getD()));
-    this->ui->e_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getE()));
-    this->ui->f_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getF()));
+    this->ui->a_value->setText(utils::int_to_hex(computer->processor->getRegisters()->A));
+    this->ui->b_value->setText(utils::int_to_hex(computer->processor->getRegisters()->B));
+    this->ui->c_value->setText(utils::int_to_hex(computer->processor->getRegisters()->C));
+    this->ui->d_value->setText(utils::int_to_hex(computer->processor->getRegisters()->D));
+    this->ui->e_value->setText(utils::int_to_hex(computer->processor->getRegisters()->E));
+    this->ui->f_value->setText(utils::int_to_hex(computer->processor->getRegisters()->F));
 }
 
 void MainWindow::step()
 {
     computer->step();
     update_register_values();
-    emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+    emit programCounterUpdated(computer->processor->getRegisters()->PC);
 }
 
 void MainWindow::reset()
@@ -221,9 +221,9 @@ void MainWindow::moveDebuggerToPC(std::uint16_t address) {
 }
 
 void MainWindow::setPC(std::uint16_t address) {
-    computer->processor->getRegisters()->setPC(address);
+    computer->processor->getRegisters()->PC = address;
     update_register_values();
-    emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+    emit programCounterUpdated(computer->processor->getRegisters()->PC);
 }
 
 void MainWindow::haltOnBreakpoint() {

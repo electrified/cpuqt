@@ -20,10 +20,16 @@ class Processor
     Alu* alu;
     Registers* registers;
     Decoder* decoder;
+    
+    static inline std::uint8_t next(Memory* memory, std::uint16_t& pc) {
+        return memory->read(pc++);
+    }
 public:
     Processor(Memory* memory, IO* io);
     ~Processor();
 
+    //Memory& memory, Alu& alu, 
+    void decode(std::uint16_t& pc);
     void process();
     void process(std::uint8_t count);
     Memory* getMemory();
