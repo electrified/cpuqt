@@ -1996,7 +1996,7 @@ void Processor::decode() {
     currentInstruction[2] = next();
     currentInstruction[3] = next();
     logger.debug("LD IX,(nn) - dd 2a n n ");
-    LD(RegisterPair::IX, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
+    LD_indirect(RegisterPair::IX, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
     case 0x2B:
     logger.debug("DEC IX - dd 2b ");
@@ -2409,7 +2409,7 @@ void Processor::decode() {
     currentInstruction[2] = next();
     currentInstruction[3] = next();
     logger.debug("LD BC,(nn) - ed 4b n n ");
-    LD(RegisterPair::BC, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
+    LD_indirect(RegisterPair::BC, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
     case 0x4D:
     logger.debug("RETI - ed 4d ");
@@ -2461,7 +2461,7 @@ void Processor::decode() {
     currentInstruction[2] = next();
     currentInstruction[3] = next();
     logger.debug("LD DE,(nn) - ed 5b n n ");
-    LD(RegisterPair::DE, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
+    LD_indirect(RegisterPair::DE, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
     case 0x5E:
     logger.debug("IM 2 - ed 5e ");
@@ -2509,7 +2509,7 @@ void Processor::decode() {
     currentInstruction[2] = next();
     currentInstruction[3] = next();
     logger.debug("LD HL,(nn) - ed 6b n n ");
-    LD(RegisterPair::HL, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
+    LD_indirect(RegisterPair::HL, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
     case 0x6F:
     logger.debug("RLD - ed 6f ");
@@ -2541,7 +2541,7 @@ void Processor::decode() {
     currentInstruction[2] = next();
     currentInstruction[3] = next();
     logger.debug("LD SP,(nn) - ed 7b n n ");
-    LD(RegisterPair::SP, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
+    LD_indirect(RegisterPair::SP, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
     case 0xA0:
     logger.debug("LDI - ed a0 ");
@@ -2715,7 +2715,7 @@ void Processor::decode() {
     currentInstruction[2] = next();
     currentInstruction[3] = next();
     logger.debug("LD IY,(nn) - fd 2a n n ");
-    LD(RegisterPair::IY, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
+    LD_indirect(RegisterPair::IY, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
     break;
     case 0x2B:
     logger.debug("DEC IY - fd 2b ");
