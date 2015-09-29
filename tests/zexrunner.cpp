@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     boost::timer::auto_cpu_timer t;
 //     while(true) {
      for (std::uint64_t i = 0; i < 100000000; i++) {
-        ++i;
+//         ++i;
         if (i % 10000000 == 0) {
             std::cout << i << std::endl;
         }
