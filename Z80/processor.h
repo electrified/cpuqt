@@ -18,11 +18,9 @@ class Processor
     Logger logger;
     Memory* memory;
     IO* io;
-//     Alu* alu;
     Registers* registers;
-//     Decoder* decoder;
-    
-    std::uint8_t next() {
+
+    inline std::uint8_t next() {
         return memory->read(registers->PC++);
     }
     
@@ -41,7 +39,7 @@ class Processor
     std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
         return registers->getRegisterPairValue(rgstrPair) + offset;
     }
- void ADC(const RegisterPair hl, const RegisterPair bc);
+    void ADC(const RegisterPair hl, const RegisterPair bc);
 
     void ADC(const Rgstr a, const Rgstr b);
 

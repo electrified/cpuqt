@@ -353,28 +353,28 @@ std::uint16_t Registers::getRegisterPairValue(RegisterPair rgstr) {
 std::uint8_t Registers::getRegisterValue(Rgstr rgstr) {
 //		logger.debug("Getting value for rgstr " + rgstr);
     switch (rgstr) {
-        case Rgstr::A:
-        return getA();
+    case Rgstr::A:
+        return A;
     case Rgstr::B:
-        return getB();
+        return B;
     case Rgstr::C:
-        return getC();
+        return C;
     case Rgstr::D:
-        return getD();
+        return D;
     case Rgstr::E:
-        return getE();
+        return E;
     case Rgstr::H:
-        return getH();
+        return H;
     case Rgstr::L:
-        return getL();
+        return L;
     case Rgstr::IXL:
         return getIXL();
     case Rgstr::IXH:
         return getIXH();
     case Rgstr::R:
-        return getR();
+        return R;
     case Rgstr::I:
-        return getI();
+        return I;
     default:
 //         logger.debug("Unknnown rgstr " + rgstr);
         throw UnknownRegisterPairException();

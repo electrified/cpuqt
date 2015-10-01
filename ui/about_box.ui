@@ -73,7 +73,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Z80 Emulator &amp;copy; 2015 Badgersoft &lt;/p&gt;&lt;p&gt;AKA Crumpy Computing &lt;/p&gt;&lt;p&gt;AKA Cheese Dream Technologies&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Z80 Emulator v0&lt;/p&gt;&lt;p&gt;Powered by MegaBlaze Technology&lt;/p&gt;&lt;p&gt;© 2015 Badgersoft &lt;/p&gt;&lt;p&gt;AKA Crumpy Computing &lt;/p&gt;&lt;p&gt;AKA Cheese Dream Technologies&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
