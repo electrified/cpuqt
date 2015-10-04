@@ -13,7 +13,7 @@
 Processor::Processor(Memory* memory, IO* io) :
 io(io), memory(memory)
 {
-    std::cout << "Processor ctor" << std::endl;
+//     std::cout << "Processor ctor" << std::endl;
     registers = new Registers();
 }
 
@@ -4327,24 +4327,6 @@ void Processor::writeIO(std::uint16_t address, std::uint8_t value) {
 //    //logger.debug("Writing IO: addr:" + address + " val:" + value);
     io->write(address, value);
 }
-
-// std::uint16_t Processor::getMemoryAddress(std::uint16_t memoryAddress) {
-//     std::uint16_t address = 0;
-//     if (memoryAddress.getRegister() != Rgstr::unknown) {
-//         address = registers->getRegisterValue(memoryAddress.getRegister());
-//         if (memoryAddress.getOffset() > 0) {
-//             address += memoryAddress.getOffset();
-//         }
-//     } else if (memoryAddress.getRegisterPair() != RegisterPair::unknown) {
-//         address = registers->getRegisterPairValue(memoryAddress.getRegisterPair());
-//         if (memoryAddress.getOffset() > 0) {
-//             address += memoryAddress.getOffset();
-//         }
-//     } else if (memoryAddress.getMemoryAddress() > 0) {
-//         address = memoryAddress.getMemoryAddress();
-//     }
-//     return address;
-// }
 
 void Processor::setFlags(std::uint8_t value) {
     /*- S is set if I-Rgstr is negative; reset otherwise

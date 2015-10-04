@@ -301,9 +301,8 @@ TEST_CASE("EX_SP_HLTest") {
 }
 
 
-TEST_CASE("EX_SP_IXTest") {
+TEST_CASE("EX (SP) IX") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-//    comp->getProcessor()->getRegisters()->setMemory(new int[64 * 1024]);
     comp->getMemory()->write(0x0, 0xDD);
     comp->getMemory()->write(0x1, 0xE3);
     comp->getMemory()->write(0x100, 0x90);
@@ -319,9 +318,8 @@ TEST_CASE("EX_SP_IXTest") {
 }
 
 
-TEST_CASE("EX_SP_IYTest") {
+TEST_CASE("EX (SP) IY") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-//    comp->getProcessor()->getRegisters()->setMemory(new int[64 * 1024]);
     comp->getMemory()->write(0x0, 0xFD);
     comp->getMemory()->write(0x1, 0xE3);
     comp->getMemory()->write(0x100, 0x90);
@@ -802,19 +800,16 @@ TEST_CASE("LD I A") {
     REQUIRE( comp->getProcessor()->getRegisters()->getF() == 0x0);
 }
 
-TEST_CASE("LDRATest") {
-    /*
-     * The contents of the Accumulator are loaded to the Memory Refresh
-     * register R.
-     */
-
+/*
+* The contents of the Accumulator are loaded to the Memory Refresh
+* register R.
+*/
+TEST_CASE("LD R A") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0x4F);
     comp->getProcessor()->getRegisters()->setA(0xf9);
-
     REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0x0);
-
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0xf9);
 //		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
@@ -848,7 +843,6 @@ TEST_CASE("LDrn_Test") {
     REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0xA5);
 }
 
-
 TEST_CASE("LDRR_altTest") {
     /*
      * The contents of the Accumulator are loaded to the Memory Refresh
@@ -868,8 +862,7 @@ TEST_CASE("LDRR_altTest") {
     REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0xf9);
 }
 
-
-TEST_CASE("LDSP_HL_Test") {
+TEST_CASE("LD SP (HL)") {
     /*
      * The contents of the Accumulator are loaded to the Memory Refresh
      * register R.

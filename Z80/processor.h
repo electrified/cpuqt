@@ -273,16 +273,12 @@ protected:
 
     void unimplemented(std::string);
 
-//     std::uint16_t getMemoryAddress(MemoryAddress memoryAddress);
-
     void decrementSP();
 
     void setFlags(std::uint8_t value);
 public:
     Processor(Memory* memory, IO* io);
     ~Processor();
-
-    //Memory& memory, Alu& alu, 
     void decode();
     void process();
     void process(std::uint8_t count);
