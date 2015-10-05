@@ -18,7 +18,6 @@ public:
     ~TestComputer();
     BadgerMemory* getMemory();
     IO* getIO();
-    void setIO(IO* io);
     Processor* getProcessor();
 };
 

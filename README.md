@@ -24,3 +24,13 @@ perf record build/zexrunner
 Version number in about box
 http://stackoverflow.com/questions/1704907/how-can-i-get-my-c-code-to-automatically-print-out-its-git-version-hash
 http://xit0.org/2013/04/cmake-use-git-branch-and-commit-details-in-project/
+
+export CC=/usr/bin/clang
+export CXX=/usr/bin/clang++
+export CCC_CC=clang
+export CCC_CXX=clang++
+scan-build cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang ..
+scan-build make
+
+
+cppcheck --enable=all -ibuild -iclang-build -itests/test.cpp . 2> cppcheck.txt

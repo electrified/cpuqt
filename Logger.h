@@ -15,8 +15,8 @@ class Logger
 public:
     Logger();
     ~Logger();
-    void debug(const std::string toLog);
-    void info(const std::string toLog);
+    void debug(const std::string& toLog);
+    void info(const std::string& toLog);
 };
 
 #endif // LOGGER_H
