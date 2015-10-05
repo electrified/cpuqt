@@ -1,7 +1,7 @@
 #include <fstream>
 #include <boost/format.hpp>
 
-#include "tools/GetData.hpp"
+#include "GetData.hpp"
 
 GetData::GetData(uint8_t level)
 {

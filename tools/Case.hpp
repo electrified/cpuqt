@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tools/FinalNode.hpp>
+#include <FinalNode.hpp>
 #include <cstdint>
 
 class Case : public FinalNode {

@@ -1,7 +1,7 @@
 #include <fstream>
 
-#include "tools/Switch.hpp"
-#include "tools/Case.hpp"
+#include "Switch.hpp"
+#include "Case.hpp"
 
 Switch::Switch() {
     this->level = -1;

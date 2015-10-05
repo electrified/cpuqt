@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.0.2)
 set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
+endif()
+
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
@@ -56,15 +60,6 @@ qt5_add_resources(APP_RESOURCES ui/resources/app.qrc)
 include_directories (${PROJECT_SOURCE_DIR})
 include_directories (${PROJECT_BINARY_DIR})
 
-set(tools_SRC
-tools/FinalNode.cpp tools/FinalNode.hpp
-tools/GetData.cpp tools/GetData.hpp
-tools/Switch.cpp tools/Switch.hpp
-tools/Instruction.cpp tools/Instruction.hpp
-tools/InstructionTableToCode.cpp tools/InstructionTableToCode.hpp
-tools/Case.cpp tools/Case.hpp
-)
-
 set(Z80_SRC
     Z80/Condition.hpp Z80/Condition.cpp
     Z80/disassembler.cpp Z80/disassembler.h
@@ -112,8 +107,6 @@ tests/test_computer.h tests/test_computer.cpp
 
 add_executable(cpuqt2 ${GuiBin_src} ${APP_RESOURCES})
 
-add_executable(tool ${tools_SRC})
-
 add_executable(tooltests ${tooltests_SRC})
 
 add_executable(zexrunner ${zexrunner_SRC})
@@ -127,17 +120,12 @@ set_property(TARGET Z80 PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
-set_property(TARGET tool PROPERTY CXX_STANDARD 11)
-set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
-
 set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 
 set_property(TARGET zexrunner PROPERTY CXX_STANDARD 11)
 set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
 
-
-target_link_libraries(tool ${Boost_LIBRARIES} Z80)
 target_link_libraries(cpuqt2 GuiLib Z80)
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
 target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80)
@@ -188,7 +176,6 @@ endif()
 file(COPY z80sean.txt DESTINATION .)
 
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)
-install(TARGETS tool RUNTIME DESTINATION bin)
 install(TARGETS tooltests RUNTIME DESTINATION bin)
 #install(TARGETS Z80 RUNTIME DESTINATION bin)
 

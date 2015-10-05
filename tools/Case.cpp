@@ -1,8 +1,8 @@
 #include <fstream>
 #include <boost/format.hpp>
 
-#include "tools/Case.hpp"
-#include "tools/GetData.hpp"
+#include "Case.hpp"
+#include "GetData.hpp"
 
 Case::Case()
 {

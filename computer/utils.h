@@ -18,7 +18,7 @@ std::vector<char> ReadAllBytes(char const* filename)
 }
 
 void loadIntoMemory(std::vector<char> data, Memory* memory, std::uint16_t offset) {
-    for (int i = 0; i < data.size(); ++i) {
+    for (std::uint16_t i = 0; i < data.size(); ++i) {
         memory->write(i + offset, data.at(i));
     }
 }
@@ -29,7 +29,7 @@ std::ifstream testFile(filename,  std::ios::binary);
 std::vector<char> fileContents((std::istreambuf_iterator<char>(testFile)),
                                std::istreambuf_iterator<char>());
 
-    for (int i = 0; i < fileContents.size(); ++i) {
+    for (std::uint16_t i = 0; i < fileContents.size(); ++i) {
         memory->write(i + offset, fileContents.at(i));
     }
 }

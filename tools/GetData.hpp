@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-#include "tools/FinalNode.hpp"
+#include "FinalNode.hpp"
 
 class GetData : public FinalNode
 {

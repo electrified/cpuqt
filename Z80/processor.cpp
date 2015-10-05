@@ -11,7 +11,7 @@
 #include "tables.h"
 
 Processor::Processor(Memory* memory, IO* io) :
-io(io), memory(memory)
+memory(memory), io(io)
 {
 //     std::cout << "Processor ctor" << std::endl;
     registers = new Registers();

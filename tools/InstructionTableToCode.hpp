@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tools/Switch.hpp"
-#include "tools/Instruction.hpp"
+#include "Switch.hpp"
+#include "Instruction.hpp"
 
 class InstructionTableToCode
 {

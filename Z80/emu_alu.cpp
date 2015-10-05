@@ -10,7 +10,7 @@
 #include "tables.h"
 
 EmuAlu::EmuAlu(Memory* memory, IO* io, Registers* registers) :
-    io(io), memory(memory), registers(registers)
+    memory(memory), io(io), registers(registers)
 {
     std::cout << "EmuAlu ctor" << std::endl;
 }

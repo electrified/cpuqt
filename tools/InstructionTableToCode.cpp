@@ -1,7 +1,7 @@
-#include "tools/InstructionTableToCode.hpp"
+#include "InstructionTableToCode.hpp"
 
-#include "tools/Case.hpp"
-#include "tools/GetData.hpp"
+#include "Case.hpp"
+#include "GetData.hpp"
 
 #include <string>
 #include <fstream>
