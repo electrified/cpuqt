@@ -312,7 +312,7 @@ void EmuAlu::DEC(MemoryAddress memoryAddress) {
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
+    registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
 
     registers->setNFlag(false);
 }
@@ -330,7 +330,7 @@ void EmuAlu::DEC(Rgstr rgstr) {
     //carry for add
     //registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0));
 
-    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
+    registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
 
     registers->setNFlag(false);
 }
@@ -1066,7 +1066,7 @@ void EmuAlu::SBC(RegisterPair h1, RegisterPair h2) {
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
+    registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
 
     registers->setNFlag(true);
 }
@@ -1084,7 +1084,7 @@ void EmuAlu::SBC(Rgstr a, std::uint8_t nextByte) {
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-    registers->setHFlag(((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0) !=0);
+    registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
 
     registers->setNFlag(true);
     

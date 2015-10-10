@@ -6,11 +6,28 @@
 #include "Z80/RegisterPair.hpp"
 #include <boost/utility/binary.hpp>
 #include "Logger.h"
+#include <bitset>
 
 union WideReg {
     std::uint16_t all;
-    std::uint8_t byte[2];
+    struct {
+        std::uint8_t low;
+        std::uint8_t high;
+    } bytes;
+    bool bit[16];
 };
+
+// union AFReg {
+//     std::uint16_t all;
+//     struct {
+//         std::uint8_t low;
+//         std::uint8_t high;
+//     };
+//     struct {
+//         std::uint8_t a;
+//         std::bitset<8> f;
+//     };
+// };
 
 class Registers {
     Logger logger;

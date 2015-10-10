@@ -8,6 +8,7 @@ Registers::Registers()
     IR.all = 0;
     
     AF.all = 0;
+    AF.all = 0;
     BC.all = 0;
     DE.all = 0;
     HL.all = 0;
@@ -27,11 +28,11 @@ void Registers::setPC(std::uint16_t pc) {
 }
 
 std::uint8_t Registers::getA() {
-    return AF.byte[1];
+    return AF.bytes.high;
 }
 
 void Registers::setA(std::uint8_t a) {
-    AF.byte[1] = a;
+    AF.bytes.high = a;
 }
 
 std::uint16_t Registers::getAF() {
@@ -51,19 +52,19 @@ void Registers::setAF_alt(std::uint16_t value) {
 }
 
 std::uint8_t Registers::getA_alt() {
-    return AF_alt.byte[1];
+    return AF_alt.bytes.high;
 }
 
 void Registers::setA_alt(std::uint8_t a_alt) {
-    AF_alt.byte[1] = a_alt;
+    AF_alt.bytes.high = a_alt;
 }
 
 std::uint8_t Registers::getB() {
-    return BC.byte[1];
+    return BC.bytes.high;
 }
 
 void Registers::setB(std::uint8_t b) {
-    BC.byte[1] = b;
+    BC.bytes.high = b;
 }
 
 std::uint16_t Registers::getBC() {
@@ -83,19 +84,19 @@ void Registers::setBC_alt(std::uint16_t value) {
 }
 
 std::uint8_t Registers::getB_alt() {
-    return BC_alt.byte[1];
+    return BC_alt.bytes.high;
 }
 
 void Registers::setB_alt(std::uint8_t b_alt) {
-    BC_alt.byte[1] = b_alt;
+    BC_alt.bytes.high = b_alt;
 }
 
 std::uint8_t Registers::getC() {
-    return BC.byte[0];
+    return BC.bytes.low;
 }
 
 void Registers::setC(std::uint8_t c) {
-    BC.byte[0] = c;
+    BC.bytes.low = c;
 }
 
 bool Registers::getCFlag() {
@@ -104,26 +105,26 @@ bool Registers::getCFlag() {
 
 void Registers::setCFlag(bool flag) {
     if (flag) {
-        AF.byte[0] |= BOOST_BINARY(1);
+        AF.bytes.low |= BOOST_BINARY(1);
     } else {
-        AF.byte[0] &= ~BOOST_BINARY(1);
+        AF.bytes.low &= ~BOOST_BINARY(1);
     }
 }
 
 std::uint8_t Registers::getC_alt() {
-    return BC_alt.byte[0];
+    return BC_alt.bytes.low;
 }
 
 void Registers::setC_alt(std::uint8_t c_alt) {
-    BC_alt.byte[0] = c_alt;
+    BC_alt.bytes.low = c_alt;
 }
 
 std::uint8_t Registers::getD() {
-    return DE.byte[1];
+    return DE.bytes.high;
 }
 
 void Registers::setD(std::uint8_t d) {
-    this->DE.byte[1] = d;
+    this->DE.bytes.high = d;
 }
 
 std::uint16_t Registers::getDE() {
@@ -143,50 +144,50 @@ void Registers::setDE_alt(std::uint16_t value) {
 }
 
 std::uint8_t Registers::getD_alt() {
-    return DE_alt.byte[1];
+    return DE_alt.bytes.high;
 }
 
 void Registers::setD_alt(std::uint8_t d_alt) {
-    DE_alt.byte[1] = d_alt;
+    DE_alt.bytes.high = d_alt;
 }
 
 std::uint8_t Registers::getE() {
-    return DE.byte[0];
+    return DE.bytes.low;
 }
 
 void Registers::setE(std::uint8_t e) {
-    DE.byte[0] = e;
+    DE.bytes.low = e;
 }
 
 std::uint8_t Registers::getE_alt() {
-    return DE_alt.byte[0];
+    return DE_alt.bytes.low;
 }
 
 void Registers::setE_alt(std::uint8_t e_alt) {
-    DE_alt.byte[0] = e_alt;
+    DE_alt.bytes.low = e_alt;
 }
 
 std::uint8_t Registers::getF() {
-    return AF.byte[0];
+    return AF.bytes.low;
 }
 
 void Registers::setF(std::uint8_t f) {
-    AF.byte[0] = f;
+    AF.bytes.low = f;
 }
 
 std::uint8_t Registers::getF_alt() {
-    return AF_alt.byte[0];
+    return AF_alt.bytes.low;
 }
 
 void Registers::setF_alt(std::uint8_t f_alt) {
-     AF_alt.byte[0] = f_alt;
+     AF_alt.bytes.low = f_alt;
 }
 
-std::uint8_t Registers::getH() {return HL.byte[1];}
-void Registers::setH(std::uint8_t h) {HL.byte[1] = h;}
+std::uint8_t Registers::getH() {return HL.bytes.high;}
+void Registers::setH(std::uint8_t h) {HL.bytes.high = h;}
 
-std::uint8_t Registers::getL() {return HL.byte[0];}
-void Registers::setL(std::uint8_t l) {HL.byte[0] = l;}
+std::uint8_t Registers::getL() {return HL.bytes.low;}
+void Registers::setL(std::uint8_t l) {HL.bytes.low = l;}
 
 std::uint16_t Registers::getHL() {
     return HL.all;
@@ -197,14 +198,14 @@ void Registers::setHL(std::uint16_t value) {
 }
 
 bool Registers::getHFlag() {
-    return (AF.byte[0] & BOOST_BINARY(100000)) == BOOST_BINARY(100000);
+    return (AF.bytes.low & BOOST_BINARY(100000)) == BOOST_BINARY(100000);
 }
 
 void Registers::setHFlag(bool flag) {
     if (flag) {
-        AF.byte[0] |= BOOST_BINARY(100000);
+        AF.bytes.low |= BOOST_BINARY(100000);
     } else {
-        AF.byte[0] &= ~BOOST_BINARY(100000);
+        AF.bytes.low &= ~BOOST_BINARY(100000);
     }
 }
 
@@ -217,19 +218,19 @@ void Registers::setHL_alt(std::uint16_t value) {
 }
 
 std::uint8_t Registers::getH_alt() {
-    return HL_alt.byte[1];
+    return HL_alt.bytes.high;
 }
 
 void Registers::setH_alt(std::uint8_t h_alt) {
-    HL_alt.byte[1] = h_alt;
+    HL_alt.bytes.high = h_alt;
 }
 
 std::uint8_t Registers::getI() {
-    return IR.byte[1];
+    return IR.bytes.high;
 }
 
 void Registers::setI(std::uint8_t i) {
-    IR.byte[1] = i;
+    IR.bytes.high = i;
 }
 
 void Registers::setIM(std::uint8_t im) {
@@ -249,11 +250,11 @@ void Registers::setIX(std::uint16_t ix) {
 }
 
 std::uint8_t Registers::getIXH() {
-    return IX.byte[1];
+    return IX.bytes.high;
 }
 
 std::uint8_t Registers::getIXL() {
-    return IX.byte[0];
+    return IX.bytes.low;
 }
 
 std::uint16_t Registers::getIY() {
@@ -265,51 +266,51 @@ void Registers::setIY(std::uint16_t iy) {
 }
 
 std::uint8_t Registers::getIYH() {
-    return IY.byte[1];
+    return IY.bytes.high;
 }
 
 std::uint8_t Registers::getIYL() {
-    return IY.byte[0];
+    return IY.bytes.low;
 }
 
 std::uint8_t Registers::getL_alt() {
-    return HL_alt.byte[0];
+    return HL_alt.bytes.low;
 }
 
 void Registers::setL_alt(std::uint8_t l_alt) {
-    HL_alt.byte[0] = l_alt;
+    HL_alt.bytes.low = l_alt;
 }
 
 bool Registers::getNFlag() {
-    return (AF.byte[0] & BOOST_BINARY(10000)) == BOOST_BINARY(10000);
+    return (AF.bytes.low & BOOST_BINARY(10000)) == BOOST_BINARY(10000);
 }
 
 void Registers::setNFlag(bool flag) {
     if (flag) {
-        AF.byte[0] |= BOOST_BINARY(10000);
+        AF.bytes.low |= BOOST_BINARY(10000);
     } else {
-        AF.byte[0] &= ~BOOST_BINARY(10000);
+        AF.bytes.low &= ~BOOST_BINARY(10000);
     }
 }
 
 bool Registers::getParityOverflowFlag() {
-    return (AF.byte[0] & BOOST_BINARY(100)) == BOOST_BINARY(100);
+    return (AF.bytes.low & BOOST_BINARY(100)) == BOOST_BINARY(100);
 }
 
 void Registers::setParityOverflowFlag(bool flag) {
     if (flag) {
-        AF.byte[0] |= BOOST_BINARY(100);
+        AF.bytes.low |= BOOST_BINARY(100);
     } else {
-        AF.byte[0] &= ~BOOST_BINARY(100);
+        AF.bytes.low &= ~BOOST_BINARY(100);
     }
 }
 
 std::uint8_t Registers::getR() {
-    return IR.byte[0];
+    return IR.bytes.low;
 }
 
 void Registers::setR(std::uint8_t r) {
-    IR.byte[0] = r;
+    IR.bytes.low = r;
 }
 
 std::uint16_t Registers::getRegisterPairValue(RegisterPair rgstr) {
@@ -381,26 +382,26 @@ void Registers::setSP(std::uint16_t sp) {
 }
 
 bool Registers::getSignFlag() {
-    return (AF.byte[0] & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000);
+    return (AF.bytes.low & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000);
 }
 
 void Registers::setSignFlag(bool flag) {
     if (flag) {
-        AF.byte[0] |= BOOST_BINARY(10000000);
+        AF.bytes.low |= BOOST_BINARY(10000000);
     } else {
-        AF.byte[0] &= ~BOOST_BINARY(10000000);
+        AF.bytes.low &= ~BOOST_BINARY(10000000);
     }
 }
 
 bool Registers::getZeroFlag() {
-    return (AF.byte[0] & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000);
+    return (AF.bytes.low & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000);
 }
 
 void Registers::setZeroFlag(bool flag) {
     if (flag) {
-        AF.byte[0] |= BOOST_BINARY(1000000);
+        AF.bytes.low |= BOOST_BINARY(1000000);
     } else {
-        AF.byte[0] &= ~BOOST_BINARY(1000000);
+        AF.bytes.low &= ~BOOST_BINARY(1000000);
     }
 }
 
@@ -506,8 +507,8 @@ void Registers::setRegisterPair(RegisterPair rgstr, std::uint8_t lowOrder, std::
         setL_alt(lowOrder);
         break;
     case RegisterPair::SP:
-        this->SP.byte[1] = highOrder;
-        this->SP.byte[0] = lowOrder;
+        this->SP.bytes.high = highOrder;
+        this->SP.bytes.low = lowOrder;
         break;
     case RegisterPair::AF:
         setA(highOrder);
@@ -518,12 +519,12 @@ void Registers::setRegisterPair(RegisterPair rgstr, std::uint8_t lowOrder, std::
         setF_alt(lowOrder);
         break;
     case RegisterPair::IX:
-        this->IX.byte[1] = highOrder;
-        this->IX.byte[0] = lowOrder;
+        this->IX.bytes.high = highOrder;
+        this->IX.bytes.low = lowOrder;
         break;
     case RegisterPair::IY:
-        this->IY.byte[1] = highOrder;
-        this->IY.byte[0] = lowOrder;
+        this->IY.bytes.high = highOrder;
+        this->IY.bytes.low = lowOrder;
         break;
     default:
         logger.debug("unknown rgstr pair");
