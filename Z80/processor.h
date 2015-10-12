@@ -37,7 +37,7 @@ class Processor
     }
 
     std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
-        return registers->getRegisterPairValue(rgstrPair) + offset;
+        return  (std::int16_t)registers->getRegisterPairValue(rgstrPair) + (std::int8_t)offset;
     }
     void ADC(const RegisterPair hl, const RegisterPair bc);
 
