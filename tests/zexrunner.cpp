@@ -9,8 +9,8 @@ int main(int argc, char** argv)
 {
     TestComputer* comp = new TestComputer();
     //load zexdoc and cpm output bodge
-    loadIntoMemory2(comp->getMemory(), 0x100, "/home/ed/dev/cpuqt2/bin_z80/zexdoc.bin");
-    loadIntoMemory2(comp->getMemory(), 0, "/home/ed/dev/cpuqt2/bin_z80/cpm_io.rom");
+    loadIntoMemory2(comp->getMemory(), 0x100, "./bin_z80/zexdoc.bin");
+    loadIntoMemory2(comp->getMemory(), 0, "./bin_z80/cpm_io.rom");
 
     std::uint64_t i = 0;
     boost::timer::auto_cpu_timer t;
