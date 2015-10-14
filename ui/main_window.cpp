@@ -182,12 +182,14 @@ void MainWindow::update_register_values() {
     this->ui->ix_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIX()));
     this->ui->iy_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIY()));
     this->ui->hl_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getHL()));
-    this->ui->a_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getA()));
-    this->ui->b_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getB()));
-    this->ui->c_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getC()));
-    this->ui->d_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getD()));
-    this->ui->e_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getE()));
-    this->ui->f_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getF()));
+    this->ui->af_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getAF()));
+    this->ui->bc_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getBC()));
+    this->ui->de_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getDE()));
+    this->ui->afalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getAF_alt()));
+    this->ui->bcalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getBC_alt()));
+    this->ui->dealt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getDE_alt()));
+    this->ui->iff1_value->setText(utils::int_to_hex(computer->processor->getRegisters()->isIFF1()));
+    this->ui->iff2_value->setText(utils::int_to_hex(computer->processor->getRegisters()->isIFF2()));
 }
 
 void MainWindow::step()

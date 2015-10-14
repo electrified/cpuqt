@@ -16,16 +16,20 @@ UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
     ;Ensure is at memory address 5, for CP/M BDOS
     defs 5-$, 0
     PUSH AF
+    push de
     ld a, c
     cp 2
-    call z, outchar
+    call z, preoutchar
     cp 9
     call z, outmulti
+    pop de
     POP AF
     ret
+;----------------------------------------------------
+preoutchar:
+    ld a, e
 outchar:
     PUSH AF
-    cp A, E
     OUT (UART_PORT), A
 ; wait until transmitted
 oloop:
@@ -34,6 +38,7 @@ oloop:
     JP Z, oloop
     POP AF
     RET
+;----------------------------------------------------
 outmulti:
     ld a, (de)
     cp a, '$'

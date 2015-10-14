@@ -1215,7 +1215,14 @@ void EmuAlu::XOR(std::uint8_t val) {
     registers->setNFlag(false);
     registers->setCFlag(false);
 
-    //TODO: set parity flag!
+    std::uint8_t parity = 1;
+    std::uint8_t testVal = val;
+    for (std::uint8_t i =0; i < 8; ++i) {
+        parity ^= testVal & 1;
+        testVal >>= 1;
+        std::cout << parity << std::endl;
+    }
+    registers->setParityOverflowFlag(parity);
 }
 
 void EmuAlu::XOR(MemoryAddress memoryAddress) {
