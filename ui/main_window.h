@@ -7,6 +7,8 @@
 #include <QTimer>
 #include <QSignalMapper>
 
+#include <QImage>
+
 #include "Logger.h"
 #include "badgercomputer.h"
 
@@ -18,6 +20,10 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     BadgerComputer* computer;
+    
+    QImage image = QImage(640, 480, QImage::Format_RGB32);
+    QRgb valueOn = qRgb(255, 0, 0);
+    QRgb valueOff = qRgb(0, 255, 0);
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -50,7 +56,7 @@ private slots:
     void haltOnBreakpoint();
     void resume();
     void toggleScrollMemory(bool scroll);
-    void gfxUpdated();
+    void gfxUpdated(std::uint16_t i);
 signals:
     void programCounterUpdated(std::uint16_t address);
 };

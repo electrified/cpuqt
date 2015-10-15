@@ -18,12 +18,8 @@
 #include "computer/utils.h"
 
 
-void MainWindow::gfxUpdated() {
-    QImage image(256, 192, QImage::Format_RGB32);
-    QRgb valueOn = qRgb(189, 149, 39);// 0xffbd9527
-    QRgb valueOff = qRgb(122, 163, 39); // 0xff7aa327
-    
-    for (std::uint16_t i = 0x4000; i < 0x57FF; i++) {
+void MainWindow::gfxUpdated(std::uint16_t i) {   
+//     for (std::uint16_t i = 0x4000; i < 0x57FF; i++) {
         //determine pixel location of byte i
         std::uint8_t x = i & 0x1f; //get bottom 5 bits
         std::uint8_t y = ((i >> 8) & 0x7) | (((i >> 5) & 0x7) << 3) | (((i >> 11) & 0x3) << 6);
@@ -33,7 +29,7 @@ void MainWindow::gfxUpdated() {
             bool on = (data & (1 << j) >> j);
             image.setPixel(xCoord, y, on ? valueOn : valueOff);
 //             std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << std::endl;
-        }
+//         }
     }
     /*
     value 
@@ -74,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect((QtBadgerIO*)computer->io, &QtBadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
     
-    connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated()));
+    connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
 
     //this is ther text output for cp/m
 //     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
