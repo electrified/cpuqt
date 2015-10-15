@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>385</width>
-    <height>303</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>260</y>
+     <y>430</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -47,8 +47,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>70</y>
+     <x>60</x>
+     <y>220</y>
      <width>271</width>
      <height>171</height>
     </rect>
@@ -68,12 +68,12 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>281</width>
-     <height>61</height>
+     <width>371</width>
+     <height>191</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Z80 Emulator v0&lt;/p&gt;&lt;p&gt;Powered by MegaBlaze Technology&lt;/p&gt;&lt;p&gt;© 2015 Badgersoft &lt;/p&gt;&lt;p&gt;AKA Crumpy Computing &lt;/p&gt;&lt;p&gt;AKA Cheese Dream Technologies&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Z80 Emulator v0&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Powered by &lt;span style=&quot; font-style:italic;&quot;&gt;MegaBlaze Technology&lt;/span&gt;&lt;/p&gt;&lt;p&gt;© 2015 Badgersoft &lt;/p&gt;&lt;p&gt;AKA Crumpy Computing &lt;/p&gt;&lt;p&gt;AKA Cheese Dream Technologies&lt;/p&gt;&lt;p&gt;AKA DJ Dureaucrat &amp;amp; MC Red Tape&lt;/p&gt;&lt;p&gt;AKA Trilby Warriors&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>

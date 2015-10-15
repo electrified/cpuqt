@@ -18,7 +18,6 @@ public:
     Processor *processor;
     QtBadgerMemory* memory;
     BadgerIO* io;
-    Alu* alu;
     bool skipBreakpoint = false;
     
     void process(std::uint8_t count);

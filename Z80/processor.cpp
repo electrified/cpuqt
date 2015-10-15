@@ -4237,6 +4237,17 @@ void Processor::XOR(Rgstr val) {
     XOR(registers->getRegisterValue(val));
 }
 
+
+bool parity(std::uint8_t val) {
+    std::uint8_t j = val;
+    bool parity = true;
+    for(std::uint8_t i = 0; i < 8; ++i) {
+        parity ^= j & 1;
+        j >>= 1;
+    }
+    return parity;
+}
+
 /*
  * S is set if result is negative; reset otherwise
 * Z is set if result is zero; reset otherwise
@@ -4256,8 +4267,7 @@ void Processor::XOR(std::uint8_t val) {
     registers->setHFlag(false);
     registers->setNFlag(false);
     registers->setCFlag(false);
-
-    //TODO: set parity flag!
+    registers->setParityOverflowFlag(parity(newvalue));
 }
 
 void Processor::XOR(std::uint16_t memoryAddress) {

@@ -34,3 +34,6 @@ scan-build make
 
 
 cppcheck --enable=all -ibuild -iclang-build -itests/test.cpp . 2> cppcheck.txt
+
+TODO: Goes wrong at 11E0 of Spectrum ROM - Doesn't jump relative backwards correctly
+TODO: Ensure all methods use parity function where they should and write a test for it.

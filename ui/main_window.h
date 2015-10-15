@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 #include <QMainWindow>
 #include "Z80/processor.h"
 #include "Z80/emu_alu.h"
@@ -50,6 +50,7 @@ private slots:
     void haltOnBreakpoint();
     void resume();
     void toggleScrollMemory(bool scroll);
+    void gfxUpdated();
 signals:
     void programCounterUpdated(std::uint16_t address);
 };

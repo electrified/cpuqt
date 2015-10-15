@@ -1,15 +1,14 @@
 #include "main_window.h"
 #include "ui_main_window.h"
-/*
-#include <iostream>
-#include <fstream>
 
-#include <vector>*/
+#include <iostream>
+
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtWidgets/QTableView>
 #include <QSettings>
+#include <QImage>
 
 #include "ui/qtbadgerio.h"
 #include "ui/qtbadgermemory.h"
@@ -17,6 +16,39 @@
 #include "ui/cpm_io.h"
 #include "about_box.h"
 #include "computer/utils.h"
+
+
+void MainWindow::gfxUpdated() {
+    QImage image(256, 192, QImage::Format_RGB32);
+    QRgb valueOn = qRgb(189, 149, 39);// 0xffbd9527
+    QRgb valueOff = qRgb(122, 163, 39); // 0xff7aa327
+    
+    for (std::uint16_t i = 0x4000; i < 0x57FF; i++) {
+        //determine pixel location of byte i
+        std::uint8_t x = i & 0x1f; //get bottom 5 bits
+        std::uint8_t y = ((i >> 8) & 0x7) | (((i >> 5) & 0x7) << 3) | (((i >> 11) & 0x3) << 6);
+        std::uint8_t data = computer->memory->read(i);
+        for (std::uint8_t j = 0; j < 8; ++j) {
+            std::uint8_t xCoord = (x * 8) + j;
+            bool on = (data & (1 << j) >> j);
+            image.setPixel(xCoord, y, on ? valueOn : valueOff);
+//             std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << std::endl;
+        }
+    }
+    /*
+    value 
+    image.setPixel(1, 1, value);
+
+    value = qRgb(122, 163, 39); // 0xff7aa327
+    image.setPixel(0, 1, value);
+    image.setPixel(1, 0, value);
+
+    value = qRgb(237, 187, 51); // 0xffedba31
+    image.setPixel(2, 1, value);*/
+    ui->gfxLabel->setPixmap(QPixmap::fromImage(image));
+//     ui->gfxLabel->setText(QString("hello"));
+}
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -41,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
 
     connect((QtBadgerIO*)computer->io, &QtBadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+    
+    connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated()));
 
     //this is ther text output for cp/m
 //     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));

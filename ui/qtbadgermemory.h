@@ -12,6 +12,7 @@ public:
     void write(const std::uint16_t address, const std::uint8_t value);
 signals:
     void memoryUpdated(std::uint16_t address);
+    void spectrumGfxUpdated(std::uint16_t address);
 public slots:
 };
 

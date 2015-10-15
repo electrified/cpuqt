@@ -13,4 +13,8 @@ void QtBadgerMemory::write(const std::uint16_t address, const std::uint8_t value
 //     std::cout << "RAM UPDATE: " << utils::int_to_hex(address) << " " <<  utils::int_to_hex<>(value) << std::endl;
     
     emit memoryUpdated(address);
+    
+    if (address >= 0x4000 && address <= 0x5AFF) {
+        emit spectrumGfxUpdated(address);
+    }
 }
