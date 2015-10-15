@@ -11,7 +11,6 @@
 #include "IO.h"
 #include "alu.h"
 #include "registers.h"
-#include "decoder.h"
 
 class Processor
 {

@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.0.2)
 set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
+add_subdirectory(tools)
+#add_subdirectory(source_dir [binary_dir][EXCLUDE_FROM_ALL])
+
+
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
 endif()
