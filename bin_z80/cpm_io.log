@@ -18,31 +18,36 @@
 0002:               ;Ensure is at memory address 5, for CP/M BDOS
 0002: 000000        defs 5-$, 0
 0005: F5            PUSH AF
-0006: 79            ld a, c
-0007: FE02          cp 2
-0009: CC1300        call z, outchar
-000C: FE09          cp 9
-000E: CC2000        call z, outmulti
-0011: F1            POP AF
-0012: C9            ret
-0013:           outchar:
-0013: F5            PUSH AF
-0014: BB            cp A, E
-0015: D380          OUT (UART_PORT), A
-0017:           ; wait until transmitted
-0017:           oloop:
-0017: DB85          IN A, (UART_LSR)	; read LSR
-0019: CB77          BIT 6, A	; bit 6 is transmitter empty
-001B: CA1700        JP Z, oloop
-001E: F1            POP AF
-001F: C9            RET
-0020:           outmulti:
-0020: 1A            ld a, (de)
-0021: FE24          cp a, '$'
-0023: CA2D00        jp z, outend
-0026: CD1300        call outchar
-0029: 13            inc de
-002A: C32000        jp outmulti
-002D:           outend:
-002D: C9            ret
-002E:           #end			; ((inserted by zasm))
+0006: D5            push de
+0007: 79            ld a, c
+0008: FE02          cp 2
+000A: CC1500        call z, preoutchar
+000D: FE09          cp 9
+000F: CC2200        call z, outmulti
+0012: D1            pop de
+0013: F1            POP AF
+0014: C9            ret
+0015:           ;----------------------------------------------------
+0015:           preoutchar:
+0015: 7B            ld a, e
+0016:           outchar:
+0016: F5            PUSH AF
+0017: D380          OUT (UART_PORT), A
+0019:           ; wait until transmitted
+0019:           oloop:
+0019: DB85          IN A, (UART_LSR)	; read LSR
+001B: CB77          BIT 6, A	; bit 6 is transmitter empty
+001D: CA1900        JP Z, oloop
+0020: F1            POP AF
+0021: C9            RET
+0022:           ;----------------------------------------------------
+0022:           outmulti:
+0022: 1A            ld a, (de)
+0023: FE24          cp a, '$'
+0025: CA2F00        jp z, outend
+0028: CD1600        call outchar
+002B: 13            inc de
+002C: C32200        jp outmulti
+002F:           outend:
+002F: C9            ret
+0030:           #end			; ((inserted by zasm))

@@ -469,7 +469,7 @@ TEST_CASE("JPnnTest") {
 * below that also specifies the corresponding cc bit fields in the
 * assembled object code.
 */
-TEST_CASE("JP NZ nn Test") {
+TEST_CASE("JP NZ nn") {
     std::unique_ptr<TestComputer> comp = setupComputer();
 
     comp->getMemory()->write(0, BOOST_BINARY(11000010));
@@ -484,24 +484,21 @@ TEST_CASE("JP NZ nn Test") {
 }
 
 
-TEST_CASE("JReTest") {
+TEST_CASE("JR e") {
     /*-
      * To jump forward five locations from
     address 480, the following assembly
     language statement is used
     JR $+5
 
-
-    The resulting object code and fi
-    nal PC value is shown below:
+    The resulting object code and final PC value is shown below:
     Location Instruction
     480 18
     481 03
     482 -
     483 -
     484 -
-    485 ←
-    PC after jump
+    485 ← PC after jump
      */
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x480, 0x18);
@@ -512,6 +509,18 @@ TEST_CASE("JReTest") {
 
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x485);
+}
+
+TEST_CASE("JR e negative") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x480, 0x18);
+    comp->getMemory()->write(0x481, BOOST_BINARY(11111101)); // -3
+    comp->getProcessor()->getRegisters()->setPC(0x480);
+
+    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
+
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x47F);
 }
 
 /**

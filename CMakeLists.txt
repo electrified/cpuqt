@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.0.2)
 set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
+add_subdirectory(tools)
+#add_subdirectory(source_dir [binary_dir][EXCLUDE_FROM_ALL])
+
+
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
 endif()
@@ -78,7 +82,7 @@ set(Z80_SRC
     Z80/DisassemblyResult.cpp Z80/DisassemblyResult.h
     Z80/disassembler.cpp Z80/disassembler.h
     computer/badgerio.cpp computer/badgerio.h
-    computer/utils.h
+    computer/utils.cpp computer/utils.h
 )
 
 add_library(Z80 STATIC
@@ -126,9 +130,9 @@ set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET zexrunner PROPERTY CXX_STANDARD 11)
 set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_link_libraries(cpuqt2 GuiLib Z80)
+target_link_libraries(cpuqt2 GuiLib Z80 ${Boost_LIBRARIES})
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
-target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80)
+target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80 ${Boost_SYSTEM_LIBRARY})
 
 if (WIN32)
  # disable autolinking in boost

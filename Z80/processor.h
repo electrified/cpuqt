@@ -11,7 +11,6 @@
 #include "IO.h"
 #include "alu.h"
 #include "registers.h"
-#include "decoder.h"
 
 class Processor
 {
@@ -36,8 +35,8 @@ class Processor
         return registers->getRegisterPairValue(rgstrPair);
     }
 
-    std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::int8_t offset) {
-        return registers->getRegisterPairValue(rgstrPair) + offset;
+    std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
+        return  (std::int16_t)registers->getRegisterPairValue(rgstrPair) + (std::int8_t)offset;
     }
     void ADC(const RegisterPair hl, const RegisterPair bc);
 

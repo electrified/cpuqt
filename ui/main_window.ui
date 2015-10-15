@@ -18,11 +18,11 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -31,10 +31,10 @@
        <widget class="QPlainTextEdit" name="plainTextEdit">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>831</width>
-          <height>291</height>
+          <x>5</x>
+          <y>0</y>
+          <width>771</width>
+          <height>361</height>
          </rect>
         </property>
        </widget>
@@ -43,13 +43,13 @@
        <attribute name="title">
         <string>Tab 2</string>
        </attribute>
-       <widget class="QLabel" name="gfxLabel">
+       <widget class="QLabel" name="label">
         <property name="geometry">
          <rect>
-          <x>20</x>
+          <x>10</x>
           <y>10</y>
-          <width>751</width>
-          <height>281</height>
+          <width>481</width>
+          <height>331</height>
          </rect>
         </property>
         <property name="text">
@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>23</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -123,58 +123,9 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="8" column="1">
-      <widget class="QLabel" name="a_value">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="d_label">
-       <property name="text">
-        <string>D</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="1">
-      <widget class="QLabel" name="c_value">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="sp_label">
-       <property name="text">
-        <string>SP</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLabel" name="ix_value">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QLabel" name="d_value">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="iy_label">
-       <property name="text">
-        <string>IY</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLabel" name="hl_value">
+    <layout class="QGridLayout" name="_2">
+     <item row="6" column="1">
+      <widget class="QLabel" name="iy_value">
        <property name="text">
         <string>0</string>
        </property>
@@ -187,10 +138,150 @@
        </property>
       </widget>
      </item>
+     <item row="11" column="1">
+      <widget class="QLabel" name="afalt_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLabel" name="bc_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="de_label">
+       <property name="text">
+        <string>DE</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="r_label">
+       <property name="text">
+        <string>R</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLabel" name="de_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="sp_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="0">
+      <widget class="QLabel" name="iff1_label">
+       <property name="text">
+        <string>IFF1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="bcalt_label">
+       <property name="text">
+        <string>BC'</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="0">
+      <widget class="QLabel" name="i_label">
+       <property name="text">
+        <string>I</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="afalt_label">
+       <property name="text">
+        <string>AF'</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QLabel" name="bcalt_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="dealt_label">
+       <property name="text">
+        <string>DE'</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QLabel" name="dealt_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="iy_label">
+       <property name="text">
+        <string>IY</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="ix_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="0">
       <widget class="QLabel" name="ix_label">
        <property name="text">
         <string>IX</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="af_label">
+       <property name="text">
+        <string>AF</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLabel" name="af_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="b_label">
+       <property name="text">
+        <string>BC</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QLabel" name="i_value">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="QLabel" name="r_value">
+       <property name="text">
+        <string>0</string>
        </property>
       </widget>
      </item>
@@ -201,10 +292,17 @@
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="c_label">
+     <item row="1" column="0">
+      <widget class="QLabel" name="sp_label">
        <property name="text">
-        <string>C</string>
+        <string>SP</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLabel" name="hl_value">
+       <property name="text">
+        <string>0</string>
        </property>
       </widget>
      </item>
@@ -215,64 +313,22 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
-      <widget class="QLabel" name="b_value">
+     <item row="16" column="1">
+      <widget class="QLabel" name="iff1_value">
        <property name="text">
         <string>0</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QLabel" name="sp_value">
+     <item row="17" column="0">
+      <widget class="QLabel" name="iff2_label">
        <property name="text">
-        <string>0</string>
+        <string>IFF2</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="b_label">
-       <property name="text">
-        <string>B</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="0">
-      <widget class="QLabel" name="f_label">
-       <property name="text">
-        <string>F</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="1">
-      <widget class="QLabel" name="e_value">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLabel" name="iy_value">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="a_label">
-       <property name="text">
-        <string>A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="e_label">
-       <property name="text">
-        <string>E</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="1">
-      <widget class="QLabel" name="f_value">
+     <item row="17" column="1">
+      <widget class="QLabel" name="iff2_value">
        <property name="text">
         <string>0</string>
        </property>
