@@ -83,6 +83,7 @@ set(Z80_SRC
     Z80/disassembler.cpp Z80/disassembler.h
     computer/badgerio.cpp computer/badgerio.h
     computer/utils.cpp computer/utils.h
+    computer/spectrum/graphics.h
 )
 
 add_library(Z80 STATIC
@@ -101,6 +102,7 @@ set (tooltests_SRC
 tests/test_computer.h tests/test_computer.cpp
 computer/consolebadgerio.cpp computer/consolebadgerio.h
 tests/test.cpp
+tests/graphics_test.cpp
 )
 
 set (zexrunner_SRC

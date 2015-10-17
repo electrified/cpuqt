@@ -96,14 +96,17 @@ TEST_CASE("ADCArTest2") {
 }
 
 
-TEST_CASE("ADDHLssTest") {
+TEST_CASE("ADD HL ss") {
     std::unique_ptr<TestComputer> comp = setupComputer();
+    // add hl, de
     comp->getMemory()->write(0x0, BOOST_BINARY(00011001));
 
-    comp->getProcessor()->getRegisters()->setDE(45);
-    comp->getProcessor()->getRegisters()->setHL(12);
+    comp->getProcessor()->getRegisters()->setDE(0xffff);
+    comp->getProcessor()->getRegisters()->setHL(0x4000);
     comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 57);
+    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3fff);
+    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+    //REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 
@@ -215,7 +218,7 @@ TEST_CASE("CPrTest2") {
 }
 
 
-TEST_CASE("DECr8BitTest") {
+TEST_CASE("DEC r 8Bit") {
     /*
      * f the D register contains byte 2AH, at execution of DEC D register D
      * contains 29H.
@@ -225,6 +228,15 @@ TEST_CASE("DECr8BitTest") {
     comp->getProcessor()->getRegisters()->setD(0x2a);
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x29);
+}
+
+TEST_CASE("DEC r 16Bit") {
+    // DEC HL
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0x2b);
+    comp->getProcessor()->getRegisters()->setHL(0x0);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFFF);
 }
 
 TEST_CASE("DECssTest") {
@@ -1371,16 +1383,16 @@ TEST_CASE("AND_iyplusd_Test") {
  * and bit 6 in memory location 2004H still contains 1.
  * Bit 0 in memory location 2004H is the least-significant bit.
 */
-TEST_CASE("BITb_IYplusd_Test") {
+TEST_CASE("BIT b IY+d") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xFD);
     comp->getMemory()->write(0x1, 0xCB);
-    comp->getMemory()->write(0x2, BOOST_BINARY(100));
-    comp->getMemory()->write(0x3, BOOST_BINARY(01110110));
-    comp->getMemory()->write(0x2004, BOOST_BINARY(1110110)); // data with bit 6 == 1
-    comp->getProcessor()->getRegisters()->setIX(0x2000);
-    REQUIRE( (comp->getMemory()->read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag() == false);
+    comp->getMemory()->write(0x2, 0x1);
+    comp->getMemory()->write(0x3, BOOST_BINARY(01001110));
+    comp->getMemory()->write(0x5c3b, 0x0);
+    comp->getProcessor()->getRegisters()->setIY(0x5c3a);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag() == true);
 }
 
 /*
@@ -2235,6 +2247,17 @@ TEST_CASE("SBC HL DE") {
     comp->getProcessor()->getRegisters()->setCFlag(true); //carry
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x8887);
+}
+
+TEST_CASE("SBC HL DE wrap around") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xED);
+    comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
+    comp->getProcessor()->getRegisters()->setHL(0x3FFF);
+    comp->getProcessor()->getRegisters()->setDE(0xFFFF);
+    comp->getProcessor()->getRegisters()->setCFlag(false); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4000);
 }
 
 TEST_CASE("SLA") {

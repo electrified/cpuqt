@@ -18,31 +18,32 @@
 #include "computer/utils.h"
 
 
-void MainWindow::gfxUpdated(std::uint16_t i) {   
-//     for (std::uint16_t i = 0x4000; i < 0x57FF; i++) {
-        //determine pixel location of byte i
-        std::uint8_t x = i & 0x1f; //get bottom 5 bits
-        std::uint8_t y = ((i >> 8) & 0x7) | (((i >> 5) & 0x7) << 3) | (((i >> 11) & 0x3) << 6);
+void MainWindow::gfxUpdated(std::uint16_t i) {       
+    /*
+     * Y Coordinate bit layout (MSB to LSB):
+        zzxxxnnn
+
+        Register pair bit layout (R are the bits for the x-axis offset, 010 provides the base address $4000):
+        010z znnn xxxR RRRR
+    */
+    if (i < 0x5800) {
+        std::uint16_t x = i & 0x1f; //get bottom 5 bits
+        std::uint16_t y = ((i & 0x700) >> 8) | ((i & 0xe0) >> 2) | ((i & 0x1800) >> 5);
+        
         std::uint8_t data = computer->memory->read(i);
         for (std::uint8_t j = 0; j < 8; ++j) {
             std::uint8_t xCoord = (x * 8) + j;
-            bool on = (data & (1 << j) >> j);
-            image.setPixel(xCoord, y, on ? valueOn : valueOff);
-//             std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << std::endl;
-//         }
+            bool on = data & (1 << j);
+            drawPixel(xCoord,y,on);
+            //std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << " i: " << i << std::endl;
+        }
+    } else {
+        // colour stuff
     }
-    /*
-    value 
-    image.setPixel(1, 1, value);
+}
 
-    value = qRgb(122, 163, 39); // 0xff7aa327
-    image.setPixel(0, 1, value);
-    image.setPixel(1, 0, value);
-
-    value = qRgb(237, 187, 51); // 0xffedba31
-    image.setPixel(2, 1, value);*/
-    ui->gfxLabel->setPixmap(QPixmap::fromImage(image));
-//     ui->gfxLabel->setText(QString("hello"));
+void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) {
+    image.setPixel(x, y, on ? valueOn : valueOff);
 }
 
 
@@ -195,11 +196,18 @@ void MainWindow::stop()
 void MainWindow::update()
 {
     computer->doOneScreenRefreshesWorth();
+    ui->gfxLabel->setPixmap(QPixmap::fromImage(image));
 }
 
 void MainWindow::showAboutBox() {
     Dialog * mw = new Dialog();
     mw->show();
+    
+    for(std::uint16_t x =0; x < 255; ++x) {
+        for(std::uint16_t y =0; y < 191; ++y) {
+            drawPixel(x,y,true);
+        }
+    }
 }
 
 void MainWindow::quit() {
@@ -218,6 +226,7 @@ void MainWindow::update_register_values() {
     this->ui->afalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getAF_alt()));
     this->ui->bcalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getBC_alt()));
     this->ui->dealt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getDE_alt()));
+    this->ui->hlalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getHL_alt()));
     this->ui->iff1_value->setText(utils::int_to_hex(computer->processor->getRegisters()->isIFF1()));
     this->ui->iff2_value->setText(utils::int_to_hex(computer->processor->getRegisters()->isIFF2()));
 }
@@ -227,6 +236,7 @@ void MainWindow::step()
     computer->step();
     update_register_values();
     emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+    ui->gfxLabel->setPixmap(QPixmap::fromImage(image));
 }
 
 void MainWindow::reset()

@@ -3100,20 +3100,36 @@ void Processor::ADC(Rgstr rgstr, std::uint16_t memoryAddress) {
  */
 void Processor::ADD(RegisterPair destination, RegisterPair rgstr) {
     //TODO: Set flags correctly after these operations!!!
-    registers->setRegisterPair(destination,registers->getRegisterPairValue(destination) +registers->getRegisterPairValue(rgstr));
+    std::uint16_t a = registers->getRegisterPairValue(destination);
+    std::uint16_t b = registers->getRegisterPairValue(rgstr);
+    std::uint16_t newvalue = a + b;
+    registers->setRegisterPair(destination, newvalue);
+    
+    registers->setHFlag((((a & 0x0FFF) + (newvalue & 0x0FFF)) & 0xF000) !=0);
+    
+    // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
+    //carry out: a + b > 0xffff
+    // equivalent to a > 0xffff - b
+    registers->setCFlag( a > 0xffff - b);
+    registers->setParityOverflowFlag(a ^ b ^ registers->getCFlag());
+    registers->setNFlag(false);
 }
 
 void Processor::ADD(Rgstr destination, std::uint8_t nextByte) {
-    std::uint8_t result = registers->getRegisterValue(destination) + nextByte;
-    registers->setRegister(destination, result);
-    registers->setSignFlag(result < 0);
-    registers->setZeroFlag(result == 0);
+    std::uint8_t oldvalue = registers->getRegisterValue(destination);
+    std::uint8_t newvalue = registers->getRegisterValue(destination) + nextByte;
+    registers->setRegister(destination, newvalue);
+    registers->setSignFlag(newvalue < 0);
+    registers->setZeroFlag(newvalue == 0);
 
-    //     registers->setHFlag(true);
-    //P/V
-    //C
-
+    registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
     registers->setNFlag(false);
+    
+    // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
+    //carry out: a + b > 0xff
+    // equivalent to a > 0xff - b
+    registers->setCFlag( oldvalue > 0xff - nextByte);
+    registers->setParityOverflowFlag(oldvalue ^ nextByte ^ registers->getCFlag());
 }
 
 void Processor::ADD(Rgstr destination, Rgstr source) {
@@ -3151,7 +3167,9 @@ void Processor::AND(std::uint16_t memoryAddress) {
  * accordingly.
  */
 void Processor::BIT(std::uint8_t y, std::uint8_t value) {
-    registers->setZeroFlag(!((value & (1 << y)) == (1 << y)));
+    registers->setZeroFlag(!(value & (1 << y)));
+    registers->setHFlag(true);
+    registers->setNFlag(false);
 }
 
 void Processor::BIT(std::uint8_t y, Rgstr rgstr) {
@@ -4093,14 +4111,14 @@ SP 11
 
 S is set if result is negative; reset otherwise
 Z is set if result is zero; reset otherwise
-H is set if borrow from bit 4; reset otherwise
+H is set if borrow from bit 12; reset otherwise
 P/V is reset if overflow; reset otherwise
 N is set
 C is set if borrow; reset otherwise
 
 */
 void Processor::SBC(RegisterPair h1, RegisterPair h2) {
-    uint8_t oldvalue = registers->getRegisterPairValue(h1);
+    uint16_t oldvalue = registers->getRegisterPairValue(h1);
     uint16_t newvalue = oldvalue - registers->getRegisterPairValue(h2) - (registers->getCFlag() ? 1 : 0);
     registers->setRegisterPair(h1, newvalue);
     
@@ -4108,7 +4126,7 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-    registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
+//     registers->setHFlag((((oldvalue & 0x0FFF) + (newvalue & 0x0FFF)) & 0xF000) !=0);
 
     registers->setNFlag(true);
 }

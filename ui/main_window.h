@@ -38,6 +38,7 @@ private:
     void initial_recent_menu_population();
     void add_recent_menu_item(QString rom_path);
     void update_register_values();
+    void drawPixel(std::uint16_t x, std::uint16_t y, bool on);
 private slots:
     void loadRom();
     void loadRom(QString file_path);
