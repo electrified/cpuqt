@@ -3119,7 +3119,7 @@ void Processor::ADD(Rgstr destination, std::uint8_t nextByte) {
     std::uint8_t oldvalue = registers->getRegisterValue(destination);
     std::uint8_t newvalue = registers->getRegisterValue(destination) + nextByte;
     registers->setRegister(destination, newvalue);
-    registers->setSignFlag(newvalue < 0);
+    registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
 
     registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
@@ -3148,7 +3148,7 @@ void Processor::AND(std::uint8_t value) {
     std::uint8_t result = registers->getA() & value;
     registers->setA(result);
 
-    registers->setSignFlag(result < 0);
+    registers->setSignFlag(result & 0x80);
     registers->setZeroFlag(result == 0);
 
     registers->setHFlag(true);
@@ -3252,14 +3252,37 @@ void Processor::CCF() {
     registers->setNFlag(false);
 }
 
-void Processor::CP(std::uint8_t val) {
-    std::uint8_t result = registers->getA() - val;
 
-    registers->setZeroFlag(result == 0);
-    registers->setSignFlag(result < 0);
-    // this.setHFlag(flag);
-//     // this.setParityOverflowFlag(flag);
+std::uint8_t Processor::_compare(std::uint8_t n) {
+    std::uint8_t oldvalue = registers->getA();
+    std::uint8_t newvalue = oldvalue - n;
+
+    // set undocumented 5 and 3 flags to 5 and 3 in result
+    // no flags are left unset, so we can wipe it out
+    registers->setF(newvalue & 0x28);
+    
+    registers->setSignFlag(newvalue & 0x80);
+    registers->setZeroFlag(newvalue == 0);
+
+    registers->setHFlag(((oldvalue & 0x0010) - (newvalue & 0x0010)) > 0);
     registers->setNFlag(true);
+    
+    // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
+    //carry out: a + b > 0xff
+    // equivalent to a > 0xff - b
+    
+    std::uint8_t carryOut = oldvalue > 0xff - n;
+    
+    std::uint8_t carryIn = oldvalue ^ newvalue ^ n;
+    carryIn = (carryIn >> 7) ^ carryOut;
+    
+    registers->setCFlag( carryIn );
+    registers->setParityOverflowFlag( carryOut);
+    return newvalue;
+}
+
+void Processor::CP(std::uint8_t val) {
+    _compare(val);
 }
 
 void Processor::CP(Rgstr val) {
@@ -3376,7 +3399,7 @@ void Processor::DEC(std::uint16_t memoryAddress) {
 
     memory->write(address, newvalue);
 
-    registers->setSignFlag(newvalue < 0);
+    registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
@@ -3392,7 +3415,7 @@ void Processor::DEC(Rgstr rgstr) {
 
     registers->setRegister(rgstr, newvalue);
 
-    registers->setSignFlag(newvalue < 0);
+    registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
 
     //carry for add
@@ -3545,7 +3568,7 @@ void Processor::INC(std::uint16_t memoryAddress) {
     std::uint8_t newValue = (memory->read(memoryAddress) + 1) & 0xff;
     memory->write(memoryAddress, newValue);
 
-    registers->setSignFlag(newValue < 0);
+    registers->setSignFlag(newValue & 0x80);
     registers->setZeroFlag(newValue == 0);
     // H ??
 
@@ -3559,7 +3582,7 @@ void Processor::INC(Rgstr reg) {
 
     registers->setRegister(reg, newValue);
 
-    registers->setSignFlag(newValue < 0);
+    registers->setSignFlag(newValue & 0x80);
     registers->setZeroFlag(newValue == 0);
     // Half carry flag setting! ??
 
@@ -3789,7 +3812,7 @@ void Processor::OR(std::uint8_t immediateValue) {
 
     registers->setA(result);
 
-    registers->setSignFlag(result < 0);
+    registers->setSignFlag(result & 0x80);
     registers->setZeroFlag(result == 0);
 
     registers->setHFlag(false);
@@ -4122,7 +4145,7 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
     uint16_t newvalue = oldvalue - registers->getRegisterPairValue(h2) - (registers->getCFlag() ? 1 : 0);
     registers->setRegisterPair(h1, newvalue);
     
-    registers->setSignFlag(newvalue < 0);
+    registers->setSignFlag(newvalue & 0x8000);
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
@@ -4140,7 +4163,7 @@ void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
     uint8_t newvalue = oldvalue - nextByte - (registers->getCFlag() ? 1 : 0);
     registers->setRegister(a, newvalue);
     
-    registers->setSignFlag(newvalue < 0);
+    registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
 
     //Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
@@ -4234,17 +4257,7 @@ void Processor::SUB(Rgstr reg) {
 
 // TODO: flags incomplete
 void Processor::SUB(std::uint8_t n) {
-    std::int8_t result = registers->getA() - n;
-    registers->setA(result);
-    
-    registers->setSignFlag(result < 0);
-    registers->setZeroFlag(result == 0);
-
-    registers->setHFlag(true);
-
-    registers->setNFlag(true);
-    registers->setCFlag(false);
-    // P/V
+    registers->setA(_compare(n));
 }
 
 void Processor::SUB(std::uint16_t memoryAddress) {
@@ -4254,7 +4267,6 @@ void Processor::SUB(std::uint16_t memoryAddress) {
 void Processor::XOR(Rgstr val) {
     XOR(registers->getRegisterValue(val));
 }
-
 
 bool parity(std::uint8_t val) {
     std::uint8_t j = val;
@@ -4279,7 +4291,7 @@ void Processor::XOR(std::uint8_t val) {
     std::uint8_t newvalue = (registers->getA() ^ val);
     registers->setA(newvalue);
 
-    registers->setSignFlag(newvalue < 0);
+    registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
 
     registers->setHFlag(false);
@@ -4355,7 +4367,7 @@ void Processor::setFlags(std::uint8_t value) {
     flag contains a 0.
      */
 
-    registers->setSignFlag((value & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
+    registers->setSignFlag(value & 0x80);
     registers->setZeroFlag(value == 0);
     registers->setHFlag(false);
     registers->setParityOverflowFlag(registers->isIFF2());

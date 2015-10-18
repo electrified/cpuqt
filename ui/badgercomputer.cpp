@@ -17,9 +17,9 @@ BadgerComputer::BadgerComputer()
 //     addBreakpoint(0x1b45); //check shift
 //      addBreakpoint(0x11ef); 
 //     addBreakpoint(0x11da); 
-//     addBreakpoint(0x11e2); 
-     addBreakpoint(0x1219); 
-          addBreakpoint(0xeeb); 
+// //     addBreakpoint(0x11e2); 
+//      addBreakpoint(0x1219); 
+//           addBreakpoint(0xeeb); 
           addBreakpoint(0x1295); 
 //     addBreakpoint(0x11e2); 
 //     addBreakpoint(0x1be4);

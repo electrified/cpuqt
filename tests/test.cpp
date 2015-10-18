@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include <boost/utility/binary.hpp>
 
@@ -216,6 +215,48 @@ TEST_CASE("CPrTest2") {
     comp->getProcessor()->process();
     REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
+
+// CP 20
+// Replicating test in spectrum rom at 0xc4e
+
+/*
+The flag register has the following structure:
+Bit	7	6	5	4	3	2	1	0
+Flag	S	Z	F5	H	F3	P/V	N	C
+The flags are set according to the result of the last instruction. The standard behaviour is:
+
+S - Sign flag
+Set if the 2-complement value is negative (copy of MSB)
+Z - Zero flag
+Set if the value is zero
+F5 - undocumented flag
+Copy of bit 5
+H - Half Carry
+Carry from bit 3 to bit 4
+F3 - undocumented flag
+Copy of bit 3
+P/V - Parity or Overflow
+Parity set if even number of bits set
+Overflow set if the 2-complement result does not fit in the register
+N - Subtract
+Set if the last operation was a subtraction
+C - Carry
+Set if the result did not fit in the register
+*/
+TEST_CASE("CP s") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xFE);
+    comp->getMemory()->write(0x1, 0x20);
+    comp->getProcessor()->getRegisters()->setA(0x0);
+    comp->getProcessor()->process();
+    //REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+    std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
+    std::cout <<(std::uint16_t)flags <<std::endl;
+    REQUIRE(flags == (std::uint16_t)0xA3);
+    //            0b10100110
+    // required = 0b10100011
+}
+
 
 
 TEST_CASE("DEC r 8Bit") {

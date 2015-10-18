@@ -264,6 +264,9 @@ class Processor
     void incrementSP();
 
     bool isConditionTrue(Condition condition);
+    
+    //used by SUB and CP
+    std::uint8_t _compare(std::uint8_t x);
 protected:
     void pushPCtoStack();
 

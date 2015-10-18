@@ -12,9 +12,9 @@ Logger::~Logger()
 
 void Logger::debug(const std::string& toLog)
 {
-   if (loglevel == LogLevel::debug) {
+//    if (loglevel == LogLevel::debug) {
        std::cout << "DEBUG: " << toLog << std::endl;
-   }
+//    }
 }
 
 void Logger::info(const std::string& toLog)

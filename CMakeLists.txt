@@ -103,6 +103,7 @@ tests/test_computer.h tests/test_computer.cpp
 computer/consolebadgerio.cpp computer/consolebadgerio.h
 tests/test.cpp
 tests/graphics_test.cpp
+tests/catch.cpp
 )
 
 set (zexrunner_SRC

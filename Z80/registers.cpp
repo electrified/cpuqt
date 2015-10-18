@@ -198,14 +198,14 @@ void Registers::setHL(std::uint16_t value) {
 }
 
 bool Registers::getHFlag() {
-    return (AF.bytes.low & BOOST_BINARY(100000)) == BOOST_BINARY(100000);
+    return (AF.bytes.low & BOOST_BINARY(10000)) == BOOST_BINARY(10000);
 }
 
 void Registers::setHFlag(bool flag) {
     if (flag) {
-        AF.bytes.low |= BOOST_BINARY(100000);
+        AF.bytes.low |= BOOST_BINARY(10000);
     } else {
-        AF.bytes.low &= ~BOOST_BINARY(100000);
+        AF.bytes.low &= ~BOOST_BINARY(10000);
     }
 }
 
@@ -282,14 +282,14 @@ void Registers::setL_alt(std::uint8_t l_alt) {
 }
 
 bool Registers::getNFlag() {
-    return (AF.bytes.low & BOOST_BINARY(10000)) == BOOST_BINARY(10000);
+    return (AF.bytes.low & BOOST_BINARY(10)) == BOOST_BINARY(10);
 }
 
 void Registers::setNFlag(bool flag) {
     if (flag) {
-        AF.bytes.low |= BOOST_BINARY(10000);
+        AF.bytes.low |= BOOST_BINARY(10);
     } else {
-        AF.bytes.low &= ~BOOST_BINARY(10000);
+        AF.bytes.low &= ~BOOST_BINARY(10);
     }
 }
 
