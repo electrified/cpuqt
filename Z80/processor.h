@@ -12,6 +12,8 @@
 #include "alu.h"
 #include "registers.h"
 
+bool parity(std::uint8_t val);
+
 class Processor
 {
     Logger logger;

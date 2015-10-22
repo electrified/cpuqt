@@ -196,18 +196,16 @@ void MainWindow::stop()
 void MainWindow::update()
 {
     computer->doOneScreenRefreshesWorth();
-    ui->gfxLabel->setPixmap(QPixmap::fromImage(image));
+    updateScreen();
+}
+
+void MainWindow::updateScreen() {
+    ui->gfxLabel->setPixmap(QPixmap::fromImage(image).scaled(512, 384));
 }
 
 void MainWindow::showAboutBox() {
     Dialog * mw = new Dialog();
     mw->show();
-    
-    for(std::uint16_t x =0; x < 255; ++x) {
-        for(std::uint16_t y =0; y < 191; ++y) {
-            drawPixel(x,y,true);
-        }
-    }
 }
 
 void MainWindow::quit() {
@@ -236,7 +234,7 @@ void MainWindow::step()
     computer->step();
     update_register_values();
     emit programCounterUpdated(computer->processor->getRegisters()->getPC());
-    ui->gfxLabel->setPixmap(QPixmap::fromImage(image));
+    updateScreen();
 }
 
 void MainWindow::reset()

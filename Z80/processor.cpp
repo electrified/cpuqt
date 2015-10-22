@@ -5,6 +5,7 @@
 #include <boost/utility/binary.hpp>
 #include <assert.h>
 #include "tables.h"
+// #include <iostream>
 
 Processor::Processor(Memory* memory, IO* io) :
 memory(memory), io(io)
@@ -3044,10 +3045,6 @@ Registers* Processor::getRegisters() {
     return registers;
 }
 
-// Alu* Processor::getAlu() {
-//     return alu;
-// }
-
 /**
  * Q-6:What happens when the Z80 CPU is RESET?
  * <p/>
@@ -3085,10 +3082,8 @@ void Processor::ADC(Rgstr rgstr, std::uint8_t val) {
 }
 
 void Processor::ADC(Rgstr rgstr, std::uint16_t memoryAddress) {
-    std::uint8_t flag = (registers->getCFlag() ? 1 : 0);
-    std::uint16_t memoryAdd = memoryAddress;
-    std::uint8_t memoryValue = memory->read(memoryAdd);
-    registers->setRegister(rgstr, registers->getRegisterValue(rgstr) + memoryValue + flag);
+    std::uint8_t memoryValue = memory->read(memoryAddress);
+    registers->setRegister(rgstr, registers->getRegisterValue(rgstr) + memoryValue + registers->getCFlag());
 }
 
 /**
@@ -3144,6 +3139,14 @@ void Processor::AND(Rgstr iX2) {
     AND(registers->getRegisterValue(iX2));
 }
 
+/*
+ * S is set if result is negative; reset otherwise
+Z is set if result is zero; reset otherwise
+H is set
+P/V is reset if overflow; reset otherwise
+N is reset
+C is reset
+*/
 void Processor::AND(std::uint8_t value) {
     std::uint8_t result = registers->getA() & value;
     registers->setA(result);
@@ -3152,7 +3155,7 @@ void Processor::AND(std::uint8_t value) {
     registers->setZeroFlag(result == 0);
 
     registers->setHFlag(true);
-
+    registers->setParityOverflowFlag(parity(result));
     registers->setNFlag(false);
     registers->setCFlag(false);
     // P/V
@@ -3165,6 +3168,14 @@ void Processor::AND(std::uint16_t memoryAddress) {
 /**
  * This instruction tests bit b in rgstr r and sets the Z flag
  * accordingly.
+ * 
+ * S is unknown
+Z is set if specified Bit is 0; reset otherwise
+H is set
+P/V is unknown
+N is reset
+C is not affected
+
  */
 void Processor::BIT(std::uint8_t y, std::uint8_t value) {
     registers->setZeroFlag(!(value & (1 << y)));
@@ -3213,28 +3224,10 @@ by three before the push is executed.
 Condition cc is programmed as one of eight status that corresponds to
 condition bits in the Flag Rgstr (rgstr F).
  */
-
-/**
- * The current contents of the Program Counter (PC) are pushed onto the top
- * of the external memory stack. The operands nn are then loaded to the PC to
- * postd::uint8_t to the address in memory where the first Op Code of a subroutine is to
- * be fetched. At the end of the subroutine, a RETurn instruction can be used
- * to return to the original program flow by popping the top of the stack back
- * to the PC. The push is accomplished by first decrementing the current
- * contents of the Stack Pointer (rgstr pair SP), loading the high-order byte
- * of the PC contents to the memory address now pointed to by the SP; then
- * decrementing SP again, and loading the low order byte of the PC contents
- * to the top of stack.
- * Because this is a 3-byte instruction, the Program Counter was incremented
- * by three before the push is executed.
- */
 void Processor::CALL(Condition c, std::uint16_t memoryAddress) {
     if (isConditionTrue(c)) {
         pushPCtoStack();
         registers->setPC(memoryAddress);
-//         std::cout << "Call condition true" << std::endl;
-    } else {
-//         std::cout << "Call condition false" << std::endl;
     }
 }
 
@@ -3255,11 +3248,8 @@ void Processor::CCF() {
 
 std::uint8_t Processor::_compare(std::uint8_t n) {
     std::uint8_t oldvalue = registers->getA();
-    std::uint8_t newvalue = oldvalue - n;
-
-    // set undocumented 5 and 3 flags to 5 and 3 in result
-    // no flags are left unset, so we can wipe it out
-    registers->setF(newvalue & 0x28);
+    std::uint16_t newvalue = oldvalue - n;
+//     std::cout << "newvalue " << (std::uint16_t)newvalue << std::endl;
     
     registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
@@ -3271,17 +3261,18 @@ std::uint8_t Processor::_compare(std::uint8_t n) {
     //carry out: a + b > 0xff
     // equivalent to a > 0xff - b
     
-    std::uint8_t carryOut = oldvalue > 0xff - n;
+//     std::uint8_t carryOut = oldvalue > 0xff - n;
+//     
+//     std::uint8_t carryIn = oldvalue ^ newvalue ^ n;
+//     carryIn = (carryIn >> 7) ^ carryOut;
     
-    std::uint8_t carryIn = oldvalue ^ newvalue ^ n;
-    carryIn = (carryIn >> 7) ^ carryOut;
-    
-    registers->setCFlag( carryIn );
-    registers->setParityOverflowFlag( carryOut);
-    return newvalue;
+    registers->setCFlag( newvalue & 0x100 );
+    registers->setParityOverflowFlag( (oldvalue & 0x80) != (n & 0x80) && (oldvalue & 0x80) != (newvalue & 0x80) );
+    return newvalue & 0xff;
 }
 
 void Processor::CP(std::uint8_t val) {
+    registers->setF(val & 0x28);
     _compare(val);
 }
 
@@ -3351,7 +3342,7 @@ void Processor::CPIR() {
  * complement).
  */
 void Processor::CPL() {
-    registers->setA(registers->getA() ^ BOOST_BINARY(11111111));
+    registers->setA(registers->getA() ^ 0xFF);
     registers->setNFlag(true);
     registers->setHFlag(true);
 }
@@ -3375,7 +3366,7 @@ void Processor::DAA() {
         d += 0x06;
     }
 
-    registers->setA( registers->getA() + registers->getNFlag() ? -d : +d);
+    registers->setA( registers->getA() + (registers->getNFlag() ? -d : +d));
     registers->setF(SZYXP_FLAGS_TABLE[registers->getA()]
             //TODO: warning: C4805: '&' : unsafe mix of type 'int' and type 'bool' in operation
                     | ((registers->getA() ^ a) & registers->getHFlag())
@@ -3417,9 +3408,6 @@ void Processor::DEC(Rgstr rgstr) {
 
     registers->setSignFlag(newvalue & 0x80);
     registers->setZeroFlag(newvalue == 0);
-
-    //carry for add
-    //registers->setHFlag((oldvalue & 0x000F + newvalue & 0x000F) & 0x00F0));
 
     registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) !=0);
 
@@ -3550,6 +3538,7 @@ void Processor::IM(std::uint8_t im) {
 void Processor::in(Rgstr rgstr, const std::uint16_t i) {
 //     assert(i.getRegisterPair() == RegisterPair::BC);
     registers->setRegister(rgstr, io->read(i));
+    //TODO flags
 }
 
 /**
@@ -3557,15 +3546,17 @@ void Processor::in(Rgstr rgstr, const std::uint16_t i) {
  * rgstrs A, B, C, D, E, H, or L, assembled as follows in the object
  * code.
  * <p/>
- * S is set if result is negative; reset otherwise Z is set if result is
- * zero; reset otherwise H is set if carry from bit 3; reset otherwise P/V
- * is set if r was 7FH before operation; reset otherwise N is reset C is not
- * affected
+ * S is set if result is negative; reset otherwise 
+ * Z is set if result is zero; reset otherwise 
+ * H is set if carry from bit 3; reset otherwise 
+ * P/V is set if r was 7FH before operation; reset otherwise 
+ * N is reset 
+ * C is not affected
  */
 void Processor::INC(std::uint16_t memoryAddress) {
     registers->setParityOverflowFlag(memory->read(memoryAddress) == 0x7F);
 
-    std::uint8_t newValue = (memory->read(memoryAddress) + 1) & 0xff;
+    std::uint8_t newValue = memory->read(memoryAddress) + 1;
     memory->write(memoryAddress, newValue);
 
     registers->setSignFlag(newValue & 0x80);
@@ -3578,7 +3569,7 @@ void Processor::INC(std::uint16_t memoryAddress) {
 void Processor::INC(Rgstr reg) {
     registers->setParityOverflowFlag(registers->getRegisterValue(reg) == 0x7F);
 
-    std::uint8_t newValue = ((registers->getRegisterValue(reg) + 1) & 0xff);
+    std::uint8_t newValue = registers->getRegisterValue(reg) + 1;
 
     registers->setRegister(reg, newValue);
 
@@ -3795,7 +3786,7 @@ void Processor::NEG() {
     registers->setZeroFlag(registers->getA() == 0);
     registers->setNFlag(true);
     registers->setCFlag(registers->getA() != 0);
-    registers->setA(~registers->getA() & BOOST_BINARY(11111111));
+    registers->setA(~registers->getA() & 0xFF);
     // setHFlag(false);
 }
 
@@ -3819,7 +3810,7 @@ void Processor::OR(std::uint8_t immediateValue) {
 
     registers->setNFlag(false);
     registers->setCFlag(false);
-    // P/V
+    registers->setParityOverflowFlag(parity(result));
 }
 
 void Processor::OR(std::uint16_t memoryAddress) {
@@ -4006,7 +3997,9 @@ void Processor::RL(std::uint16_t memoryAddress) {
  * copied to bit 0.
  */
 void Processor::RL(Rgstr r) {
-    unimplemented("RL");
+    std::uint8_t tempA = registers->getRegisterValue(r);
+    registers->setRegister(r, tempA << 1 | (registers->getCFlag() ? 1 : 0));
+    registers->setCFlag(tempA & 0x80);
 }
 
 /**
@@ -4015,17 +4008,31 @@ void Processor::RL(Rgstr r) {
  * is copied to bit 0. Bit 0 is the least-significant bit.
  */
 void Processor::RLA() {
-    std::uint8_t tempA = registers->getA();
-    registers->setA(((registers->getA() << 1) & BOOST_BINARY(11111111)) | (registers->getCFlag() ? 1 : 0));
-    registers->setCFlag((tempA & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
+    RL(Rgstr::A);
 }
 
 void Processor::RLC(std::uint16_t memoryAddress) {
     unimplemented("RLC");
 }
 
+/*
+ * The contents of register r are rotated left 1-bit position. The content of bit 7
+is copied to the Carry flag and also to bit 0.
+
+S is not affected.
+Z is not affected.
+H is reset.
+P/V is not affected.
+N is reset.
+C is data from bit 0 of Accumulator.
+
+*/
 void Processor::RLC(Rgstr rgstr) {
-    unimplemented("RLC");
+    std::uint8_t tempA = registers->getRegisterValue(rgstr);
+    registers->setRegister(rgstr, tempA << 1 | ((tempA >> 7) & 0x1));
+    registers->setCFlag((tempA >> 7) & 0x1);
+    registers->setHFlag(false);
+    registers->setNFlag(false);
 }
 
 /**
@@ -4037,20 +4044,53 @@ void Processor::RLC(Rgstr rgstr) {
  * reset C is data from bit 7 of Accumulator
  */
 void Processor::RLCA() {
-    registers->setA(((registers->getA() << 1) & BOOST_BINARY(11111111)) | ((registers->getA() >> (8 - 1)) & BOOST_BINARY(00000001)));
-    registers->setCFlag((registers->getA() & BOOST_BINARY(1)) == 1);
+    RLC(Rgstr::A);
 }
 
 void Processor::RLD() {
     unimplemented("RLD");
 }
 
+/*The contents of operand m are rotated right 1-bit position through the Carry
+flag. The content of bit 0 is copied to the Carry flag and the previous
+content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.
+
+S is set if result is negative; reset otherwise
+Z is set if result is zero; reset otherwise
+H is reset
+P/V is set if parity even; reset otherwise,
+N is reset
+C is data from bit 0 of source register
+
+*/
 void Processor::RR(std::uint16_t memoryAddress) {
-    unimplemented("RR");
+    std::uint8_t tempA = memory->read(memoryAddress);
+    
+    std::uint8_t f2 = registers->getCFlag();
+    registers->setCFlag(tempA & 1);
+    
+    std::uint8_t result = (tempA >> 1) | (f2 << 7);
+    
+    memory->write(memoryAddress, result);
+    registers->setSignFlag(result & 0x80);
+    registers->setZeroFlag(result == 0x0);
+    registers->setHFlag(false);
+    registers->setParityOverflowFlag(parity(result));
+    registers->setNFlag(false);
 }
 
 void Processor::RR(Rgstr r) {
-    unimplemented("RR");
+    std::uint8_t tempA = registers->getRegisterValue(r);
+    
+    std::uint8_t f2 = registers->getCFlag();
+    registers->setCFlag(tempA & 1);
+    std::uint8_t result = (tempA >> 1) | (f2 << 7);
+    registers->setRegister(r, result);
+    registers->setSignFlag(result & 0x80);
+    registers->setZeroFlag(result == 0x0);
+    registers->setHFlag(false);
+    registers->setParityOverflowFlag(parity(result));
+    registers->setNFlag(false);
 }
 
 /**
@@ -4059,10 +4099,7 @@ void Processor::RR(Rgstr r) {
  * is copied to bit 7. Bit 0 is the least-significant bit.
  */
 void Processor::RRA() {
-
-    std::uint8_t f2 = registers->getCFlag() ? BOOST_BINARY(1) : 0;
-    registers->setCFlag((BOOST_BINARY(1) & registers->getA()) == 1);
-    registers->setA((registers->getA() >> 1) | (f2 << (8 - 1)));
+    RR(Rgstr::A);
 }
 
 void Processor::RRC(std::uint16_t memoryAddress) {
@@ -4070,7 +4107,15 @@ void Processor::RRC(std::uint16_t memoryAddress) {
 }
 
 void Processor::RRC(Rgstr r) {
-    unimplemented("RRC");
+    std::uint8_t tempA = registers->getRegisterValue(r);
+    registers->setCFlag(registers->getA() & 1);
+    std::uint8_t result = (tempA >> 1) | ((tempA << 7) & 0x80);
+    registers->setRegister(r, result);
+    registers->setSignFlag(result & 0x80);
+    registers->setZeroFlag(result == 0x0);
+    registers->setHFlag(false);
+    registers->setParityOverflowFlag(parity(result));
+    registers->setNFlag(false);
 }
 
 /**
@@ -4079,9 +4124,7 @@ void Processor::RRC(Rgstr r) {
  * the least- significant bit.
  */
 void Processor::RRCA() {
-    registers->setCFlag((BOOST_BINARY(1) & registers->getA()) == 1);
-    registers->setA((registers->getA() >> 1) | ((registers->getA() << (8 - 1)) & BOOST_BINARY(10000000)));
-    registers->setNFlag(false);
+    RRC(Rgstr::A);
 }
 
 /**
@@ -4097,10 +4140,10 @@ void Processor::RRD() {
     std::uint8_t priorMemory = memory->read(registers->getHL());
     std::uint8_t priorAccumulator = registers->getA();
 
-    registers->setA((priorMemory & BOOST_BINARY(1111)) | (priorAccumulator & BOOST_BINARY(11110000)));
+    registers->setA((priorMemory & 0xF) | (priorAccumulator & 0xF0));
 
     memory->write(registers->getHL(),
-                  (priorMemory >> 4) | ((priorAccumulator & BOOST_BINARY(1111)) << 4));
+                  (priorMemory >> 4) | ((priorAccumulator & 0xF) << 4));
 }
 
 /**
@@ -4142,7 +4185,7 @@ C is set if borrow; reset otherwise
 */
 void Processor::SBC(RegisterPair h1, RegisterPair h2) {
     uint16_t oldvalue = registers->getRegisterPairValue(h1);
-    uint16_t newvalue = oldvalue - registers->getRegisterPairValue(h2) - (registers->getCFlag() ? 1 : 0);
+    uint16_t newvalue = oldvalue - registers->getRegisterPairValue(h2) - registers->getCFlag();
     registers->setRegisterPair(h1, newvalue);
     
     registers->setSignFlag(newvalue & 0x8000);
@@ -4160,7 +4203,7 @@ void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) {
 
 void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
     uint8_t oldvalue = registers->getRegisterValue(a);
-    uint8_t newvalue = oldvalue - nextByte - (registers->getCFlag() ? 1 : 0);
+    uint8_t newvalue = oldvalue - nextByte - registers->getCFlag();
     registers->setRegister(a, newvalue);
     
     registers->setSignFlag(newvalue & 0x80);
@@ -4242,6 +4285,10 @@ void Processor::SRL(Rgstr m) {
     registers->setRegister(m, val >> 1);
 }
 
+void Processor::SUB(Rgstr reg) {
+    SUB(registers->getRegisterValue(reg));
+}
+
 /*
  * For SUB instructions
  * S is set if result is negative; reset otherwise
@@ -4251,13 +4298,10 @@ P/V is set if overflow; reset otherwise
 N is set
 C is set if borrow; reset otherwise
 */
-void Processor::SUB(Rgstr reg) {
-    SUB(registers->getRegisterValue(reg));
-}
-
-// TODO: flags incomplete
 void Processor::SUB(std::uint8_t n) {
-    registers->setA(_compare(n));
+    std::uint8_t result = _compare(n);
+    registers->setA(result);
+    registers->setF((registers->getF() & ~0x28) ^ (result & 0x28));
 }
 
 void Processor::SUB(std::uint16_t memoryAddress) {
@@ -4287,7 +4331,6 @@ bool parity(std::uint8_t val) {
 * C is reset
 */
 void Processor::XOR(std::uint8_t val) {
-    //TODO: Update tests to test flags!
     std::uint8_t newvalue = (registers->getA() ^ val);
     registers->setA(newvalue);
 
@@ -4331,7 +4374,6 @@ bool Processor::isConditionTrue(Condition condition) {
     } else if (condition == Condition::M) {
         retval = registers->getSignFlag();
     }
-    //logger.debug(retval ? "True" : "False");
     return retval;
 }
 

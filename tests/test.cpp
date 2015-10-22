@@ -249,15 +249,24 @@ TEST_CASE("CP s") {
     comp->getMemory()->write(0x1, 0x20);
     comp->getProcessor()->getRegisters()->setA(0x0);
     comp->getProcessor()->process();
-    //REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
     std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
     std::cout <<(std::uint16_t)flags <<std::endl;
     REQUIRE(flags == (std::uint16_t)0xA3);
-    //            0b10100110
     // required = 0b10100011
 }
 
-
+TEST_CASE("CP s Test2") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xFE);
+    comp->getMemory()->write(0x1, 0x80);
+    comp->getProcessor()->getRegisters()->setA(0x7F); // 1111111 - 10000000
+    comp->getProcessor()->process();
+    std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
+    std::cout <<(std::uint16_t)flags <<std::endl;
+    REQUIRE(flags == (std::uint16_t)0x87);
+    //act 0b10000010
+    //req 0b10000111
+}
 
 TEST_CASE("DEC r 8Bit") {
     /*
@@ -2179,9 +2188,23 @@ TEST_CASE("RRCTest") {
     REQUIRE(true == false);
 }
 
+/*
+ *  If the contents of the HL register pair are 4343H, and the contents of
+memory location 4343H and the Carry flag are
+
+at execution of RR (HL) the contents of location 4343H and the Carry
+flag are
+*/
 TEST_CASE("RRTest") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+    comp->getMemory()->write(0x0, 0xCB);
+    comp->getMemory()->write(0x1, 0x1E);
+    comp->getMemory()->write(0x4343, BOOST_BINARY(11011101));
+    comp->getProcessor()->getRegisters()->setCFlag(false);
+    comp->getProcessor()->getRegisters()->setHL(0x4343);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getMemory()->read(0x4343) == BOOST_BINARY(01101110));
+    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 /*-

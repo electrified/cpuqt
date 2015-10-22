@@ -21,9 +21,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     BadgerComputer* computer;
     
-    QImage image = QImage(640, 480, QImage::Format_RGB32);
-    QRgb valueOn = qRgb(255, 0, 0);
-    QRgb valueOff = qRgb(0, 255, 0);
+    QImage image = QImage(256, 192, QImage::Format_RGB32);
+    QRgb valueOn = qRgb(0x0, 0x0, 0x0);
+    QRgb valueOff = qRgb(0xCD, 0xCD, 0xCD);
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -39,6 +39,7 @@ private:
     void add_recent_menu_item(QString rom_path);
     void update_register_values();
     void drawPixel(std::uint16_t x, std::uint16_t y, bool on);
+    void updateScreen();
 private slots:
     void loadRom();
     void loadRom(QString file_path);

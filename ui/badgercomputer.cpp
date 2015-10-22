@@ -20,7 +20,8 @@ BadgerComputer::BadgerComputer()
 // //     addBreakpoint(0x11e2); 
 //      addBreakpoint(0x1219); 
 //           addBreakpoint(0xeeb); 
-          addBreakpoint(0x1295); 
+//           addBreakpoint(0x1295); 
+    addBreakpoint(0xb24); 
 //     addBreakpoint(0x11e2); 
 //     addBreakpoint(0x1be4);
 }
