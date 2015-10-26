@@ -64,6 +64,14 @@ qt5_add_resources(APP_RESOURCES ui/resources/app.qrc)
 include_directories (${PROJECT_SOURCE_DIR})
 include_directories (${PROJECT_BINARY_DIR})
 
+add_library (GuiLib STATIC
+    ${GuiLib_src}
+    ${GuiLib_hdr_moc}
+    ${GuiLib_ui_moc}
+)
+
+target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg)
+
 set(Z80_SRC
     Z80/Condition.hpp Z80/Condition.cpp
     Z80/disassembler.cpp Z80/disassembler.h
@@ -89,14 +97,6 @@ set(Z80_SRC
 add_library(Z80 STATIC
     ${Z80_SRC}
 )
-
-add_library (GuiLib STATIC
-    ${GuiLib_src}
-    ${GuiLib_hdr_moc}
-    ${GuiLib_ui_moc}
-)
-
-target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg)
 
 set (tooltests_SRC
 tests/test_computer.h tests/test_computer.cpp

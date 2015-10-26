@@ -33,7 +33,7 @@ void MainWindow::gfxUpdated(std::uint16_t i) {
         std::uint8_t data = computer->memory->read(i);
         for (std::uint8_t j = 0; j < 8; ++j) {
             std::uint8_t xCoord = (x * 8) + j;
-            bool on = data & (1 << j);
+            bool on = (data << j) & 0x80;
             drawPixel(xCoord,y,on);
             //std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << " i: " << i << std::endl;
         }
