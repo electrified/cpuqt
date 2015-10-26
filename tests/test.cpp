@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include <boost/utility/binary.hpp>
 
@@ -24,7 +23,7 @@ ADC A, (HL) the Accumulator contains 27H.
 TEST_CASE("ADCA_HL_Test", "Instructions") {
 //    std::unique_ptr<TestComputer> comp = setupComputer();
     TestComputer* comp = new TestComputer();
-    comp->getMemory()->write((std::uint16_t)0, (std::uint8_t)0x8E);
+    comp->getMemory()->write(0x0, 0x8E);
     comp->getMemory()->write(0x6666, 0x10);
     comp->getProcessor()->getRegisters()->setA(0x16);
     comp->getProcessor()->getRegisters()->setHL(0x6666);
@@ -96,14 +95,17 @@ TEST_CASE("ADCArTest2") {
 }
 
 
-TEST_CASE("ADDHLssTest") {
+TEST_CASE("ADD HL ss") {
     std::unique_ptr<TestComputer> comp = setupComputer();
+    // add hl, de
     comp->getMemory()->write(0x0, BOOST_BINARY(00011001));
 
-    comp->getProcessor()->getRegisters()->setDE(45);
-    comp->getProcessor()->getRegisters()->setHL(12);
+    comp->getProcessor()->getRegisters()->setDE(0xffff);
+    comp->getProcessor()->getRegisters()->setHL(0x4000);
     comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 57);
+    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3fff);
+    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+    //REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 
@@ -214,8 +216,59 @@ TEST_CASE("CPrTest2") {
     REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
 
+// CP 20
+// Replicating test in spectrum rom at 0xc4e
 
-TEST_CASE("DECr8BitTest") {
+/*
+The flag register has the following structure:
+Bit	7	6	5	4	3	2	1	0
+Flag	S	Z	F5	H	F3	P/V	N	C
+The flags are set according to the result of the last instruction. The standard behaviour is:
+
+S - Sign flag
+Set if the 2-complement value is negative (copy of MSB)
+Z - Zero flag
+Set if the value is zero
+F5 - undocumented flag
+Copy of bit 5
+H - Half Carry
+Carry from bit 3 to bit 4
+F3 - undocumented flag
+Copy of bit 3
+P/V - Parity or Overflow
+Parity set if even number of bits set
+Overflow set if the 2-complement result does not fit in the register
+N - Subtract
+Set if the last operation was a subtraction
+C - Carry
+Set if the result did not fit in the register
+*/
+TEST_CASE("CP s") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xFE);
+    comp->getMemory()->write(0x1, 0x20);
+    comp->getProcessor()->getRegisters()->setA(0x0);
+    comp->getProcessor()->process();
+    std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
+    std::cout <<(std::uint16_t)flags <<std::endl;
+    REQUIRE(flags == (std::uint16_t)0xA3);
+    // required = 0b10100011
+}
+
+TEST_CASE("CP s Test2") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xFE);
+    comp->getMemory()->write(0x1, 0x80);
+    comp->getProcessor()->getRegisters()->setA(0x7F); // 1111111 - 10000000
+    comp->getProcessor()->process();
+    std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
+    std::cout <<(std::uint16_t)flags <<std::endl;
+    REQUIRE(flags == (std::uint16_t)0x87);
+    //act 0b10000010
+    //req 0b10000111
+}
+
+TEST_CASE("DEC r 8Bit") {
     /*
      * f the D register contains byte 2AH, at execution of DEC D register D
      * contains 29H.
@@ -225,6 +278,15 @@ TEST_CASE("DECr8BitTest") {
     comp->getProcessor()->getRegisters()->setD(0x2a);
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x29);
+}
+
+TEST_CASE("DEC r 16Bit") {
+    // DEC HL
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0x2b);
+    comp->getProcessor()->getRegisters()->setHL(0x0);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFFF);
 }
 
 TEST_CASE("DECssTest") {
@@ -301,9 +363,8 @@ TEST_CASE("EX_SP_HLTest") {
 }
 
 
-TEST_CASE("EX_SP_IXTest") {
+TEST_CASE("EX (SP) IX") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-//    comp->getProcessor()->getRegisters()->setMemory(new int[64 * 1024]);
     comp->getMemory()->write(0x0, 0xDD);
     comp->getMemory()->write(0x1, 0xE3);
     comp->getMemory()->write(0x100, 0x90);
@@ -319,9 +380,8 @@ TEST_CASE("EX_SP_IXTest") {
 }
 
 
-TEST_CASE("EX_SP_IYTest") {
+TEST_CASE("EX (SP) IY") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-//    comp->getProcessor()->getRegisters()->setMemory(new int[64 * 1024]);
     comp->getMemory()->write(0x0, 0xFD);
     comp->getMemory()->write(0x1, 0xE3);
     comp->getMemory()->write(0x100, 0x90);
@@ -471,7 +531,7 @@ TEST_CASE("JPnnTest") {
 * below that also specifies the corresponding cc bit fields in the
 * assembled object code.
 */
-TEST_CASE("JP NZ nn Test") {
+TEST_CASE("JP NZ nn") {
     std::unique_ptr<TestComputer> comp = setupComputer();
 
     comp->getMemory()->write(0, BOOST_BINARY(11000010));
@@ -486,24 +546,21 @@ TEST_CASE("JP NZ nn Test") {
 }
 
 
-TEST_CASE("JReTest") {
+TEST_CASE("JR e") {
     /*-
      * To jump forward five locations from
     address 480, the following assembly
     language statement is used
     JR $+5
 
-
-    The resulting object code and fi
-    nal PC value is shown below:
+    The resulting object code and final PC value is shown below:
     Location Instruction
     480 18
     481 03
     482 -
     483 -
     484 -
-    485 ←
-    PC after jump
+    485 ← PC after jump
      */
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x480, 0x18);
@@ -514,6 +571,18 @@ TEST_CASE("JReTest") {
 
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x485);
+}
+
+TEST_CASE("JR e negative") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x480, 0x18);
+    comp->getMemory()->write(0x481, BOOST_BINARY(11111101)); // -3
+    comp->getProcessor()->getRegisters()->setPC(0x480);
+
+    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
+
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x47F);
 }
 
 /**
@@ -761,7 +830,7 @@ TEST_CASE("LDddnnTest") {
 
 
 
-TEST_CASE("LDHL_nn_Test") {
+TEST_CASE("LD HL (nn)") {
     /*
      * If address 2045H contains 37H , and address 2046H contains A1H , at
      * instruction LD HL , (2045H) the HL register pair contains A137H .
@@ -802,19 +871,16 @@ TEST_CASE("LD I A") {
     REQUIRE( comp->getProcessor()->getRegisters()->getF() == 0x0);
 }
 
-TEST_CASE("LDRATest") {
-    /*
-     * The contents of the Accumulator are loaded to the Memory Refresh
-     * register R.
-     */
-
+/*
+* The contents of the Accumulator are loaded to the Memory Refresh
+* register R.
+*/
+TEST_CASE("LD R A") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xED);
     comp->getMemory()->write(0x1, 0x4F);
     comp->getProcessor()->getRegisters()->setA(0xf9);
-
     REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0x0);
-
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0xf9);
 //		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
@@ -848,7 +914,6 @@ TEST_CASE("LDrn_Test") {
     REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0xA5);
 }
 
-
 TEST_CASE("LDRR_altTest") {
     /*
      * The contents of the Accumulator are loaded to the Memory Refresh
@@ -868,8 +933,7 @@ TEST_CASE("LDRR_altTest") {
     REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0xf9);
 }
 
-
-TEST_CASE("LDSP_HL_Test") {
+TEST_CASE("LD SP (HL)") {
     /*
      * The contents of the Accumulator are loaded to the Memory Refresh
      * register R.
@@ -1369,16 +1433,16 @@ TEST_CASE("AND_iyplusd_Test") {
  * and bit 6 in memory location 2004H still contains 1.
  * Bit 0 in memory location 2004H is the least-significant bit.
 */
-TEST_CASE("BITb_IYplusd_Test") {
+TEST_CASE("BIT b IY+d") {
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, 0xFD);
     comp->getMemory()->write(0x1, 0xCB);
-    comp->getMemory()->write(0x2, BOOST_BINARY(100));
-    comp->getMemory()->write(0x3, BOOST_BINARY(01110110));
-    comp->getMemory()->write(0x2004, BOOST_BINARY(1110110)); // data with bit 6 == 1
-    comp->getProcessor()->getRegisters()->setIX(0x2000);
-    REQUIRE( (comp->getMemory()->read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag() == false);
+    comp->getMemory()->write(0x2, 0x1);
+    comp->getMemory()->write(0x3, BOOST_BINARY(01001110));
+    comp->getMemory()->write(0x5c3b, 0x0);
+    comp->getProcessor()->getRegisters()->setIY(0x5c3a);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag() == true);
 }
 
 /*
@@ -2124,9 +2188,23 @@ TEST_CASE("RRCTest") {
     REQUIRE(true == false);
 }
 
+/*
+ *  If the contents of the HL register pair are 4343H, and the contents of
+memory location 4343H and the Carry flag are
+
+at execution of RR (HL) the contents of location 4343H and the Carry
+flag are
+*/
 TEST_CASE("RRTest") {
     std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+    comp->getMemory()->write(0x0, 0xCB);
+    comp->getMemory()->write(0x1, 0x1E);
+    comp->getMemory()->write(0x4343, BOOST_BINARY(11011101));
+    comp->getProcessor()->getRegisters()->setCFlag(false);
+    comp->getProcessor()->getRegisters()->setHL(0x4343);
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getMemory()->read(0x4343) == BOOST_BINARY(01101110));
+    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 /*-
@@ -2233,6 +2311,17 @@ TEST_CASE("SBC HL DE") {
     comp->getProcessor()->getRegisters()->setCFlag(true); //carry
     comp->getProcessor()->process();
     REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x8887);
+}
+
+TEST_CASE("SBC HL DE wrap around") {
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, 0xED);
+    comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
+    comp->getProcessor()->getRegisters()->setHL(0x3FFF);
+    comp->getProcessor()->getRegisters()->setDE(0xFFFF);
+    comp->getProcessor()->getRegisters()->setCFlag(false); //carry
+    comp->getProcessor()->process();
+    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4000);
 }
 
 TEST_CASE("SLA") {

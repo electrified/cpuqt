@@ -6,6 +6,9 @@ BadgerIO::BadgerIO()
 
 }
 
+BadgerIO::~BadgerIO() {
+}
+
 std::uint8_t BadgerIO::read(std::uint16_t address) {
     int returnValue = 0;
     if ((address & UART_PORT) == UART_PORT) {

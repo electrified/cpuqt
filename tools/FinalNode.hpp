@@ -3,8 +3,8 @@
 #include <map>
 #include <fstream>
 
-#include "tools/Switch.hpp"
-#include "tools/Instruction.hpp"
+#include "Switch.hpp"
+#include "Instruction.hpp"
 
 class GetData;
 

@@ -82,11 +82,11 @@ void Disassembler::AND(const MemoryAddress memoryAddress) {
 }
 
 void Disassembler::BIT(const std::uint8_t i, const Rgstr r) {
-    add(boost::str(boost::format("BIT %d, %s") % i % registers::toString(r)));
+    add(boost::str(boost::format("BIT %d, %s") % (int)i % registers::toString(r)));
 }
 
 void Disassembler::BIT(const std::uint8_t i, const MemoryAddress memoryAddress) {
-    add(boost::str(boost::format("BIT %d, %s") % i % memoryAddress.toString()));
+    add(boost::str(boost::format("BIT %d, %s") % (int)i % memoryAddress.toString()));
 }
 
 void Disassembler::CALL(const Condition c, const MemoryAddress memoryAddress) {

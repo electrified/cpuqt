@@ -1,15 +1,14 @@
 #include "main_window.h"
 #include "ui_main_window.h"
-/*
-#include <iostream>
-#include <fstream>
 
-#include <vector>*/
+#include <iostream>
+
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtWidgets/QTableView>
 #include <QSettings>
+#include <QImage>
 
 #include "ui/qtbadgerio.h"
 #include "ui/qtbadgermemory.h"
@@ -17,6 +16,36 @@
 #include "ui/cpm_io.h"
 #include "about_box.h"
 #include "computer/utils.h"
+
+
+void MainWindow::gfxUpdated(std::uint16_t i) {       
+    /*
+     * Y Coordinate bit layout (MSB to LSB):
+        zzxxxnnn
+
+        Register pair bit layout (R are the bits for the x-axis offset, 010 provides the base address $4000):
+        010z znnn xxxR RRRR
+    */
+    if (i < 0x5800) {
+        std::uint16_t x = i & 0x1f; //get bottom 5 bits
+        std::uint16_t y = ((i & 0x700) >> 8) | ((i & 0xe0) >> 2) | ((i & 0x1800) >> 5);
+        
+        std::uint8_t data = computer->memory->read(i);
+        for (std::uint8_t j = 0; j < 8; ++j) {
+            std::uint8_t xCoord = (x * 8) + j;
+            bool on = (data << j) & 0x80;
+            drawPixel(xCoord,y,on);
+            //std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << " i: " << i << std::endl;
+        }
+    } else {
+        // colour stuff
+    }
+}
+
+void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) {
+    image.setPixel(x, y, on ? valueOn : valueOff);
+}
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -41,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
 
     connect((QtBadgerIO*)computer->io, &QtBadgerIO::consoleTextOutput, this, &MainWindow::outputCharacterToConsole);
+    
+    connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
 
     //this is ther text output for cp/m
 //     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
@@ -165,6 +196,11 @@ void MainWindow::stop()
 void MainWindow::update()
 {
     computer->doOneScreenRefreshesWorth();
+    updateScreen();
+}
+
+void MainWindow::updateScreen() {
+    ui->gfxLabel->setPixmap(QPixmap::fromImage(image).scaled(512, 384));
 }
 
 void MainWindow::showAboutBox() {
@@ -182,12 +218,15 @@ void MainWindow::update_register_values() {
     this->ui->ix_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIX()));
     this->ui->iy_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIY()));
     this->ui->hl_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getHL()));
-    this->ui->a_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getA()));
-    this->ui->b_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getB()));
-    this->ui->c_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getC()));
-    this->ui->d_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getD()));
-    this->ui->e_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getE()));
-    this->ui->f_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getF()));
+    this->ui->af_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getAF()));
+    this->ui->bc_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getBC()));
+    this->ui->de_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getDE()));
+    this->ui->afalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getAF_alt()));
+    this->ui->bcalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getBC_alt()));
+    this->ui->dealt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getDE_alt()));
+    this->ui->hlalt_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getHL_alt()));
+    this->ui->iff1_value->setText(utils::int_to_hex(computer->processor->getRegisters()->isIFF1()));
+    this->ui->iff2_value->setText(utils::int_to_hex(computer->processor->getRegisters()->isIFF2()));
 }
 
 void MainWindow::step()
@@ -195,6 +234,7 @@ void MainWindow::step()
     computer->step();
     update_register_values();
     emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+    updateScreen();
 }
 
 void MainWindow::reset()

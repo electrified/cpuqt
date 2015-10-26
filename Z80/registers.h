@@ -6,12 +6,46 @@
 #include "Z80/RegisterPair.hpp"
 #include <boost/utility/binary.hpp>
 #include "Logger.h"
+#include <bitset>
+
+union WideReg {
+    std::uint16_t all;
+    struct {
+        std::uint8_t low;
+        std::uint8_t high;
+    } bytes;
+    bool bit[16];
+};
+
+// union AFReg {
+//     std::uint16_t all;
+//     struct {
+//         std::uint8_t low;
+//         std::uint8_t high;
+//     };
+//     struct {
+//         std::uint8_t a;
+//         std::bitset<8> f;
+//     };
+// };
 
 class Registers {
     Logger logger;
-    std::uint8_t A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, H = 0, L = 0, I = 0, R = 0;
-    std::uint16_t IX = 0, IY = 0, SP = 0;
-    std::uint8_t A_alt = 0, B_alt = 0, C_alt = 0, D_alt = 0, E_alt = 0, F_alt = 0, H_alt = 0, L_alt = 0;
+    WideReg IR;
+    WideReg IX;
+    WideReg IY; 
+    WideReg SP;
+    
+    WideReg AF;
+    WideReg BC;
+    WideReg DE;
+    WideReg HL;
+    
+    WideReg AF_alt;
+    WideReg BC_alt;
+    WideReg DE_alt;
+    WideReg HL_alt;
+    
     //interrupt enable flip flops
     bool IFF1 = false;
     bool IFF2 = false;
@@ -19,7 +53,6 @@ class Registers {
     //interrupt mode
     std::uint8_t _IM = 0;
     std::uint16_t addressBus = 0;
-    
 public:
     /*
 * Program Counter (PC) The program counter holds the 16-bit address of the
@@ -29,6 +62,7 @@ public:
 * in the PC, overriding the incrementer.
 */
     std::uint16_t PC = 0;
+
     Registers();
 
     std::uint16_t getPC();
@@ -167,6 +201,7 @@ public:
 
     void setHalted(bool val);
 
+
     bool isIFF1();
 
     void setIFF1(bool iFF1);
@@ -175,9 +210,9 @@ public:
 
     void setIFF2(bool iFF2);
 
-    std::uint16_t getRegisterPairValue(const RegisterPair rp);
+    std::uint16_t getRegisterPairValue(const RegisterPair register);
 
-    std::uint8_t getRegisterValue(const Rgstr rgstr);
+    std::uint8_t getRegisterValue(const Rgstr register);
 
     bool getNFlag();
 
@@ -203,11 +238,11 @@ public:
 
     void setZeroFlag(bool flag);
 
-    void setRegister(Rgstr rgstr, std::uint8_t value);
+    void setRegister(Rgstr register, std::uint8_t value);
 
-    void setRegisterPair(RegisterPair rgstr, std::uint16_t sixteenBit);
+    void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
 
-    void setRegisterPair(RegisterPair rgstr, std::uint8_t lowOrder, std::uint8_t highOrder);
+    void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 
 };
 

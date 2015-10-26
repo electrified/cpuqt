@@ -1,7 +1,7 @@
-#include "tools/InstructionTableToCode.hpp"
+#include "InstructionTableToCode.hpp"
 
-#include "tools/Case.hpp"
-#include "tools/GetData.hpp"
+#include "Case.hpp"
+#include "GetData.hpp"
 
 #include <string>
 #include <fstream>
@@ -12,11 +12,9 @@
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/filesystem.hpp>
 
-using namespace std;
-
 int main(int argc, char** argv)
 {
-    cout << "Instruction decoder generator v2" << endl;
+    std::cout << "Instruction decoder generator v2" << std::endl;
     InstructionTableToCode parser;
     parser.main();
     return 0;
@@ -24,9 +22,9 @@ int main(int argc, char** argv)
 
 void InstructionTableToCode::main() {
     auto instructions = this->parse();
-    cout << "grouping" <<endl;
+    std::cout << "grouping" << std::endl;
     auto s = this->groupOpcodes(&instructions);
-    cout << "writing code" <<endl;
+    std::cout << "writing code" << std::endl;
     this->writeCode(s);
 }
 
@@ -37,7 +35,7 @@ InstructionTableToCode::InstructionTableToCode() {
 std::vector<Instruction> InstructionTableToCode::parse()
 {
     std::vector<Instruction> theInstructions;
-    string line;
+    std::string line;
     ifstream file ("z80sean.txt");
     if (file.is_open()) {
         for (int i = 0; i < 33; i++) {

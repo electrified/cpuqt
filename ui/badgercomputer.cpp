@@ -15,8 +15,16 @@ BadgerComputer::BadgerComputer()
 //     addBreakpoint(0x1b3e); //inc counter
 //     addBreakpoint(0x1b41); //shift
 //     addBreakpoint(0x1b45); //check shift
-    addBreakpoint(0x1cad); 
+//      addBreakpoint(0x11ef); 
+//     addBreakpoint(0x11da); 
+// //     addBreakpoint(0x11e2); 
+//      addBreakpoint(0x1219); 
+//           addBreakpoint(0xeeb); 
+//           addBreakpoint(0x1295); 
+//     addBreakpoint(0xb24); 
+//     addBreakpoint(0x11e2); 
 //     addBreakpoint(0x1be4);
+    addBreakpoint(0x15f2);
 }
 
 BadgerComputer::~BadgerComputer()
@@ -34,12 +42,12 @@ void BadgerComputer::reset() {
 void BadgerComputer::doOneScreenRefreshesWorth() {
     // At 4Mhz, 20 milliseconds of execution corresponds to 80,000 cycles
     for (std::uint32_t i = 0; i < 70000; i++) {
-//         if (!skipBreakpoint && breakpoints.find(processor->getRegisters()->getPC()) != breakpoints.end()) {
-//             skipBreakpoint = true;
-//             emit hitbreakpoint();
-//             std::cout << "breakpoint hit!" << std::endl;
-//             break;
-//         } else 
+        if (!skipBreakpoint && breakpoints.find(processor->getRegisters()->getPC()) != breakpoints.end()) {
+            skipBreakpoint = true;
+            emit hitbreakpoint();
+            std::cout << "breakpoint hit!" << std::endl;
+            break;
+        } else 
         {
             skipBreakpoint = false;
             processor->process();

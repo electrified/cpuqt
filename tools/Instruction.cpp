@@ -1,4 +1,4 @@
-#include "tools/Instruction.hpp"
+#include "Instruction.hpp"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -114,7 +114,7 @@ vector<string> Instruction::getMethodParams()
     boost::split(parts, str, boost::is_any_of(" ,"));
 
     if(parts.size() > 1) {
-        for (int i =1; i < parts.size(); i++) {
+        for (std::uint16_t i =1; i < parts.size(); i++) {
             string part = parts[i];
             if(boost::starts_with(part,"(")) {
                 stringstream paramStream;
@@ -126,7 +126,7 @@ vector<string> Instruction::getMethodParams()
                 if(part.find("+") != std::string::npos) {
                     vector<string>  innerParts;
                     boost::split(innerParts, part, boost::is_any_of("+"));
-                    for(int j = 0; j < innerParts.size(); j++) {
+                    for(std::uint16_t j = 0; j < innerParts.size(); j++) {
                         string innerPart = innerParts.at(j);
                         paramStream << getParam(innerPart, true, dataParamsUsed, dataParams);
                         dataParamsUsed += paramsRequired(innerPart);

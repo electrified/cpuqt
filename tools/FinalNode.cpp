@@ -1,4 +1,4 @@
-#include "tools/FinalNode.hpp"
+#include "FinalNode.hpp"
 
 FinalNode::FinalNode()
 {

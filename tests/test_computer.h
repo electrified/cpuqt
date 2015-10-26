@@ -10,15 +10,14 @@ class TestComputer
 {
     IO* io;
     BadgerMemory* memory;
-    Registers* registers;
-    EmuAlu* alu;
+//     Registers* registers;
+//     EmuAlu* alu;
     Processor* processor;
 public:
     TestComputer();
     ~TestComputer();
     BadgerMemory* getMemory();
     IO* getIO();
-    void setIO(IO* io);
     Processor* getProcessor();
 };
 
