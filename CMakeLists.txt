@@ -1,4 +1,17 @@
 cmake_minimum_required(VERSION 3.0.2)
+
+macro(use_cxx11)
+  if (CMAKE_VERSION VERSION_LESS "3.1")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      set (CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
+    endif ()
+  else ()
+    set (CMAKE_CXX_STANDARD 11)
+  endif ()
+endmacro(use_cxx11)
+
+use_cxx11()
+
 set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
@@ -118,20 +131,20 @@ add_executable(tooltests ${tooltests_SRC})
 
 add_executable(zexrunner ${zexrunner_SRC})
 
-set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
-set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
-
-set_property(TARGET Z80 PROPERTY CXX_STANDARD 11)
-set_property(TARGET Z80 PROPERTY CXX_STANDARD_REQUIRED ON)
-
-set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
-set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
-
-set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
-set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
-
-set_property(TARGET zexrunner PROPERTY CXX_STANDARD 11)
-set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
+# set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
+# set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
+# 
+# set_property(TARGET Z80 PROPERTY CXX_STANDARD 11)
+# set_property(TARGET Z80 PROPERTY CXX_STANDARD_REQUIRED ON)
+# 
+# set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
+# set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
+# 
+# set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
+# set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
+# 
+# set_property(TARGET zexrunner PROPERTY CXX_STANDARD 11)
+# set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(cpuqt2 GuiLib Z80 ${Boost_LIBRARIES})
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
@@ -225,6 +238,7 @@ if(WIN32)
         endforeach()
 endif()
 get_cmake_property(_variableNames VARIABLES)
+
 #foreach (_variableName ${_variableNames})
 #    message(STATUS "${_variableName}=${${_variableName}}")
 #endforeach()

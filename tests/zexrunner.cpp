@@ -12,7 +12,6 @@ int main(int argc, char** argv)
     loadIntoMemory2(comp->getMemory(), 0x100, "./bin_z80/zexdoc.bin");
     loadIntoMemory2(comp->getMemory(), 0, "./bin_z80/cpm_io.rom");
 
-    std::uint64_t i = 0;
     boost::timer::auto_cpu_timer t;
      for (std::uint64_t i = 0; i < 100000000; i++) {
         if (i % 10000000 == 0) {
