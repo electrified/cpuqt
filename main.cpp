@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
 
     for (QByteArray ba : supportedImageFormats) {
-        std::cout << ba.toStdString() << std::endl;
+        std::cout << ba.data() << std::endl;
     }
 
     MainWindow ui;
