@@ -10,10 +10,10 @@ macro(use_cxx11)
   endif ()
 endmacro(use_cxx11)
 
-use_cxx11()
-
 set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
+
+use_cxx11()
 
 add_subdirectory(tools)
 #add_subdirectory(source_dir [binary_dir][EXCLUDE_FROM_ALL])
