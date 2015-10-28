@@ -6,7 +6,9 @@
 #include "ui/qtbadgermemory.h"
 #include "ui/qtbadgerio.h"
 #include "Z80/alu.h"
+#include "computer/spectrum/spectrumio.h"
 #include <set>
+
 
 class BadgerComputer : public QObject
 {
@@ -17,7 +19,8 @@ public:
     void reset();
     Processor *processor;
     QtBadgerMemory* memory;
-    BadgerIO* io;
+//     BadgerIO* io;
+    SpectrumIO* io;
     bool skipBreakpoint = false;
     
     void process(std::uint8_t count);

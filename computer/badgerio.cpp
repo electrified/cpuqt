@@ -60,8 +60,8 @@ void BadgerIO::write(std::uint16_t address, std::uint8_t value) {
         case UART_FCR:
             FCR = value;
             break;
-//				case UART_IER:
-//					break;
+//      case UART_IER:
+//          break;
         case UART_LCR:
             LCR = value;
             break;

@@ -105,6 +105,7 @@ set(Z80_SRC
     computer/badgerio.cpp computer/badgerio.h
     computer/utils.cpp computer/utils.h
     computer/spectrum/graphics.h
+    computer/spectrum/spectrumio.cpp computer/spectrum/spectrumio.h
 )
 
 add_library(Z80 STATIC

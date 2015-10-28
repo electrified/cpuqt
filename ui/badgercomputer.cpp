@@ -9,7 +9,8 @@
 BadgerComputer::BadgerComputer()
 {
     memory = new QtBadgerMemory();
-    io = new QtBadgerIO();
+//     io = new QtBadgerIO();
+    io = new SpectrumIO();
     processor = new Processor(memory, io);
     
 //     addBreakpoint(0x1b3e); //inc counter
@@ -24,7 +25,7 @@ BadgerComputer::BadgerComputer()
 //     addBreakpoint(0xb24); 
 //     addBreakpoint(0x11e2); 
 //     addBreakpoint(0x1be4);
-    addBreakpoint(0x15f2);
+//     addBreakpoint(0x15f2);
 }
 
 BadgerComputer::~BadgerComputer()
@@ -50,7 +51,15 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
         } else 
         {
             skipBreakpoint = false;
+            
+            if (i == 0) {
+                processor->interruptRequest(true);
+            }
             processor->process();
+            if (i == 0) {
+                processor->interruptRequest(false);
+            }
+            
 //             std::cout << utils::int_to_hex(processor->getRegisters()->getPC()).toStdString() << std::endl;
         }
     }

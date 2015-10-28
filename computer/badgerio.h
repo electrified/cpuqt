@@ -10,13 +10,6 @@ class BadgerIO : public IO
 {
 private:
 
-    /*
-     * Screen
-     *
-     * 320 x 240 res 1 colour = 8000
-     *
-     * keyboard Sound Mouse???? Serial etc
-     */
     // DLAB = Divisor Latch Access Bit
     static const int UART_PORT = 0x80;    // The UART's data buffer for in/out
     static const int UART_DLL = 0x80;    // LSB of divisor latch
@@ -26,8 +19,7 @@ private:
     static const int UART_LCR = 0x83;    // Line Control Register
     static const int UART_MCR = 0x84;    // Modem Control Register (for OUT1/OUT2)
     static const int UART_LSR = 0x85;    // Line Status Register (used for transmitter empty bit)
-//     int[] screen;
-//     PrintStream screenOutputPrintStream;
+
     std::vector<char> keyboardBuffer;
     int DLL = 0;
     int DLM = 0;

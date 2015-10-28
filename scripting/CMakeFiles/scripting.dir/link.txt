@@ -1,0 +1,1 @@
+/usr/bin/c++   -g   CMakeFiles/scripting.dir/sampleluahost.cpp.o  -o scripting -rdynamic -llua5.2 -lm 

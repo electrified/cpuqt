@@ -3018,10 +3018,25 @@ void Processor:: process() {
 //        if (halted) {
 //            decode(); //NOP
 //        } else {
-//     decoder->
-//     *memory, *alu, 
     decode();
-//        }
+    // maskable interrupt
+    if(registers->isIFF1() && interruptRequested) {
+        switch(registers->getIM()) {
+            case 0:
+                // 8080 mode, read instruction from data bus
+                break;
+            case 1:
+                registers->setPC(0x38);
+                break;
+            case 2:
+                // 16 bit pointer formed from I register content and data bus
+                pushPCtoStack();
+                registers->setPC(memory->read(registers->getI() << 8 & io->read(0x0)));
+                break;
+        }
+        DI();
+        
+    }
 }
 
 /**
@@ -4414,4 +4429,8 @@ void Processor::setFlags(std::uint8_t value) {
     registers->setHFlag(false);
     registers->setParityOverflowFlag(registers->isIFF2());
     registers->setNFlag(false); // N
+}
+
+void Processor::interruptRequest(bool state) {
+    this->interruptRequested = state;
 }

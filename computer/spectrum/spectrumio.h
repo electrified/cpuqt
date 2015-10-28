@@ -1,11 +1,13 @@
 #ifndef SPECTRUMIO_H
 #define SPECTRUMIO_H
 
-
 #include "Z80/IO.h"
+
+#include <list>
 
 class SpectrumIO  : public IO
 {
+    std::list<uint16_t> inputKeys;
 public:
     SpectrumIO();
     ~SpectrumIO();

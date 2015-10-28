@@ -21,6 +21,8 @@ class Processor
     IO* io;
     Registers* registers;
 
+    bool interruptRequested = false;
+    
     inline std::uint8_t next() {
         return memory->read(registers->PC++);
     }
@@ -292,6 +294,7 @@ public:
     Alu* getAlu();
     void placeProgramCounterOnAddressBus();
     void reset();
+    void interruptRequest(bool state);
 };
 
 #endif // PROCESSOR_H
