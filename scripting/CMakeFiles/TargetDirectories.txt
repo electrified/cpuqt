@@ -1,1 +1,0 @@
-/home/ed/dev/cpuqt2/scripting/CMakeFiles/scripting.dir
