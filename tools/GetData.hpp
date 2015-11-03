@@ -3,10 +3,9 @@
 
 #include "FinalNode.hpp"
 
-class GetData : public FinalNode
-{
+class GetData : public FinalNode {
 public:
-   uint8_t level;
-   void write(std::ofstream* writer);
-   GetData(uint8_t level);
+  uint8_t level;
+  void write(std::ofstream *writer);
+  GetData(uint8_t level);
 };

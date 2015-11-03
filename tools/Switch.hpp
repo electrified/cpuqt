@@ -1,17 +1,17 @@
 #pragma once
-#include<map>
-#include<fstream>
+#include <map>
+#include <fstream>
 #include <cstdint>
 
 class Case;
 
-class Switch
-{
+class Switch {
 public:
-    int level;
-    std::map<int, Case*> cases;
+  int level;
+  std::map<int, Case *> cases;
+
 public:
-    virtual void write(std::ofstream* writer);
-    Switch(int level);
-    Switch();
+  virtual void write(std::ofstream *writer);
+  Switch(int level);
+  Switch();
 };

@@ -1,5 +1,3 @@
 #include "FinalNode.hpp"
 
-FinalNode::FinalNode()
-{
-}
+FinalNode::FinalNode() {}

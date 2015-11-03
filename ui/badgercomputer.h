@@ -9,29 +9,28 @@
 #include "computer/spectrum/spectrumio.h"
 #include <set>
 
-
-class BadgerComputer : public QObject
-{
-Q_OBJECT
+class BadgerComputer : public QObject {
+  Q_OBJECT
 public:
-    BadgerComputer();
-    ~BadgerComputer();
-    void reset();
-    Processor *processor;
-    QtBadgerMemory* memory;
-//     BadgerIO* io;
-    SpectrumIO* io;
-    bool skipBreakpoint = false;
-    
-    void process(const std::uint8_t count);
-    void doOneScreenRefreshesWorth();
-    void step();
-    void addBreakpoint(const std::uint16_t pc);
-    void removeBreakpoint(const std::uint16_t pc);
+  BadgerComputer();
+  ~BadgerComputer();
+  void reset();
+  Processor *processor;
+  QtBadgerMemory *memory;
+  //     BadgerIO* io;
+  SpectrumIO *io;
+  bool skipBreakpoint = false;
+
+  void process(const std::uint8_t count);
+  void doOneScreenRefreshesWorth();
+  void step();
+  void addBreakpoint(const std::uint16_t pc);
+  void removeBreakpoint(const std::uint16_t pc);
 signals:
-    void hitbreakpoint();
+  void hitbreakpoint();
+
 private:
-    set<uint16_t> breakpoints;
+  set<uint16_t> breakpoints;
 };
 
 #endif // BADGERCOMPUTER_H

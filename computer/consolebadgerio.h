@@ -3,12 +3,11 @@
 
 #include "computer/badgerio.h"
 
-class ConsoleBadgerIO : public BadgerIO
-{
-    public:
-    ConsoleBadgerIO();
-    ~ConsoleBadgerIO();
-    void outputCharacter(std::uint8_t value);
+class ConsoleBadgerIO : public BadgerIO {
+public:
+  ConsoleBadgerIO();
+  ~ConsoleBadgerIO();
+  void outputCharacter(std::uint8_t value);
 };
 
 #endif // CONSOLEBADGERIO_H

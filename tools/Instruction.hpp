@@ -5,48 +5,44 @@
 
 using namespace std;
 
-class Instruction
-{
+class Instruction {
 public:
-    bool operator < (const Instruction& instr) const
-    {
-        return (getScore() < instr.getScore());
-    }
+  bool operator<(const Instruction &instr) const { return (getScore() < instr.getScore()); }
 
 private:
-    string mnemonic;
-    int32_t* size;
-    vector<int> opcodes;
-    vector<uint8_t>* clocks;
-    string* flags;
-    string* effect;
+  string mnemonic;
+  int32_t *size;
+  vector<int> opcodes;
+  vector<uint8_t> *clocks;
+  string *flags;
+  string *effect;
 
 public:
-    Instruction();
-    unsigned long long getScore() const;
-    virtual string getMnemonic() const;
-    virtual void setMnemonic(string mnemonic);
-    virtual vector<int> getOpcodes() const;
-    virtual void setOpcodes(vector<int> opcodes);
-    virtual string getFunctionisedMethodName();
-    vector<string> getMethodParams();
+  Instruction();
+  unsigned long long getScore() const;
+  virtual string getMnemonic() const;
+  virtual void setMnemonic(string mnemonic);
+  virtual vector<int> getOpcodes() const;
+  virtual void setOpcodes(vector<int> opcodes);
+  virtual string getFunctionisedMethodName();
+  vector<string> getMethodParams();
 
-    static const string useCondition[];
-    static const string registers[];
-    static const string registerpairs[];
-    static const string conditions[];
-    bool contains(string test, const string arg2[], const int itemCount);
+  static const string useCondition[];
+  static const string registers[];
+  static const string registerpairs[];
+  static const string conditions[];
+  bool contains(string test, const string arg2[], const int itemCount);
+
 private:
-    string getParam(string part, bool indirect, uint32_t dataParamsUsed, vector< uint32_t > dataParams);
-    int32_t paramsRequired(string part);
-    vector<uint32_t> dataParams();
-
+  string getParam(string part, bool indirect, uint32_t dataParamsUsed, vector<uint32_t> dataParams);
+  int32_t paramsRequired(string part);
+  vector<uint32_t> dataParams();
 
 public:
-    virtual string getFunctionCall();
-    virtual int getIndexOfLastOpcode();
-    virtual string getOpcodesAsHex();
-    virtual void write(ofstream* writer);
+  virtual string getFunctionCall();
+  virtual int getIndexOfLastOpcode();
+  virtual string getOpcodesAsHex();
+  virtual void write(ofstream *writer);
 };
 
 const int useConditionCount = 4;

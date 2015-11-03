@@ -3,20 +3,16 @@
 
 #include <string>
 
-enum class LogLevel {
-    debug,
-    info,
-    error
-};
+enum class LogLevel { debug, info, error };
 
-class Logger
-{
-    const static LogLevel loglevel = LogLevel::info;
+class Logger {
+  const static LogLevel loglevel = LogLevel::info;
+
 public:
-    Logger();
-    ~Logger();
-    void debug(const std::string& toLog);
-    void info(const std::string& toLog);
+  Logger();
+  ~Logger();
+  void debug(const std::string &toLog);
+  void info(const std::string &toLog);
 };
 
 #endif // LOGGER_H

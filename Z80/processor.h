@@ -14,287 +14,280 @@
 
 bool parity(std::uint8_t val);
 
-class Processor
-{
-    Logger logger;
-    Memory* memory;
-    IO* io;
-    Registers* registers;
+class Processor {
+  Logger logger;
+  Memory *memory;
+  IO *io;
+  Registers *registers;
 
-    bool interruptRequested = false;
-    
-    inline std::uint8_t next() {
-        return memory->read(registers->PC++);
-    }
-    
-    std::uint16_t MemoryAddress(const std::uint16_t memoryAddress) {
-        return memoryAddress;
-    }
+  bool interruptRequested = false;
 
-    std::uint16_t MemoryAddress(const Rgstr rgstr) {
-        return registers->getRegisterValue(rgstr);
-    }
+  inline std::uint8_t next() { return memory->read(registers->PC++); }
 
-    std::uint16_t MemoryAddress(const RegisterPair rgstrPair) {
-        return registers->getRegisterPairValue(rgstrPair);
-    }
+  std::uint16_t MemoryAddress(const std::uint16_t memoryAddress) { return memoryAddress; }
 
-    std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
-        return  (std::int16_t)registers->getRegisterPairValue(rgstrPair) + (std::int8_t)offset;
-    }
-    void ADC(const RegisterPair hl, const RegisterPair bc);
+  std::uint16_t MemoryAddress(const Rgstr rgstr) { return registers->getRegisterValue(rgstr); }
 
-    void ADC(const Rgstr a, const Rgstr b);
+  std::uint16_t MemoryAddress(const RegisterPair rgstrPair) { return registers->getRegisterPairValue(rgstrPair); }
 
-    void ADC(const Rgstr a, const std::uint8_t i);
+  std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
+    return (std::int16_t)registers->getRegisterPairValue(rgstrPair) + (std::int8_t)offset;
+  }
+  void ADC(const RegisterPair hl, const RegisterPair bc);
 
-    void ADC(const Rgstr a, const std::uint16_t memoryAddress);
+  void ADC(const Rgstr a, const Rgstr b);
 
-    void ADD(const RegisterPair destination, const RegisterPair rgstr);
+  void ADC(const Rgstr a, const std::uint8_t i);
 
-    void ADD(const Rgstr a, const std::uint8_t nextByte);
+  void ADC(const Rgstr a, const std::uint16_t memoryAddress);
 
-    void ADD(const Rgstr a, const Rgstr b);
+  void ADD(const RegisterPair destination, const RegisterPair rgstr);
 
-    void ADD(const Rgstr a, const std::uint16_t memoryAddress);
+  void ADD(const Rgstr a, const std::uint8_t nextByte);
 
-    void AND(const Rgstr iX2);
+  void ADD(const Rgstr a, const Rgstr b);
 
-    void AND(const std::uint8_t iX2);
+  void ADD(const Rgstr a, const std::uint16_t memoryAddress);
 
-    void AND(const std::uint16_t memoryAddress);
+  void AND(const Rgstr iX2);
 
-    void BIT(const std::uint8_t y, const Rgstr rgstr);
+  void AND(const std::uint8_t iX2);
 
-    void BIT(const std::uint8_t i, const std::uint16_t memoryAddress);
+  void AND(const std::uint16_t memoryAddress);
 
-    void BIT(const std::uint8_t y, const std::uint8_t value);
+  void BIT(const std::uint8_t y, const Rgstr rgstr);
 
-    void CALL(const Condition c, const std::uint16_t memoryAddress);
+  void BIT(const std::uint8_t i, const std::uint16_t memoryAddress);
 
-    void CALL(const std::uint16_t memoryAddress);
+  void BIT(const std::uint8_t y, const std::uint8_t value);
 
-    void CCF();
+  void CALL(const Condition c, const std::uint16_t memoryAddress);
 
-    void CP(const std::uint8_t val);
+  void CALL(const std::uint16_t memoryAddress);
 
-    void CP(const Rgstr val);
+  void CCF();
 
-    void CP(const std::uint16_t memoryAddress);
+  void CP(const std::uint8_t val);
 
-    void CPD();
+  void CP(const Rgstr val);
 
-    void CPDR();
+  void CP(const std::uint16_t memoryAddress);
 
-    void CPI();
+  void CPD();
 
-    void CPIR();
+  void CPDR();
 
-    void CPL();
+  void CPI();
 
-    void DAA();
+  void CPIR();
 
-    void DEC(const Rgstr r);
+  void CPL();
 
-    void DEC(const RegisterPair r);
+  void DAA();
 
-    void DEC(const std::uint16_t memoryAddress);
+  void DEC(const Rgstr r);
 
-    void DI();
+  void DEC(const RegisterPair r);
 
-    void DJNZ(const std::uint16_t memoryAddress);
+  void DEC(const std::uint16_t memoryAddress);
 
-    void EI();
+  void DI();
 
-    void EX(const RegisterPair de, const RegisterPair hl);
+  void DJNZ(const std::uint16_t memoryAddress);
 
-    void EX(const std::uint16_t memoryAddress, const RegisterPair ix);
+  void EI();
 
-    void EXX();
+  void EX(const RegisterPair de, const RegisterPair hl);
 
-    void HALT();
+  void EX(const std::uint16_t memoryAddress, const RegisterPair ix);
 
-    void IM(const std::uint8_t im);
+  void EXX();
 
-    void in(const Rgstr a,const std::uint16_t i);
+  void HALT();
 
-    void INC(const Rgstr r);
+  void IM(const std::uint8_t im);
 
-    void INC(const RegisterPair r);
+  void in(const Rgstr a, const std::uint16_t i);
 
-    void INC(const std::uint16_t memoryAddress);
+  void INC(const Rgstr r);
 
-    void IND();
+  void INC(const RegisterPair r);
 
-    void INDR();
+  void INC(const std::uint16_t memoryAddress);
 
-    void INI();
+  void IND();
 
-    void INIR();
+  void INDR();
 
-    void JP(const Condition c, const std::uint16_t i);
+  void INI();
 
-    void JP(const std::uint16_t memoryAddress);
+  void INIR();
 
-    void JR(const Condition nz, const std::uint16_t memoryAddress);
+  void JP(const Condition c, const std::uint16_t i);
 
-    void JR(const std::uint16_t memoryAddress);
+  void JP(const std::uint16_t memoryAddress);
 
-    void LD(const Rgstr rgstr, const std::uint8_t memoryAddress);
+  void JR(const Condition nz, const std::uint16_t memoryAddress);
 
-    void LD(const Rgstr r1, const Rgstr r2);
+  void JR(const std::uint16_t memoryAddress);
 
-    void LD(const RegisterPair r1, const RegisterPair r2);
+  void LD(const Rgstr rgstr, const std::uint8_t memoryAddress);
 
-    void LD(const RegisterPair registerPair, const std::uint16_t immediateValue);
+  void LD(const Rgstr r1, const Rgstr r2);
 
-    void LD(const std::uint16_t memoryAddress, const Rgstr a);
+  void LD(const RegisterPair r1, const RegisterPair r2);
 
-    void LD(const Rgstr a, const std::uint16_t memoryAddress);
+  void LD(const RegisterPair registerPair, const std::uint16_t immediateValue);
 
-    void LD(const std::uint16_t memoryAddress, const RegisterPair hl);
+  void LD(const std::uint16_t memoryAddress, const Rgstr a);
 
-    void LD_indirect(const RegisterPair hl, const std::uint16_t memoryAddress);
+  void LD(const Rgstr a, const std::uint16_t memoryAddress);
 
-    void LD(const std::uint16_t memoryAddress, const std::uint8_t i);
+  void LD(const std::uint16_t memoryAddress, const RegisterPair hl);
 
-    void LDD();
+  void LD_indirect(const RegisterPair hl, const std::uint16_t memoryAddress);
 
-    void LDDR();
+  void LD(const std::uint16_t memoryAddress, const std::uint8_t i);
 
-    void LDI();
+  void LDD();
 
-    void LDIR();
+  void LDDR();
 
-    void NEG();
+  void LDI();
 
-    void NOP();
+  void LDIR();
 
-    void OR(const Rgstr iX2);
+  void NEG();
 
-    void OR(const std::uint8_t immediateValue);
+  void NOP();
 
-    void OR(const std::uint16_t memoryAddress);
+  void OR(const Rgstr iX2);
 
-    void OTDR();
+  void OR(const std::uint8_t immediateValue);
 
-    void OTIR();
+  void OR(const std::uint16_t memoryAddress);
 
-    void out(const std::uint16_t address, const Rgstr register);
+  void OTDR();
 
-    void OUTD();
+  void OTIR();
 
-    void OUTI();
+  void out(const std::uint16_t address, const Rgstr register);
 
-    void POP(const RegisterPair iy);
+  void OUTD();
 
-    void PUSH(const RegisterPair valueRegister);
+  void OUTI();
 
-    void RES(const std::uint8_t i, const Rgstr b);
+  void POP(const RegisterPair iy);
 
-    void RES(const std::uint8_t i, const std::uint16_t memoryAddress);
+  void PUSH(const RegisterPair valueRegister);
 
-    void RET(const Condition p);
+  void RES(const std::uint8_t i, const Rgstr b);
 
-    void RET();
+  void RES(const std::uint8_t i, const std::uint16_t memoryAddress);
 
-    void RETI();
+  void RET(const Condition p);
 
-    void RETN();
+  void RET();
 
-    void RL(const Rgstr r);
+  void RETI();
 
-    void RL(const std::uint16_t memoryAddress);
+  void RETN();
 
-    void RLA();
+  void RL(const Rgstr r);
 
-    void RLC(const Rgstr register);
+  void RL(const std::uint16_t memoryAddress);
 
-    void RLC(const std::uint16_t memoryAddress);
+  void RLA();
 
-    void RLCA();
+  void RLC(const Rgstr register);
 
-    void RLD();
+  void RLC(const std::uint16_t memoryAddress);
 
-    void RR(const Rgstr r);
+  void RLCA();
 
-    void RR(const std::uint16_t memoryAddress);
+  void RLD();
 
-    void RRA();
+  void RR(const Rgstr r);
 
-    void RRC(const Rgstr r);
+  void RR(const std::uint16_t memoryAddress);
 
-    void RRC(const std::uint16_t memoryAddress);
+  void RRA();
 
-    void RRCA();
+  void RRC(const Rgstr r);
 
-    void RRD();
+  void RRC(const std::uint16_t memoryAddress);
 
-    void RST(const std::uint8_t i);
+  void RRCA();
 
-    void SBC(const Rgstr a, const std::uint8_t nextByte);
+  void RRD();
 
-    void SBC(const Rgstr a, const Rgstr b);
+  void RST(const std::uint8_t i);
 
-    void SBC(const RegisterPair hl, const RegisterPair hl1);
+  void SBC(const Rgstr a, const std::uint8_t nextByte);
 
-    void SBC(const Rgstr a, const std::uint16_t memoryAddress);
+  void SBC(const Rgstr a, const Rgstr b);
 
-    void SCF();
+  void SBC(const RegisterPair hl, const RegisterPair hl1);
 
-    void SET(const std::uint8_t y, const Rgstr register);
+  void SBC(const Rgstr a, const std::uint16_t memoryAddress);
 
-    void SET(const std::uint8_t i, const std::uint16_t memoryAddress);
+  void SCF();
 
-    void SLA(const Rgstr r);
+  void SET(const std::uint8_t y, const Rgstr register);
 
-    void SLA(const std::uint16_t memoryAddress);
+  void SET(const std::uint8_t i, const std::uint16_t memoryAddress);
 
-    void SRA(const Rgstr r);
+  void SLA(const Rgstr r);
 
-    void SRA(const std::uint16_t memoryAddress);
+  void SLA(const std::uint16_t memoryAddress);
 
-    void SRL(const Rgstr r);
-    void SRL(const std::uint16_t memoryAddress);
+  void SRA(const Rgstr r);
 
-    void SUB(const Rgstr iX2);
-    void SUB(const std::uint8_t iX2);
-    void SUB(const std::uint16_t memoryAddress);
+  void SRA(const std::uint16_t memoryAddress);
 
-    void XOR(const Rgstr val);
-    void XOR(const std::uint8_t val);
-    void XOR(const std::uint16_t memoryAddress);
+  void SRL(const Rgstr r);
+  void SRL(const std::uint16_t memoryAddress);
 
-    void incrementSP();
+  void SUB(const Rgstr iX2);
+  void SUB(const std::uint8_t iX2);
+  void SUB(const std::uint16_t memoryAddress);
 
-    bool isConditionTrue(Condition condition);
-    
-    //used by SUB and CP
-    std::uint8_t _compare(std::uint8_t x);
+  void XOR(const Rgstr val);
+  void XOR(const std::uint8_t val);
+  void XOR(const std::uint16_t memoryAddress);
+
+  void incrementSP();
+
+  bool isConditionTrue(Condition condition);
+
+  // used by SUB and CP
+  std::uint8_t _compare(std::uint8_t x);
+
 protected:
-    void pushPCtoStack();
+  void pushPCtoStack();
 
-    std::uint8_t readIO(std::uint16_t address);
-    void writeIO(std::uint16_t address, std::uint8_t value);
+  std::uint8_t readIO(std::uint16_t address);
+  void writeIO(std::uint16_t address, std::uint8_t value);
 
-    void unimplemented(std::string);
+  void unimplemented(std::string);
 
-    void decrementSP();
+  void decrementSP();
 
-    void setFlags(std::uint8_t value);
+  void setFlags(std::uint8_t value);
+
 public:
-    Processor(Memory* memory, IO* io);
-    ~Processor();
-    void decode();
-    void process();
-    void process(std::uint8_t count);
-    Memory* getMemory();
-    IO* getIO();
-    Registers* getRegisters();
-    Alu* getAlu();
-    void placeProgramCounterOnAddressBus();
-    void reset();
-    void interruptRequest(bool state);
+  Processor(Memory *memory, IO *io);
+  ~Processor();
+  void decode();
+  void process();
+  void process(std::uint8_t count);
+  Memory *getMemory();
+  IO *getIO();
+  Registers *getRegisters();
+  Alu *getAlu();
+  void placeProgramCounterOnAddressBus();
+  void reset();
+  void interruptRequest(bool state);
 };
 
 #endif // PROCESSOR_H

@@ -5,8 +5,8 @@
 
 class Case : public FinalNode {
 public:
-    int opcode;
-    void write(std::ofstream* writer) override;
-    Case(int opcode);
-    Case();
+  int opcode;
+  void write(std::ofstream *writer) override;
+  Case(int opcode);
+  Case();
 };

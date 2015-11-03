@@ -5,15 +5,14 @@
 #include "Z80/registers.h"
 #include "Z80/Memory.h"
 
-class cpm_io :public QObject
-{
-    Q_OBJECT
+class cpm_io : public QObject {
+  Q_OBJECT
 public:
-    cpm_io();
-//     ~cpm_io();
-    void in(const Rgstr rgstr, const MemoryAddress& i, Registers* registers, Memory* memory);
+  cpm_io();
+  //     ~cpm_io();
+  void in(const Rgstr rgstr, const MemoryAddress &i, Registers *registers, Memory *memory);
 signals:
-    void consoleTextOutput(char character);
+  void consoleTextOutput(char character);
 };
 
 #endif // CPM_IO_H
