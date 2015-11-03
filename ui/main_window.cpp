@@ -17,36 +17,6 @@
 #include "about_box.h"
 #include "computer/utils.h"
 
-
-void MainWindow::gfxUpdated(std::uint16_t i) {       
-    /*
-     * Y Coordinate bit layout (MSB to LSB):
-        zzxxxnnn
-
-        Register pair bit layout (R are the bits for the x-axis offset, 010 provides the base address $4000):
-        010z znnn xxxR RRRR
-    */
-    if (i < 0x5800) {
-        std::uint16_t x = i & 0x1f; //get bottom 5 bits
-        std::uint16_t y = ((i & 0x700) >> 8) | ((i & 0xe0) >> 2) | ((i & 0x1800) >> 5);
-        
-        std::uint8_t data = computer->memory->read(i);
-        for (std::uint8_t j = 0; j < 8; ++j) {
-            std::uint8_t xCoord = (x * 8) + j;
-            bool on = (data << j) & 0x80;
-            drawPixel(xCoord,y,on);
-            //std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << " i: " << i << std::endl;
-        }
-    } else {
-        // colour stuff
-    }
-}
-
-void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) {
-    image.setPixel(x, y, on ? valueOn : valueOff);
-}
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -57,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     disassemblyModel = new DisassemblyModel(computer->memory, this);
 
+    scriptHost = new ScriptHost(computer);
+    
     // Attach the model to the view
     ui->disassemblyView->setModel(disassemblyModel);
     ui->disassemblyView->setColumnWidth(0, 50);
@@ -90,6 +62,37 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+void MainWindow::gfxUpdated(std::uint16_t i) {       
+    /*
+     * Y Coordinate bit layout (MSB to LSB):
+        zzxxxnnn
+
+        Register pair bit layout (R are the bits for the x-axis offset, 010 provides the base address $4000):
+        010z znnn xxxR RRRR
+    */
+    if (i < 0x5800) {
+        std::uint16_t x = i & 0x1f; //get bottom 5 bits
+        std::uint16_t y = ((i & 0x700) >> 8) | ((i & 0xe0) >> 2) | ((i & 0x1800) >> 5);
+        
+        std::uint8_t data = computer->memory->read(i);
+        for (std::uint8_t j = 0; j < 8; ++j) {
+            std::uint8_t xCoord = (x * 8) + j;
+            bool on = (data << j) & 0x80;
+            drawPixel(xCoord,y,on);
+            //std::cout << "GFX UPDATE: x:" << (int)xCoord << " y:" <<  (int)y << " j:" <<  (int)j << " i: " << i << std::endl;
+        }
+    } else {
+        // colour stuff
+    }
+}
+
+void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) {
+    image.setPixel(x, y, on ? valueOn : valueOff);
+}
+
+
 
 void MainWindow::update_recents_list(QString rom_path)
 {
@@ -275,4 +278,9 @@ void MainWindow::resume() {
 
 void MainWindow::toggleScrollMemory(bool scroll) {
     this->scrollMemory = scroll;
+}
+
+void MainWindow::executeScript() {
+    QString script = this->ui->scriptEdit->toPlainText();
+    scriptHost->runCommand(script.toStdString());
 }

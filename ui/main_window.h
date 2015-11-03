@@ -11,6 +11,7 @@
 
 #include "Logger.h"
 #include "badgercomputer.h"
+#include "ui/scripting/script_host.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,7 +21,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     BadgerComputer* computer;
-    
+    ScriptHost* scriptHost;
     QImage image = QImage(256, 192, QImage::Format_RGB32);
     QRgb valueOn = qRgb(0x0, 0x0, 0x0);
     QRgb valueOff = qRgb(0xCD, 0xCD, 0xCD);
@@ -59,6 +60,7 @@ private slots:
     void resume();
     void toggleScrollMemory(bool scroll);
     void gfxUpdated(std::uint16_t i);
+    void executeScript();
 signals:
     void programCounterUpdated(std::uint16_t address);
 };

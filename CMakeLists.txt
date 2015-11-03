@@ -30,6 +30,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # set(CMAKE_AUTOUIC ON)
 # Find the QtWidgets library
 find_package(Qt5 COMPONENTS Widgets Svg REQUIRED)
+
 # find_package(Qt5Svg REQUIRED)
 
 #set(Boost_DEBUG OFF)
@@ -41,6 +42,12 @@ find_package(Boost COMPONENTS regex system filesystem timer REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
+find_package(Lua 5.3 REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
+
+message("${LUA_LIBRARIES}")
+message("${LUA_INCLUDE_DIR}")
+message("${LUA_VERSION_STRING}")
 set (GuiLib_src 
 ${PROJECT_SOURCE_DIR}/ui/main_window.cpp 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.cpp 
@@ -49,6 +56,7 @@ ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.cpp
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.cpp
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.cpp 
 ${PROJECT_SOURCE_DIR}/ui/about_box.cpp
+${PROJECT_SOURCE_DIR}/ui/scripting/script_host.cpp
 )
 
 set (GuiLib_hdr 
@@ -60,6 +68,7 @@ ${PROJECT_SOURCE_DIR}/ui/qtbadgermemory.h
 ${PROJECT_SOURCE_DIR}/ui/cpm_io.h
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.h 
 ${PROJECT_SOURCE_DIR}/ui/about_box.h
+${PROJECT_SOURCE_DIR}/ui/scripting/script_host.h
 )
 
 set (GuiLib_ui
@@ -132,22 +141,8 @@ add_executable(tooltests ${tooltests_SRC})
 
 add_executable(zexrunner ${zexrunner_SRC})
 
-# set_property(TARGET GuiLib PROPERTY CXX_STANDARD 11)
-# set_property(TARGET GuiLib PROPERTY CXX_STANDARD_REQUIRED ON)
-# 
-# set_property(TARGET Z80 PROPERTY CXX_STANDARD 11)
-# set_property(TARGET Z80 PROPERTY CXX_STANDARD_REQUIRED ON)
-# 
-# set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD 11)
-# set_property(TARGET cpuqt2 PROPERTY CXX_STANDARD_REQUIRED ON)
-# 
-# set_property(TARGET tooltests PROPERTY CXX_STANDARD 11)
-# set_property(TARGET tooltests PROPERTY CXX_STANDARD_REQUIRED ON)
-# 
-# set_property(TARGET zexrunner PROPERTY CXX_STANDARD 11)
-# set_property(TARGET zexrunner PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_link_libraries(cpuqt2 GuiLib Z80 ${Boost_LIBRARIES})
+target_link_libraries(cpuqt2 GuiLib Z80 ${Boost_LIBRARIES} ${LUA_LIBRARIES})
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80)
 target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80 ${Boost_SYSTEM_LIBRARY})
 

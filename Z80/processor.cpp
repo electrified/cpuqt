@@ -3021,6 +3021,7 @@ void Processor:: process() {
     decode();
     // maskable interrupt
     if(registers->isIFF1() && interruptRequested) {
+        logger.debug("Interrupt mode: " + std::to_string(registers->getIM()));
         switch(registers->getIM()) {
             case 0:
                 // 8080 mode, read instruction from data bus

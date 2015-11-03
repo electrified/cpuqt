@@ -1,0 +1,7 @@
+-I/usr/include
+-I/usr/include
+-I/home/ed/dev/cpuqt2
+-I/home/ed/dev/cpuqt2
+-o
+/home/ed/dev/cpuqt2/ui/scripting/moc_script_host.cpp
+/home/ed/dev/cpuqt2/ui/scripting/script_host.h

@@ -23,11 +23,11 @@ public:
     SpectrumIO* io;
     bool skipBreakpoint = false;
     
-    void process(std::uint8_t count);
+    void process(const std::uint8_t count);
     void doOneScreenRefreshesWorth();
     void step();
-    void addBreakpoint(std::uint16_t pc);
-    void removeBreakpoint(std::uint16_t pc);
+    void addBreakpoint(const std::uint16_t pc);
+    void removeBreakpoint(const std::uint16_t pc);
 signals:
     void hitbreakpoint();
 private:
