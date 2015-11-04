@@ -26,6 +26,7 @@ public:
   void step();
   void addBreakpoint(const std::uint16_t pc);
   void removeBreakpoint(const std::uint16_t pc);
+  void listBreakpoints();
 signals:
   void hitbreakpoint();
 

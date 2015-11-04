@@ -16,10 +16,13 @@
 #include "ui/cpm_io.h"
 #include "about_box.h"
 #include "computer/utils.h"
+#include "qdebugstream.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-
+   
+  QDebugStream qout(std::cout, this->ui->scriptEdit);
+  
   computer = new BadgerComputer();
 
   disassemblyModel = new DisassemblyModel(computer->memory, this);
@@ -54,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   //     connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
 
   connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
+  
   initial_recent_menu_population();
 }
 

@@ -11,7 +11,7 @@
 
 #include "Logger.h"
 #include "badgercomputer.h"
-#include "ui/scripting/script_host.h"
+#include "scripting/script_host.h"
 
 namespace Ui {
 class MainWindow;

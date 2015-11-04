@@ -63,3 +63,6 @@ void BadgerComputer::step() { processor->process(); }
 void BadgerComputer::addBreakpoint(std::uint16_t pc) { breakpoints.insert(pc); }
 
 void BadgerComputer::removeBreakpoint(std::uint16_t pc) { breakpoints.erase(pc); }
+
+void BadgerComputer::listBreakpoints() {
+}

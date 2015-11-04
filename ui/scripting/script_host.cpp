@@ -1,14 +1,27 @@
 #include "script_host.h"
 
 #include <iostream>
+#include "selene.h"
+
+sel::State state{true};
+
+// print(string.format("%x",em.peek(0)))
+// em.poke(0, 255)
+// print(string.format("%x",em.peek(0)))
+
+ScriptHost::ScriptHost() {
+}
 
 ScriptHost::ScriptHost(BadgerComputer* computer) {
     this->computer = computer;
-    sel::State state{true};
     
     state["em"].SetObj(*this,
-        "break", &ScriptHost::addBreakpoint,
-        "step", &ScriptHost::step);
+        "brk", &ScriptHost::addBreakpoint,
+        "step", &ScriptHost::step,
+        "del", &ScriptHost::removeBreakpoint,
+        "list", &ScriptHost::listBreakpoints,
+        "peek", &ScriptHost::peek,
+        "poke", &ScriptHost::poke);
 }
 
 void ScriptHost::executeScript(std::string path) {
@@ -16,11 +29,29 @@ void ScriptHost::executeScript(std::string path) {
 }
 
 void ScriptHost::runCommand(std::string command) {
+    l.debug("Executing " + command);
     state(command.c_str());
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {
+    l.debug("Adding breakpoint " + std::to_string (memoryAddress));
     computer->addBreakpoint(memoryAddress);
+}
+
+void ScriptHost::removeBreakpoint(int memoryAddress) {
+    computer->removeBreakpoint(memoryAddress);
+}
+
+void ScriptHost::listBreakpoints() {
+    computer->listBreakpoints();
+}
+
+void ScriptHost::poke(int memoryAddress, int value) {
+    computer->memory->write(memoryAddress, value);
+}
+
+int ScriptHost::peek(int memoryAddress) {
+    return computer->memory->read(memoryAddress);
 }
 
 void ScriptHost::step() {

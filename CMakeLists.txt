@@ -60,7 +60,7 @@ ${PROJECT_SOURCE_DIR}/ui/scripting/script_host.cpp
 )
 
 set (GuiLib_hdr 
-${PROJECT_SOURCE_DIR}/ui/utils.h
+# ${PROJECT_SOURCE_DIR}/ui/utils.h
 ${PROJECT_SOURCE_DIR}/ui/main_window.h 
 ${PROJECT_SOURCE_DIR}/ui/DisassemblyModel.h
 ${PROJECT_SOURCE_DIR}/ui/qtbadgerio.h
@@ -69,6 +69,7 @@ ${PROJECT_SOURCE_DIR}/ui/cpm_io.h
 ${PROJECT_SOURCE_DIR}/ui/badgercomputer.h 
 ${PROJECT_SOURCE_DIR}/ui/about_box.h
 ${PROJECT_SOURCE_DIR}/ui/scripting/script_host.h
+${PROJECT_SOURCE_DIR}/ui/qdebugstream.h
 )
 
 set (GuiLib_ui
