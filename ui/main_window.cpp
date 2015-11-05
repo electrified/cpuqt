@@ -38,24 +38,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   verticalHeader->setDefaultSectionSize(15);
 
   connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
-
   connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-
-  //     connect((QtBadgerIO*)computer->io, &QtBadgerIO::consoleTextOutput, this,
-  //     &MainWindow::outputCharacterToConsole);
-
   connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
-
-  // this is ther text output for cp/m
-  //     connect((cpm_io*)computer->alu, SIGNAL(consoleTextOutput(char)), this, SLOT(outputCharacterToConsole(char)));
-
-  //     connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel,
-  //     SLOT(memoryUpdated(std::uint16_t)));
-  //     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel,
-  //     SLOT(programCounterUpdated(std::uint16_t)));
-  //     connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
-  //     connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
-
   connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
   
   initial_recent_menu_population();
@@ -161,19 +145,6 @@ void MainWindow::loadRom(QString file_path) {
   std::uint16_t offset = (tests ? 0x100 : 0);
 
   loadIntoMemory(data, computer->memory, offset);
-
-  // HAX
-  //     if (tests) {
-  //         l.debug("patching zexdoc");
-  //         computer->memory->write(0,0xd3);       /* OUT N, A */
-  //         computer->memory->write(1,0x00);
-  //
-  //         computer->memory->write(5,0xdb);       /* IN A, N */
-  //         computer->memory->write(6,0x00); //this val gets used for the stack location
-  //         computer->memory->write(7,0xc9);
-  //         computer->processor->getRegisters()->setPC(0x100);
-  //     }
-
   disassemblyModel->forceDisassembly();
 }
 
@@ -231,7 +202,7 @@ void MainWindow::reset() {
   update_register_values();
 }
 
-void MainWindow::outputCharacterToConsole(char value) { this->ui->plainTextEdit->insertPlainText(QString(value)); }
+// void MainWindow::outputCharacterToConsole(char value) { this->ui->plainTextEdit->insertPlainText(QString(value)); }
 
 void MainWindow::print_debug_stats() {
   //    this->ui->statusbar->showMessage(QString("Refresh count:
