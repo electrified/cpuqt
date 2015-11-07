@@ -1,10 +1,11 @@
 #include <QtWidgets/QApplication>
 #include <QImageReader>
-#include <iostream>
-
+#include "spdlog/spdlog.h"
 #include "ui/main_window.h"
 
 int main(int argc, char **argv) {
+  auto console = spdlog::stdout_logger_mt("console");
+  console->set_level(spdlog::level::debug);
   QApplication app(argc, argv);
 
   QCoreApplication::setOrganizationName("Badgersoft");
@@ -14,7 +15,7 @@ int main(int argc, char **argv) {
   QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
 
   for (QByteArray ba : supportedImageFormats) {
-    std::cout << ba.data() << std::endl;
+    console->info() << ba.data();
   }
 
   MainWindow ui;

@@ -3,7 +3,7 @@
 #include <set>
 
 #include "catch.hpp"
-#include "computer/spectrum/graphics.h"
+#include "../computer/spectrum/graphics.h"
 
 TEST_CASE("gfx") {
     std::uint16_t memoryAddress = 0x4000;

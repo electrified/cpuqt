@@ -1,12 +1,10 @@
 #ifndef DECODER
 #define DECODER
-#include "Logger.h"
+#include "spdlog/spdlog.h"
 #include "Memory.h"
 #include "alu.h"
 
 class Decoder {
-  Logger logger;
-
 public:
   void decode(Memory &memory, Alu &alu, std::uint16_t &pc);
 

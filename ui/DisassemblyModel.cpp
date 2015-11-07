@@ -1,5 +1,4 @@
 #include "DisassemblyModel.h"
-#include "Logger.h"
 #include "utils.h"
 
 DisassemblyModel::DisassemblyModel(QtBadgerMemory *memory, QObject *parent)

@@ -1,14 +1,15 @@
 #ifndef EMULATIONPROCESSOR_H
 #define EMULATIONPROCESSOR_H
 
-#include "Z80/processor.h"
-#include "Z80/decoder.h"
-#include "Z80/MemoryAddress.h"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
-#include "Z80/registers.h"
-#include "Z80/IO.h"
-#include "Logger.h"
+#include "processor.h"
+#include "decoder.h"
+#include "MemoryAddress.h"
+#include "Register.hpp"
+#include "RegisterPair.hpp"
+#include "registers.h"
+#include "IO.h"
+#include "spdlog/spdlog.h"
+// #include "Logger.h"
 
 class UnimplementedInstructionException : public std::exception {
   virtual const char *what() const throw() { return "Unimplemented instruction"; }
@@ -16,7 +17,6 @@ class UnimplementedInstructionException : public std::exception {
 
 class EmuAlu : public Alu {
 protected:
-  Logger logger;
   Memory *memory;
   IO *io;
   Registers *registers;

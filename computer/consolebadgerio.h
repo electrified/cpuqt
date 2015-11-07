@@ -1,7 +1,7 @@
 #ifndef CONSOLEBADGERIO_H
 #define CONSOLEBADGERIO_H
 
-#include "computer/badgerio.h"
+#include "badgerio.h"
 
 class ConsoleBadgerIO : public BadgerIO {
 public:

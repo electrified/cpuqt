@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <boost/filesystem.hpp>
-#include "Logger.h"
+#include "spdlog/spdlog.h"
 
 std::vector<char> ReadAllBytes(char const *filename) {
   std::ifstream ifs(filename, std::ios::binary | std::ios::ate);
@@ -32,7 +32,6 @@ void loadIntoMemory2(Memory *memory, std::uint16_t offset, char const *filename)
       memory->write(i + offset, fileContents.at(i));
     }
   } else {
-    Logger l;
-    l.info(std::string("File not found: ") + std::string(filename));
+    spdlog::get("console")->info(std::string("File not found: ") + std::string(filename));
   }
 }

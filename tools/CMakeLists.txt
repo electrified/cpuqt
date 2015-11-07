@@ -30,3 +30,5 @@ set_property(TARGET tool PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(tool ${Boost_LIBRARIES})
 install(TARGETS tool RUNTIME DESTINATION bin)
+
+file(COPY z80sean.txt DESTINATION .)

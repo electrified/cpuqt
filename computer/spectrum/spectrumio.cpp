@@ -1,6 +1,6 @@
 #include "spectrumio.h"
 
-#include <iostream>
+#include "spdlog/spdlog.h"
 
 SpectrumIO::SpectrumIO()
 {   
@@ -19,11 +19,11 @@ contents of Register B are placed on the top half (A8 through A15) of the
 address bus at this time.
 */
 std::uint8_t SpectrumIO::read(std::uint16_t address) {
-    std::cout << "address read " << (int)address << std::endl;
+    spdlog::get("console")->debug("address read {0:x}", (int)address);
     if ((address & 0xFE) == 0xFE) {
         uint8_t lineScanned = address >> 8;
         
-        std::cout << "scanning line " << (int)lineScanned << std::endl;
+        spdlog::get("console")->debug("scanning line {0:x}", (int)lineScanned);
         
         if (inputKeys.size() > 0) {
             uint16_t key = inputKeys.front();

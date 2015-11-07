@@ -2,8 +2,8 @@
 #define MEMORYADDRESS_H
 #include <cstdint>
 #include <string>
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
+#include "Register.hpp"
+#include "RegisterPair.hpp"
 
 using namespace std;
 using namespace registers;

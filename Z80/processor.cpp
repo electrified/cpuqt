@@ -1,7 +1,7 @@
-#include "Z80/processor.h"
-#include "Z80/emu_alu.h"
+#include "processor.h"
+#include "emu_alu.h"
 
-#include "Logger.h"
+// #include "Logger.h"
 #include <boost/utility/binary.hpp>
 #include <assert.h>
 #include "tables.h"
@@ -3018,7 +3018,7 @@ void Processor::process() {
   decode();
   // maskable interrupt
   if (registers->isIFF1() && interruptRequested) {
-    logger.debug("Interrupt mode: " + std::to_string(registers->getIM()));
+    spdlog::get("console")->debug("Interrupt mode: " + std::to_string(registers->getIM()));
     switch (registers->getIM()) {
     case 0:
       // 8080 mode, read instruction from data bus
@@ -4309,7 +4309,7 @@ void Processor::pushPCtoStack() {
 std::uint8_t Processor::readIO(std::uint16_t address) { return io->read(address); }
 
 void Processor::unimplemented(std::string opcode) {
-  logger.debug("Unimplemented - " + opcode);
+  spdlog::get("console")->debug("Unimplemented - " + opcode);
   //     throw  UnimplementedInstructionException();
 }
 

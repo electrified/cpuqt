@@ -2,11 +2,9 @@
 #define SCRIPT_HOST_H
 
 #include <string>
-#include "Logger.h"
 #include "../badgercomputer.h"
 
 class ScriptHost {
-    Logger l;
     BadgerComputer* computer;
 public:
     ScriptHost();

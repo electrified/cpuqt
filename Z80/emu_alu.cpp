@@ -350,7 +350,7 @@ void EmuAlu::DJNZ(MemoryAddress memoryAddress) {
   registers->setB(registers->getB() - 1);
 
   if (registers->getB() > 0) {
-    logger.debug("B rgstr > 0");
+    spdlog::get("console")->debug("B rgstr > 0");
     registers->setPC(getMemoryAddress(memoryAddress));
   }
 }
@@ -541,10 +541,10 @@ void EmuAlu::JP(Condition condition, MemoryAddress memoryAddress) {
   stream << std::hex << "0x" << std::setfill('0') << std::setw(sizeof(std::uint16_t) * 2) << +registers->getPC();
 
   if (isConditionTrue(condition)) {
-    logger.debug(stream.str() + " MET");
+    spdlog::get("console")->debug(stream.str() + " MET");
     JP(memoryAddress);
   } else {
-    logger.debug(stream.str() + " NOT");
+    spdlog::get("console")->debug(stream.str() + " NOT");
   }
 }
 
@@ -845,7 +845,7 @@ void EmuAlu::RES(std::uint8_t i, MemoryAddress memoryAddress) {
  * instruction.
  */
 void EmuAlu::RET(Condition condition) {
-  logger.debug("RET cc[y]");
+  spdlog::get("console")->debug("RET cc[y]");
   if (isConditionTrue(condition)) {
     RET();
   }
@@ -1172,7 +1172,7 @@ bool EmuAlu::isConditionTrue(Condition condition) {
   } else if (condition == Condition::M) {
     retval = registers->getSignFlag();
   }
-  logger.debug(retval ? "True" : "False");
+  spdlog::get("console")->debug(retval ? "True" : "False");
   return retval;
 }
 
@@ -1191,7 +1191,7 @@ void EmuAlu::unimplemented(std::string opcode) {
 }
 
 void EmuAlu::writeIO(std::uint16_t address, std::uint8_t value) {
-  //    logger.debug("Writing IO: addr:" + address + " val:" + value);
+  //    logger->debug("Writing IO: addr:" + address + " val:" + value);
   io->write(address, value);
 }
 

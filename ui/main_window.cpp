@@ -17,6 +17,7 @@
 #include "about_box.h"
 #include "computer/utils.h"
 #include "qdebugstream.h"
+#include "spdlog/spdlog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -153,7 +154,7 @@ void MainWindow::run() {
 }
 
 void MainWindow::stop() {
-  l.debug("Stopping!");
+  spdlog::get("console")->debug("Stopping!");
   timer.stop();
   update_register_values();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());

@@ -2,8 +2,14 @@
 
 #include <iostream>
 #include "selene.h"
+#include "spdlog/spdlog.h"
 
 sel::State state{true};
+/*
+auto print = [](std::string str) {
+                spdlog::get("console_log")->info(str);
+            };
+            this->state["print"] = print;*/
 
 // print(string.format("%x",em.peek(0)))
 // em.poke(0, 255)
@@ -29,12 +35,12 @@ void ScriptHost::executeScript(std::string path) {
 }
 
 void ScriptHost::runCommand(std::string command) {
-    l.debug("Executing " + command);
+    spdlog::get("console")->debug("Executing " + command);
     state(command.c_str());
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {
-    l.debug("Adding breakpoint " + std::to_string (memoryAddress));
+    spdlog::get("console")->debug("Adding breakpoint " + std::to_string (memoryAddress));
     computer->addBreakpoint(memoryAddress);
 }
 

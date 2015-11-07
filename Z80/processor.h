@@ -11,11 +11,11 @@
 #include "IO.h"
 #include "alu.h"
 #include "registers.h"
+#include "spdlog/spdlog.h"
 
 bool parity(std::uint8_t val);
 
 class Processor {
-  Logger logger;
   Memory *memory;
   IO *io;
   Registers *registers;

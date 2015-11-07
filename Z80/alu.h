@@ -3,12 +3,12 @@
 
 #include <cstdint>
 
-#include "Z80/RegisterPair.hpp"
-#include "Z80/Register.hpp"
-#include "Z80/Condition.hpp"
-#include "Z80/MemoryAddress.h"
-#include "Z80/Memory.h"
-#include "Z80/IO.h"
+#include "RegisterPair.hpp"
+#include "Register.hpp"
+#include "Condition.hpp"
+#include "MemoryAddress.h"
+#include "Memory.h"
+#include "IO.h"
 
 class Alu {
 public:

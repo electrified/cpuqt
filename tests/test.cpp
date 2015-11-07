@@ -1,14 +1,12 @@
 #include "catch.hpp"
 #include <boost/utility/binary.hpp>
 
-#include "Z80/emu_alu.h"
-#include "Z80/processor.h"
-#include "Z80/BadgerMemory.h"
-#include "Z80/TestIO.h"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
-#include "tests/test_computer.h"
-#include "Z80/utils.h"
+#include "../Z80/processor.h"
+#include "../Z80/BadgerMemory.h"
+#include "../Z80/Register.hpp"
+#include "../Z80/RegisterPair.hpp"
+#include "test_computer.h"
+#include "../Z80/utils.h"
 
 std::unique_ptr<TestComputer> setupComputer() {
     std::unique_ptr<TestComputer> proc(new TestComputer());

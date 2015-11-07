@@ -2,10 +2,10 @@
 #define REGISTERS_H
 
 #include <cstdint>
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
+#include "Register.hpp"
+#include "RegisterPair.hpp"
 #include <boost/utility/binary.hpp>
-#include "Logger.h"
+#include "spdlog/spdlog.h"
 #include <bitset>
 
 union WideReg {
@@ -30,7 +30,6 @@ union WideReg {
 // };
 
 class Registers {
-  Logger logger;
   WideReg IR;
   WideReg IX;
   WideReg IY;

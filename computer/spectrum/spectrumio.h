@@ -1,7 +1,7 @@
 #ifndef SPECTRUMIO_H
 #define SPECTRUMIO_H
 
-#include "Z80/IO.h"
+#include "../Z80/IO.h"
 
 #include <list>
 

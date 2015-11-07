@@ -1,8 +1,8 @@
 #include <string>
-#include "Z80/MemoryAddress.h"
-#include "Z80/Register.hpp"
-#include "Z80/RegisterPair.hpp"
-#include "Z80/utils.h"
+#include "MemoryAddress.h"
+#include "Register.hpp"
+#include "RegisterPair.hpp"
+#include "utils.h"
 
 MemoryAddress::MemoryAddress() {
   memoryAddress = 0;

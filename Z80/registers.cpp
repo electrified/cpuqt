@@ -339,7 +339,7 @@ void Registers::setRegisterPair(RegisterPair rgstr, std::uint16_t sixteenBit) {
     setIY(sixteenBit);
     break;
   default:
-    logger.debug("unknown rgstr pair");
+    spdlog::get("console")->debug("unknown rgstr pair");
   }
 }
 
@@ -390,7 +390,7 @@ void Registers::setRegisterPair(RegisterPair rgstr, std::uint8_t lowOrder, std::
     this->IY.bytes.low = lowOrder;
     break;
   default:
-    logger.debug("unknown rgstr pair");
+    spdlog::get("console")->debug("unknown rgstr pair");
   }
 }
 

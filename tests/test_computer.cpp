@@ -1,9 +1,8 @@
 #include "test_computer.h"
-#include "computer/consolebadgerio.h"
-#include "Z80/TestIO.h"
+#include "../computer/consolebadgerio.h"
+
 TestComputer::TestComputer()
 {
-//     io = new TestIO();
     io = new ConsoleBadgerIO();
     memory = new BadgerMemory();
     processor = new Processor(memory, io);
