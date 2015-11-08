@@ -2522,7 +2522,7 @@ void Processor::decode() {
       break;
     case 0x78:
       // logger.debug("IN A,(C) - ed 78 ");
-      in(Rgstr::A, MemoryAddress(Rgstr::C));
+      in(Rgstr::A, MemoryAddress(RegisterPair::BC));
       break;
     case 0x79:
       // logger.debug("OUT (C),A - ed 79 ");

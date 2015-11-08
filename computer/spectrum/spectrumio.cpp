@@ -19,11 +19,11 @@ contents of Register B are placed on the top half (A8 through A15) of the
 address bus at this time.
 */
 std::uint8_t SpectrumIO::read(std::uint16_t address) {
-    spdlog::get("console")->debug("address read {0:x}", (int)address);
+    spdlog::get("console")->debug("address read {0:x}", address);
     if ((address & 0xFE) == 0xFE) {
         uint8_t lineScanned = address >> 8;
         
-        spdlog::get("console")->debug("scanning line {0:x}", (int)lineScanned);
+        spdlog::get("console")->debug("scanning line {0:x}", lineScanned);
         
         if (inputKeys.size() > 0) {
             uint16_t key = inputKeys.front();
