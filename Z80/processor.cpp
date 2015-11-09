@@ -4215,8 +4215,14 @@ void Processor::SRL(std::uint16_t memoryAddress) { unimplemented("SRL"); }
  */
 void Processor::SRL(Rgstr m) {
   std::uint8_t val = registers->getRegisterValue(m);
+  registers->setSignFlag(false);
   registers->setCFlag((val & 1) == 1);
-  registers->setRegister(m, val >> 1);
+  std::uint8_t newval = val >> 1;
+  registers->setRegister(m, newval);
+  registers->setZeroFlag(newval == 0);
+  registers->setHFlag(false);
+  registers->setParityOverflowFlag(parity(newval));
+  registers->setNFlag(false);
 }
 
 void Processor::SUB(Rgstr reg) { SUB(registers->getRegisterValue(reg)); }

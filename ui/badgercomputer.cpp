@@ -1,30 +1,13 @@
 #include "badgercomputer.h"
 
-#include "ui/qtbadgerio.h"
-#include "ui/cpm_io.h"
 #include "utils.h"
 #include "Z80/registers.h"
-#include <iostream>
+#include "spdlog/spdlog.h"
 
 BadgerComputer::BadgerComputer() {
   memory = new QtBadgerMemory();
-  //     io = new QtBadgerIO();
   io = new SpectrumIO();
   processor = new Processor(memory, io);
-
-  //     addBreakpoint(0x1b3e); //inc counter
-  //     addBreakpoint(0x1b41); //shift
-  //     addBreakpoint(0x1b45); //check shift
-  //      addBreakpoint(0x11ef);
-  //     addBreakpoint(0x11da);
-  // //     addBreakpoint(0x11e2);
-  //      addBreakpoint(0x1219);
-  //           addBreakpoint(0xeeb);
-  //           addBreakpoint(0x1295);
-  //     addBreakpoint(0xb24);
-  //     addBreakpoint(0x11e2);
-  //     addBreakpoint(0x1be4);
-  //     addBreakpoint(0x15f2);
 }
 
 BadgerComputer::~BadgerComputer() {}
@@ -40,7 +23,7 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
     if (!skipBreakpoint && breakpoints.find(processor->getRegisters()->getPC()) != breakpoints.end()) {
       skipBreakpoint = true;
       emit hitbreakpoint();
-      std::cout << "breakpoint hit!" << std::endl;
+      spdlog::get("console")->debug("breakpoint hit!");
       break;
     } else {
       skipBreakpoint = false;
@@ -52,8 +35,6 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
       if (i == 0) {
         processor->interruptRequest(false);
       }
-
-      //             std::cout << utils::int_to_hex(processor->getRegisters()->getPC()).toStdString() << std::endl;
     }
   }
 }

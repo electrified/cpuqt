@@ -18,6 +18,7 @@
 #include "computer/utils.h"
 #include "qdebugstream.h"
 #include "spdlog/spdlog.h"
+#include "keypresseater.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -43,7 +44,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
   connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
   
+  connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
+  connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
+  connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
+  connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
+  
   initial_recent_menu_population();
+  
+  KeyPressEater *keyPressEater = new KeyPressEater(computer->io);
+  
+  ui->spectrumInput->installEventFilter(keyPressEater);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -195,6 +205,7 @@ void MainWindow::step() {
   computer->step();
   update_register_values();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
+//   moveDebuggerToPC(computer->processor->getRegisters()->getPC());
   updateScreen();
 }
 

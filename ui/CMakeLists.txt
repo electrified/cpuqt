@@ -29,6 +29,7 @@ cpm_io.cpp
 badgercomputer.cpp 
 about_box.cpp
 scripting/script_host.cpp
+keypresseater.cpp
 )
 
 set (GuiLib_hdr 
@@ -42,6 +43,7 @@ badgercomputer.h
 about_box.h
 scripting/script_host.h
 qdebugstream.h
+keypresseater.h
 )
 
 set (GuiLib_ui

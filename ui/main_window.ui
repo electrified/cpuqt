@@ -41,6 +41,16 @@
          <string/>
         </property>
        </widget>
+       <widget class="QPlainTextEdit" name="spectrumInput">
+        <property name="geometry">
+         <rect>
+          <x>610</x>
+          <y>180</y>
+          <width>104</width>
+          <height>75</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">

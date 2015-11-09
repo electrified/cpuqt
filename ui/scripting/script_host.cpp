@@ -40,7 +40,7 @@ void ScriptHost::runCommand(std::string command) {
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {
-    spdlog::get("console")->debug("Adding breakpoint " + std::to_string (memoryAddress));
+    spdlog::get("console")->debug("Adding breakpoint {0:x}", memoryAddress);
     computer->addBreakpoint(memoryAddress);
 }
 
