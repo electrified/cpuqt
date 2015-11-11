@@ -22,7 +22,7 @@ ScriptHost::ScriptHost(BadgerComputer* computer) {
     this->computer = computer;
     
     state["em"].SetObj(*this,
-        "brk", &ScriptHost::addBreakpoint,
+        "break", &ScriptHost::addBreakpoint,
         "step", &ScriptHost::step,
         "del", &ScriptHost::removeBreakpoint,
         "list", &ScriptHost::listBreakpoints,
@@ -40,7 +40,7 @@ void ScriptHost::runCommand(std::string command) {
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {
-    spdlog::get("console")->debug("Adding breakpoint {0:x}", memoryAddress);
+    spdlog::get("console")->debug("Adding breakpoint 0x{0:x}", memoryAddress);
     computer->addBreakpoint(memoryAddress);
 }
 
