@@ -3,11 +3,14 @@
 
 #include <string>
 #include "../badgercomputer.h"
+#include "spdlog/spdlog.h"
+#include "selene.h"
 
 class ScriptHost {
+private:
+  sel::State state{true};
     BadgerComputer* computer;
 public:
-    ScriptHost();
     ScriptHost(BadgerComputer* computer);
     ~ScriptHost();
     void executeScript(std::string path);

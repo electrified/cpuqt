@@ -41,7 +41,7 @@ qtbadgermemory.h
 cpm_io.h
 badgercomputer.h 
 about_box.h
-scripting/script_host.h
+# scripting/script_host.h
 qdebugstream.h
 keypresseater.h
 )
@@ -59,7 +59,7 @@ qt5_wrap_ui (GuiLib_ui_moc  ${GuiLib_ui})
 qt5_add_resources(APP_RESOURCES resources/app.qrc)
 
 include_directories (${PROJECT_SOURCE_DIR})
-include_directories (${PROJECT_BINARY_DIR})
+# include_directories (${PROJECT_BINARY_DIR})
 
 add_library (GuiLib STATIC
     ${GuiLib_src}
@@ -67,10 +67,10 @@ add_library (GuiLib STATIC
     ${GuiLib_ui_moc}
 )
 
-target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg)
+target_link_libraries(GuiLib Qt5::Widgets Qt5::Svg ${LUA_LIBRARIES})
 
 add_executable(cpuqt2 ${GuiBin_src} ${APP_RESOURCES})
 
-target_link_libraries(cpuqt2 GuiLib Z80 ${Boost_LIBRARIES} ${LUA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(cpuqt2 GuiLib Z80 ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 install(TARGETS cpuqt2 RUNTIME DESTINATION bin)

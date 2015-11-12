@@ -10,6 +10,12 @@
 #include <QSettings>
 #include <QImage>
 
+//for loading script
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cerrno>
+
 #include "ui/qtbadgerio.h"
 #include "ui/qtbadgermemory.h"
 #include "utils.h"
@@ -23,14 +29,15 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
    
-  QDebugStream qout(std::cout, this->ui->scriptEdit);
-  
   computer = new BadgerComputer();
 
   disassemblyModel = new DisassemblyModel(computer->memory, this);
 
   scriptHost = new ScriptHost(computer);
 
+    QDebugStream qout(std::cout, this->ui->scriptOutput);
+  
+  
   // Attach the model to the view
   ui->disassemblyView->setModel(disassemblyModel);
   ui->disassemblyView->setColumnWidth(0, 50);
@@ -134,8 +141,7 @@ void MainWindow::add_recent_menu_item(QString rom_path) {
 }
 
 void MainWindow::loadRom() {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open ROM"), QDir::homePath(), tr("ROM Files (*.rom *.bin)"),
-                                                  0, QFileDialog::DontUseNativeDialog);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open ROM"), QDir::homePath(), tr("ROM Files (*.rom *.bin)"), 0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
     update_recents_list(fileName);
@@ -243,4 +249,45 @@ void MainWindow::toggleScrollMemory(bool scroll) { this->scrollMemory = scroll; 
 void MainWindow::executeScript() {
   QString script = this->ui->scriptEdit->toPlainText();
   scriptHost->runCommand(script.toStdString());
+}
+
+void MainWindow::loadScript() {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open script"), QDir::homePath(), tr("Lua scripts (*.lua)"), 0, QFileDialog::DontUseNativeDialog);
+
+  if (fileName != NULL) {
+    std::string script_contents = get_file_contents(fileName.toLocal8Bit());
+    ui->scriptEdit->clear();
+    ui->scriptEdit->appendPlainText(QString::fromStdString(script_contents));
+  }
+}
+
+std::string MainWindow::get_file_contents(const char *filename)
+{
+  std::ifstream in(filename, std::ios::in);
+  if (in)
+  {
+    std::ostringstream contents;
+    contents << in.rdbuf();
+    in.close();
+    return(contents.str());
+  }
+  throw(errno);
+}
+
+void MainWindow::save_file(const char *filename, std::string contents)
+{
+  std::ofstream out(filename, std::ios::trunc);
+  if (out)
+  {
+    out << contents;
+    out.close();
+  }
+}
+
+void MainWindow::saveScript() {
+      QString fileName = QFileDialog::getSaveFileName(this, tr("Save script"), QDir::homePath(), tr("Lua scripts (*.lua)"), 0, QFileDialog::DontUseNativeDialog);
+
+  if (fileName != NULL) {
+    this->save_file(fileName.toLocal8Bit(), ui->scriptEdit->toPlainText().toStdString());
+  }
 }

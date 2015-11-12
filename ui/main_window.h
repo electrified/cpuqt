@@ -41,6 +41,8 @@ private:
   void update_register_values();
   void drawPixel(std::uint16_t x, std::uint16_t y, bool on);
   void updateScreen();
+  std::string get_file_contents(const char *filename);
+  void save_file(const char *filename, std::string contents);
 private slots:
   void loadRom();
   void loadRom(QString file_path);
@@ -60,6 +62,8 @@ private slots:
   void toggleScrollMemory(bool scroll);
   void gfxUpdated(std::uint16_t i);
   void executeScript();
+  void saveScript();
+  void loadScript();
 signals:
   void programCounterUpdated(std::uint16_t address);
 };

@@ -1,33 +1,20 @@
 #include "script_host.h"
 
-#include <iostream>
-#include "selene.h"
-#include "spdlog/spdlog.h"
-
-sel::State state{true};
-/*
-auto print = [](std::string str) {
-                spdlog::get("console_log")->info(str);
-            };
-            this->state["print"] = print;*/
-
 // print(string.format("%x",em.peek(0)))
 // em.poke(0, 255)
 // print(string.format("%x",em.peek(0)))
 
-ScriptHost::ScriptHost() {
-}
-
 ScriptHost::ScriptHost(BadgerComputer* computer) {
-    this->computer = computer;
+    computer = computer;
     
     state["em"].SetObj(*this,
-        "break", &ScriptHost::addBreakpoint,
+        "brk", &ScriptHost::addBreakpoint,
         "step", &ScriptHost::step,
         "del", &ScriptHost::removeBreakpoint,
         "list", &ScriptHost::listBreakpoints,
         "peek", &ScriptHost::peek,
         "poke", &ScriptHost::poke);
+    
 }
 
 void ScriptHost::executeScript(std::string path) {

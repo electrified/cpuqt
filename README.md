@@ -46,3 +46,8 @@ Set register
 Quit
 Load ROM
 Single step
+
+
+em.brk(0x0333)
+em.brk(0x0E87)
+em.brk(0x03f6)
