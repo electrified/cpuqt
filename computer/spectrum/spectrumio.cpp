@@ -39,9 +39,9 @@ keyCodes[72] = spec_key(6, 0x10); // H
 keyCodes[74] = spec_key(6, 0x08); // J 
 keyCodes[75] = spec_key(6, 0x04); // K 
 keyCodes[76] = spec_key(6, 0x02); // L 
-keyCodes[13] = spec_key(6, 0x01); // enter 
+keyCodes[16777220] = spec_key(6, 0x01); // enter 
 
-keyCodes[16] = spec_key(0, 0x01); // caps 
+keyCodes[16777248] = spec_key(0, 0x01); // caps (shift key)
 keyCodes[90] = spec_key(0, 0x02); // Z 
 keyCodes[88] = spec_key(0, 0x04); // X 
 keyCodes[67] = spec_key(0, 0x08); // C 
@@ -49,15 +49,15 @@ keyCodes[86] = spec_key(0, 0x10); // V
 keyCodes[66] = spec_key(7, 0x10); // B 
 keyCodes[78] = spec_key(7, 0x08); // N 
 keyCodes[77] = spec_key(7, 0x04); // M 
-keyCodes[17] = spec_key(7, 0x02); // sym 
+keyCodes[16777249] = spec_key(7, 0x02); // sym (control)
 keyCodes[32] = spec_key(7, 0x01); // space 
 
 // shifted combinations 
-keyCodes[8] = spec_key( 4, 0x01, true); // backspace => caps + 0 
-keyCodes[37] = spec_key( 3, 0x10, true); // left arrow => caps + 5 
-keyCodes[38] = spec_key( 4, 0x08, true); // up arrow => caps + 7 
-keyCodes[39] = spec_key( 4, 0x04, true); // right arrow => caps + 8 
-keyCodes[40] = spec_key( 4, 0x10, true); // down arrow => caps + 6 
+keyCodes[16777219] = spec_key( 4, 0x01, true); // backspace => caps + 0 
+keyCodes[16777234] = spec_key( 3, 0x10, true); // left arrow => caps + 5 
+keyCodes[16777235] = spec_key( 4, 0x08, true); // up arrow => caps + 7 
+keyCodes[16777236] = spec_key( 4, 0x04, true); // right arrow => caps + 8 
+keyCodes[16777237] = spec_key( 4, 0x10, true); // down arrow => caps + 6 
   
 }
 
@@ -67,7 +67,7 @@ SpectrumIO::~SpectrumIO()
 }
 
 spec_key SpectrumIO::findKey(int key) {
-  std::map<uint8_t, spec_key>::iterator it = keyCodes.find(key);
+  std::map<int, spec_key>::iterator it = keyCodes.find(key);
   if (it != keyCodes.end()) {
     return it->second;
   }
@@ -112,7 +112,7 @@ std::uint8_t SpectrumIO::read(std::uint16_t address) {
         for (uint8_t row = 0; row < 8; row++) {
           if  (!(address & (1 << (row+8)))) { /* bit held low, so scan this row */
             returnValue &= keystates[row];
-            spdlog::get("console")->debug("Row: {0:x} Value: {1:x}", row, returnValue);
+//             spdlog::get("console")->debug("Row: {0:x} Value: {1:x}", row, returnValue);
           }
         }
         

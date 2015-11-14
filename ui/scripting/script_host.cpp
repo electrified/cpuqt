@@ -5,7 +5,7 @@
 // print(string.format("%x",em.peek(0)))
 
 ScriptHost::ScriptHost(BadgerComputer* computer) {
-    computer = computer;
+    this->computer = computer;
     
     state["em"].SetObj(*this,
         "brk", &ScriptHost::addBreakpoint,

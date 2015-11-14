@@ -35,10 +35,10 @@ struct spec_key {
 
 class SpectrumIO  : public IO
 {
-    std::list<uint16_t> inputKeys;
+    std::list<int> inputKeys;
     
     uint8_t keystates[8];
-    std::map<uint8_t, spec_key> keyCodes;
+    std::map<int, spec_key> keyCodes;
 public:
     SpectrumIO();
     ~SpectrumIO();

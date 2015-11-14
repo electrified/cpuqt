@@ -100,7 +100,7 @@
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>29</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -146,8 +146,9 @@
     <property name="title">
      <string>Scripti&amp;ng</string>
     </property>
-    <addaction name="actionSaveScript"/>
     <addaction name="actionLoadScript"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSaveScript"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmu_Control"/>
@@ -531,12 +532,17 @@
   </action>
   <action name="actionSaveScript">
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save as...</string>
    </property>
   </action>
   <action name="actionLoadScript">
    <property name="text">
-    <string>Load</string>
+    <string>&amp;Load...</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
    </property>
   </action>
  </widget>

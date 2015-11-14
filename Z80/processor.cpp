@@ -1,11 +1,10 @@
 #include "processor.h"
 #include "emu_alu.h"
 
-// #include "Logger.h"
 #include <boost/utility/binary.hpp>
 #include <assert.h>
 #include "tables.h"
-// #include <iostream>
+#include "spdlog/spdlog.h"
 
 Processor::Processor(Memory *memory, IO *io) : memory(memory), io(io) {
   //     std::cout << "Processor ctor" << std::endl;
@@ -843,7 +842,7 @@ void Processor::decode() {
   case 0xC4:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL NZ,(nn) - c4 n n ");
+//     logger.debug("CALL NZ,(nn) - c4 n n ");
     CALL(Condition::NZ, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xC5:
@@ -3012,26 +3011,30 @@ void Processor::decode() {
 }
 
 void Processor::process() {
+//   spdlog::get("console")->debug("PC: {0:x}", getRegisters()->getPC());
   //        if (halted) {
   //            decode(); //NOP
   //        } else {
   decode();
   // maskable interrupt
   if (registers->isIFF1() && interruptRequested) {
-    spdlog::get("console")->debug("Interrupt mode: " + std::to_string(registers->getIM()));
+//     spdlog::get("console")->debug("Interrupt mode: " + std::to_string(registers->getIM()));
+    
+    std::uint16_t destPC = 0;
+    
     switch (registers->getIM()) {
     case 0:
       // 8080 mode, read instruction from data bus
       break;
     case 1:
-      registers->setPC(0x38);
+      destPC = 0x38;
       break;
     case 2:
       // 16 bit pointer formed from I register content and data bus
-      pushPCtoStack();
-      registers->setPC(memory->read(registers->getI() << 8 & io->read(0x0)));
+      destPC = memory->read(registers->getI() << 8 & io->read(0x0));
       break;
     }
+    RST(destPC);
     DI();
   }
 }
@@ -3061,7 +3064,7 @@ Registers *Processor::getRegisters() { return registers; }
  * The rgstr I = 00h
  * The rgstr R = 00h
  * <p/>
- * During reset time, the address bus and data bus go to a hight impadance state and all controll output signals go to
+ * During reset time, the address bus and data bus go to a hight impadance state and all control output signals go to
  * the inactive state.
  * <p/>
  * The Z80 CPU will execute instruction at address 0000h
@@ -3070,7 +3073,7 @@ void Processor::reset() {
   registers->setPC(0x0);
   registers->setI(0x0);
   registers->setR(0x0);
-  //    registers._IM = 0;
+  registers->setIM(0);
 }
 
 void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
@@ -3222,12 +3225,12 @@ condition bits in the Flag Rgstr (rgstr F).
  */
 void Processor::CALL(Condition c, std::uint16_t memoryAddress) {
   if (isConditionTrue(c)) {
-    pushPCtoStack();
-    registers->setPC(memoryAddress);
+    CALL(memoryAddress);
   }
 }
 
 void Processor::CALL(std::uint16_t memoryAddress) {
+//   spdlog::get("console")->debug("CALLing {0:x}", memoryAddress);
   pushPCtoStack();
   registers->setPC(memoryAddress);
 }
@@ -3931,13 +3934,12 @@ void Processor::RET(Condition condition) {
 }
 
 void Processor::RET() {
+//   spdlog::get("console")->debug("RETting");
   // TODO: this doesn't quite follow what the spec says.
   // shouldn't wipe out high order when setting low order
   registers->setPC(memory->read(registers->getSP())); // set low order
   incrementSP();
-  registers->setPC(memory->read(registers->getSP()) << 8 | registers->getPC()); // set
-  // high
-  // order
+  registers->setPC(memory->read(registers->getSP()) << 8 | registers->getPC()); // set high order
   incrementSP();
 }
 
@@ -4107,8 +4109,7 @@ void Processor::RRD() {
  * corresponding T state.
  */
 void Processor::RST(std::uint8_t p) {
-  pushPCtoStack();
-  registers->setPC(p);
+  CALL(p);
 }
 
 /*
@@ -4133,7 +4134,8 @@ C is set if borrow; reset otherwise
 */
 void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   uint16_t oldvalue = registers->getRegisterPairValue(h1);
-  uint16_t newvalue = oldvalue - registers->getRegisterPairValue(h2) - registers->getCFlag();
+  uint16_t toSubtract = registers->getRegisterPairValue(h2) + registers->getCFlag();
+  uint16_t newvalue = oldvalue - toSubtract;
   registers->setRegisterPair(h1, newvalue);
 
   registers->setSignFlag(newvalue & 0x8000);
@@ -4143,13 +4145,15 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   //     registers->setHFlag((((oldvalue & 0x0FFF) + (newvalue & 0x0FFF)) & 0xF000) !=0);
 
   registers->setNFlag(true);
+  registers->setCFlag(oldvalue < toSubtract);
 }
 
 void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) { SBC(a, memory->read(memoryAddress)); }
 
 void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
   uint8_t oldvalue = registers->getRegisterValue(a);
-  uint8_t newvalue = oldvalue - nextByte - registers->getCFlag();
+  uint8_t toSubtract = nextByte - registers->getCFlag();
+  uint8_t newvalue = oldvalue - toSubtract;
   registers->setRegister(a, newvalue);
 
   registers->setSignFlag(newvalue & 0x80);
@@ -4160,12 +4164,11 @@ void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
 
   registers->setNFlag(true);
 
-  // TODO C flag not set
+  registers->setCFlag(oldvalue < toSubtract);
 }
 
 void Processor::SBC(Rgstr a, Rgstr b) { SBC(a, registers->getRegisterValue(b)); }
 
-void Processor::SCF() {
   /* The Carry flag in the F rgstr is set. */
   /*-
    * S is not affected
@@ -4175,6 +4178,7 @@ void Processor::SCF() {
   N is reset
   C is set
    */
+void Processor::SCF() {
   registers->setHFlag(false);
   registers->setCFlag(true);
   registers->setNFlag(false);
@@ -4316,15 +4320,13 @@ std::uint8_t Processor::readIO(std::uint16_t address) { return io->read(address)
 
 void Processor::unimplemented(std::string opcode) {
   spdlog::get("console")->debug("Unimplemented - " + opcode);
-  //     throw  UnimplementedInstructionException();
+  throw  UnimplementedInstructionException();
 }
 
 void Processor::writeIO(std::uint16_t address, std::uint8_t value) {
-  //    //logger.debug("Writing IO: addr:" + address + " val:" + value);
   io->write(address, value);
 }
 
-void Processor::setFlags(std::uint8_t value) {
   /*- S is set if I-Rgstr is negative; reset otherwise
   Z is set if I-Rgstr is zero; reset otherwise
   H is reset
@@ -4334,7 +4336,7 @@ void Processor::setFlags(std::uint8_t value) {
   If an interrupt occurs during execution of this instruction, the Parity
   flag contains a 0.
    */
-
+void Processor::setFlags(std::uint8_t value) {
   registers->setSignFlag(value & 0x80);
   registers->setZeroFlag(value == 0);
   registers->setHFlag(false);

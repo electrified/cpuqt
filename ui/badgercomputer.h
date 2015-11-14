@@ -17,7 +17,6 @@ public:
   void reset();
   Processor *processor;
   QtBadgerMemory *memory;
-  //     BadgerIO* io;
   SpectrumIO *io;
   bool skipBreakpoint = false;
 
@@ -29,7 +28,6 @@ public:
   void listBreakpoints();
 signals:
   void hitbreakpoint();
-
 private:
   set<uint16_t> breakpoints;
 };
