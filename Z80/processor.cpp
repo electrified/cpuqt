@@ -4006,7 +4006,46 @@ void Processor::RLC(Rgstr rgstr) {
  */
 void Processor::RLCA() { RLC(Rgstr::A); }
 
-void Processor::RLD() { unimplemented("RLD"); }
+/*
+ * The contents of the low order four bits (bits 3, 2, 1, and 0) of the memory
+location (HL) are copied to the high order four bits (7, 6, 5, and 4) of that
+same memory location; 
+
+the previous contents of those high order four bits
+are copied to the low order four bits of the Accumulator (register A); 
+
+and
+the previous contents of the low order four bits of the Accumulator are
+copied to the low order four bits of memory location (HL).
+
+The contents of the high order bits of the Accumulator are unaffected.
+*/
+void Processor::RLD() { 
+  std::uint8_t priorMemory = memory->read(registers->getHL());
+  std::uint8_t priorAccumulator = registers->getA();
+
+  std::uint8_t finalVal = (priorMemory >> 4) | (priorAccumulator & 0xF0);
+  
+  registers->setA(finalVal);
+
+  memory->write(registers->getHL(), (priorMemory << 4) | (priorAccumulator & 0xF));
+  
+  registers->getA();
+  
+  registers->setSignFlag(finalVal >> 7);
+  registers->setZeroFlag(finalVal == 0);
+  registers->setHFlag(false);
+  registers->setParityOverflowFlag(parity(finalVal));
+  registers->setNFlag(false);
+  /*
+   * S is set if Accumulator is negative after operation; reset otherwise
+Z is set if Accumulator is zero after operation; reset otherwise
+H is reset
+P/V is set if parity of Accumulator is even after operation; reset otherwise
+N is reset
+C is not affected
+*/
+}
 
 /*The contents of operand m are rotated right 1-bit position through the Carry
 flag. The content of bit 0 is copied to the Carry flag and the previous
@@ -4201,9 +4240,29 @@ void Processor::SET(std::uint8_t i, std::uint16_t memoryAddress) {
   memory->write(memoryAddress, currentMemoryContents | (1 << i));
 }
 
-void Processor::SLA(std::uint16_t memoryAddress) { unimplemented("SLA"); }
+void Processor::SLA(std::uint16_t memoryAddress) { 
+  std::uint8_t currentMemoryContents = memory->read(memoryAddress);
+  registers->setSignFlag(false);
+  registers->setCFlag(currentMemoryContents >> 7);
+  std::uint8_t newval = currentMemoryContents << 1;
+  memory->write(memoryAddress, newval);
+  registers->setZeroFlag(newval == 0);
+  registers->setHFlag(false);
+  registers->setParityOverflowFlag(parity(newval));
+  registers->setNFlag(false);
+}
 
-void Processor::SLA(Rgstr r) { unimplemented("SLA"); }
+void Processor::SLA(Rgstr r) { 
+  std::uint8_t val = registers->getRegisterValue(r);
+  registers->setSignFlag(false);
+  registers->setCFlag(val >> 7);
+  std::uint8_t newval = val << 1;
+  registers->setRegister(r, newval);
+  registers->setZeroFlag(newval == 0);
+  registers->setHFlag(false);
+  registers->setParityOverflowFlag(parity(newval));
+  registers->setNFlag(false);
+}
 
 void Processor::SRA(std::uint16_t memoryAddress) { unimplemented("SRA"); }
 

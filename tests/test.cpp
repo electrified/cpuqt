@@ -9,8 +9,8 @@
 #include "../Z80/utils.h"
 
 std::unique_ptr<TestComputer> setupComputer() {
-    std::unique_ptr<TestComputer> proc(new TestComputer());
-    return proc;
+  std::unique_ptr<TestComputer> proc(new TestComputer());
+  return proc;
 }
 
 /*
@@ -19,126 +19,118 @@ pair contains 6666H, and address 6666H contains 10H, at execution of
 ADC A, (HL) the Accumulator contains 27H.
 */
 TEST_CASE("ADCA_HL_Test", "Instructions") {
-//    std::unique_ptr<TestComputer> comp = setupComputer();
-    TestComputer* comp = new TestComputer();
-    comp->getMemory()->write(0x0, 0x8E);
-    comp->getMemory()->write(0x6666, 0x10);
-    comp->getProcessor()->getRegisters()->setA(0x16);
-    comp->getProcessor()->getRegisters()->setHL(0x6666);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x27);
+  //    std::unique_ptr<TestComputer> comp = setupComputer();
+  TestComputer *comp = new TestComputer();
+  comp->getMemory()->write(0x0, 0x8E);
+  comp->getMemory()->write(0x6666, 0x10);
+  comp->getProcessor()->getRegisters()->setA(0x16);
+  comp->getProcessor()->getRegisters()->setHL(0x6666);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x27);
 }
-
 
 TEST_CASE("ADCA_IX_d_Test", "Instructions") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    // ADC A, (IX+d)
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0x8E);
-    comp->getMemory()->write(0x2, 0x10);
-    comp->getMemory()->write(0x6676, 0x10);
-    comp->getProcessor()->getRegisters()->setIX(0x6666);
-    comp->getProcessor()->getRegisters()->setA(0x16);
-//        comp->getProcessor()->getRegisters()->setHL(0x6666);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x27);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // ADC A, (IX+d)
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0x8E);
+  comp->getMemory()->write(0x2, 0x10);
+  comp->getMemory()->write(0x6676, 0x10);
+  comp->getProcessor()->getRegisters()->setIX(0x6666);
+  comp->getProcessor()->getRegisters()->setA(0x16);
+  //        comp->getProcessor()->getRegisters()->setHL(0x6666);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x27);
 }
-
 
 TEST_CASE("ADCAnTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
+  std::unique_ptr<TestComputer> comp = setupComputer();
 
-    // ADC A, n
-    comp->getMemory()->write(0x0,0xCE);
-    comp->getMemory()->write(0x1, 0xAF);
-    comp->getProcessor()->getRegisters()->setA(0x16);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xC6);
+  // ADC A, n
+  comp->getMemory()->write(0x0, 0xCE);
+  comp->getMemory()->write(0x1, 0xAF);
+  comp->getProcessor()->getRegisters()->setA(0x16);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xC6);
 }
 
-
 TEST_CASE("ADCAnTest2") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCE);
-    comp->getMemory()->write(0x1, 0xA5); // immediate value
-    comp->getProcessor()->getRegisters()->setA(0x17);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xbd);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCE);
+  comp->getMemory()->write(0x1, 0xA5); // immediate value
+  comp->getProcessor()->getRegisters()->setA(0x17);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xbd);
 }
 
 TEST_CASE("ADCArTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
+  std::unique_ptr<TestComputer> comp = setupComputer();
 
-    // ADC A, B
-    comp->getMemory()->write(0x0,BOOST_BINARY(10001000));
-    comp->getProcessor()->getRegisters()->setA(0x16);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->getRegisters()->setB(0x99);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xB0);
+  // ADC A, B
+  comp->getMemory()->write(0x0, BOOST_BINARY(10001000));
+  comp->getProcessor()->getRegisters()->setA(0x16);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->getRegisters()->setB(0x99);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xB0);
 }
 
 TEST_CASE("ADCArTest2") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0,BOOST_BINARY(10001011)); // E register
-    comp->getProcessor()->getRegisters()->setE(0x16);
-    comp->getProcessor()->getRegisters()->setA(0xa8);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xbf);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10001011)); // E register
+  comp->getProcessor()->getRegisters()->setE(0x16);
+  comp->getProcessor()->getRegisters()->setA(0xa8);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xbf);
 }
-
 
 TEST_CASE("ADD HL ss") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    // add hl, de
-    comp->getMemory()->write(0x0, BOOST_BINARY(00011001));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // add hl, de
+  comp->getMemory()->write(0x0, BOOST_BINARY(00011001));
 
-    comp->getProcessor()->getRegisters()->setDE(0xffff);
-    comp->getProcessor()->getRegisters()->setHL(0x4000);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3fff);
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
-    //REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+  comp->getProcessor()->getRegisters()->setDE(0xffff);
+  comp->getProcessor()->getRegisters()->setHL(0x4000);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3fff);
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+  // REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
-
-
 
 TEST_CASE("EXAFAFprimeTest") {
-    /*
-     * If the content of register pair AF is number 9900H , and the content
-     * of register pair AF' is number 5944H , at instruction EX AF , AF' the
-     * contents of AF is 5944H , and the contents of AF' is 9900H .
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x08);
-    comp->getProcessor()->getRegisters()->setAF(0x9900);
-    comp->getProcessor()->getRegisters()->setAF_alt(0x5944);
+  /*
+   * If the content of register pair AF is number 9900H , and the content
+   * of register pair AF' is number 5944H , at instruction EX AF , AF' the
+   * contents of AF is 5944H , and the contents of AF' is 9900H .
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x08);
+  comp->getProcessor()->getRegisters()->setAF(0x9900);
+  comp->getProcessor()->getRegisters()->setAF_alt(0x5944);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getAF() == 0x9900);
-    REQUIRE(comp->getProcessor()->getRegisters()->getAF_alt() == 0x5944);
+  REQUIRE(comp->getProcessor()->getRegisters()->getAF() == 0x9900);
+  REQUIRE(comp->getProcessor()->getRegisters()->getAF_alt() == 0x5944);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getAF() == 0x5944);
-    REQUIRE( comp->getProcessor()->getRegisters()->getAF_alt() == 0x9900);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getAF() == 0x5944);
+  REQUIRE(comp->getProcessor()->getRegisters()->getAF_alt() == 0x9900);
 }
 
-
-
 TEST_CASE("BITb_HL_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01100110));
-    comp->getMemory()->write(0x4444, BOOST_BINARY(1111));
-    comp->getProcessor()->getRegisters()->setHL(0x4444);
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE((comp->getMemory()->read(0x4444) & BOOST_BINARY(1000)) == BOOST_BINARY(1000));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01100110));
+  comp->getMemory()->write(0x4444, BOOST_BINARY(1111));
+  comp->getProcessor()->getRegisters()->setHL(0x4444);
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE((comp->getMemory()->read(0x4444) & BOOST_BINARY(1000)) == BOOST_BINARY(1000));
 }
 
 /**
@@ -150,41 +142,40 @@ TEST_CASE("BITb_HL_Test") {
 */
 
 TEST_CASE("BITb_IXplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0xCB);
-    comp->getMemory()->write(0x2, 0x4);
-    comp->getMemory()->write(0x3, BOOST_BINARY(01110110));
-    comp->getMemory()->write(0x2004, BOOST_BINARY(1101100));
-    comp->getProcessor()->getRegisters()->setIX(0x2000);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE((comp->getMemory()->read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0xCB);
+  comp->getMemory()->write(0x2, 0x4);
+  comp->getMemory()->write(0x3, BOOST_BINARY(01110110));
+  comp->getMemory()->write(0x2004, BOOST_BINARY(1101100));
+  comp->getProcessor()->getRegisters()->setIX(0x2000);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE((comp->getMemory()->read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
 }
 
-
 TEST_CASE("CCFTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x3F);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x3F);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
 }
 
 TEST_CASE("CPLTest") {
-    /*
-     * If the contents of the Accumulator are 1011 0100 , at execution of
-     * CPL the Accumulator contents are 0100 1011 .
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x2F);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10110100));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01001011));
-    REQUIRE(comp->getProcessor()->getRegisters()->getHFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getNFlag());
+  /*
+   * If the contents of the Accumulator are 1011 0100 , at execution of
+   * CPL the Accumulator contents are 0100 1011 .
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x2F);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10110100));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01001011));
+  REQUIRE(comp->getProcessor()->getRegisters()->getHFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getNFlag());
 }
 
 /*
@@ -193,25 +184,25 @@ TEST_CASE("CPLTest") {
 * results in the P/V flag in the F register resetting.
 */
 TEST_CASE("CPrTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x6000, 0x60);
-    comp->getProcessor()->getRegisters()->setHL(0x6000);
-    comp->getProcessor()->getRegisters()->setA(0x63);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x6000, 0x60);
+  comp->getProcessor()->getRegisters()->setHL(0x6000);
+  comp->getProcessor()->getRegisters()->setA(0x63);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
 TEST_CASE("CPrTest2") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(10111101));
-    comp->getMemory()->write(0x1, BOOST_BINARY(10111101)); // L
-    comp->getProcessor()->getRegisters()->setA(0x17);
-    comp->getProcessor()->getRegisters()->setL(0x17);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10111101));
+  comp->getMemory()->write(0x1, BOOST_BINARY(10111101)); // L
+  comp->getProcessor()->getRegisters()->setA(0x17);
+  comp->getProcessor()->getRegisters()->setL(0x17);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
 
 // CP 20
@@ -242,157 +233,150 @@ C - Carry
 Set if the result did not fit in the register
 */
 TEST_CASE("CP s") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFE);
-    comp->getMemory()->write(0x1, 0x20);
-    comp->getProcessor()->getRegisters()->setA(0x0);
-    comp->getProcessor()->process();
-    std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
-    std::cout <<(std::uint16_t)flags <<std::endl;
-    REQUIRE(flags == (std::uint16_t)0xA3);
-    // required = 0b10100011
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFE);
+  comp->getMemory()->write(0x1, 0x20);
+  comp->getProcessor()->getRegisters()->setA(0x0);
+  comp->getProcessor()->process();
+  std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
+  std::cout << (std::uint16_t)flags << std::endl;
+  REQUIRE(flags == (std::uint16_t)0xA3);
+  // required = 0b10100011
 }
 
 TEST_CASE("CP s Test2") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFE);
-    comp->getMemory()->write(0x1, 0x80);
-    comp->getProcessor()->getRegisters()->setA(0x7F); // 1111111 - 10000000
-    comp->getProcessor()->process();
-    std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
-    std::cout <<(std::uint16_t)flags <<std::endl;
-    REQUIRE(flags == (std::uint16_t)0x87);
-    //act 0b10000010
-    //req 0b10000111
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFE);
+  comp->getMemory()->write(0x1, 0x80);
+  comp->getProcessor()->getRegisters()->setA(0x7F); // 1111111 - 10000000
+  comp->getProcessor()->process();
+  std::uint16_t flags = comp->getProcessor()->getRegisters()->getF();
+  std::cout << (std::uint16_t)flags << std::endl;
+  REQUIRE(flags == (std::uint16_t)0x87);
+  // act 0b10000010
+  // req 0b10000111
 }
 
 TEST_CASE("DEC r 8Bit") {
-    /*
-     * f the D register contains byte 2AH, at execution of DEC D register D
-     * contains 29H.
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(00010101));
-    comp->getProcessor()->getRegisters()->setD(0x2a);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x29);
+  /*
+   * f the D register contains byte 2AH, at execution of DEC D register D
+   * contains 29H.
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(00010101));
+  comp->getProcessor()->getRegisters()->setD(0x2a);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x29);
 }
 
 TEST_CASE("DEC r 16Bit") {
-    // DEC HL
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x2b);
-    comp->getProcessor()->getRegisters()->setHL(0x0);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFFF);
+  // DEC HL
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x2b);
+  comp->getProcessor()->getRegisters()->setHL(0x0);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFFF);
 }
 
 TEST_CASE("DECssTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(00101011));
-    comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::HL, 0x1001);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1000);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(00101011));
+  comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::HL, 0x1001);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1000);
 }
 
 TEST_CASE("DITest") {
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xF3);
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->isIFF1());
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->isIFF2());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xF3);
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->isIFF1());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->isIFF2());
 }
 
 TEST_CASE("DJNZeTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    // LD B, 1
-    comp->getMemory()->write(0x0, 0x6);
-    comp->getMemory()->write(0x1, 0x1);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // LD B, 1
+  comp->getMemory()->write(0x0, 0x6);
+  comp->getMemory()->write(0x1, 0x1);
 
-    // DJNZ (PC+e) 4
-    comp->getMemory()->write(0x2, 0x10);
-    comp->getMemory()->write(0x3, 0x4);
+  // DJNZ (PC+e) 4
+  comp->getMemory()->write(0x2, 0x10);
+  comp->getMemory()->write(0x3, 0x4);
 
+  comp->getMemory()->write(0x4, 0x6);
+  comp->getMemory()->write(0x5, 0xEA);
+  comp->getMemory()->write(0x6, 0x10);
+  comp->getMemory()->write(0x7, 0x5);
 
-    comp->getMemory()->write(0x4, 0x6);
-    comp->getMemory()->write(0x5, 0xEA);
-    comp->getMemory()->write(0x6, 0x10);
-    comp->getMemory()->write(0x7, 0x5);
-
-    comp->getProcessor()->process(2);
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 4);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xEA);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 13);
+  comp->getProcessor()->process(2);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 4);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xEA);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 13);
 }
-
 
 TEST_CASE("EITest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFB);
-    comp->getProcessor()->process();
-    REQUIRE( comp->getProcessor()->getRegisters()->isIFF1());
-    REQUIRE( comp->getProcessor()->getRegisters()->isIFF2());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFB);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->isIFF1());
+  REQUIRE(comp->getProcessor()->getRegisters()->isIFF2());
 }
-
 
 TEST_CASE("EX_SP_HLTest") {
-    /*
-     * If the HL register pair contains 7012H, the SP register pair contains
-     * 8856H, the memory location 8856H contains byte 11H, and memory
-     * location 8857H contains byte 22H, then the instruction EX (SP), HL
-     * results in the HL register pair containing number 2211H, memory
-     * location 8856H containing byte 12H, memory location 8857H containing
-     * byte 70H and Stack Pointer containing 8856H.
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-//    comp->getProcessor()->getRegisters()->setMemory(new int[64 * 1024]);
-    comp->getMemory()->write(0x8856, 0x11);
-    comp->getMemory()->write(0x8857, 0x22);
-    comp->getMemory()->write(0x0, 0xE3);
-    comp->getProcessor()->getRegisters()->setHL(0x7012);
-    comp->getProcessor()->getRegisters()->setSP(0x8856);
-    comp->getProcessor()->process();
-    REQUIRE( comp->getProcessor()->getRegisters()->getHL() ==0x2211);
-    REQUIRE( comp->getMemory()->read(0x8856) == 0x12);
-    REQUIRE( comp->getMemory()->read(0x8857) == 0x70);
-    REQUIRE( comp->getProcessor()->getRegisters()->getSP() == 0x8856);
+  /*
+   * If the HL register pair contains 7012H, the SP register pair contains
+   * 8856H, the memory location 8856H contains byte 11H, and memory
+   * location 8857H contains byte 22H, then the instruction EX (SP), HL
+   * results in the HL register pair containing number 2211H, memory
+   * location 8856H containing byte 12H, memory location 8857H containing
+   * byte 70H and Stack Pointer containing 8856H.
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  //    comp->getProcessor()->getRegisters()->setMemory(new int[64 * 1024]);
+  comp->getMemory()->write(0x8856, 0x11);
+  comp->getMemory()->write(0x8857, 0x22);
+  comp->getMemory()->write(0x0, 0xE3);
+  comp->getProcessor()->getRegisters()->setHL(0x7012);
+  comp->getProcessor()->getRegisters()->setSP(0x8856);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x2211);
+  REQUIRE(comp->getMemory()->read(0x8856) == 0x12);
+  REQUIRE(comp->getMemory()->read(0x8857) == 0x70);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x8856);
 }
-
 
 TEST_CASE("EX (SP) IX") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0xE3);
-    comp->getMemory()->write(0x100, 0x90);
-    comp->getMemory()->write(0x101, 0x48);
-    comp->getProcessor()->getRegisters()->setIX(0x3988);
-    comp->getProcessor()->getRegisters()->setSP(0x100);
-    comp->getProcessor()->process(2);
-    REQUIRE( comp->getProcessor()->getRegisters()->getIX() == 0x4890);
-    REQUIRE( comp->getMemory()->read(0x100) == 0x88);
-    REQUIRE( comp->getMemory()->read(0x101) == 0x39);
-    REQUIRE( comp->getProcessor()->getRegisters()->getSP() == 0x100);
-
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0xE3);
+  comp->getMemory()->write(0x100, 0x90);
+  comp->getMemory()->write(0x101, 0x48);
+  comp->getProcessor()->getRegisters()->setIX(0x3988);
+  comp->getProcessor()->getRegisters()->setSP(0x100);
+  comp->getProcessor()->process(2);
+  REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x4890);
+  REQUIRE(comp->getMemory()->read(0x100) == 0x88);
+  REQUIRE(comp->getMemory()->read(0x101) == 0x39);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x100);
 }
-
 
 TEST_CASE("EX (SP) IY") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0xE3);
-    comp->getMemory()->write(0x100, 0x90);
-    comp->getMemory()->write(0x101, 0x48);
-    comp->getProcessor()->getRegisters()->setIY(0x3988);
-    comp->getProcessor()->getRegisters()->setSP(0x100);
-    comp->getProcessor()->process(2);
-    REQUIRE( comp->getProcessor()->getRegisters()->getIY() == 0x4890);
-    REQUIRE( comp->getMemory()->read(0x100) == 0x88);
-    REQUIRE( comp->getMemory()->read(0x101)== 0x39);
-    REQUIRE( comp->getProcessor()->getRegisters()->getSP()== 0x100);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0xE3);
+  comp->getMemory()->write(0x100, 0x90);
+  comp->getMemory()->write(0x101, 0x48);
+  comp->getProcessor()->getRegisters()->setIY(0x3988);
+  comp->getProcessor()->getRegisters()->setSP(0x100);
+  comp->getProcessor()->process(2);
+  REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x4890);
+  REQUIRE(comp->getMemory()->read(0x100) == 0x88);
+  REQUIRE(comp->getMemory()->read(0x101) == 0x39);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x100);
 }
-
 
 /**
 * If the content of register pair DE is the number 2822H, and the content
@@ -402,14 +386,13 @@ TEST_CASE("EX (SP) IY") {
 */
 
 TEST_CASE("EXDEHLTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xEB);
-    comp->getProcessor()->getRegisters()->setDE(0x2822);
-    comp->getProcessor()->getRegisters()->setHL(0x499A);
-    comp->getProcessor()->process();
-    REQUIRE( comp->getProcessor()->getRegisters()->getDE() == 0x499A);
-    REQUIRE( comp->getProcessor()->getRegisters()->getHL() == 0x2822);
-
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xEB);
+  comp->getProcessor()->getRegisters()->setDE(0x2822);
+  comp->getProcessor()->getRegisters()->setHL(0x499A);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x499A);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x2822);
 }
 
 /**
@@ -423,24 +406,24 @@ TEST_CASE("EXDEHLTest") {
 
 TEST_CASE("EXXTest") {
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xD9);
-    comp->getProcessor()->getRegisters()->setBC(0x445A);
-    comp->getProcessor()->getRegisters()->setDE(0x3DA2);
-    comp->getProcessor()->getRegisters()->setHL(0x8859);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xD9);
+  comp->getProcessor()->getRegisters()->setBC(0x445A);
+  comp->getProcessor()->getRegisters()->setDE(0x3DA2);
+  comp->getProcessor()->getRegisters()->setHL(0x8859);
 
-    comp->getProcessor()->getRegisters()->setBC_alt(0x0988);
-    comp->getProcessor()->getRegisters()->setDE_alt(0x9300);
-    comp->getProcessor()->getRegisters()->setHL_alt(0x00E7);
-    comp->getProcessor()->process();
+  comp->getProcessor()->getRegisters()->setBC_alt(0x0988);
+  comp->getProcessor()->getRegisters()->setDE_alt(0x9300);
+  comp->getProcessor()->getRegisters()->setHL_alt(0x00E7);
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x0988 );
-    REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x9300 );
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x00E7 );
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x0988);
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x9300);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x00E7);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC_alt() == 0x445A);
-    REQUIRE(comp->getProcessor()->getRegisters()->getDE_alt() == 0x3DA2);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL_alt() == 0x8859);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC_alt() == 0x445A);
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE_alt() == 0x3DA2);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL_alt() == 0x8859);
 }
 
 /*
@@ -449,74 +432,71 @@ TEST_CASE("EXXTest") {
  * At execution of INA, (01H) the Accumulator contains 7BH.
  */
 TEST_CASE("INA_n_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDB);
-    comp->getMemory()->write(0x1, 0x01);
-    comp->getIO()->write(0x01, 0x7b);
-    comp->getProcessor()->getRegisters()->setA(0x23);
-    comp->getProcessor()->process();
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDB);
+  comp->getMemory()->write(0x1, 0x01);
+  comp->getIO()->write(0x01, 0x7b);
+  comp->getProcessor()->getRegisters()->setA(0x23);
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7b);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7b);
 }
 
-
 TEST_CASE("INCr16BitTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    // increment BC
-    comp->getMemory()->write(0x0, BOOST_BINARY(00000011));
-    comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::BC, 50);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 51);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // increment BC
+  comp->getMemory()->write(0x0, BOOST_BINARY(00000011));
+  comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::BC, 50);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 51);
 }
 
 TEST_CASE("INCr8BitTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(00111100));
-    comp->getProcessor()->getRegisters()->setRegister(Rgstr::A, 50);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 51);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(00111100));
+  comp->getProcessor()->getRegisters()->setRegister(Rgstr::A, 50);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 51);
 }
 
 TEST_CASE("INCssTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    // increment BC
-    comp->getMemory()->write(0x0, BOOST_BINARY(00000011));
-    comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::BC, 50);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 51);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // increment BC
+  comp->getMemory()->write(0x0, BOOST_BINARY(00000011));
+  comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::BC, 50);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 51);
 }
 
 TEST_CASE("JPHLTest") {
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0, 0xE9);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0, 0xE9);
 
-    comp->getProcessor()->getRegisters()->setL(0x45);
-    comp->getProcessor()->getRegisters()->setH(0x11);
+  comp->getProcessor()->getRegisters()->setL(0x45);
+  comp->getProcessor()->getRegisters()->setH(0x11);
 
-    // comp->getProcessor()->getRegisters()->setZeroFlag(false);
+  // comp->getProcessor()->getRegisters()->setZeroFlag(false);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x0);
 
-    comp->getProcessor()->process();
-    REQUIRE( comp->getProcessor()->getRegisters()->getPC() == 0x1145);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1145);
 }
-
 
 TEST_CASE("JPnnTest") {
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0, 0xC3);
-    comp->getMemory()->write(1, 0x45);
-    comp->getMemory()->write(2, 0x11);
-    comp->getProcessor()->getRegisters()->setZeroFlag(false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0, 0xC3);
+  comp->getMemory()->write(1, 0x45);
+  comp->getMemory()->write(2, 0x11);
+  comp->getProcessor()->getRegisters()->setZeroFlag(false);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1145);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1145);
 }
-
 
 /*
 * If condition cc is true, the instruction loads operand nn to register
@@ -530,57 +510,56 @@ TEST_CASE("JPnnTest") {
 * assembled object code.
 */
 TEST_CASE("JP NZ nn") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
+  std::unique_ptr<TestComputer> comp = setupComputer();
 
-    comp->getMemory()->write(0, BOOST_BINARY(11000010));
-    comp->getMemory()->write(1, 0x45);
-    comp->getMemory()->write(2, 0x11);
-    comp->getProcessor()->getRegisters()->setZeroFlag(false);
+  comp->getMemory()->write(0, BOOST_BINARY(11000010));
+  comp->getMemory()->write(1, 0x45);
+  comp->getMemory()->write(2, 0x11);
+  comp->getProcessor()->getRegisters()->setZeroFlag(false);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1145);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1145);
 }
 
-
 TEST_CASE("JR e") {
-    /*-
-     * To jump forward five locations from
-    address 480, the following assembly
-    language statement is used
-    JR $+5
+  /*-
+   * To jump forward five locations from
+  address 480, the following assembly
+  language statement is used
+  JR $+5
 
-    The resulting object code and final PC value is shown below:
-    Location Instruction
-    480 18
-    481 03
-    482 -
-    483 -
-    484 -
-    485 ← PC after jump
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x480, 0x18);
-    comp->getMemory()->write(0x481, 0x03);
-    comp->getProcessor()->getRegisters()->setPC(0x480);
+  The resulting object code and final PC value is shown below:
+  Location Instruction
+  480 18
+  481 03
+  482 -
+  483 -
+  484 -
+  485 ← PC after jump
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x480, 0x18);
+  comp->getMemory()->write(0x481, 0x03);
+  comp->getProcessor()->getRegisters()->setPC(0x480);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x485);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x485);
 }
 
 TEST_CASE("JR e negative") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x480, 0x18);
-    comp->getMemory()->write(0x481, BOOST_BINARY(11111101)); // -3
-    comp->getProcessor()->getRegisters()->setPC(0x480);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x480, 0x18);
+  comp->getMemory()->write(0x481, BOOST_BINARY(11111101)); // -3
+  comp->getProcessor()->getRegisters()->setPC(0x480);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x47F);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x47F);
 }
 
 /**
@@ -590,17 +569,17 @@ TEST_CASE("JR e negative") {
 */
 
 TEST_CASE("LD_BC_ATest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x02);
-    comp->getProcessor()->getRegisters()->setA(0x7A);
-    comp->getProcessor()->getRegisters()->setB(0x12);
-    comp->getProcessor()->getRegisters()->setC(0x12);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x02);
+  comp->getProcessor()->getRegisters()->setA(0x7A);
+  comp->getProcessor()->getRegisters()->setB(0x12);
+  comp->getProcessor()->getRegisters()->setC(0x12);
 
-    REQUIRE(comp->getMemory()->read(0x1212) == 0x0);
+  REQUIRE(comp->getMemory()->read(0x1212) == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getMemory()->read(0x1212) == 0x7a);
+  REQUIRE(comp->getMemory()->read(0x1212) == 0x7a);
 }
 
 /**
@@ -610,19 +589,19 @@ TEST_CASE("LD_BC_ATest") {
 */
 
 TEST_CASE("LD_DE_ATest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x12);
-    comp->getProcessor()->getRegisters()->setA(0xA0);
-    comp->getProcessor()->getRegisters()->setD(0x11);
-    comp->getProcessor()->getRegisters()->setE(0x28);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x12);
+  comp->getProcessor()->getRegisters()->setA(0xA0);
+  comp->getProcessor()->getRegisters()->setD(0x11);
+  comp->getProcessor()->getRegisters()->setE(0x28);
 
-//    EmulationProcessor cloneToCompare = new EmulationProcessor(proc);
-//    cloneToCompare.getMemory()->write(0x1128, 0xA0);
-//    cloneToCompare.PC += 1;
+  //    EmulationProcessor cloneToCompare = new EmulationProcessor(proc);
+  //    cloneToCompare.getMemory()->write(0x1128, 0xA0);
+  //    cloneToCompare.PC += 1;
 
-    REQUIRE(comp->getMemory()->read(0x1128) == 0x0);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1128) == 0xA0);
+  REQUIRE(comp->getMemory()->read(0x1128) == 0x0);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1128) == 0xA0);
 }
 
 /**
@@ -630,20 +609,19 @@ TEST_CASE("LD_DE_ATest") {
 * (3141 H) , A D7H results in memory location 3141H .
 */
 
-
 TEST_CASE("LD_nn_ATest") {
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x32);
-    comp->getMemory()->write(0x1, 0x41);
-    comp->getMemory()->write(0x2, 0x31);
-    comp->getProcessor()->getRegisters()->setA(0xd7);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x32);
+  comp->getMemory()->write(0x1, 0x41);
+  comp->getMemory()->write(0x2, 0x31);
+  comp->getProcessor()->getRegisters()->setA(0xd7);
 
-    REQUIRE(comp->getMemory()->read(0x3141) == 0x0);
+  REQUIRE(comp->getMemory()->read(0x3141) == 0x0);
 
-    comp->getProcessor()->process(3);
+  comp->getProcessor()->process(3);
 
-    REQUIRE(comp->getMemory()->read(0x3141) == 0xd7);
+  REQUIRE(comp->getMemory()->read(0x3141) == 0xd7);
 }
 
 /**
@@ -653,200 +631,192 @@ TEST_CASE("LD_nn_ATest") {
 */
 
 TEST_CASE("LD (nn) HL") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x22);
-    comp->getMemory()->write(0x1 , 0x29);
-    comp->getMemory()->write(0x2, 0xB2);
-    comp->getProcessor()->getRegisters()->setH(0x48);
-    comp->getProcessor()->getRegisters()->setL(0x3A);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x22);
+  comp->getMemory()->write(0x1, 0x29);
+  comp->getMemory()->write(0x2, 0xB2);
+  comp->getProcessor()->getRegisters()->setH(0x48);
+  comp->getProcessor()->getRegisters()->setL(0x3A);
 
-    REQUIRE( comp->getMemory()->read(0xB229) == 0x0);
-    REQUIRE( comp->getMemory()->read(0xB22A) == 0x0);
+  REQUIRE(comp->getMemory()->read(0xB229) == 0x0);
+  REQUIRE(comp->getMemory()->read(0xB22A) == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE( comp->getMemory()->read(0xB229) == 0x3A);
-    REQUIRE( comp->getMemory()->read(0xB22A) == 0x48);
+  REQUIRE(comp->getMemory()->read(0xB229) == 0x3A);
+  REQUIRE(comp->getMemory()->read(0xB22A) == 0x48);
 }
-
 
 TEST_CASE("LDA (BC)") {
-    /*
-     * If the BC register pair contains the number 4747H , and memory
-     * address 4747H contains int 12H , then the instruction LD A , (BC)
-     * results in int 12H in register A.
-     */
+  /*
+   * If the BC register pair contains the number 4747H , and memory
+   * address 4747H contains int 12H , then the instruction LD A , (BC)
+   * results in int 12H in register A.
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x0a);
-    comp->getProcessor()->getRegisters()->setB(0x47);
-    comp->getProcessor()->getRegisters()->setC(0x47);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x0a);
+  comp->getProcessor()->getRegisters()->setB(0x47);
+  comp->getProcessor()->getRegisters()->setC(0x47);
 
-    comp->getMemory()->write(0x4747, 0x12);
+  comp->getMemory()->write(0x4747, 0x12);
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0x12);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x12);
 }
-
 
 TEST_CASE("LD A (DE)") {
-    /*
-     * If the DE register pair contains the number 30A2H and memory address
-     * 30A2H contains int 22H , then the instruction LD A , (DE) results in
-     * int 22H in register A
-     */
+  /*
+   * If the DE register pair contains the number 30A2H and memory address
+   * 30A2H contains int 22H , then the instruction LD A , (DE) results in
+   * int 22H in register A
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x1a);
-    comp->getProcessor()->getRegisters()->setD(0x30);
-    comp->getProcessor()->getRegisters()->setE(0xA2);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x1a);
+  comp->getProcessor()->getRegisters()->setD(0x30);
+  comp->getProcessor()->getRegisters()->setE(0xA2);
 
-    comp->getMemory()->write(0x30A2, 0x22);
+  comp->getMemory()->write(0x30A2, 0x22);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x22);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x22);
 }
-
 
 TEST_CASE("LD A (nn)") {
-    /*
-     * If the contents of nn is number 8832H , and the content of memory
-     * address 8832H is byte 04H , at instruction LD A , (nn) byte 04H is in
-     * the Accumulator.
-     */
+  /*
+   * If the contents of nn is number 8832H , and the content of memory
+   * address 8832H is byte 04H , at instruction LD A , (nn) byte 04H is in
+   * the Accumulator.
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x3a);
-    comp->getMemory()->write(0x1 , 0x32);
-    comp->getMemory()->write(0x2, 0x88);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x3a);
+  comp->getMemory()->write(0x1, 0x32);
+  comp->getMemory()->write(0x2, 0x88);
 
-    comp->getMemory()->write(0x8832, 0x04);
+  comp->getMemory()->write(0x8832, 0x04);
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
 
-    comp->getProcessor()->process(3);
+  comp->getProcessor()->process(3);
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0x04);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x04);
 }
-
 
 TEST_CASE("LDAITest") {
-    // The contents of the Interrupt Vector Register I are loaded to the
-    // Accumulator
+  // The contents of the Interrupt Vector Register I are loaded to the
+  // Accumulator
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x57);
-    comp->getMemory()->write(0x2, 0xED);
-    comp->getMemory()->write(0x3, 0x57);
-    comp->getProcessor()->getRegisters()->setI(0x5f);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x57);
+  comp->getMemory()->write(0x2, 0xED);
+  comp->getMemory()->write(0x3, 0x57);
+  comp->getProcessor()->getRegisters()->setI(0x5f);
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0x5f);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x5f);
 
-    /*- S is set if I-Register is
-    negative; reset otherwise
-    Z is set if I-Register is zero; reset otherwise
-    H is reset
-    P/V contains contents of IFF2
-    N is reset
-    C is not affected*/
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getSignFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getF() == 0);
-    REQUIRE( comp->getProcessor()->getRegisters()->getH() == 0);
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
+  /*- S is set if I-Register is
+  negative; reset otherwise
+  Z is set if I-Register is zero; reset otherwise
+  H is reset
+  P/V contains contents of IFF2
+  N is reset
+  C is not affected*/
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getSignFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getF() == 0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0);
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
 
-    comp->getProcessor()->getRegisters()->setI(0x81); // negative
+  comp->getProcessor()->getRegisters()->setI(0x81); // negative
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x81);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSignFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getF() == 128);
-    REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0);
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x81);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSignFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getF() == 128);
+  REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0);
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
 }
-
 
 TEST_CASE("LDARTest") {
-    // The contents of Memory Refresh Register R are loaded to the
-    // Accumulator.
+  // The contents of Memory Refresh Register R are loaded to the
+  // Accumulator.
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x5F);
-    comp->getProcessor()->getRegisters()->setR(0xd7);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x5F);
+  comp->getProcessor()->getRegisters()->setR(0xd7);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
-    REQUIRE(comp->getProcessor()->getRegisters()->getF() == 0x0);
-    comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getF() == 0x0);
+  comp->getProcessor()->process();
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getA() == 0xd7);
-    REQUIRE( comp->getProcessor()->getRegisters()->getF() == 128);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xd7);
+  REQUIRE(comp->getProcessor()->getRegisters()->getF() == 128);
 }
-
 
 TEST_CASE("LDddnnTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x1);
-    comp->getMemory()->write(0x1, 0x45);
-    comp->getMemory()->write(0x2, 0xd);
-    comp->getMemory()->write(0x3, BOOST_BINARY(0010001));
-    comp->getMemory()->write(0x4, 0x23);
-    comp->getMemory()->write(0x5, 0x43);
-    comp->getMemory()->write(0x6, BOOST_BINARY(0100001));
-    comp->getMemory()->write(0x7, 0xf5);
-    comp->getMemory()->write(0x8, 0x61);
-    comp->getMemory()->write(0x9, BOOST_BINARY(0110001));
-    comp->getMemory()->write(0xA, 0xfc);
-    comp->getMemory()->write(0xB, 0x21);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x1);
+  comp->getMemory()->write(0x1, 0x45);
+  comp->getMemory()->write(0x2, 0xd);
+  comp->getMemory()->write(0x3, BOOST_BINARY(0010001));
+  comp->getMemory()->write(0x4, 0x23);
+  comp->getMemory()->write(0x5, 0x43);
+  comp->getMemory()->write(0x6, BOOST_BINARY(0100001));
+  comp->getMemory()->write(0x7, 0xf5);
+  comp->getMemory()->write(0x8, 0x61);
+  comp->getMemory()->write(0x9, BOOST_BINARY(0110001));
+  comp->getMemory()->write(0xA, 0xfc);
+  comp->getMemory()->write(0xB, 0x21);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0x45);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xd);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0x45);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xd);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0x23);
-    REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x43);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0x23);
+  REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x43);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getL() == 0xf5);
-    REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0x61);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getL() == 0xf5);
+  REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0x61);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x21fc);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x21fc);
 }
 
-
-
 TEST_CASE("LD HL (nn)") {
-    /*
-     * If address 2045H contains 37H , and address 2046H contains A1H , at
-     * instruction LD HL , (2045H) the HL register pair contains A137H .
-     */
+  /*
+   * If address 2045H contains 37H , and address 2046H contains A1H , at
+   * instruction LD HL , (2045H) the HL register pair contains A137H .
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x2a);
-    comp->getMemory()->write(0x1, 0x45);
-    comp->getMemory()->write(0x2, 0x20);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x2a);
+  comp->getMemory()->write(0x1, 0x45);
+  comp->getMemory()->write(0x2, 0x20);
 
-    comp->getMemory()->write(0x2045, 0x37);
-    comp->getMemory()->write(0x2046, 0xA1);
+  comp->getMemory()->write(0x2045, 0x37);
+  comp->getMemory()->write(0x2046, 0xA1);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getHL() == 0xA137);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xA137);
 }
 
 /*
@@ -854,19 +824,18 @@ TEST_CASE("LD HL (nn)") {
      * Vector Register, I.
      */
 TEST_CASE("LD I A") {
-    
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x47);
-    comp->getProcessor()->getRegisters()->setA(0xf9);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x47);
+  comp->getProcessor()->getRegisters()->setA(0xf9);
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getF() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getF() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE( comp->getProcessor()->getRegisters()->getI() == 0xf9);
-    REQUIRE( comp->getProcessor()->getRegisters()->getF() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getI() == 0xf9);
+  REQUIRE(comp->getProcessor()->getRegisters()->getF() == 0x0);
 }
 
 /*
@@ -874,144 +843,138 @@ TEST_CASE("LD I A") {
 * register R.
 */
 TEST_CASE("LD R A") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x4F);
-    comp->getProcessor()->getRegisters()->setA(0xf9);
-    REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0x0);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0xf9);
-//		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x4F);
+  comp->getProcessor()->getRegisters()->setA(0xf9);
+  REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0x0);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getR() == 0xf9);
+  //		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
 }
 
 TEST_CASE("LD C A Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x4F);
-    comp->getProcessor()->getRegisters()->setA(0xf9);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x4F);
+  comp->getProcessor()->getRegisters()->setA(0xf9);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0x0);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0xf9);
-//		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getC() == 0xf9);
+  //		REQUIRE(0b0, comp->getProcessor()->getRegisters()->getF());
 }
 
 TEST_CASE("LDrn_Test") {
-    /*
-     * At execution of LD E, A5H the contents of register E are A5H .
-     */
+  /*
+   * At execution of LD E, A5H the contents of register E are A5H .
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(00011110));
-    comp->getMemory()->write(0x1, 0xA5);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(00011110));
+  comp->getMemory()->write(0x1, 0xA5);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0xA5);
+  REQUIRE(comp->getProcessor()->getRegisters()->getE() == 0xA5);
 }
 
 TEST_CASE("LDRR_altTest") {
-    /*
-     * The contents of the Accumulator are loaded to the Memory Refresh
-     * register R.
-     */
+  /*
+   * The contents of the Accumulator are loaded to the Memory Refresh
+   * register R.
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
+  std::unique_ptr<TestComputer> comp = setupComputer();
 
-    // load a' into a
-    comp->getMemory()->write(0x0, BOOST_BINARY(01100111));
-    comp->getProcessor()->getRegisters()->setA(0xf9);
+  // load a' into a
+  comp->getMemory()->write(0x0, BOOST_BINARY(01100111));
+  comp->getProcessor()->getRegisters()->setA(0xf9);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0x0);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0xf9);
+  REQUIRE(comp->getProcessor()->getRegisters()->getH() == 0xf9);
 }
 
 TEST_CASE("LD SP (HL)") {
-    /*
-     * The contents of the Accumulator are loaded to the Memory Refresh
-     * register R.
-     */
+  /*
+   * The contents of the Accumulator are loaded to the Memory Refresh
+   * register R.
+   */
 
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xF9);
-    comp->getProcessor()->getRegisters()->setH(0x44);
-    comp->getProcessor()->getRegisters()->setL(0x2E);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xF9);
+  comp->getProcessor()->getRegisters()->setH(0x44);
+  comp->getProcessor()->getRegisters()->setL(0x2E);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x0);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x442E);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x442E);
 }
-
 
 TEST_CASE("LDSPIYTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0xF9);
-    comp->getProcessor()->getRegisters()->setIY(0xA227);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0xA227);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0xF9);
+  comp->getProcessor()->getRegisters()->setIY(0xA227);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0xA227);
 }
-
 
 TEST_CASE("LD (IX+d)r Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0x77);
-    comp->getMemory()->write(0x2, 0x01);
-    comp->getMemory()->write(0xA228, 0x51);
-    comp->getProcessor()->getRegisters()->setA(0x0);
-    comp->getProcessor()->getRegisters()->setIX(0xA227);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0xA228) == 0x0);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0x77);
+  comp->getMemory()->write(0x2, 0x01);
+  comp->getMemory()->write(0xA228, 0x51);
+  comp->getProcessor()->getRegisters()->setA(0x0);
+  comp->getProcessor()->getRegisters()->setIX(0xA227);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0xA228) == 0x0);
 }
-
 
 TEST_CASE("NEGTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x44);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10011000));
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01100111));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x44);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10011000));
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01100111));
 }
-
-
 
 TEST_CASE("OUT_C_rTest") {
-    /*
-     * If the contents of register C are 01H, and the contents of register D
-     * are 5AH, at execution of OUT (C),D byte 5AH is written to the
-     * peripheral device mapped to I/O port address 01H
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01010001));
-    comp->getProcessor()->getRegisters()->setC(0x01);
-    comp->getProcessor()->getRegisters()->setD(0x5A);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x01) == 0x5A);
+  /*
+   * If the contents of register C are 01H, and the contents of register D
+   * are 5AH, at execution of OUT (C),D byte 5AH is written to the
+   * peripheral device mapped to I/O port address 01H
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01010001));
+  comp->getProcessor()->getRegisters()->setC(0x01);
+  comp->getProcessor()->getRegisters()->setD(0x5A);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x01) == 0x5A);
 }
 
-
 TEST_CASE("OUT_n_ATest") {
-    /*
-     * If the contents of the Accumulator are 23H , at execution of OUT (
-     * 01H ), byte 23H is written to the peripheral device mapped to I/O
-     * port address 01H .
-     */
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xD3);
-    comp->getMemory()->write(0x1, 0x01);
-    comp->getProcessor()->getRegisters()->setA(0x23);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x01) == 0x23);
+  /*
+   * If the contents of the Accumulator are 23H , at execution of OUT (
+   * 01H ), byte 23H is written to the peripheral device mapped to I/O
+   * port address 01H .
+   */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xD3);
+  comp->getMemory()->write(0x1, 0x01);
+  comp->getProcessor()->getRegisters()->setA(0x23);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x01) == 0x23);
 }
 
 /**
@@ -1021,15 +984,15 @@ TEST_CASE("OUT_n_ATest") {
 */
 
 TEST_CASE("POPIXTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0xE1);
-    comp->getMemory()->write(0x1000, 0x55);
-    comp->getMemory()->write(0x1001, 0x33);
-    comp->getProcessor()->getRegisters()->setSP(0x1000);
-    comp->getProcessor()->process(2);
-    REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x3355);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0xE1);
+  comp->getMemory()->write(0x1000, 0x55);
+  comp->getMemory()->write(0x1001, 0x33);
+  comp->getProcessor()->getRegisters()->setSP(0x1000);
+  comp->getProcessor()->process(2);
+  REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x3355);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
 }
 
 /**
@@ -1039,15 +1002,15 @@ TEST_CASE("POPIXTest") {
 */
 
 TEST_CASE("POPIYTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0xE1);
-    comp->getMemory()->write(0x1000, 0x55);
-    comp->getMemory()->write(0x1001, 0x33);
-    comp->getProcessor()->getRegisters()->setSP(0x1000);
-    comp->getProcessor()->process(2);
-    REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x3355);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0xE1);
+  comp->getMemory()->write(0x1000, 0x55);
+  comp->getMemory()->write(0x1001, 0x33);
+  comp->getProcessor()->getRegisters()->setSP(0x1000);
+  comp->getProcessor()->process(2);
+  REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x3355);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
 }
 
 /**
@@ -1057,40 +1020,40 @@ TEST_CASE("POPIYTest") {
 * 1002H
 */
 TEST_CASE("POP qq Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(11100001)); // HL
-    comp->getMemory()->write(0x1000, 0x55);
-    comp->getMemory()->write(0x1001, 0x33);
-    comp->getProcessor()->getRegisters()->setSP(0x1000);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3355);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(11100001)); // HL
+  comp->getMemory()->write(0x1000, 0x55);
+  comp->getMemory()->write(0x1001, 0x33);
+  comp->getProcessor()->getRegisters()->setSP(0x1000);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3355);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
 }
 
 TEST_CASE("PUSH IX Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0xE5);
-    comp->getProcessor()->getRegisters()->setIX(0x2233);
-    comp->getProcessor()->getRegisters()->setSP(0x1007);
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1006) == 0x22);
-    REQUIRE(comp->getMemory()->read(0x1005) == 0x33);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0xE5);
+  comp->getProcessor()->getRegisters()->setIX(0x2233);
+  comp->getProcessor()->getRegisters()->setSP(0x1007);
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1006) == 0x22);
+  REQUIRE(comp->getMemory()->read(0x1005) == 0x33);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
 }
 
 TEST_CASE("PUSH IY Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0xE5);
-    comp->getProcessor()->getRegisters()->setIY(0x2233);
-    comp->getProcessor()->getRegisters()->setSP(0x1007);
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1006) == 0x22);
-    REQUIRE(comp->getMemory()->read(0x1005) == 0x33);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0xE5);
+  comp->getProcessor()->getRegisters()->setIY(0x2233);
+  comp->getProcessor()->getRegisters()->setSP(0x1007);
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1006) == 0x22);
+  REQUIRE(comp->getMemory()->read(0x1005) == 0x33);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
 }
 
 /*
@@ -1101,14 +1064,14 @@ TEST_CASE("PUSH IY Test") {
  * and the Stack Pointer contains 1005H.
 */
 TEST_CASE("PUSH Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(11110101));
-    comp->getProcessor()->getRegisters()->setAF(0x2233);
-    comp->getProcessor()->getRegisters()->setSP(0x1007);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1006) == 0x22);
-    REQUIRE(comp->getMemory()->read(0x1005) == 0x33);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(11110101));
+  comp->getProcessor()->getRegisters()->setAF(0x2233);
+  comp->getProcessor()->getRegisters()->setSP(0x1007);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1006) == 0x22);
+  REQUIRE(comp->getMemory()->read(0x1005) == 0x33);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
 }
 
 /*
@@ -1121,17 +1084,16 @@ TEST_CASE("PUSH Test") {
  * fetched.
  */
 TEST_CASE("RET cc Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getProcessor()->getRegisters()->setSignFlag(true);
-    comp->getProcessor()->getRegisters()->setPC(0x3535);
-    comp->getProcessor()->getRegisters()->setSP(0x2000);
-    comp->getMemory()->write(0x2000, 0xB5);
-    comp->getMemory()->write(0x2001, 0x18);
-    comp->getMemory()->write(0x3535, BOOST_BINARY(11111000));
-    comp->getProcessor()->process(1);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x2002);
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18B5);
-
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getProcessor()->getRegisters()->setSignFlag(true);
+  comp->getProcessor()->getRegisters()->setPC(0x3535);
+  comp->getProcessor()->getRegisters()->setSP(0x2000);
+  comp->getMemory()->write(0x2000, 0xB5);
+  comp->getMemory()->write(0x2001, 0x18);
+  comp->getMemory()->write(0x3535, BOOST_BINARY(11111000));
+  comp->getProcessor()->process(1);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x2002);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18B5);
 }
 
 /**
@@ -1143,115 +1105,108 @@ TEST_CASE("RET cc Test") {
  * the address of the next program Op Code to be fetched.
  */
 TEST_CASE("RET Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x3535, 0xC9);
-    comp->getMemory()->write(0x2000, 0xB5);
-    comp->getMemory()->write(0x2001, 0x18);
-    comp->getProcessor()->getRegisters()->setPC(0x3535);
-    comp->getProcessor()->getRegisters()->setSP(0x2000);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x2002);
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18B5);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x3535, 0xC9);
+  comp->getMemory()->write(0x2000, 0xB5);
+  comp->getMemory()->write(0x2001, 0x18);
+  comp->getProcessor()->getRegisters()->setPC(0x3535);
+  comp->getProcessor()->getRegisters()->setSP(0x2000);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x2002);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18B5);
 }
 
 TEST_CASE("RLA Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01110110));
-    comp->getMemory()->write(0x0, 0x17);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE( comp->getProcessor()->getRegisters()->getCFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11101101));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01110110));
+  comp->getMemory()->write(0x0, 0x17);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11101101));
 }
 
 TEST_CASE("RLCA Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    // increment BC
-    comp->getMemory()->write(0x0, 0x07);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10001000));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(00010001));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // increment BC
+  comp->getMemory()->write(0x0, 0x07);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10001000));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(00010001));
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
 }
 
 TEST_CASE("RRA Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x1F);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11100001));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110000));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x1F);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11100001));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110000));
 }
 
 TEST_CASE("RRCA Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x0F);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->getRegisters()->setNFlag(true);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010001));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(10001000));
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x0F);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
+  comp->getProcessor()->getRegisters()->setNFlag(true);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010001));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(10001000));
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
 }
-
-
 
 TEST_CASE("RRDTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x67);
-    comp->getMemory()->write(0x5000, BOOST_BINARY(00100000));
-    comp->getProcessor()->getRegisters()->setHL(0x5000);
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10000100));
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(10000000));
-    REQUIRE(comp->getMemory()->read(0x5000) == BOOST_BINARY(01000010));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x67);
+  comp->getMemory()->write(0x5000, BOOST_BINARY(00100000));
+  comp->getProcessor()->getRegisters()->setHL(0x5000);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10000100));
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(10000000));
+  REQUIRE(comp->getMemory()->read(0x5000) == BOOST_BINARY(01000010));
 }
-
-
 
 TEST_CASE("SCFTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x37);
-    comp->getProcessor()->getRegisters()->setNFlag(true);
-    comp->getProcessor()->getRegisters()->setHFlag(true);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x37);
+  comp->getProcessor()->getRegisters()->setNFlag(true);
+  comp->getProcessor()->getRegisters()->setHFlag(true);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
 
-    comp->getProcessor()->process();
+  comp->getProcessor()->process();
 
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
-    REQUIRE_FALSE( comp->getProcessor()->getRegisters()->getHFlag());
-
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getHFlag());
 }
-
 
 TEST_CASE("SETb_HL_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(11100110));
-    comp->getProcessor()->getRegisters()->setHL(0x3000);
-    comp->getProcessor()->process(2);
-    REQUIRE((comp->getMemory()->read(0x3000) & BOOST_BINARY(10000)) == BOOST_BINARY(10000));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(11100110));
+  comp->getProcessor()->getRegisters()->setHL(0x3000);
+  comp->getProcessor()->process(2);
+  REQUIRE((comp->getMemory()->read(0x3000) & BOOST_BINARY(10000)) == BOOST_BINARY(10000));
 }
 
-
 TEST_CASE("SETb_IXplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0xCB);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0x3, BOOST_BINARY(11000110));
-    comp->getProcessor()->getRegisters()->setIX(0x2000);
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    comp->getProcessor()->process();
-    REQUIRE((comp->getMemory()->read(0x2003) & 1) == 1);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0xCB);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0x3, BOOST_BINARY(11000110));
+  comp->getProcessor()->getRegisters()->setIX(0x2000);
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  comp->getProcessor()->process();
+  REQUIRE((comp->getMemory()->read(0x2003) & 1) == 1);
 }
 
 /**
@@ -1261,167 +1216,155 @@ TEST_CASE("SETb_IXplusd_Test") {
 */
 
 TEST_CASE("SETb_IYplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0xCB);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0x3, BOOST_BINARY(11000110));
-    comp->getProcessor()->getRegisters()->setIY(0x2000);
-    comp->getProcessor()->process(4);
-    REQUIRE((comp->getMemory()->read(0x2003) & 1) == 1);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0xCB);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0x3, BOOST_BINARY(11000110));
+  comp->getProcessor()->getRegisters()->setIY(0x2000);
+  comp->getProcessor()->process(4);
+  REQUIRE((comp->getMemory()->read(0x2003) & 1) == 1);
 }
 
 TEST_CASE("SETbrTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(11100111));
-    comp->getProcessor()->process(2);
-    REQUIRE((comp->getProcessor()->getRegisters()->getA() & BOOST_BINARY(10000)) == BOOST_BINARY(10000));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(11100111));
+  comp->getProcessor()->process(2);
+  REQUIRE((comp->getProcessor()->getRegisters()->getA() & BOOST_BINARY(10000)) == BOOST_BINARY(10000));
 }
 
 TEST_CASE("XORsTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(10101011));
-    comp->getProcessor()->getRegisters()->setE(0x96); // 10010110
-    comp->getProcessor()->getRegisters()->setA(0x5D); // 01011101
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11001011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10101011));
+  comp->getProcessor()->getRegisters()->setE(0x96); // 10010110
+  comp->getProcessor()->getRegisters()->setA(0x5D); // 01011101
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11001011));
 }
 
 TEST_CASE("XOR (HL) Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xAE);
-    comp->getMemory()->write(0x1000, 0x96);// 10010110
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getProcessor()->getRegisters()->setA(0x5D); // 01011101
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11001011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xAE);
+  comp->getMemory()->write(0x1000, 0x96); // 10010110
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getProcessor()->getRegisters()->setA(0x5D); // 01011101
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11001011));
 }
 
 TEST_CASE("ADCA_ixplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xdd);
-    comp->getMemory()->write(0x1, 0x8e);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xa8, 0x33);
-    comp->getProcessor()->getRegisters()->setA(0x17);
-    comp->getProcessor()->getRegisters()->setIX(0xA5);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->process(3);
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x4a);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xdd);
+  comp->getMemory()->write(0x1, 0x8e);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xa8, 0x33);
+  comp->getProcessor()->getRegisters()->setA(0x17);
+  comp->getProcessor()->getRegisters()->setIX(0xA5);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
+  comp->getProcessor()->process(3);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x4a);
 }
-
 
 TEST_CASE("ADCA_iyplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xfd);
-    comp->getMemory()->write(0x1, 0x8e);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xa8, 0x33);
-    comp->getProcessor()->getRegisters()->setA(0x17);
-    comp->getProcessor()->getRegisters()->setIY(0xA5);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->process(3);
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x4a);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xfd);
+  comp->getMemory()->write(0x1, 0x8e);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xa8, 0x33);
+  comp->getProcessor()->getRegisters()->setA(0x17);
+  comp->getProcessor()->getRegisters()->setIY(0xA5);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
+  comp->getProcessor()->process(3);
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x4a);
 }
-
 
 TEST_CASE("ADCHLssTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xed);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01011010)); //DE
-    comp->getProcessor()->getRegisters()->setHL(0x17);
-    comp->getProcessor()->getRegisters()->setDE(0x33);
-    comp->getProcessor()->getRegisters()->setCFlag(true);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4b);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xed);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01011010)); // DE
+  comp->getProcessor()->getRegisters()->setHL(0x17);
+  comp->getProcessor()->getRegisters()->setDE(0x33);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4b);
 }
-
-
 
 TEST_CASE("ADDIXppTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0,0xDD);
-    comp->getMemory()->write(0x1, BOOST_BINARY(00001001)); // bc
-    comp->getProcessor()->getRegisters()->setIX(0x333);
-    comp->getProcessor()->getRegisters()->setBC(0x5555);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x5888);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, BOOST_BINARY(00001001)); // bc
+  comp->getProcessor()->getRegisters()->setIX(0x333);
+  comp->getProcessor()->getRegisters()->setBC(0x5555);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x5888);
 }
-
 
 TEST_CASE("ADDIYrrTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, BOOST_BINARY(00001001)); // bc
-    comp->getProcessor()->getRegisters()->setIY(0x333);
-    comp->getProcessor()->getRegisters()->setBC(0x5555);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x5888);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, BOOST_BINARY(00001001)); // bc
+  comp->getProcessor()->getRegisters()->setIY(0x333);
+  comp->getProcessor()->getRegisters()->setBC(0x5555);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x5888);
 }
-
-
 
 TEST_CASE("ANDrTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(10100000));
-    comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(01111011));
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10100000));
+  comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(01111011));
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
-
 
 TEST_CASE("ANDnTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xe6);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01111011));
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xe6);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01111011));
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
-
 
 TEST_CASE("AND_HL_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xa6);
-    comp->getMemory()->write(0x1, 0);
-    comp->getMemory()->write(0x2, 0);
-    comp->getMemory()->write(0x3, 0);
-    comp->getMemory()->write(0x4, BOOST_BINARY(01111011));
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
-    comp->getProcessor()->getRegisters()->setHL(0x4);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xa6);
+  comp->getMemory()->write(0x1, 0);
+  comp->getMemory()->write(0x2, 0);
+  comp->getMemory()->write(0x3, 0);
+  comp->getMemory()->write(0x4, BOOST_BINARY(01111011));
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
+  comp->getProcessor()->getRegisters()->setHL(0x4);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
-
 
 TEST_CASE("AND_ixplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xdd);
-    comp->getMemory()->write(0x1, 0xa6);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xA, BOOST_BINARY(01111011));
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
-    comp->getProcessor()->getRegisters()->setIX(0x7);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xdd);
+  comp->getMemory()->write(0x1, 0xa6);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xA, BOOST_BINARY(01111011));
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
+  comp->getProcessor()->getRegisters()->setIX(0x7);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
-
 
 TEST_CASE("AND_iyplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xfd);
-    comp->getMemory()->write(0x1, 0xa6);
-    comp->getMemory()->write(0x2, 0x3);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xfd);
+  comp->getMemory()->write(0x1, 0xa6);
+  comp->getMemory()->write(0x2, 0x3);
 
-    comp->getMemory()->write(0xA, BOOST_BINARY(01111011));
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
-    comp->getProcessor()->getRegisters()->setIY(0x7);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
+  comp->getMemory()->write(0xA, BOOST_BINARY(01111011));
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
+  comp->getProcessor()->getRegisters()->setIY(0x7);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
-
 
 /*
  * If the contents of Index Register are 2000H,
@@ -1432,15 +1375,15 @@ TEST_CASE("AND_iyplusd_Test") {
  * Bit 0 in memory location 2004H is the least-significant bit.
 */
 TEST_CASE("BIT b IY+d") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0xCB);
-    comp->getMemory()->write(0x2, 0x1);
-    comp->getMemory()->write(0x3, BOOST_BINARY(01001110));
-    comp->getMemory()->write(0x5c3b, 0x0);
-    comp->getProcessor()->getRegisters()->setIY(0x5c3a);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag() == true);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0xCB);
+  comp->getMemory()->write(0x2, 0x1);
+  comp->getMemory()->write(0x3, BOOST_BINARY(01001110));
+  comp->getMemory()->write(0x5c3b, 0x0);
+  comp->getProcessor()->getRegisters()->setIY(0x5c3a);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag() == true);
 }
 
 /*
@@ -1449,13 +1392,13 @@ TEST_CASE("BIT b IY+d") {
 * the least-significant bit.
 */
 TEST_CASE("BITbrTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01010000));
-    comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(1111011));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == BOOST_BINARY(1111011));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01010000));
+  comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(1111011));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == BOOST_BINARY(1111011));
 }
 
 /*
@@ -1476,17 +1419,17 @@ subroutine now to be executed.
  */
 
 TEST_CASE("CALLccnnTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x1a47, 0xd4);
-    comp->getMemory()->write(0x1a48,0x35);
-    comp->getMemory()->write(0x1a49,0x21);
-    comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->getRegisters()->setPC(0x1a47);
-    comp->getProcessor()->getRegisters()->setSP(0x3002);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x3000) == 0x4a);
-    REQUIRE(comp->getMemory()->read(0x3001) == 0x1a);
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x2135);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x1a47, 0xd4);
+  comp->getMemory()->write(0x1a48, 0x35);
+  comp->getMemory()->write(0x1a49, 0x21);
+  comp->getProcessor()->getRegisters()->setCFlag(false);
+  comp->getProcessor()->getRegisters()->setPC(0x1a47);
+  comp->getProcessor()->getRegisters()->setSP(0x3002);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x3000) == 0x4a);
+  REQUIRE(comp->getMemory()->read(0x3001) == 0x1a);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x2135);
 }
 
 /**
@@ -1508,44 +1451,43 @@ TEST_CASE("CALLccnnTest") {
  */
 
 TEST_CASE("CALLnnTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x1A47, 0xCD);
-    comp->getMemory()->write(0x1A48, 0x35);
-    comp->getMemory()->write(0x1A49, 0x21);
-    comp->getProcessor()->getRegisters()->setPC(0x1A47);
-    comp->getProcessor()->getRegisters()->setSP(0x3002);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x3001) == 0x1a);
-    REQUIRE(comp->getMemory()->read(0x3000) == 0x4a);
-    REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x3000);
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x2135);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x1A47, 0xCD);
+  comp->getMemory()->write(0x1A48, 0x35);
+  comp->getMemory()->write(0x1A49, 0x21);
+  comp->getProcessor()->getRegisters()->setPC(0x1A47);
+  comp->getProcessor()->getRegisters()->setSP(0x3002);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x3001) == 0x1a);
+  REQUIRE(comp->getMemory()->read(0x3000) == 0x4a);
+  REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x3000);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x2135);
 }
 
-
 /*
- * If the HL register pair contains 1111H, 
- * memory location 1111H contains 3BH, 
- * the Accumulator contains 3BH, 
+ * If the HL register pair contains 1111H,
+ * memory location 1111H contains 3BH,
+ * the Accumulator contains 3BH,
  * and the Byte Counter contains 0001H.
-At execution of CPI the Byte Counter contains 0000H, 
-the HL register pair contains 1112H, 
-the Z flag in the F register sets, 
-and the P/V flag in theF register resets. 
+At execution of CPI the Byte Counter contains 0000H,
+the HL register pair contains 1112H,
+the Z flag in the F register sets,
+and the P/V flag in theF register resets.
 There is no effect on the contents of the Accumulator or address 1111H.
 */
 TEST_CASE("CPITest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xed);
-    comp->getMemory()->write(0x1,0xa1);
-    comp->getMemory()->write(0x1111,0x3b);
-    comp->getProcessor()->getRegisters()->setHL(0x1111);
-    comp->getProcessor()->getRegisters()->setBC(1);
-    comp->getProcessor()->getRegisters()->setA(0x3b);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1112);
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xed);
+  comp->getMemory()->write(0x1, 0xa1);
+  comp->getMemory()->write(0x1111, 0x3b);
+  comp->getProcessor()->getRegisters()->setHL(0x1111);
+  comp->getProcessor()->getRegisters()->setBC(1);
+  comp->getProcessor()->getRegisters()->setA(0x3b);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1112);
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
 /*
@@ -1559,22 +1501,22 @@ the contents of the Byte Counter are 0004H, the P/V flag in the F register
 sets, and the Z flag in the F register sets.
 */
 TEST_CASE("CPDRTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    //CPDR
-    comp->getMemory()->write(0x0, 0xed);
-    comp->getMemory()->write(0x1, 0xb9);
-    
-    comp->getMemory()->write(0x1118,0x52);
-    comp->getMemory()->write(0x1117,0x0);
-    comp->getMemory()->write(0x1116,0xf3);
-    comp->getProcessor()->getRegisters()->setHL(0x1118);
-    comp->getProcessor()->getRegisters()->setBC(0x7);
-    comp->getProcessor()->getRegisters()->setA(0xf3);
-    comp->getProcessor()->process(3);
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 4);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1115);
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  // CPDR
+  comp->getMemory()->write(0x0, 0xed);
+  comp->getMemory()->write(0x1, 0xb9);
+
+  comp->getMemory()->write(0x1118, 0x52);
+  comp->getMemory()->write(0x1117, 0x0);
+  comp->getMemory()->write(0x1116, 0xf3);
+  comp->getProcessor()->getRegisters()->setHL(0x1118);
+  comp->getProcessor()->getRegisters()->setBC(0x7);
+  comp->getProcessor()->getRegisters()->setA(0xf3);
+  comp->getProcessor()->process(3);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 4);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1115);
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
 /*
@@ -1587,173 +1529,169 @@ address 1111H.
  */
 
 TEST_CASE("CPDTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xed);
-    comp->getMemory()->write(0x1,0xa9);
-    comp->getMemory()->write(0x1111,0x3b);
-    comp->getProcessor()->getRegisters()->setHL(0x1111);
-    comp->getProcessor()->getRegisters()->setBC(1);
-    comp->getProcessor()->getRegisters()->setA(0x3b);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1110);
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xed);
+  comp->getMemory()->write(0x1, 0xa9);
+  comp->getMemory()->write(0x1111, 0x3b);
+  comp->getProcessor()->getRegisters()->setHL(0x1111);
+  comp->getProcessor()->getRegisters()->setBC(1);
+  comp->getProcessor()->getRegisters()->setA(0x3b);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1110);
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
 TEST_CASE("CPIRTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xed);
-    comp->getMemory()->write(0x1, 0xb1);
-    
-    comp->getMemory()->write(0x1111,0x52);
-    comp->getMemory()->write(0x1112,0x0);
-    comp->getMemory()->write(0x1113,0xf3);
-    comp->getProcessor()->getRegisters()->setHL(0x1111);
-    comp->getProcessor()->getRegisters()->setBC(0x7);
-    comp->getProcessor()->getRegisters()->setA(0xf3);
-    comp->getProcessor()->process(3);
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 4);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1114);
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xed);
+  comp->getMemory()->write(0x1, 0xb1);
+
+  comp->getMemory()->write(0x1111, 0x52);
+  comp->getMemory()->write(0x1112, 0x0);
+  comp->getMemory()->write(0x1113, 0xf3);
+  comp->getProcessor()->getRegisters()->setHL(0x1111);
+  comp->getProcessor()->getRegisters()->setBC(0x7);
+  comp->getProcessor()->getRegisters()->setA(0xf3);
+  comp->getProcessor()->process(3);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 4);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1114);
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
 TEST_CASE("CPnTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    
-    comp->getMemory()->write(0x0, 0xfe);
-    comp->getMemory()->write(0x1, 0x3f);
-    
-    comp->getMemory()->write(0x2, 0xfe);
-    comp->getMemory()->write(0x3, 0x3f);
-    
-    comp->getProcessor()->getRegisters()->setA(0x3f);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+
+  comp->getMemory()->write(0x0, 0xfe);
+  comp->getMemory()->write(0x1, 0x3f);
+
+  comp->getMemory()->write(0x2, 0xfe);
+  comp->getMemory()->write(0x3, 0x3f);
+
+  comp->getProcessor()->getRegisters()->setA(0x3f);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
 
 TEST_CASE("CP_hl_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xbe);
-    comp->getMemory()->write(0x1, 0xbe);
-    comp->getMemory()->write(0x1234, 0xd6);
-    comp->getProcessor()->getRegisters()->setHL(0x1234);
-    comp->getProcessor()->getRegisters()->setA(0xd6);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    comp->getMemory()->write(0x1234, 0xff);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xbe);
+  comp->getMemory()->write(0x1, 0xbe);
+  comp->getMemory()->write(0x1234, 0xd6);
+  comp->getProcessor()->getRegisters()->setHL(0x1234);
+  comp->getProcessor()->getRegisters()->setA(0xd6);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  comp->getMemory()->write(0x1234, 0xff);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
 
 TEST_CASE("CP_ixplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xdd);
-    comp->getMemory()->write(0x1, 0xbe);
-    comp->getMemory()->write(0x2, 0xf);
-    
-    comp->getMemory()->write(0x3, 0xdd);
-    comp->getMemory()->write(0x4, 0xbe);
-    comp->getMemory()->write(0x5, 0xf);
-    
-    comp->getMemory()->write(0x1243, 0xd6);
-    comp->getProcessor()->getRegisters()->setIX(0x1234);
-    comp->getProcessor()->getRegisters()->setA(0xd6);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    comp->getMemory()->write(0x1243, 0xb);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
-}
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xdd);
+  comp->getMemory()->write(0x1, 0xbe);
+  comp->getMemory()->write(0x2, 0xf);
 
+  comp->getMemory()->write(0x3, 0xdd);
+  comp->getMemory()->write(0x4, 0xbe);
+  comp->getMemory()->write(0x5, 0xf);
+
+  comp->getMemory()->write(0x1243, 0xd6);
+  comp->getProcessor()->getRegisters()->setIX(0x1234);
+  comp->getProcessor()->getRegisters()->setA(0xd6);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  comp->getMemory()->write(0x1243, 0xb);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
+}
 
 TEST_CASE("CP_iyplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xfd);
-    comp->getMemory()->write(0x1, 0xbe);
-    comp->getMemory()->write(0x2, 0xf);
-    
-    comp->getMemory()->write(0x3, 0xfd);
-    comp->getMemory()->write(0x4, 0xbe);
-    comp->getMemory()->write(0x5, 0xf);
-    
-    comp->getMemory()->write(0x1243, 0xd6);
-    comp->getProcessor()->getRegisters()->setIY(0x1234);
-    comp->getProcessor()->getRegisters()->setA(0xd6);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-    comp->getMemory()->write(0x1243, 0xff);
-    comp->getProcessor()->process();
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
-}
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xfd);
+  comp->getMemory()->write(0x1, 0xbe);
+  comp->getMemory()->write(0x2, 0xf);
 
+  comp->getMemory()->write(0x3, 0xfd);
+  comp->getMemory()->write(0x4, 0xbe);
+  comp->getMemory()->write(0x5, 0xf);
+
+  comp->getMemory()->write(0x1243, 0xd6);
+  comp->getProcessor()->getRegisters()->setIY(0x1234);
+  comp->getProcessor()->getRegisters()->setA(0xd6);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
+  comp->getMemory()->write(0x1243, 0xff);
+  comp->getProcessor()->process();
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
+}
 
 /**
  * If the contents of Index Register IX are 2006H, at execution of DEC IX
  the contents of Index Register IX are 2005H.
  */
 TEST_CASE("DECIXTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xdd);
-    comp->getMemory()->write(0x1, 0x2b);
-    comp->getProcessor()->getRegisters()->setIX(0x2006);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x2005);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xdd);
+  comp->getMemory()->write(0x1, 0x2b);
+  comp->getProcessor()->getRegisters()->setIX(0x2006);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x2005);
 }
 
 TEST_CASE("DECIYTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xfd);
-    comp->getMemory()->write(0x1, 0x2b);
-    comp->getProcessor()->getRegisters()->setIY(0x2006);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x2005);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xfd);
+  comp->getMemory()->write(0x1, 0x2b);
+  comp->getProcessor()->getRegisters()->setIY(0x2006);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x2005);
 }
 
 TEST_CASE("DECrTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(00101101)); //L
-    comp->getProcessor()->getRegisters()->setL(0xFF);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getL() == 0xFE);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(00101101)); // L
+  comp->getProcessor()->getRegisters()->setL(0xFF);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getL() == 0xFE);
 }
 
 TEST_CASE("DEC (HL)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0, 0x35);
-    comp->getMemory()->write(0xffed, 0xff);
-    comp->getProcessor()->getRegisters()->setHL(0xffed);
-    comp->getProcessor()->process();
-    std::cout << utils::int_to_hex(comp->getMemory()->read(0xffed)) << std::endl;
-    REQUIRE(comp->getMemory()->read(0xffed) == 0xFE);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0, 0x35);
+  comp->getMemory()->write(0xffed, 0xff);
+  comp->getProcessor()->getRegisters()->setHL(0xffed);
+  comp->getProcessor()->process();
+  std::cout << utils::int_to_hex(comp->getMemory()->read(0xffed)) << std::endl;
+  REQUIRE(comp->getMemory()->read(0xffed) == 0xFE);
 }
-
 
 TEST_CASE("DEC_ixplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xdd);
-    comp->getMemory()->write(0x1, 0x35);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xffed, 0xff);
-    comp->getProcessor()->getRegisters()->setIX(0xffea);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0xffed) == 0xfe);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xdd);
+  comp->getMemory()->write(0x1, 0x35);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xffed, 0xff);
+  comp->getProcessor()->getRegisters()->setIX(0xffea);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0xffed) == 0xfe);
 }
 
-
 TEST_CASE("DEC_iyplusd_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xfd);
-    comp->getMemory()->write(0x1, 0x35);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xffed, 0xff);
-    comp->getProcessor()->getRegisters()->setIY(0xffea);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0xffed) == 0xfe);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xfd);
+  comp->getMemory()->write(0x1, 0x35);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xffed, 0xff);
+  comp->getProcessor()->getRegisters()->setIY(0xffea);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0xffed) == 0xfe);
 }
 
 /**
@@ -1761,49 +1699,44 @@ TEST_CASE("DEC_iyplusd_Test") {
  */
 
 TEST_CASE("EXAFAFPrimeTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x08);
-    comp->getProcessor()->getRegisters()->setAF(0x9900);
-    comp->getProcessor()->getRegisters()->setAF_alt(0x5944);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getAF() == 0x5944);
-    REQUIRE(comp->getProcessor()->getRegisters()->getAF_alt() == 0x9900);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x08);
+  comp->getProcessor()->getRegisters()->setAF(0x9900);
+  comp->getProcessor()->getRegisters()->setAF_alt(0x5944);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getAF() == 0x5944);
+  REQUIRE(comp->getProcessor()->getRegisters()->getAF_alt() == 0x9900);
 }
-
-
 
 TEST_CASE("HALTTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x76);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x76);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1);
 }
-
 
 TEST_CASE("IM0Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x46);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 0);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x46);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 0);
 }
-
 
 TEST_CASE("IM1Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x56);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIM()== 1);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x56);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 1);
 }
 
-
 TEST_CASE("IM2Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0x5e);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 2);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x5e);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 2);
 }
 
 /*
@@ -1812,13 +1745,13 @@ peripheral device mapped to I/O port address 01H. At execution of INA,
 (01H) the Accumulator contains 7BH.
 */
 TEST_CASE("INa_n_Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getIO()->write(0x1, 0x7b);
-    comp->getMemory()->write(0x0, 0xDB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(1));
-    comp->getProcessor()->getRegisters()->setA(0x23);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7B);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getIO()->write(0x1, 0x7b);
+  comp->getMemory()->write(0x0, 0xDB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(1));
+  comp->getProcessor()->getRegisters()->setA(0x23);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7B);
 }
 
 /**
@@ -1828,14 +1761,14 @@ TEST_CASE("INa_n_Test") {
  */
 
 TEST_CASE("IN r (C)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getIO()->write(0x7, 0x7b);
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01010000));
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x10);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x7B);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getIO()->write(0x7, 0x7b);
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01010000));
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x10);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getD() == 0x7B);
 }
 
 /*
@@ -1855,30 +1788,30 @@ DC contains 0000H
 (1112H) contains 88H (2223H) contains 88H
 */
 TEST_CASE("LDDR") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xB8);
-    comp->getProcessor()->getRegisters()->setHL(0x1114);
-    comp->getProcessor()->getRegisters()->setDE(0x2225);
-    comp->getProcessor()->getRegisters()->setBC(0x003);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xB8);
+  comp->getProcessor()->getRegisters()->setHL(0x1114);
+  comp->getProcessor()->getRegisters()->setDE(0x2225);
+  comp->getProcessor()->getRegisters()->setBC(0x003);
 
-    comp->getMemory()->write(0x1114, 0xA5);
-    comp->getMemory()->write(0x1113, 0x36);
-    comp->getMemory()->write(0x1112, 0x88);
-    comp->getMemory()->write(0x2225, 0xC5);
-    comp->getMemory()->write(0x2224, 0x59);
-    comp->getMemory()->write(0x2223, 0x66);
-    comp->getProcessor()->process(3);
+  comp->getMemory()->write(0x1114, 0xA5);
+  comp->getMemory()->write(0x1113, 0x36);
+  comp->getMemory()->write(0x1112, 0x88);
+  comp->getMemory()->write(0x2225, 0xC5);
+  comp->getMemory()->write(0x2224, 0x59);
+  comp->getMemory()->write(0x2223, 0x66);
+  comp->getProcessor()->process(3);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1111);
-    REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2222);
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x0000);
-    REQUIRE(comp->getMemory()->read(0x1114) == 0xA5);
-    REQUIRE(comp->getMemory()->read(0x1113) == 0x36);
-    REQUIRE(comp->getMemory()->read(0x1112) == 0x88);
-    REQUIRE(comp->getMemory()->read(0x2225) == 0xA5);
-    REQUIRE(comp->getMemory()->read(0x2224) == 0x36);
-    REQUIRE(comp->getMemory()->read(0x2223) == 0x88);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1111);
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2222);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x0000);
+  REQUIRE(comp->getMemory()->read(0x1114) == 0xA5);
+  REQUIRE(comp->getMemory()->read(0x1113) == 0x36);
+  REQUIRE(comp->getMemory()->read(0x1112) == 0x88);
+  REQUIRE(comp->getMemory()->read(0x2225) == 0xA5);
+  REQUIRE(comp->getMemory()->read(0x2224) == 0x36);
+  REQUIRE(comp->getMemory()->read(0x2223) == 0x88);
 }
 
 /*
@@ -1893,24 +1826,24 @@ DE contains 2221H
 (2222H) contains 88H
 BC contains 6H*/
 TEST_CASE("LDD") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xA8);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xA8);
 
-    comp->getProcessor()->getRegisters()->setHL(0x1111);
-    comp->getMemory()->write(0x1111, 0x88);
+  comp->getProcessor()->getRegisters()->setHL(0x1111);
+  comp->getMemory()->write(0x1111, 0x88);
 
-    comp->getProcessor()->getRegisters()->setDE(0x2222);
-    comp->getMemory()->write(0x2222, 0x66);
+  comp->getProcessor()->getRegisters()->setDE(0x2222);
+  comp->getMemory()->write(0x2222, 0x66);
 
-    comp->getProcessor()->getRegisters()->setBC(0x7);
+  comp->getProcessor()->getRegisters()->setBC(0x7);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1110);
-    REQUIRE(comp->getMemory()->read(0x1111) == 0x88);
-    REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2221);
-    REQUIRE(comp->getMemory()->read(0x2222) == 0x88);
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x6);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1110);
+  REQUIRE(comp->getMemory()->read(0x1111) == 0x88);
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2221);
+  REQUIRE(comp->getMemory()->read(0x2222) == 0x88);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x6);
 }
 
 /*If the HL register pair contains 11111H, the DE register pair contains
@@ -1929,30 +1862,30 @@ BC contains 0000H
 (1113H) contains A5H (2224H) contains A5H
 */
 TEST_CASE("LDIRTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xB0);
-    comp->getProcessor()->getRegisters()->setHL(0x1111);
-    comp->getProcessor()->getRegisters()->setDE(0x2222);
-    comp->getProcessor()->getRegisters()->setBC(0x003);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xB0);
+  comp->getProcessor()->getRegisters()->setHL(0x1111);
+  comp->getProcessor()->getRegisters()->setDE(0x2222);
+  comp->getProcessor()->getRegisters()->setBC(0x003);
 
-    comp->getMemory()->write(0x1111, 0x88);
-    comp->getMemory()->write(0x1112, 0x36);
-    comp->getMemory()->write(0x1113, 0xA5);
-    comp->getMemory()->write(0x2222, 0x66);
-    comp->getMemory()->write(0x2223, 0x59);
-    comp->getMemory()->write(0x2224, 0xc5);
-    comp->getProcessor()->process(3);
+  comp->getMemory()->write(0x1111, 0x88);
+  comp->getMemory()->write(0x1112, 0x36);
+  comp->getMemory()->write(0x1113, 0xA5);
+  comp->getMemory()->write(0x2222, 0x66);
+  comp->getMemory()->write(0x2223, 0x59);
+  comp->getMemory()->write(0x2224, 0xc5);
+  comp->getProcessor()->process(3);
 
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1114);
-    REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2225);
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x0000);
-    REQUIRE(comp->getMemory()->read(0x1111) == 0x88);
-    REQUIRE(comp->getMemory()->read(0x1112) == 0x36);
-    REQUIRE(comp->getMemory()->read(0x1113) == 0xA5);
-    REQUIRE(comp->getMemory()->read(0x2222) == 0x88);
-    REQUIRE(comp->getMemory()->read(0x2223) == 0x36);
-    REQUIRE(comp->getMemory()->read(0x2224) == 0xA5);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1114);
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2225);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x0000);
+  REQUIRE(comp->getMemory()->read(0x1111) == 0x88);
+  REQUIRE(comp->getMemory()->read(0x1112) == 0x36);
+  REQUIRE(comp->getMemory()->read(0x1113) == 0xA5);
+  REQUIRE(comp->getMemory()->read(0x2222) == 0x88);
+  REQUIRE(comp->getMemory()->read(0x2223) == 0x36);
+  REQUIRE(comp->getMemory()->read(0x2224) == 0xA5);
 }
 
 /*
@@ -1966,46 +1899,46 @@ DE contains 2223H
 (2222H) contains 88H
 BC contains 6H*/
 TEST_CASE("LDITest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xA0);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xA0);
 
-    comp->getProcessor()->getRegisters()->setHL(0x1111);
-    comp->getMemory()->write(0x1111, 0x88);
+  comp->getProcessor()->getRegisters()->setHL(0x1111);
+  comp->getMemory()->write(0x1111, 0x88);
 
-    comp->getProcessor()->getRegisters()->setDE(0x2222);
-    comp->getMemory()->write(0x2222, 0x66);
+  comp->getProcessor()->getRegisters()->setDE(0x2222);
+  comp->getMemory()->write(0x2222, 0x66);
 
-    comp->getProcessor()->getRegisters()->setBC(0x7);
+  comp->getProcessor()->getRegisters()->setBC(0x7);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1112);
-    REQUIRE(comp->getMemory()->read(0x1111) == 0x88);
-    REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2223);
-    REQUIRE(comp->getMemory()->read(0x2222) == 0x88);
-    REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x6);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1112);
+  REQUIRE(comp->getMemory()->read(0x1111) == 0x88);
+  REQUIRE(comp->getProcessor()->getRegisters()->getDE() == 0x2223);
+  REQUIRE(comp->getMemory()->read(0x2222) == 0x88);
+  REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x6);
 }
 
 TEST_CASE("NOPTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x0);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x0);
 
-    comp->getProcessor()->process();
-    // assert all registers are the same and nothing has happened!
+  comp->getProcessor()->process();
+  // assert all registers are the same and nothing has happened!
 }
 
 /* If the H register contains 48H (0100 0100), and the Accumulator contains
 12H (0001 0010), at execution of OR H the Accumulator contains 5AH
 (0101 1010).*/
 TEST_CASE("ORTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(10110100));
-    comp->getProcessor()->getRegisters()->setH(BOOST_BINARY(01000100));
-    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010010));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01010110));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10110100));
+  comp->getProcessor()->getRegisters()->setH(BOOST_BINARY(01000100));
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010010));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01010110));
 
-    //TODO check other variants
+  // TODO check other variants
 }
 
 /* If the contents of register C are 07H, the contents of register B are 03H, the
@@ -2021,24 +1954,24 @@ mapped to I/O port address 07H in the following sequence:
 A9H
 51H*/
 TEST_CASE("OTDRTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xBB);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x03);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getMemory()->write(0xFFE, 0x51);
-    comp->getMemory()->write(0xFFF, 0xA9);
-    comp->getMemory()->write(0x1000, 0x03);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xBB);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x03);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getMemory()->write(0xFFE, 0x51);
+  comp->getMemory()->write(0xFFF, 0xA9);
+  comp->getMemory()->write(0x1000, 0x03);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0x03);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0xA9);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0x51);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x0FFD);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0x03);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0xA9);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0x51);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x0FFD);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
 }
 
 /*
@@ -2055,24 +1988,24 @@ mapped to I/O port address 07H in the following sequence:
 A9H
 03H*/
 TEST_CASE("OTIRTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xB3);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x03);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getMemory()->write(0x1000, 0x51);
-    comp->getMemory()->write(0x1001, 0xA9);
-    comp->getMemory()->write(0x1002, 0x03);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xB3);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x03);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getMemory()->write(0x1000, 0x51);
+  comp->getMemory()->write(0x1001, 0xA9);
+  comp->getMemory()->write(0x1002, 0x03);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0x51);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0xA9);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0x03);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x01003);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0x51);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0xA9);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0x03);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x01003);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
 }
 
 /**
@@ -2083,18 +2016,18 @@ TEST_CASE("OTIRTest") {
  device mapped to I/O port address 07H.
  */
 TEST_CASE("OUTDTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xAB);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x10);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getMemory()->write(0x1000, 0x59);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xAB);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x10);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getMemory()->write(0x1000, 0x59);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0x59);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x0FFF);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0F);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0x59);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x0FFF);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0F);
 }
 
 /*
@@ -2107,29 +2040,29 @@ register B contains 0FH,
 the HL register pair contains 1001H,
 and byte 59H is written to the peripheral device mapped to I/O port address 07H.*/
 TEST_CASE("OUTITest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xA3);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x10);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getMemory()->write(0x1000, 0x59);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xA3);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x10);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getMemory()->write(0x1000, 0x59);
 
-    comp->getProcessor()->process();
-    REQUIRE(comp->getIO()->read(0x7) == 0x59);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1001);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0F);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getIO()->read(0x7) == 0x59);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1001);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0F);
 }
 
 /* At execution of RES 6, D, bit 6 in register D resets. Bit 0 in register D is the
 least-significant bit.*/
 TEST_CASE("RESTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(10110010));
-    comp->getProcessor()->getRegisters()->setD(BOOST_BINARY(11111111));
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getD() == BOOST_BINARY(10111111));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(10110010));
+  comp->getProcessor()->getRegisters()->setD(BOOST_BINARY(11111111));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getD() == BOOST_BINARY(10111111));
 }
 
 /* Given: Two interrupting devices, with A and B connected in a daisy-chain
@@ -2144,8 +2077,8 @@ of A, allowing the B routine to continue. A second RETI is issued
 on completion of the B routine and the IE0 of B is reset (high)
 allowing lower priority devices interrupt access.*/
 TEST_CASE("RETI Test") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
 
 /* If the contents of the Stack Pointer are 1000H, and the contents of the
@@ -2167,23 +2100,46 @@ memory stack, low order first, resulting in a Stack Pointer contents again of
 to address 1A45H.
 */
 TEST_CASE("RETNTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
 
 TEST_CASE("RLCTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
+/*
+ * If the contents of the HL register pair are 5000H, and the contents of the
+Accumulator and memory location 5000H are
+76543210
+01111010 Accumulator
 
-TEST_CASE("RLDTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+76543210
+00110001 (5000H)
+
+at execution of RLD the contents of the Accumulator and memory location
+5000H are
+76543210
+01110011 Accumulator
+
+76543210
+00011010 (5000H)
+*/
+TEST_CASE("RLD") {
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0x6F);
+  comp->getMemory()->write(0x5000, BOOST_BINARY(00110001));
+  comp->getProcessor()->getRegisters()->setHL(0x5000);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01111010));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getMemory()->read(0x5000) == BOOST_BINARY(00011010));
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110011));
 }
 
 TEST_CASE("RRCTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
 
 /*
@@ -2194,15 +2150,15 @@ at execution of RR (HL) the contents of location 4343H and the Carry
 flag are
 */
 TEST_CASE("RRTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, 0x1E);
-    comp->getMemory()->write(0x4343, BOOST_BINARY(11011101));
-    comp->getProcessor()->getRegisters()->setCFlag(false);
-    comp->getProcessor()->getRegisters()->setHL(0x4343);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getMemory()->read(0x4343) == BOOST_BINARY(01101110));
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, 0x1E);
+  comp->getMemory()->write(0x4343, BOOST_BINARY(11011101));
+  comp->getProcessor()->getRegisters()->setCFlag(false);
+  comp->getProcessor()->getRegisters()->setHL(0x4343);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getMemory()->read(0x4343) == BOOST_BINARY(01101110));
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 /*-
@@ -2215,13 +2171,13 @@ C76543210
 100011110
  */
 TEST_CASE("RLTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
 
 TEST_CASE("RRCmTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
 
 /**
@@ -2230,106 +2186,119 @@ TEST_CASE("RRCmTest") {
  * of the next Op Code fetched.
  */
 TEST_CASE("RSTpTest") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x15B3, BOOST_BINARY(11011111));
-    comp->getProcessor()->getRegisters()->setPC(0x15B3);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x15B3, BOOST_BINARY(11011111));
+  comp->getProcessor()->getRegisters()->setPC(0x15B3);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18);
 }
 
 TEST_CASE("SBC A r") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(10011011)); //E
-    comp->getProcessor()->getRegisters()->setE(0xDE);
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10011011)); // E
+  comp->getProcessor()->getRegisters()->setE(0xDE);
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->getRegisters()->setCFlag(true); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
 
 TEST_CASE("SBC A n") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDE);
-    comp->getMemory()->write(0x1, 0xA9);
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x55);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDE);
+  comp->getMemory()->write(0x1, 0xA9);
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->getRegisters()->setCFlag(true); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x55);
 }
 
 TEST_CASE("SBC A (HL)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x9E);
-    comp->getMemory()->write(0x1, 0xA9);
-    comp->getMemory()->write(0xFFED, 0xDE);
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->getRegisters()->setHL(0xFFED);
-    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x9E);
+  comp->getMemory()->write(0x1, 0xA9);
+  comp->getMemory()->write(0xFFED, 0xDE);
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->getRegisters()->setHL(0xFFED);
+  comp->getProcessor()->getRegisters()->setCFlag(true); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
 
 TEST_CASE("SBC A (IX + d)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x0, 0x9E);
-    comp->getMemory()->write(0x1, 0x7);
-    comp->getMemory()->write(0xFFED, 0xDE);
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->getRegisters()->setIX(0xFFE6);
-    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x0, 0x9E);
+  comp->getMemory()->write(0x1, 0x7);
+  comp->getMemory()->write(0xFFED, 0xDE);
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->getRegisters()->setIX(0xFFE6);
+  comp->getProcessor()->getRegisters()->setCFlag(true); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
 
 TEST_CASE("SBC A (IY + d)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x0, 0x9E);
-    comp->getMemory()->write(0x1, 0x7);
-    comp->getMemory()->write(0xFFED, 0xDE);
-    comp->getProcessor()->getRegisters()->setA(0xFF);
-    comp->getProcessor()->getRegisters()->setIY(0xFFE6);
-    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x0, 0x9E);
+  comp->getMemory()->write(0x1, 0x7);
+  comp->getMemory()->write(0xFFED, 0xDE);
+  comp->getProcessor()->getRegisters()->setA(0xFF);
+  comp->getProcessor()->getRegisters()->setIY(0xFFE6);
+  comp->getProcessor()->getRegisters()->setCFlag(true); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
-
 
 /*
  * If the contents of the HL, register pair are 9999H, the contents of register
 pair DE are 1111H, and the Carry flag is set. At execution of SBC HL, DE
 the contents of HL are 8887H.*/
 TEST_CASE("SBC HL DE") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
-    comp->getProcessor()->getRegisters()->setHL(0x9999);
-    comp->getProcessor()->getRegisters()->setDE(0x1111);
-    comp->getProcessor()->getRegisters()->setCFlag(true); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x8887);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
+  comp->getProcessor()->getRegisters()->setHL(0x9999);
+  comp->getProcessor()->getRegisters()->setDE(0x1111);
+  comp->getProcessor()->getRegisters()->setCFlag(true); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x8887);
 }
 
 TEST_CASE("SBC HL DE wrap around") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
-    comp->getProcessor()->getRegisters()->setHL(0x3FFF);
-    comp->getProcessor()->getRegisters()->setDE(0xFFFF);
-    comp->getProcessor()->getRegisters()->setCFlag(false); //carry
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4000);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, BOOST_BINARY(01010010));
+  comp->getProcessor()->getRegisters()->setHL(0x3FFF);
+  comp->getProcessor()->getRegisters()->setDE(0xFFFF);
+  comp->getProcessor()->getRegisters()->setCFlag(false); // carry
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4000);
 }
 
+/*
+ * If the contents of register L are
+76543210
+10110001
+
+at execution of SLA L the contents of register L and the Carry flag are
+C76543210
+101100010
+*/
 TEST_CASE("SLA") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(00100101));
+  comp->getProcessor()->getRegisters()->setL(BOOST_BINARY(10110001));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getL() == BOOST_BINARY(01100010));
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == 1);
 }
 
 TEST_CASE("SRA") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  REQUIRE(true == false);
 }
 
 /**
@@ -2340,14 +2309,14 @@ TEST_CASE("SRA") {
  * 0b010001111
  */
 TEST_CASE("SRL") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xCB);
-    comp->getMemory()->write(0x1, BOOST_BINARY(111000));
-    comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(10001111));
-    REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getCFlag());
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == BOOST_BINARY(01000111));
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(111000));
+  comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(10001111));
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getCFlag());
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == BOOST_BINARY(01000111));
 }
 
 /**
@@ -2355,46 +2324,46 @@ TEST_CASE("SRL") {
  * execution of SUB D the Accumulator contains 18H.
  */
 TEST_CASE("SUB r") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, BOOST_BINARY(10010010));
-    comp->getProcessor()->getRegisters()->setA(0x29);
-    comp->getProcessor()->getRegisters()->setD(0x11);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, BOOST_BINARY(10010010));
+  comp->getProcessor()->getRegisters()->setA(0x29);
+  comp->getProcessor()->getRegisters()->setD(0x11);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
 }
 
 TEST_CASE("SUB (HL)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x96);
-    comp->getMemory()->write(0xFFED, 0x11);
-    comp->getProcessor()->getRegisters()->setA(0x29);
-    comp->getProcessor()->getRegisters()->setHL(0xFFED);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x96);
+  comp->getMemory()->write(0xFFED, 0x11);
+  comp->getProcessor()->getRegisters()->setA(0x29);
+  comp->getProcessor()->getRegisters()->setHL(0xFFED);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
 }
 
 TEST_CASE("SUB (IX+d)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xDD);
-    comp->getMemory()->write(0x1, 0x96);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xFFED, 0x11);
-    comp->getProcessor()->getRegisters()->setA(0x29);
-    comp->getProcessor()->getRegisters()->setIX(0xFFEA);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0x96);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xFFED, 0x11);
+  comp->getProcessor()->getRegisters()->setA(0x29);
+  comp->getProcessor()->getRegisters()->setIX(0xFFEA);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
 }
 
 TEST_CASE("SUB (IY+d)") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xFD);
-    comp->getMemory()->write(0x1, 0x96);
-    comp->getMemory()->write(0x2, 0x3);
-    comp->getMemory()->write(0xFFED, 0x11);
-    comp->getProcessor()->getRegisters()->setA(0x29);
-    comp->getProcessor()->getRegisters()->setIY(0xFFEA);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xFD);
+  comp->getMemory()->write(0x1, 0x96);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0xFFED, 0x11);
+  comp->getProcessor()->getRegisters()->setA(0x29);
+  comp->getProcessor()->getRegisters()->setIY(0xFFEA);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x18);
 }
 
 /*
@@ -2404,17 +2373,17 @@ peripheral device mapped to I/O port address 07H. At execution of IND
 memory location 1000H contains 7BH, the HL register pair contains
 0FFFH, and register B contains 0FH.*/
 TEST_CASE("IND") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xAA);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x10);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getIO()->write(0x7, 0x7B);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1000) == 0x7b);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFF);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xF);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xAA);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x10);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getIO()->write(0x7, 0x7B);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1000) == 0x7b);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFF);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xF);
 }
 
 /*
@@ -2431,23 +2400,23 @@ contains zero, and memory locations contain the following:
 1000H contains 51H
 */
 TEST_CASE("INDR") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xBA);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x3);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getIO()->write(0x7, 0x51);
-    comp->getProcessor()->process();
-    comp->getIO()->write(0x7, 0xA9);
-    comp->getProcessor()->process();
-    comp->getIO()->write(0x7, 0x03);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0xFFE) == 0x03);
-    REQUIRE(comp->getMemory()->read(0xFFF) == 0xa9);
-    REQUIRE(comp->getMemory()->read(0x1000) == 0x51);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFD);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xBA);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x3);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getIO()->write(0x7, 0x51);
+  comp->getProcessor()->process();
+  comp->getIO()->write(0x7, 0xA9);
+  comp->getProcessor()->process();
+  comp->getIO()->write(0x7, 0x03);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0xFFE) == 0x03);
+  REQUIRE(comp->getMemory()->read(0xFFF) == 0xa9);
+  REQUIRE(comp->getMemory()->read(0x1000) == 0x51);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFD);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
 }
 
 /*
@@ -2464,23 +2433,23 @@ contains zero, and memory locations contain the following:
 1001H contains A9H
 1002H contains 03H*/
 TEST_CASE("INIR") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xB2);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x3);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getIO()->write(0x7, 0x51);
-    comp->getProcessor()->process();
-    comp->getIO()->write(0x7, 0xA9);
-    comp->getProcessor()->process();
-    comp->getIO()->write(0x7, 0x03);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1002) == 0x03);
-    REQUIRE(comp->getMemory()->read(0x1001) == 0xa9);
-    REQUIRE(comp->getMemory()->read(0x1000) == 0x51);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1003);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xB2);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x3);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getIO()->write(0x7, 0x51);
+  comp->getProcessor()->process();
+  comp->getIO()->write(0x7, 0xA9);
+  comp->getProcessor()->process();
+  comp->getIO()->write(0x7, 0x03);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1002) == 0x03);
+  REQUIRE(comp->getMemory()->read(0x1001) == 0xa9);
+  REQUIRE(comp->getMemory()->read(0x1000) == 0x51);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1003);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0x0);
 }
 
 /* If the contents of register C are 07H, the contents of register B are 10H, the
@@ -2489,23 +2458,23 @@ peripheral device mapped to I /O port address 07H. At execution of INI
 memory location 1000H contains 7BH, the HL register pair contains
 1001H, and register B contains 0FH.*/
 TEST_CASE("INI") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0xED);
-    comp->getMemory()->write(0x1, 0xA2);
-    comp->getProcessor()->getRegisters()->setC(0x07);
-    comp->getProcessor()->getRegisters()->setB(0x10);
-    comp->getProcessor()->getRegisters()->setHL(0x1000);
-    comp->getIO()->write(0x7, 0x7B);
-    comp->getProcessor()->process();
-    REQUIRE(comp->getMemory()->read(0x1000) == 0x7b);
-    REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1001);
-    REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xF);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xED);
+  comp->getMemory()->write(0x1, 0xA2);
+  comp->getProcessor()->getRegisters()->setC(0x07);
+  comp->getProcessor()->getRegisters()->setB(0x10);
+  comp->getProcessor()->getRegisters()->setHL(0x1000);
+  comp->getIO()->write(0x7, 0x7B);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x1000) == 0x7b);
+  REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1001);
+  REQUIRE(comp->getProcessor()->getRegisters()->getB() == 0xF);
 }
 
 /**
  * http://www.msx.org/forum/semi-msx-talk/emulation/z80-daa
  * http://wikiti.brandonw.net/?title=Z80_Instruction_Set
- * 
+ *
  * If an addition operation is performed between 15 (BCD) and 27 (BCD),
 simple decimal arithmetic gives this result:
 15+27=42
@@ -2521,8 +2490,7 @@ correct BCD representation is obtained:
  = 42
  */
 TEST_CASE("DAA") {
-    std::unique_ptr<TestComputer> comp = setupComputer();
-    comp->getMemory()->write(0x0, 0x27);
-    REQUIRE(true == false);
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x27);
+  REQUIRE(true == false);
 }
-

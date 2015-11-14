@@ -3,12 +3,12 @@
 
 #include "Z80/processor.h"
 
-class Computer
-{
-    Processor processor;
+class Computer {
+  Processor processor;
+
 public:
-    Computer();
-    ~Computer();
+  Computer();
+  ~Computer();
 };
 
 #endif // COMPUTER_H

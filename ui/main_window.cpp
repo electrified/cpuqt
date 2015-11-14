@@ -10,7 +10,7 @@
 #include <QSettings>
 #include <QImage>
 
-//for loading script
+// for loading script
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -28,16 +28,15 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-   
+
   computer = new BadgerComputer();
 
   disassemblyModel = new DisassemblyModel(computer->memory, this);
 
   scriptHost = new ScriptHost(computer);
 
-    QDebugStream qout(std::cout, this->ui->scriptOutput);
-  
-  
+  QDebugStream qout(std::cout, this->ui->scriptOutput);
+
   // Attach the model to the view
   ui->disassemblyView->setModel(disassemblyModel);
   ui->disassemblyView->setColumnWidth(0, 50);
@@ -50,16 +49,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
   connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
   connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
-  
+
   connect(computer->memory, SIGNAL(memoryUpdated(std::uint16_t)), disassemblyModel, SLOT(memoryUpdated(std::uint16_t)));
-  connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel, SLOT(programCounterUpdated(std::uint16_t)));
+  connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), disassemblyModel,
+          SLOT(programCounterUpdated(std::uint16_t)));
   connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
   connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
-  
+
   initial_recent_menu_population();
-  
+
   KeyPressEater *keyPressEater = new KeyPressEater(computer->io);
-  
+
   ui->spectrumInput->installEventFilter(keyPressEater);
 }
 
@@ -141,7 +141,8 @@ void MainWindow::add_recent_menu_item(QString rom_path) {
 }
 
 void MainWindow::loadRom() {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open ROM"), QDir::homePath(), tr("ROM Files (*.rom *.bin)"), 0, QFileDialog::DontUseNativeDialog);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open ROM"), QDir::homePath(), tr("ROM Files (*.rom *.bin)"),
+                                                  0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
     update_recents_list(fileName);
@@ -211,7 +212,7 @@ void MainWindow::step() {
   computer->step();
   update_register_values();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
-//   moveDebuggerToPC(computer->processor->getRegisters()->getPC());
+  //   moveDebuggerToPC(computer->processor->getRegisters()->getPC());
   updateScreen();
 }
 
@@ -252,7 +253,8 @@ void MainWindow::executeScript() {
 }
 
 void MainWindow::loadScript() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open script"), QDir::homePath(), tr("Lua scripts (*.lua)"), 0, QFileDialog::DontUseNativeDialog);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open script"), QDir::homePath(), tr("Lua scripts (*.lua)"),
+                                                  0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
     std::string script_contents = get_file_contents(fileName.toLocal8Bit());
@@ -261,31 +263,28 @@ void MainWindow::loadScript() {
   }
 }
 
-std::string MainWindow::get_file_contents(const char *filename)
-{
+std::string MainWindow::get_file_contents(const char *filename) {
   std::ifstream in(filename, std::ios::in);
-  if (in)
-  {
+  if (in) {
     std::ostringstream contents;
     contents << in.rdbuf();
     in.close();
-    return(contents.str());
+    return (contents.str());
   }
   throw(errno);
 }
 
-void MainWindow::save_file(const char *filename, std::string contents)
-{
+void MainWindow::save_file(const char *filename, std::string contents) {
   std::ofstream out(filename, std::ios::trunc);
-  if (out)
-  {
+  if (out) {
     out << contents;
     out.close();
   }
 }
 
 void MainWindow::saveScript() {
-      QString fileName = QFileDialog::getSaveFileName(this, tr("Save script"), QDir::homePath(), tr("Lua scripts (*.lua)"), 0, QFileDialog::DontUseNativeDialog);
+  QString fileName = QFileDialog::getSaveFileName(this, tr("Save script"), QDir::homePath(), tr("Lua scripts (*.lua)"),
+                                                  0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
     this->save_file(fileName.toLocal8Bit(), ui->scriptEdit->toPlainText().toStdString());

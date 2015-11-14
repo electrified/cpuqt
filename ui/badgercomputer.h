@@ -28,6 +28,7 @@ public:
   void listBreakpoints();
 signals:
   void hitbreakpoint();
+
 private:
   set<uint16_t> breakpoints;
 };
