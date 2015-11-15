@@ -34,10 +34,11 @@ SOURCE_GROUP(SELENE FILES ${SELENE_INCLUDES})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/Selene/include/)
 
 
-add_subdirectory(Z80)
-add_subdirectory(tools)
-add_subdirectory(ui)
-add_subdirectory(tests)
+# add_subdirectory(Z80)
+# add_subdirectory(tools)
+# add_subdirectory(ui)
+# add_subdirectory(tests)
+add_subdirectory(sdlui)
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")

@@ -4,3 +4,6 @@
 [submodule "modules/Selene"]
 	path = modules/Selene
 	url = https://github.com/jeremyong/Selene.git
+[submodule "modules/sdl2-cmake-scripts"]
+	path = modules/sdl2-cmake-scripts
+	url = https://github.com/electrified/sdl2-cmake-scripts.git

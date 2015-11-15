@@ -33,8 +33,6 @@ public:
 };
 
 class SpectrumIO : public IO {
-  std::list<int> inputKeys;
-
   uint8_t keystates[8];
   std::map<int, spec_key> keyCodes;
 

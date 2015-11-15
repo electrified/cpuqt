@@ -4,7 +4,6 @@
 #include "spdlog/spdlog.h"
 
 SpectrumIO::SpectrumIO() {
-  //     inputKeys.push_back(0xFE04);
   std::fill_n(this->keystates, 8, 0xff);
 
   keyCodes[49] = spec_key(3, 0x01); // 1
@@ -96,6 +95,7 @@ contents of Register B are placed on the top half (A8 through A15) of the
 address bus at this time.
 */
 std::uint8_t SpectrumIO::read(std::uint16_t address) {
+  spdlog::get("console")->debug("address: {0:x}", address);
   /*
    * WHen a key is held down, it pulls that line low.
    */
@@ -109,18 +109,9 @@ std::uint8_t SpectrumIO::read(std::uint16_t address) {
     for (uint8_t row = 0; row < 8; row++) {
       if (!(address & (1 << (row + 8)))) { /* bit held low, so scan this row */
         returnValue &= keystates[row];
-        //             spdlog::get("console")->debug("Row: {0:x} Value: {1:x}", row, returnValue);
+//         spdlog::get("console")->debug("Row: {0:x} Value: {1:x}", row, returnValue);
       }
     }
-
-    //         if (inputKeys.size() > 0) {
-    //             uint16_t key = inputKeys.front();
-    //
-    //             if (key >> 8 == lineScanned) {
-    //                 inputKeys.erase(inputKeys.begin());
-    //                 returnValue = key & 0xff;
-    //             }
-    //         }
   }
   return returnValue;
 }

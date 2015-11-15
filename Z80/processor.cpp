@@ -3953,8 +3953,25 @@ void Processor::RETN() { unimplemented("RETN"); }
  * The contents of the m operand are rotated left 1-bit position. The content of
 bit 7 is copied to the Carry flag and the previous content of the Carry flag is
 copied to bit 0.
+
+S is set if result is negative; reset otherwise
+Z is set if result is zero; reset otherwise
+H is reset
+P/V is set if parity even; reset otherwise
+N is reset
+C is data from bit 7 of source register
 */
-void Processor::RL(std::uint16_t memoryAddress) { unimplemented("RL"); }
+void Processor::RL(std::uint16_t memoryAddress) {
+  std::uint8_t tempA = memory->read(memoryAddress);
+  std::uint8_t result = tempA << 1 | (registers->getCFlag() ? 1 : 0);
+  memory->write(memoryAddress, result);
+  registers->setCFlag(tempA & 0x80);
+  registers->setSignFlag(result & 0x80);
+  registers->setZeroFlag(result == 0);
+  registers->setHFlag(false);
+  registers->setParityOverflowFlag(parity(result));
+  registers->setNFlag(false);
+}
 
 /**
  * The contents of the m operand are rotated left 1-bit position. The content of
@@ -3963,8 +3980,14 @@ void Processor::RL(std::uint16_t memoryAddress) { unimplemented("RL"); }
  */
 void Processor::RL(Rgstr r) {
   std::uint8_t tempA = registers->getRegisterValue(r);
-  registers->setRegister(r, tempA << 1 | (registers->getCFlag() ? 1 : 0));
+  std::uint8_t result = tempA << 1 | (registers->getCFlag() ? 1 : 0);
+  registers->setRegister(r, result);
   registers->setCFlag(tempA & 0x80);
+  registers->setSignFlag(result & 0x80);
+  registers->setZeroFlag(result == 0);
+  registers->setHFlag(false);
+  registers->setParityOverflowFlag(parity(result));
+  registers->setNFlag(false);
 }
 
 /**
