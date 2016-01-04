@@ -34,9 +34,9 @@ SOURCE_GROUP(SELENE FILES ${SELENE_INCLUDES})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/Selene/include/)
 
 
-# add_subdirectory(Z80)
+add_subdirectory(Z80)
 # add_subdirectory(tools)
-# add_subdirectory(ui)
+add_subdirectory(ui)
 # add_subdirectory(tests)
 add_subdirectory(sdlui)
 

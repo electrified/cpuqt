@@ -9,6 +9,8 @@
 
 #include <QImage>
 
+#include <QSystemTrayIcon>
+
 #include "spdlog/spdlog.h"
 #include "badgercomputer.h"
 #include "scripting/script_host.h"
@@ -29,12 +31,25 @@ public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
 
+//     void setVisible(bool visible) Q_DECL_OVERRIDE;
+
+protected:
+    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 private:
   Ui::MainWindow *ui;
 
   DisassemblyModel *disassemblyModel;
   QTimer timer;
   QSignalMapper recentItemsSignalMapper;
+  
+  QSystemTrayIcon *trayIcon;
+  QMenu *trayIconMenu;
+  QAction *minimizeAction;
+  QAction *maximizeAction;
+  QAction *restoreAction;
+  QAction *quitAction;
+    
+    
   bool scrollMemory = true;
   void initial_recent_menu_population();
   void add_recent_menu_item(QString rom_path);
@@ -43,6 +58,8 @@ private:
   void updateScreen();
   std::string get_file_contents(const char *filename);
   void save_file(const char *filename, std::string contents);
+  void createActions();
+  void createTrayIcon();
 private slots:
   void loadRom();
   void loadRom(QString file_path);
@@ -64,6 +81,10 @@ private slots:
   void executeScript();
   void saveScript();
   void loadScript();
+  void iconActivated(QSystemTrayIcon::ActivationReason reason);
+  void showMessage();
+  void messageClicked();
+  
 signals:
   void programCounterUpdated(std::uint16_t address);
 };
