@@ -9,8 +9,18 @@ Features:
 * Disassembler
 * Builds on Linux/OSX/Windows
 
-To
-Modified zexdoc from https://github.com/anotherlin/z80emu
+How To Build
+* Git clone
+* git submodule init
+* git submodule update --recursive
+* Ensure CMake is installed
+* Ensure relevant dev libraries are installed: Boost, Qt5, SDL2 etc
+
+Code incorporated from elsewhere
+* Modified zexdoc from https://github.com/anotherlin/z80emu
+
+Coding standards
+* Formatting?
 
 TODO:
 Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
@@ -46,8 +56,3 @@ Set register
 Quit
 Load ROM
 Single step
-
-
-em.brk(0x0333)
-em.brk(0x0E87)
-em.brk(0x03f6)
