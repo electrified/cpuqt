@@ -1,5 +1,4 @@
-#ifndef COMPUTER_H
-#define COMPUTER_H
+#pragma once
 
 #include "Z80/processor.h"
 
@@ -10,5 +9,3 @@ public:
   Computer();
   ~Computer();
 };
-
-#endif // COMPUTER_H

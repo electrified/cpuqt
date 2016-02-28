@@ -1,5 +1,4 @@
-#ifndef SPECTRUMIO_H
-#define SPECTRUMIO_H
+#pragma once
 
 #include "../Z80/IO.h"
 
@@ -45,5 +44,3 @@ public:
   void keyup(int key);
   spec_key findKey(int key);
 };
-
-#endif // SPECTRUMIO_H

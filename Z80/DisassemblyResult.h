@@ -1,5 +1,4 @@
-#ifndef TESTPROJECT_DISASSEMBLYRESULT_H
-#define TESTPROJECT_DISASSEMBLYRESULT_H
+#pragma once
 
 #include <string>
 #include <cstdint>
@@ -14,5 +13,3 @@ public:
   uint16_t getAddress() const;
   const std::string &getMnemonic() const;
 };
-
-#endif // TESTPROJECT_DISASSEMBLYRESULT_H

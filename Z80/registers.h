@@ -1,5 +1,4 @@
-#ifndef REGISTERS_H
-#define REGISTERS_H
+#pragma once
 
 #include <cstdint>
 #include "Register.hpp"
@@ -243,5 +242,3 @@ public:
 
   void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
 };
-
-#endif // REGISTERS_H

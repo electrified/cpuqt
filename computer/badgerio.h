@@ -1,5 +1,4 @@
-#ifndef BADGERIO_H
-#define BADGERIO_H
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -36,5 +35,3 @@ public:
   void write(std::uint16_t address, std::uint8_t value);
   virtual void outputCharacter(std::uint8_t value) = 0;
 };
-
-#endif // BADGERIO_H

@@ -1,5 +1,4 @@
-#ifndef CONSOLEBADGERIO_H
-#define CONSOLEBADGERIO_H
+#pragma once
 
 #include "badgerio.h"
 
@@ -9,5 +8,3 @@ public:
   ~ConsoleBadgerIO();
   void outputCharacter(std::uint8_t value);
 };
-
-#endif // CONSOLEBADGERIO_H

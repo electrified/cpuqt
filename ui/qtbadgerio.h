@@ -1,5 +1,4 @@
-#ifndef QTBADGERIO_H
-#define QTBADGERIO_H
+#pragma once
 
 #include "computer/badgerio.h"
 
@@ -15,5 +14,3 @@ public:
 signals:
   void consoleTextOutput(char character);
 };
-
-#endif // QTBADGERIO_H

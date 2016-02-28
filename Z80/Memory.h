@@ -1,5 +1,5 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#pragma once
+
 #include <cstdint>
 
 class Memory {
@@ -8,5 +8,3 @@ public:
   virtual void write(const std::uint16_t address, const std::uint8_t value) = 0;
   virtual std::uint16_t size() = 0;
 };
-
-#endif // MEMORY_H

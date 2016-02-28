@@ -1,5 +1,4 @@
-#ifndef PROCESSOR_H
-#define PROCESSOR_H
+#pragma once
 
 #include <cstdint>
 
@@ -289,5 +288,3 @@ public:
   void reset();
   void interruptRequest(bool state);
 };
-
-#endif // PROCESSOR_H

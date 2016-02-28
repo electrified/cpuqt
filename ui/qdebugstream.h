@@ -1,5 +1,4 @@
-#ifndef QDEBUGSTREAM_H
-#define QDEBUGSTREAM_H
+#pragma once
 
 #include <iostream>
 #include <streambuf>
@@ -56,5 +55,3 @@ private:
 
   QPlainTextEdit *log_window;
 };
-
-#endif

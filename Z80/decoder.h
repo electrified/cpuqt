@@ -1,5 +1,5 @@
-#ifndef DECODER
-#define DECODER
+#pragma once
+
 #include "spdlog/spdlog.h"
 #include "Memory.h"
 #include "alu.h"
@@ -11,4 +11,3 @@ public:
 private:
   static std::uint8_t next(Memory &memory, std::uint16_t &pc) { return memory.read(pc++); }
 };
-#endif

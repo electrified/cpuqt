@@ -1,5 +1,4 @@
-#ifndef QTBADGERMEMORY_H
-#define QTBADGERMEMORY_H
+#pragma once
 
 #include <QObject>
 #include "Z80/BadgerMemory.h"
@@ -14,5 +13,3 @@ signals:
   void spectrumGfxUpdated(std::uint16_t address);
 public slots:
 };
-
-#endif // QTBADGERMEMORY_H

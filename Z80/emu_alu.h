@@ -1,5 +1,4 @@
-#ifndef EMULATIONPROCESSOR_H
-#define EMULATIONPROCESSOR_H
+#pragma once
 
 #include "processor.h"
 #include "decoder.h"
@@ -9,7 +8,6 @@
 #include "registers.h"
 #include "IO.h"
 #include "spdlog/spdlog.h"
-// #include "Logger.h"
 
 class UnimplementedInstructionException : public std::exception {
   virtual const char *what() const throw() { return "Unimplemented instruction"; }
@@ -265,4 +263,3 @@ protected:
 
   void setFlags(std::uint8_t value);
 };
-#endif // EMULATIONPROCESSOR_H

@@ -1,5 +1,5 @@
-#ifndef DISASSEMBLYMODEL_H
-#define DISASSEMBLYMODEL_H
+#pragma once
+
 #include <QAbstractTableModel>
 #include "Z80/Memory.h"
 #include "Z80/processor.h"
@@ -28,5 +28,3 @@ public slots:
 signals:
   void programManuallySet(std::uint16_t address);
 };
-
-#endif // DISASSEMBLYMODEL_H

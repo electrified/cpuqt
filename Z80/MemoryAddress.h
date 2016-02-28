@@ -1,5 +1,5 @@
-#ifndef MEMORYADDRESS_H
-#define MEMORYADDRESS_H
+#pragma once
+
 #include <cstdint>
 #include <string>
 #include "Register.hpp"
@@ -26,5 +26,3 @@ public:
   RegisterPair getRegisterPair() const;
   std::string toString() const;
 };
-
-#endif // MEMORYADDRESS_H

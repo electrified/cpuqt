@@ -1,5 +1,5 @@
-#ifndef IO_H
-#define IO_H
+#pragma once
+
 #include <cstdint>
 class IO {
 public:
@@ -9,5 +9,3 @@ public:
 
   };
 };
-
-#endif // IO_H

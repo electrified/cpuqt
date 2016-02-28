@@ -1,5 +1,4 @@
-#ifndef BADGERCOMPUTER_H
-#define BADGERCOMPUTER_H
+#pragma once
 
 #include <cstdint>
 #include "Z80/processor.h"
@@ -32,5 +31,3 @@ signals:
 private:
   set<uint16_t> breakpoints;
 };
-
-#endif // BADGERCOMPUTER_H

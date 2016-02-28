@@ -1,5 +1,5 @@
-#ifndef CPM_IO_H
-#define CPM_IO_H
+#pragma once
+
 #include <QObject>
 #include "Z80/MemoryAddress.h"
 #include "Z80/registers.h"
@@ -14,5 +14,3 @@ public:
 signals:
   void consoleTextOutput(char character);
 };
-
-#endif // CPM_IO_H

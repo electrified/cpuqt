@@ -1,5 +1,4 @@
-#ifndef ALU_H
-#define ALU_H
+#pragma once
 
 #include <cstdint>
 
@@ -198,4 +197,3 @@ public:
   virtual void XOR(const std::uint8_t val) = 0;
   virtual void XOR(const MemoryAddress memoryAddress) = 0;
 };
-#endif

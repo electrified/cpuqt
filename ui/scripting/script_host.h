@@ -1,5 +1,4 @@
-#ifndef SCRIPT_HOST_H
-#define SCRIPT_HOST_H
+#pragma once
 
 #include <string>
 #include "../badgercomputer.h"
@@ -23,4 +22,3 @@ public:
   int peek(int memoryAddress);
   void step();
 };
-#endif
