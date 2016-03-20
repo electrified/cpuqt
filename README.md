@@ -10,7 +10,7 @@ Features:
 * Builds on Linux/OSX/Windows
 
 How To Build
-* Git clone
+* git clone
 * git submodule init
 * git submodule update --recursive
 * Ensure CMake is installed

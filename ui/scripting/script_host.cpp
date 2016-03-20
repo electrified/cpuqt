@@ -1,14 +1,13 @@
 #include "script_host.h"
 
-// print(string.format("%x",em.peek(0)))
-// em.poke(0, 255)
-// print(string.format("%x",em.peek(0)))
-
 ScriptHost::ScriptHost(BadgerComputer *computer) {
   this->computer = computer;
 
-  state["em"].SetObj(*this, "brk", &ScriptHost::addBreakpoint, "step", &ScriptHost::step, "del",
-                     &ScriptHost::removeBreakpoint, "list", &ScriptHost::listBreakpoints, "peek", &ScriptHost::peek,
+  state["em"].SetObj(*this, "brk", &ScriptHost::addBreakpoint, 
+                     "step", &ScriptHost::step, 
+                     "del", &ScriptHost::removeBreakpoint, 
+                     "list", &ScriptHost::listBreakpoints, 
+                     "peek", &ScriptHost::peek,
                      "poke", &ScriptHost::poke);
 }
 

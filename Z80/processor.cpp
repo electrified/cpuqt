@@ -1946,7 +1946,11 @@ void Processor::decode() {
   case 0xDB:
     currentInstruction[1] = next();
     // logger.debug("IN A,(n) - db n ");
-    in(Rgstr::A, MemoryAddress(currentInstruction[1]));
+    /* The operand n is placed on the bottom half (A0 through A7) of the address
+      bus to select the I/O device at one of 256 possible ports. The contents of the
+      Accumulator also appear on the top half (A8 through A15) of the address
+      bus at this time. */
+    in(Rgstr::A, MemoryAddress((registers->getA() << 8) | currentInstruction[1]));
     break;
   case 0xDC:
     currentInstruction[1] = next();

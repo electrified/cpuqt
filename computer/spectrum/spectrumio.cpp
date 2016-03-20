@@ -88,19 +88,13 @@ void SpectrumIO::keyup(int key) {
     keystates[0] |= 0x01;
 }
 
-/*
- * The contents of register C are placed on the bottom half (A0 through A7) of
-the address bus to select the I/O device at one of 256 possible ports. The
-contents of Register B are placed on the top half (A8 through A15) of the
-address bus at this time.
-*/
 std::uint8_t SpectrumIO::read(std::uint16_t address) {
   spdlog::get("console")->debug("address: {0:x}", address);
   /*
    * WHen a key is held down, it pulls that line low.
    */
   std::uint8_t returnValue = 0xff; // no keys pressed
-                                   //     spdlog::get("console")->debug("address read {0:x}", address);
+  spdlog::get("console")->debug("address read {0:x}", address);
   if ((address & 0x0001) == 0x0000) {
     //         uint8_t lineScanned = address >> 8;
 
@@ -109,10 +103,11 @@ std::uint8_t SpectrumIO::read(std::uint16_t address) {
     for (uint8_t row = 0; row < 8; row++) {
       if (!(address & (1 << (row + 8)))) { /* bit held low, so scan this row */
         returnValue &= keystates[row];
-//         spdlog::get("console")->debug("Row: {0:x} Value: {1:x}", row, returnValue);
+        spdlog::get("console")->debug("Row: {0:x} Value: {1:x}", row, returnValue);
       }
     }
   }
+   spdlog::get("console")->debug("returning");
   return returnValue;
 }
 
