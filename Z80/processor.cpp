@@ -4001,7 +4001,13 @@ void Processor::RL(Rgstr r) {
  */
 void Processor::RLA() { RL(Rgstr::A); }
 
-void Processor::RLC(std::uint16_t memoryAddress) { unimplemented("RLC"); }
+void Processor::RLC(std::uint16_t memoryAddress) { 
+  std::uint8_t tempA = memory->read(memoryAddress);
+  memory->write(memoryAddress, tempA << 1 | ((tempA >> 7) & 0x1));
+  registers->setCFlag((tempA >> 7) & 0x1);
+  registers->setHFlag(false);
+  registers->setNFlag(false);
+}
 
 /*
  * The contents of register r are rotated left 1-bit position. The content of bit 7

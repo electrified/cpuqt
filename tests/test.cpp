@@ -2099,14 +2099,21 @@ memory stack, low order first, resulting in a Stack Pointer contents again of
 1000H. The program flow continues where it left off with an Op Code fetch
 to address 1A45H.
 */
-TEST_CASE("RETNTest") {
+TEST_CASE("RETN") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
 
-TEST_CASE("RLCTest") {
+TEST_CASE("RLC(HL)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
-  REQUIRE(true == false);
+  comp->getMemory()->write(0x00, 0xCB);
+  comp->getMemory()->write(0x01, 0x06);
+  comp->getMemory()->write(0x2828, BOOST_BINARY(10001000));
+  comp->getProcessor()->getRegisters()->setHL(0x2828);
+  REQUIRE(!comp->getProcessor()->getRegisters()->getCFlag());
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x2828) == BOOST_BINARY(00010001));
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
 }
 /*
  * If the contents of the HL register pair are 5000H, and the contents of the
