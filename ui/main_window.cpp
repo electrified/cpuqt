@@ -160,8 +160,6 @@ void MainWindow::loadRom() {
 }
 
 void MainWindow::loadRom(QString file_path) {
-  //     QMessageBox::information(this, tr("filename"), file_path);
-
   auto data = ReadAllBytes(file_path.toUtf8().constData());
 
   bool tests = false;
