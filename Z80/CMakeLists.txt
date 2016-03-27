@@ -21,7 +21,6 @@ set(Z80_SRC
     IO.h
     decoder.cpp decoder.h
     alu.h
-    emu_alu.cpp emu_alu.h
     BadgerMemory.cpp BadgerMemory.h
     registers.h registers.cpp
     DisassemblyResult.cpp DisassemblyResult.h

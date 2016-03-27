@@ -5,7 +5,7 @@
 #include "../Z80/BadgerMemory.h"
 #include "../Z80/Register.hpp"
 #include "../Z80/RegisterPair.hpp"
-#include "test_computer.h"
+#include "mocks/test_computer.h"
 #include "../Z80/utils.h"
 
 std::unique_ptr<TestComputer> setupComputer() {

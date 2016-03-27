@@ -1,5 +1,5 @@
 #include "zexrunner.h"
-#include "test_computer.h"
+#include "mocks/test_computer.h"
 #include "../computer/utils.h"
 #include "../computer/consolebadgerio.h"
 #include <vector>

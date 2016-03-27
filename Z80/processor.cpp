@@ -1,5 +1,4 @@
 #include "processor.h"
-#include "emu_alu.h"
 
 #include <boost/utility/binary.hpp>
 #include <assert.h>
@@ -3068,7 +3067,7 @@ Registers *Processor::getRegisters() { return registers; }
  * The rgstr I = 00h
  * The rgstr R = 00h
  * <p/>
- * During reset time, the address bus and data bus go to a hight impadance state and all control output signals go to
+ * During reset time, the address bus and data bus go to a high impedance state and all control output signals go to
  * the inactive state.
  * <p/>
  * The Z80 CPU will execute instruction at address 0000h

@@ -1,5 +1,6 @@
 #include "BadgerMemory.h"
 #include <iostream>
+#include "spdlog/spdlog.h"
 #include "utils.h"
 
 BadgerMemory::BadgerMemory() : memory{} {

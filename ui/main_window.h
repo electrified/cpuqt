@@ -1,7 +1,6 @@
 #pragma once
 #include <QMainWindow>
 #include "Z80/processor.h"
-#include "Z80/emu_alu.h"
 #include "ui/DisassemblyModel.h"
 #include <QStandardItemModel>
 #include <QTimer>
@@ -84,7 +83,8 @@ private slots:
   void iconActivated(QSystemTrayIcon::ActivationReason reason);
   void showMessage();
   void messageClicked();
-  
+  void loadSnapshot();
+  void loadSnapshot(QString file_path);
 signals:
   void programCounterUpdated(std::uint16_t address);
 };

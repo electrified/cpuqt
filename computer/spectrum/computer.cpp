@@ -1,4 +1,4 @@
-#include "../computer/spectrum/computer.h"
+#include "computer.h"
 
 Computer::Computer() {}
 

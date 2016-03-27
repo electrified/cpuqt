@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>950</width>
-    <height>696</height>
+    <height>714</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -100,7 +100,7 @@
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>23</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -117,6 +117,7 @@
      </property>
     </widget>
     <addaction name="actionLoad_ROM"/>
+    <addaction name="actionLoad_Snapshot"/>
     <addaction name="menuRecent"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -545,6 +546,11 @@
     <string>Sa&amp;ve</string>
    </property>
   </action>
+  <action name="actionLoad_Snapshot">
+   <property name="text">
+    <string>Load Snapshot</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources/app.qrc"/>
@@ -758,6 +764,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionLoad_Snapshot</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadSnapshot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>474</x>
+     <y>356</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>356</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>loadRom()</slot>
@@ -773,5 +795,6 @@
   <slot>executeScript()</slot>
   <slot>saveScript()</slot>
   <slot>loadScript()</slot>
+  <slot>loadSnapshot()</slot>
  </slots>
 </ui>

@@ -14,6 +14,10 @@
 
 bool parity(std::uint8_t val);
 
+class UnimplementedInstructionException : public std::exception {
+  virtual const char *what() const throw() { return "Unimplemented instruction"; }
+};
+
 class Processor {
   Memory *memory;
   IO *io;

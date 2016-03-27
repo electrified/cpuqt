@@ -16,18 +16,6 @@ union WideReg {
   bool bit[16];
 };
 
-// union AFReg {
-//     std::uint16_t all;
-//     struct {
-//         std::uint8_t low;
-//         std::uint8_t high;
-//     };
-//     struct {
-//         std::uint8_t a;
-//         std::bitset<8> f;
-//     };
-// };
-
 class Registers {
   WideReg IR;
   WideReg IX;

@@ -162,15 +162,24 @@ void MainWindow::loadRom() {
 void MainWindow::loadRom(QString file_path) {
   auto data = ReadAllBytes(file_path.toUtf8().constData());
 
-  bool tests = false;
-  if (file_path.endsWith(QString("zexdoc.bin"))) {
-    tests = true;
-  }
-
-  std::uint16_t offset = (tests ? 0x100 : 0);
-
-  loadIntoMemory(data, computer->memory, offset);
+  loadIntoMemory(data, computer->memory, 0);
   disassemblyModel->forceDisassembly();
+}
+
+void MainWindow::loadSnapshot() {
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Snapshot"), QDir::homePath(), tr("Snapshot Files (*.z80)"),
+                                                  0, QFileDialog::DontUseNativeDialog);
+
+  if (fileName != NULL) {
+    loadSnapshot(fileName);
+  }
+}
+
+void MainWindow::loadSnapshot(QString file_path) {
+  auto data = ReadAllBytes(file_path.toUtf8().constData());
+
+  loadZ80Snapshot(data, computer->memory, computer->processor->getRegisters());
+//   disassemblyModel->forceDisassembly();
 }
 
 void MainWindow::run() {
