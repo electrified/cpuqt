@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::gfxUpdated(std::uint16_t i) {
+void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
   /*
    * Y Coordinate bit layout (MSB to LSB):
       zzxxxnnn
@@ -82,11 +82,12 @@ void MainWindow::gfxUpdated(std::uint16_t i) {
       Register pair bit layout (R are the bits for the x-axis offset, 010 provides the base address $4000):
       010z znnn xxxR RRRR
   */
-  if (i < 0x5800) {
-    std::uint16_t x = i & 0x1f; // get bottom 5 bits
-    std::uint16_t y = ((i & 0x700) >> 8) | ((i & 0xe0) >> 2) | ((i & 0x1800) >> 5);
+  std::uint8_t data = computer->memory->read(memoryAddress);
+  
+  if (memoryAddress < 0x5800) {
+    std::uint16_t x = memoryAddress & 0x1f; // get bottom 5 bits
+    std::uint16_t y = ((memoryAddress & 0x700) >> 8) | ((memoryAddress & 0xe0) >> 2) | ((memoryAddress & 0x1800) >> 5);
 
-    std::uint8_t data = computer->memory->read(i);
     for (std::uint8_t j = 0; j < 8; ++j) {
       std::uint8_t xCoord = (x * 8) + j;
       bool on = (data << j) & 0x80;
@@ -96,6 +97,11 @@ void MainWindow::gfxUpdated(std::uint16_t i) {
     }
   } else {
     // colour stuff
+    bool flash = data & 0x80;
+    bool bright = data & 0x40;
+    uint8_t paper_colour = data & 0x38;
+    uint8_t ink_colour = data & 0x7;
+
   }
 }
 
