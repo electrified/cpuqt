@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "../Z80/IO.h"
+#include "../../Z80/IO.h"
 
 class BadgerIO : public IO {
 private:

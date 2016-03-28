@@ -1,5 +1,5 @@
 #include "test_computer.h"
-#include "../computer/consolebadgerio.h"
+#include "../../computer/cpm/consolebadgerio.h"
 
 TestComputer::TestComputer() {
   io = new ConsoleBadgerIO();

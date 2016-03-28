@@ -29,11 +29,6 @@ class MainWindow : public QMainWindow {
 public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
-
-//     void setVisible(bool visible) Q_DECL_OVERRIDE;
-
-protected:
-    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 private:
   Ui::MainWindow *ui;
 
@@ -57,8 +52,6 @@ private:
   void updateScreen();
   std::string get_file_contents(const char *filename);
   void save_file(const char *filename, std::string contents);
-  void createActions();
-  void createTrayIcon();
 private slots:
   void loadRom();
   void loadRom(QString file_path);
@@ -80,9 +73,6 @@ private slots:
   void executeScript();
   void saveScript();
   void loadScript();
-  void iconActivated(QSystemTrayIcon::ActivationReason reason);
-  void showMessage();
-  void messageClicked();
   void loadSnapshot();
   void loadSnapshot(QString file_path);
 signals:

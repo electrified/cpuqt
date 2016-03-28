@@ -61,15 +61,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   KeyPressEater *keyPressEater = new KeyPressEater(computer->io);
 
   ui->spectrumInput->installEventFilter(keyPressEater);
-  
-  createActions();
-  createTrayIcon();
-  trayIcon->setIcon(QIcon(":/toolbar/badger.jpg"));
-  trayIcon->show();
-  
-  connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(messageClicked()));
-  connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-          this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -236,7 +227,6 @@ void MainWindow::step() {
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
   //   moveDebuggerToPC(computer->processor->getRegisters()->getPC());
   updateScreen();
-  showMessage();
 }
 
 void MainWindow::reset() {
@@ -312,84 +302,4 @@ void MainWindow::saveScript() {
   if (fileName != NULL) {
     this->save_file(fileName.toLocal8Bit(), ui->scriptEdit->toPlainText().toStdString());
   }
-}
-
-void MainWindow::createActions()
-{
-    minimizeAction = new QAction(tr("Mi&nimize"), this);
-    connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
-
-    maximizeAction = new QAction(tr("Ma&ximize"), this);
-    connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
-
-    restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
-
-    quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
-}
-
-void MainWindow::createTrayIcon()
-{
-    trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction(minimizeAction);
-    trayIconMenu->addAction(maximizeAction);
-    trayIconMenu->addAction(restoreAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);
-
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setContextMenu(trayIconMenu);
-}
-
-
-void MainWindow::showMessage()
-{
-//     showIconCheckBox->setChecked(true);
-//     QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon();
-    trayIcon->showMessage("test", "test", QSystemTrayIcon::Critical, 5000);
-}
-
-void MainWindow::messageClicked()
-{
-    QMessageBox::information(0, tr("Systray"),
-                             tr("Sorry, I already gave what help I could.\n"
-                                "Maybe you should try asking a human?"));
-}
-
-// void MainWindow::setVisible(bool visible)
-// {
-//     minimizeAction->setEnabled(visible);
-//     maximizeAction->setEnabled(!isMaximized());
-//     restoreAction->setEnabled(isMaximized() || !visible);
-// //     QDialog::setVisible(visible);
-// }
-
-
-void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
-{
-    switch (reason) {
-    case QSystemTrayIcon::Trigger:
-    case QSystemTrayIcon::DoubleClick:
-        showMessage();
-        break;
-    case QSystemTrayIcon::MiddleClick:
-        showMessage();
-        break;
-    default:
-        ;
-    }
-}
-
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    if (trayIcon->isVisible()) {
-        QMessageBox::information(this, tr("Systray"),
-                                 tr("The program will keep running in the "
-                                    "system tray. To terminate the program, "
-                                    "choose <b>Quit</b> in the context menu "
-                                    "of the system tray entry."));
-        hide();
-        event->ignore();
-    }
 }

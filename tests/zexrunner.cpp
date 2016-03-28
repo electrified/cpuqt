@@ -1,8 +1,5 @@
-#include "zexrunner.h"
 #include "mocks/test_computer.h"
 #include "../computer/utils.h"
-#include "../computer/consolebadgerio.h"
-#include <vector>
 #include <boost/timer/timer.hpp>
 
 int main(int argc, char **argv) {

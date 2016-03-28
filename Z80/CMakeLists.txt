@@ -25,7 +25,6 @@ set(Z80_SRC
     registers.h registers.cpp
     DisassemblyResult.cpp DisassemblyResult.h
     disassembler.cpp disassembler.h
-    ../computer/badgerio.cpp ../computer/badgerio.h
     ../computer/utils.cpp ../computer/utils.h
     ../computer/spectrum/graphics.h
     ../computer/spectrum/spectrumio.cpp ../computer/spectrum/spectrumio.h

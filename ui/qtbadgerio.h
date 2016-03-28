@@ -1,6 +1,6 @@
 #pragma once
 
-#include "computer/badgerio.h"
+#include "computer/cpm/badgerio.h"
 
 #include <QObject>
 

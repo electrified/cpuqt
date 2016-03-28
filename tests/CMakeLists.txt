@@ -13,19 +13,21 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 find_package (Threads)
 
 set (tooltests_SRC
-mocks/test_computer.h mocks/test_computer.cpp
-../computer/consolebadgerio.cpp ../computer/consolebadgerio.h
-test.cpp
-graphics_test.cpp
-computer_utils_test.cpp
-catch.cpp
-)
+        mocks/test_computer.h mocks/test_computer.cpp
+        ../computer/cpm/badgerio.cpp ../computer/cpm/badgerio.h
+        ../computer/cpm/consolebadgerio.cpp ../computer/cpm/consolebadgerio.h
+        test.cpp
+        graphics_test.cpp
+        computer_utils_test.cpp
+        catch.cpp
+        )
 
 set (zexrunner_SRC
-../computer/consolebadgerio.cpp ../computer/consolebadgerio.h
-zexrunner.cpp zexrunner.h
-mocks/test_computer.h mocks/test_computer.cpp
-)
+        zexrunner.cpp
+        mocks/test_computer.h mocks/test_computer.cpp
+        ../computer/cpm/consolebadgerio.cpp ../computer/cpm/consolebadgerio.h
+        ../computer/cpm/badgerio.cpp ../computer/cpm/badgerio.h
+        )
 
 add_executable(tooltests ${tooltests_SRC})
 
