@@ -8,8 +8,6 @@
 
 #include <QImage>
 
-#include <QSystemTrayIcon>
-
 #include "spdlog/spdlog.h"
 #include "badgercomputer.h"
 #include "scripting/script_host.h"
@@ -35,14 +33,6 @@ private:
   DisassemblyModel *disassemblyModel;
   QTimer timer;
   QSignalMapper recentItemsSignalMapper;
-  
-  QSystemTrayIcon *trayIcon;
-  QMenu *trayIconMenu;
-  QAction *minimizeAction;
-  QAction *maximizeAction;
-  QAction *restoreAction;
-  QAction *quitAction;
-    
     
   bool scrollMemory = true;
   void initial_recent_menu_population();

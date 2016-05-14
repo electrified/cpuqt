@@ -1,29 +1,16 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 
-#include <iostream>
-
-#include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QtWidgets/QTableView>
 #include <QSettings>
-#include <QImage>
 
 // for loading script
 #include <fstream>
-#include <sstream>
-#include <string>
-#include <cerrno>
-
-#include "ui/qtbadgerio.h"
-#include "ui/qtbadgermemory.h"
 #include "utils.h"
-#include "ui/cpm_io.h"
 #include "about_box.h"
 #include "computer/utils.h"
 #include "qdebugstream.h"
-#include "spdlog/spdlog.h"
 #include "keypresseater.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -233,8 +220,6 @@ void MainWindow::reset() {
   computer->reset();
   update_register_values();
 }
-
-// void MainWindow::outputCharacterToConsole(char value) { this->ui->plainTextEdit->insertPlainText(QString(value)); }
 
 void MainWindow::print_debug_stats() {
   //    this->ui->statusbar->showMessage(QString("Refresh count:

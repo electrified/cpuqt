@@ -1,7 +1,5 @@
 #include <string>
 #include "MemoryAddress.h"
-#include "Register.hpp"
-#include "RegisterPair.hpp"
 #include "utils.h"
 
 MemoryAddress::MemoryAddress() {

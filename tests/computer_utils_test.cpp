@@ -1,8 +1,6 @@
 #include "catch.hpp"
-#include <boost/utility/binary.hpp>
 #include "spdlog/spdlog.h"
 #include "../computer/utils.h"
-#include "../Z80/Memory.h"
 #include "../Z80/BadgerMemory.h"
 
 TEST_CASE("Read_all_bytes_array_is_correct_length", "utils") {
