@@ -23,6 +23,10 @@ Coding standards
 * Formatting?
 
 TODO:
+Document available console commands
+Do UI scaling
+Fix snapshot loading!
+
 Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
 
 
