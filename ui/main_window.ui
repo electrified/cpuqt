@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>950</width>
-    <height>714</height>
+    <width>1250</width>
+    <height>892</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,11 +18,11 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -31,10 +31,10 @@
        <widget class="QLabel" name="gfxLabel">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>512</width>
-          <height>384</height>
+          <x>6</x>
+          <y>6</y>
+          <width>531</width>
+          <height>431</height>
          </rect>
         </property>
         <property name="text">
@@ -44,10 +44,10 @@
        <widget class="QPlainTextEdit" name="spectrumInput">
         <property name="geometry">
          <rect>
-          <x>610</x>
-          <y>180</y>
-          <width>104</width>
-          <height>75</height>
+          <x>650</x>
+          <y>130</y>
+          <width>250</width>
+          <height>189</height>
          </rect>
         </property>
        </widget>
@@ -59,8 +59,8 @@
        <widget class="QPushButton" name="runScriptButton">
         <property name="geometry">
          <rect>
-          <x>520</x>
-          <y>310</y>
+          <x>630</x>
+          <y>240</y>
           <width>85</width>
           <height>27</height>
          </rect>
@@ -79,16 +79,6 @@
          </rect>
         </property>
        </widget>
-       <widget class="QPlainTextEdit" name="scriptOutput">
-        <property name="geometry">
-         <rect>
-          <x>430</x>
-          <y>10</y>
-          <width>381</width>
-          <height>281</height>
-         </rect>
-        </property>
-       </widget>
       </widget>
      </widget>
     </item>
@@ -99,8 +89,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>950</width>
-     <height>30</height>
+     <width>1250</width>
+     <height>39</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -451,6 +441,34 @@
    <addaction name="actionDebug_stats"/>
    <addaction name="actionAbout"/>
   </widget>
+  <widget class="QDockWidget" name="logOutputDockWidget">
+   <property name="windowTitle">
+    <string>&amp;Log output</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPlainTextEdit" name="scriptOutput">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="resources/app.qrc">
@@ -548,7 +566,7 @@
   </action>
   <action name="actionLoad_Snapshot">
    <property name="text">
-    <string>Load Snapshot</string>
+    <string>Load &amp;Snapshot</string>
    </property>
   </action>
  </widget>
@@ -771,8 +789,8 @@
    <slot>loadSnapshot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>474</x>
-     <y>356</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>474</x>

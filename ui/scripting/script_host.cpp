@@ -1,4 +1,5 @@
 #include "script_host.h"
+#include "computer/utils.h"
 
 ScriptHost::ScriptHost(BadgerComputer *computer) {
   this->computer = computer;
@@ -8,7 +9,11 @@ ScriptHost::ScriptHost(BadgerComputer *computer) {
                      "del", &ScriptHost::removeBreakpoint, 
                      "list", &ScriptHost::listBreakpoints, 
                      "peek", &ScriptHost::peek,
-                     "poke", &ScriptHost::poke);
+                     "poke", &ScriptHost::poke,
+                     "loadrom", &ScriptHost::loadRom,
+                     "loadsnap", &ScriptHost::loadSnapshot,
+                     "run", &ScriptHost::run
+                    );
 }
 
 void ScriptHost::executeScript(std::string path) { state.Load(path); }
@@ -32,3 +37,23 @@ void ScriptHost::poke(int memoryAddress, int value) { computer->memory->write(me
 int ScriptHost::peek(int memoryAddress) { return computer->memory->read(memoryAddress); }
 
 void ScriptHost::step() { computer->step(); }
+
+void ScriptHost::loadRom(std::string path) {
+  auto data = ReadAllBytes(path);
+
+  loadIntoMemory(data, computer->memory, 0);
+}
+
+void ScriptHost::loadSnapshot(std::string path) {
+  auto data = ReadAllBytes(path);
+
+  loadZ80Snapshot(data, computer->memory, computer->processor->getRegisters());
+}
+
+void ScriptHost::run() {
+  // need to move timer stuff out of main_window
+}
+
+void ScriptHost::reset() {
+  computer->reset();
+}

@@ -3,7 +3,6 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 
 // for loading script
 #include <fstream>
@@ -12,6 +11,7 @@
 #include "computer/utils.h"
 #include "qdebugstream.h"
 #include "keypresseater.h"
+
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
   QDebugStream qout(std::cout, this->ui->scriptOutput);
 
+  settings = new Settings();
+  
   // Attach the model to the view
   ui->disassemblyView->setModel(disassemblyModel);
   ui->disassemblyView->setColumnWidth(0, 50);
@@ -79,48 +81,17 @@ void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
     bool bright = data & 0x40;
     uint8_t paper_colour = data & 0x38;
     uint8_t ink_colour = data & 0x7;
-
   }
 }
 
 void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) { image.setPixel(x, y, on ? valueOn : valueOff); }
 
-void MainWindow::update_recents_list(QString rom_path) {
-  QSettings settings;
-  int size = settings.beginReadArray("recentroms");
-
-  bool found = false;
-
-  for (int i = 0; i < size; i++) {
-    settings.setArrayIndex(i);
-    QString existing_path = settings.value("path").toString();
-    if (existing_path == rom_path) {
-      found = true;
-    }
-  }
-  settings.endArray();
-
-  if (!found) {
-    settings.beginWriteArray("recentroms");
-    settings.setArrayIndex(size);
-    settings.setValue("path", rom_path);
-    settings.endArray();
-    settings.sync();
-    add_recent_menu_item(rom_path);
-  }
-}
-
 void MainWindow::initial_recent_menu_population() {
-  QSettings settings;
-  std::cout << settings.fileName().toStdString() << std::endl;
-  int size = settings.beginReadArray("recentroms");
-  std::cout << "reading vals from config file " << size << std::endl;
-  for (int i = 0; i < size; ++i) {
-    settings.setArrayIndex(i);
-    QString existing_path = settings.value("path").toString();
-    add_recent_menu_item(existing_path);
+  std::list<QString> recentFiles = settings->get_recents_list("recentroms");
+  
+  for (std::list<QString>::const_iterator iterator = recentFiles.begin(), end = recentFiles.end(); iterator != end; ++iterator) {
+    add_recent_menu_item(*iterator);
   }
-  settings.endArray();
 }
 
 void MainWindow::add_recent_menu_item(QString rom_path) {
@@ -138,15 +109,13 @@ void MainWindow::loadRom() {
                                                   0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
-    update_recents_list(fileName);
+    settings->update_recents_list(settings->recent_roms, fileName);
     loadRom(fileName);
   }
 }
 
 void MainWindow::loadRom(QString file_path) {
-  auto data = ReadAllBytes(file_path.toUtf8().constData());
-
-  loadIntoMemory(data, computer->memory, 0);
+  scriptHost->loadRom(file_path.toUtf8().constData());
   disassemblyModel->forceDisassembly();
 }
 
@@ -160,9 +129,7 @@ void MainWindow::loadSnapshot() {
 }
 
 void MainWindow::loadSnapshot(QString file_path) {
-  auto data = ReadAllBytes(file_path.toUtf8().constData());
-
-  loadZ80Snapshot(data, computer->memory, computer->processor->getRegisters());
+  scriptHost->loadSnapshot(file_path.toUtf8().constData());
 //   disassemblyModel->forceDisassembly();
 }
 
@@ -171,7 +138,7 @@ void MainWindow::run() {
 }
 
 void MainWindow::stop() {
-  spdlog::get("console")->debug("Stopping!");
+
   timer.stop();
   update_register_values();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());

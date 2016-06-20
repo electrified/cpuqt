@@ -21,4 +21,8 @@ public:
   void poke(int memoryAddress, int value);
   int peek(int memoryAddress);
   void step();
+  void loadRom(std::string path);
+  void loadSnapshot(std::string path);
+  void run();
+  void reset();
 };

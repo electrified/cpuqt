@@ -30,6 +30,7 @@ badgercomputer.cpp
 about_box.cpp
 scripting/script_host.cpp
 keypresseater.cpp
+settings.cpp
 )
 
 set (GuiLib_hdr 
@@ -44,6 +45,7 @@ about_box.h
 # scripting/script_host.h
 qdebugstream.h
 keypresseater.h
+settings.h
 )
 
 set (GuiLib_ui

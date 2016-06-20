@@ -4,8 +4,8 @@
 #include <boost/filesystem.hpp>
 #include "spdlog/spdlog.h"
 
-std::vector<char> ReadAllBytes(char const *filename) {
-  std::ifstream ifs(filename, std::ios::binary | std::ios::ate);
+std::vector<char> ReadAllBytes(std::string filename) {
+  std::ifstream ifs(filename.c_str(), std::ios::binary | std::ios::ate);
   std::ifstream::pos_type pos = ifs.tellg();
 
   std::vector<char> result(pos);

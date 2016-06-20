@@ -11,6 +11,7 @@
 #include "spdlog/spdlog.h"
 #include "badgercomputer.h"
 #include "scripting/script_host.h"
+#include "settings.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,7 +24,7 @@ class MainWindow : public QMainWindow {
   QImage image = QImage(256, 192, QImage::Format_RGB32);
   QRgb valueOn = qRgb(0x0, 0x0, 0x0);
   QRgb valueOff = qRgb(0xCD, 0xCD, 0xCD);
-
+  Settings *settings;
 public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
@@ -50,7 +51,6 @@ private slots:
   void run();
   void stop();
   void update();
-  void update_recents_list(QString rom_path);
   void step();
   void reset();
   void print_debug_stats();

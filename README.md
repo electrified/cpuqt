@@ -23,6 +23,7 @@ Coding standards
 * Formatting?
 
 TODO:
+Make more c++ey i.e. use std::string instead of char*, references instead of pointers etc.
 Document available console commands
 Do UI scaling
 Fix snapshot loading!
