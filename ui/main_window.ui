@@ -18,7 +18,7 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
@@ -52,33 +52,15 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="scripting_tab">
        <attribute name="title">
         <string>Scripting</string>
        </attribute>
-       <widget class="QPushButton" name="runScriptButton">
-        <property name="geometry">
-         <rect>
-          <x>630</x>
-          <y>240</y>
-          <width>85</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Run</string>
-        </property>
-       </widget>
-       <widget class="QPlainTextEdit" name="scriptEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>411</width>
-          <height>321</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QPlainTextEdit" name="scriptEdit"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -99,7 +81,7 @@
     </property>
     <widget class="QMenu" name="menuRecent">
      <property name="title">
-      <string>&amp;Recent</string>
+      <string>&amp;Recent ROMs</string>
      </property>
      <property name="icon">
       <iconset resource="resources/app.qrc">
@@ -137,9 +119,15 @@
     <property name="title">
      <string>&amp;Scripting</string>
     </property>
+    <widget class="QMenu" name="recentScriptMenu">
+     <property name="title">
+      <string>Recent</string>
+     </property>
+    </widget>
     <addaction name="actionLoadScript"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionSaveScript"/>
+    <addaction name="actionSaveScrpt"/>
+    <addaction name="actionSaveScriptAs"/>
+    <addaction name="recentScriptMenu"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmu_Control"/>
@@ -440,6 +428,7 @@
    <addaction name="actionStop"/>
    <addaction name="actionDebug_stats"/>
    <addaction name="actionAbout"/>
+   <addaction name="actionRunScript"/>
   </widget>
   <widget class="QDockWidget" name="logOutputDockWidget">
    <property name="windowTitle">
@@ -549,7 +538,7 @@
     <string>&amp;Scroll memory with PC</string>
    </property>
   </action>
-  <action name="actionSaveScript">
+  <action name="actionSaveScriptAs">
    <property name="text">
     <string>&amp;Save as...</string>
    </property>
@@ -559,7 +548,7 @@
     <string>&amp;Load...</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionSaveScrpt">
    <property name="text">
     <string>Sa&amp;ve</string>
    </property>
@@ -567,6 +556,16 @@
   <action name="actionLoad_Snapshot">
    <property name="text">
     <string>Load &amp;Snapshot</string>
+   </property>
+  </action>
+  <action name="actionRecent">
+   <property name="text">
+    <string>Recent</string>
+   </property>
+  </action>
+  <action name="actionRunScript">
+   <property name="text">
+    <string>Run script</string>
    </property>
   </action>
  </widget>
@@ -735,14 +734,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>runScriptButton</sender>
-   <signal>clicked()</signal>
+   <sender>actionRunScript</sender>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>executeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>532</x>
-     <y>416</y>
+     <x>755</x>
+     <y>397</y>
     </hint>
     <hint type="destinationlabel">
      <x>474</x>
@@ -751,7 +750,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionSaveScript</sender>
+   <sender>actionSaveScriptAs</sender>
    <signal>triggered(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>saveScript()</slot>

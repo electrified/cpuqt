@@ -33,16 +33,15 @@ private:
 
   DisassemblyModel *disassemblyModel;
   QTimer timer;
-  QSignalMapper recentItemsSignalMapper;
-    
+  QSignalMapper recentRomsSignalMapper;
+  QSignalMapper recentScriptsSignalMapper;
+  
   bool scrollMemory = true;
   void initial_recent_menu_population();
   void add_recent_menu_item(QString rom_path);
   void update_register_values();
   void drawPixel(std::uint16_t x, std::uint16_t y, bool on);
   void updateScreen();
-  std::string get_file_contents(const char *filename);
-  void save_file(const char *filename, std::string contents);
 private slots:
   void loadRom();
   void loadRom(QString file_path);

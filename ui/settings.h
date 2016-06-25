@@ -10,6 +10,7 @@ public:
     void update_recents_list(QString list_name, QString rom_path);
     std::list<QString> get_recents_list(QString list_name);
     const QString recent_roms = QString("recentroms");
+    const QString recent_scripts = QString("recentscripts");
 };
 
 

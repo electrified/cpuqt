@@ -4,8 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-// for loading script
-#include <fstream>
+
 #include "utils.h"
 #include "about_box.h"
 #include "computer/utils.h"
@@ -34,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   verticalHeader->sectionResizeMode(QHeaderView::Fixed);
   verticalHeader->setDefaultSectionSize(15);
 
-  connect(&recentItemsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
+  connect(&recentRomsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
   connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
   connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
   connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
@@ -100,8 +99,8 @@ void MainWindow::add_recent_menu_item(QString rom_path) {
   actionLoad_ROM->setObjectName(rom_path);
   actionLoad_ROM->setText(rom_path);
   ui->menuRecent->addAction(actionLoad_ROM);
-  recentItemsSignalMapper.setMapping(actionLoad_ROM, rom_path);
-  QObject::connect(actionLoad_ROM, SIGNAL(triggered()), &recentItemsSignalMapper, SLOT(map()));
+  recentRomsSignalMapper.setMapping(actionLoad_ROM, rom_path);
+  QObject::connect(actionLoad_ROM, SIGNAL(triggered()), &recentRomsSignalMapper, SLOT(map()));
 }
 
 void MainWindow::loadRom() {
@@ -222,28 +221,9 @@ void MainWindow::loadScript() {
                                                   0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
-    std::string script_contents = get_file_contents(fileName.toLocal8Bit());
+    std::string script_contents = utils::get_file_contents(fileName.toLocal8Bit());
     ui->scriptEdit->clear();
     ui->scriptEdit->appendPlainText(QString::fromStdString(script_contents));
-  }
-}
-
-std::string MainWindow::get_file_contents(const char *filename) {
-  std::ifstream in(filename, std::ios::in);
-  if (in) {
-    std::ostringstream contents;
-    contents << in.rdbuf();
-    in.close();
-    return (contents.str());
-  }
-  throw(errno);
-}
-
-void MainWindow::save_file(const char *filename, std::string contents) {
-  std::ofstream out(filename, std::ios::trunc);
-  if (out) {
-    out << contents;
-    out.close();
   }
 }
 
@@ -252,6 +232,6 @@ void MainWindow::saveScript() {
                                                   0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
-    this->save_file(fileName.toLocal8Bit(), ui->scriptEdit->toPlainText().toStdString());
+    utils::save_file(fileName.toLocal8Bit(), ui->scriptEdit->toPlainText().toStdString());
   }
 }
