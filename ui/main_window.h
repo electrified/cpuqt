@@ -54,7 +54,6 @@ private slots:
   void moveDebuggerToPC(std::uint16_t address);
   void setPC(std::uint16_t address);
   void haltOnBreakpoint();
-  void resume();
   void toggleScrollMemory(bool scroll);
   void gfxUpdated(std::uint16_t i);
   void executeScript();

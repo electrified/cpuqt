@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>1250</width>
-     <height>39</height>
+     <height>35</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -121,7 +121,7 @@
     </property>
     <widget class="QMenu" name="recentScriptMenu">
      <property name="title">
-      <string>Recent</string>
+      <string>&amp;Recent</string>
      </property>
     </widget>
     <addaction name="actionLoadScript"/>
@@ -550,7 +550,7 @@
   </action>
   <action name="actionSaveScrpt">
    <property name="text">
-    <string>Sa&amp;ve</string>
+    <string>Sa&amp;ve (TODO)</string>
    </property>
   </action>
   <action name="actionLoad_Snapshot">
@@ -740,8 +740,8 @@
    <slot>executeScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>755</x>
-     <y>397</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>474</x>

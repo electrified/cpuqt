@@ -134,7 +134,6 @@ void MainWindow::loadSnapshot() {
 
 void MainWindow::loadSnapshot(QString file_path) {
   scriptHost->loadSnapshot(file_path.toUtf8().constData());
-//   disassemblyModel->forceDisassembly();
 }
 
 void MainWindow::run() {
@@ -148,7 +147,6 @@ void MainWindow::stop() {
 }
 
 void MainWindow::update() {
-   spdlog::get("console")->debug(">>>>>>>>>>>>>>>>>>>update!");
   updateScreen();
 }
 
@@ -209,9 +207,10 @@ void MainWindow::setPC(std::uint16_t address) {
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
-void MainWindow::haltOnBreakpoint() { stop(); }
-
-void MainWindow::resume() {}
+void MainWindow::haltOnBreakpoint() { 
+  stop(); 
+  disassemblyModel->forceDisassembly();
+}
 
 void MainWindow::toggleScrollMemory(bool scroll) { this->scrollMemory = scroll; }
 
