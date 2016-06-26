@@ -278,7 +278,7 @@ TEST_CASE("DEC r 16Bit") {
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFFF);
 }
 
-TEST_CASE("DECssTest") {
+TEST_CASE("DECss") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(00101011));
   comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::HL, 0x1001);
@@ -286,7 +286,7 @@ TEST_CASE("DECssTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1000);
 }
 
-TEST_CASE("DITest") {
+TEST_CASE("DI") {
 
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xF3);
@@ -317,7 +317,7 @@ TEST_CASE("DJNZeTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 13);
 }
 
-TEST_CASE("EITest") {
+TEST_CASE("EI") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xFB);
   comp->getProcessor()->process();
@@ -325,7 +325,7 @@ TEST_CASE("EITest") {
   REQUIRE(comp->getProcessor()->getRegisters()->isIFF2());
 }
 
-TEST_CASE("EX_SP_HLTest") {
+TEST_CASE("EX (SP) HL") {
   /*
    * If the HL register pair contains 7012H, the SP register pair contains
    * 8856H, the memory location 8856H contains byte 11H, and memory
