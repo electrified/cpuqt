@@ -1,5 +1,6 @@
 #include "badgercomputer.h"
 
+
 #include "utils.h"
 #include "Z80/registers.h"
 #include "spdlog/spdlog.h"
@@ -8,6 +9,7 @@ BadgerComputer::BadgerComputer() {
   memory = new QtBadgerMemory();
   io = new SpectrumIO();
   processor = new Processor(memory, io);
+  connect(&timer, SIGNAL(timeout()), this, SLOT(doOneScreenRefreshesWorth()));
 }
 
 BadgerComputer::~BadgerComputer() {}
@@ -24,7 +26,6 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
       skipBreakpoint = true;
       emit hitbreakpoint();
       spdlog::get("console")->debug("breakpoint hit!");
-      break;
     } else {
       skipBreakpoint = false;
 
@@ -37,6 +38,8 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
       }
     }
   }
+  spdlog::get("console")->debug(">>>>>>>>>>>>>>>>>>> emit gfxupdated()");
+  emit gfxUpdated();
 }
 
 void BadgerComputer::step() { processor->process(); }
@@ -46,3 +49,11 @@ void BadgerComputer::addBreakpoint(std::uint16_t pc) { breakpoints.insert(pc); }
 void BadgerComputer::removeBreakpoint(std::uint16_t pc) { breakpoints.erase(pc); }
 
 void BadgerComputer::listBreakpoints() {}
+
+void BadgerComputer::run() {
+    timer.start(20); // 50 times per second 1000/50 = 20
+}
+
+void BadgerComputer::stop() {
+  timer.stop();
+}

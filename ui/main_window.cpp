@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "spdlog/spdlog.h"
 
 #include "utils.h"
 #include "about_box.h"
@@ -21,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
   scriptHost = new ScriptHost(computer);
 
-  QDebugStream qout(std::cout, this->ui->scriptOutput);
+//   QDebugStream qout(std::cout, this->ui->scriptOutput);
 
   settings = new Settings();
   
@@ -34,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   verticalHeader->setDefaultSectionSize(15);
 
   connect(&recentRomsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadRom(QString)));
-  connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+  connect(&recentScriptsSignalMapper, SIGNAL(mapped(QString)), this, SLOT(loadScript(QString)));
+  connect(computer, SIGNAL(gfxUpdated()), this, SLOT(update()));
   connect(computer->memory, SIGNAL(spectrumGfxUpdated(std::uint16_t)), this, SLOT(gfxUpdated(std::uint16_t)));
   connect(computer, SIGNAL(hitbreakpoint()), this, SLOT(haltOnBreakpoint()));
 
@@ -44,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
   connect(this, SIGNAL(programCounterUpdated(std::uint16_t)), this, SLOT(moveDebuggerToPC(std::uint16_t)));
   connect(disassemblyModel, SIGNAL(programManuallySet(std::uint16_t)), this, SLOT(setPC(std::uint16_t)));
 
-  initial_recent_menu_population();
+  initialRecentMenuPopulation(settings->recent_roms, ui->menuRecent, &recentRomsSignalMapper);
+  initialRecentMenuPopulation(settings->recent_scripts, ui->recentScriptMenu, &recentScriptsSignalMapper);
 
   KeyPressEater *keyPressEater = new KeyPressEater(computer->io);
 
@@ -54,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
+  
+   spdlog::get("console")->debug("gfxUpdated(std::uint16_t memoryAddress)");
   /*
    * Y Coordinate bit layout (MSB to LSB):
       zzxxxnnn
@@ -85,22 +90,22 @@ void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
 
 void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) { image.setPixel(x, y, on ? valueOn : valueOff); }
 
-void MainWindow::initial_recent_menu_population() {
-  std::list<QString> recentFiles = settings->get_recents_list("recentroms");
+void MainWindow::initialRecentMenuPopulation(QString list_name, QMenu* menu, QSignalMapper* signal_mapper) {
+  std::list<QString> recentFiles = settings->get_recents_list(list_name);
   
   for (std::list<QString>::const_iterator iterator = recentFiles.begin(), end = recentFiles.end(); iterator != end; ++iterator) {
-    add_recent_menu_item(*iterator);
+    addRecentMenuItem(*iterator, menu, signal_mapper);
   }
 }
 
-void MainWindow::add_recent_menu_item(QString rom_path) {
-  std::cout << "adding to menu " << rom_path.toStdString() << std::endl;
-  QAction *actionLoad_ROM = new QAction(this);
-  actionLoad_ROM->setObjectName(rom_path);
-  actionLoad_ROM->setText(rom_path);
-  ui->menuRecent->addAction(actionLoad_ROM);
-  recentRomsSignalMapper.setMapping(actionLoad_ROM, rom_path);
-  QObject::connect(actionLoad_ROM, SIGNAL(triggered()), &recentRomsSignalMapper, SLOT(map()));
+void MainWindow::addRecentMenuItem(QString file_path, QMenu* menu, QSignalMapper* signal_mapper) {
+  std::cout << "adding to menu " << file_path.toStdString() << std::endl;
+  QAction *recent_menu_item_action = new QAction(this);
+  recent_menu_item_action->setObjectName(file_path);
+  recent_menu_item_action->setText(file_path);
+  menu->addAction(recent_menu_item_action);
+  signal_mapper->setMapping(recent_menu_item_action, file_path);
+  QObject::connect(recent_menu_item_action, SIGNAL(triggered()), signal_mapper, SLOT(map()));
 }
 
 void MainWindow::loadRom() {
@@ -133,18 +138,17 @@ void MainWindow::loadSnapshot(QString file_path) {
 }
 
 void MainWindow::run() {
-  timer.start(20); // 50 times per second 1000/50 = 20
+  computer->run();
 }
 
 void MainWindow::stop() {
-
-  timer.stop();
-  update_register_values();
+  computer->stop();
+  updateRegisterValues();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
 void MainWindow::update() {
-  computer->doOneScreenRefreshesWorth();
+   spdlog::get("console")->debug(">>>>>>>>>>>>>>>>>>>update!");
   updateScreen();
 }
 
@@ -157,7 +161,7 @@ void MainWindow::showAboutBox() {
 
 void MainWindow::quit() { QCoreApplication::exit(); }
 
-void MainWindow::update_register_values() {
+void MainWindow::updateRegisterValues() {
   this->ui->pc_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getPC()));
   this->ui->sp_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getSP()));
   this->ui->ix_value->setText(utils::int_to_hex(computer->processor->getRegisters()->getIX()));
@@ -176,7 +180,7 @@ void MainWindow::update_register_values() {
 
 void MainWindow::step() {
   computer->step();
-  update_register_values();
+  updateRegisterValues();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
   //   moveDebuggerToPC(computer->processor->getRegisters()->getPC());
   updateScreen();
@@ -184,13 +188,13 @@ void MainWindow::step() {
 
 void MainWindow::reset() {
   computer->reset();
-  update_register_values();
+  updateRegisterValues();
 }
 
 void MainWindow::print_debug_stats() {
   //    this->ui->statusbar->showMessage(QString("Refresh count:
   //    %1").arg(QString::number(emulationProcessor->refreshes)), 1000);
-  update_register_values();
+  updateRegisterValues();
 }
 
 void MainWindow::moveDebuggerToPC(std::uint16_t address) {
@@ -201,7 +205,7 @@ void MainWindow::moveDebuggerToPC(std::uint16_t address) {
 
 void MainWindow::setPC(std::uint16_t address) {
   computer->processor->getRegisters()->setPC(address);
-  update_register_values();
+  updateRegisterValues();
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
@@ -221,10 +225,15 @@ void MainWindow::loadScript() {
                                                   0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
-    std::string script_contents = utils::get_file_contents(fileName.toLocal8Bit());
+    settings->update_recents_list(settings->recent_scripts, fileName);
+    loadScript(fileName);
+  }
+}
+
+void MainWindow::loadScript(QString file_name) {
+    std::string script_contents = utils::get_file_contents(file_name.toLocal8Bit());
     ui->scriptEdit->clear();
     ui->scriptEdit->appendPlainText(QString::fromStdString(script_contents));
-  }
 }
 
 void MainWindow::saveScript() {

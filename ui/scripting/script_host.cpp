@@ -51,7 +51,7 @@ void ScriptHost::loadSnapshot(std::string path) {
 }
 
 void ScriptHost::run() {
-  // need to move timer stuff out of main_window
+  computer->run();
 }
 
 void ScriptHost::reset() {

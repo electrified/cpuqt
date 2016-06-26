@@ -3,9 +3,7 @@
 #include "Z80/processor.h"
 #include "ui/DisassemblyModel.h"
 #include <QStandardItemModel>
-#include <QTimer>
 #include <QSignalMapper>
-
 #include <QImage>
 
 #include "spdlog/spdlog.h"
@@ -32,14 +30,14 @@ private:
   Ui::MainWindow *ui;
 
   DisassemblyModel *disassemblyModel;
-  QTimer timer;
+
   QSignalMapper recentRomsSignalMapper;
   QSignalMapper recentScriptsSignalMapper;
   
   bool scrollMemory = true;
-  void initial_recent_menu_population();
-  void add_recent_menu_item(QString rom_path);
-  void update_register_values();
+  void initialRecentMenuPopulation(QString list_name, QMenu* menu, QSignalMapper* signal_mapper);
+  void addRecentMenuItem(QString file_path, QMenu* menu, QSignalMapper* signal_mapper);
+  void updateRegisterValues();
   void drawPixel(std::uint16_t x, std::uint16_t y, bool on);
   void updateScreen();
 private slots:
@@ -62,6 +60,7 @@ private slots:
   void executeScript();
   void saveScript();
   void loadScript();
+  void loadScript(QString file_path);
   void loadSnapshot();
   void loadSnapshot(QString file_path);
 signals:

@@ -31,6 +31,7 @@ about_box.cpp
 scripting/script_host.cpp
 keypresseater.cpp
 settings.cpp
+utils.cpp
 )
 
 set (GuiLib_hdr 
@@ -46,6 +47,7 @@ about_box.h
 qdebugstream.h
 keypresseater.h
 settings.h
+utils.h
 )
 
 set (GuiLib_ui

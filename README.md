@@ -14,7 +14,7 @@ How To Build
 * git submodule init
 * git submodule update --recursive
 * Ensure CMake is installed
-* Ensure relevant dev libraries are installed: Boost, Qt5, SDL2 etc
+* Ensure relevant dev libraries are installed: Boost, Qt5, SDL2, Lua etc
 
 Code incorporated from elsewhere
 * Modified zexdoc from https://github.com/anotherlin/z80emu
@@ -27,6 +27,7 @@ Make more c++ey i.e. use std::string instead of char*, references instead of poi
 Document available console commands
 Do UI scaling
 Fix snapshot loading!
+Improve code style/ naming, https://google.github.io/styleguide/cppguide.html#Naming
 
 Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
 
