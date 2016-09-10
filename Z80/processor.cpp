@@ -8,6 +8,7 @@
 Processor::Processor(Memory *memory, IO *io) : memory(memory), io(io) {
   //     std::cout << "Processor ctor" << std::endl;
   registers = new Registers();
+  logger = spdlog::get("console");
 }
 
 Processor::~Processor() {
@@ -19,823 +20,824 @@ void Processor::decode() {
   std::uint8_t currentInstruction[4];
   // get opcode
   currentInstruction[0] = next();
+  SPDLOG_DEBUG(logger, "currentInstruction[0] {0:x}", currentInstruction[0]);
   switch (currentInstruction[0]) {
   case 0x00:
-    // logger.debug("NOP - 0 ");
+    SPDLOG_DEBUG(logger, "NOP - 0 ");
     NOP();
     break;
   case 0x01:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD BC,nn - 1 n n ");
+    SPDLOG_DEBUG(logger, "LD BC,nn - 1 n n ");
     LD(RegisterPair::BC, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
   case 0x02:
-    // logger.debug("LD (BC),A - 2 ");
+    SPDLOG_DEBUG(logger, "LD (BC),A - 2 ");
     LD(MemoryAddress(RegisterPair::BC), Rgstr::A);
     break;
   case 0x03:
-    // logger.debug("INC BC - 3 ");
+    SPDLOG_DEBUG(logger, "INC BC - 3 ");
     INC(RegisterPair::BC);
     break;
   case 0x04:
-    // logger.debug("INC B - 4 ");
+    SPDLOG_DEBUG(logger, "INC B - 4 ");
     INC(Rgstr::B);
     break;
   case 0x05:
-    // logger.debug("DEC B - 5 ");
+    SPDLOG_DEBUG(logger, "DEC B - 5 ");
     DEC(Rgstr::B);
     break;
   case 0x06:
     currentInstruction[1] = next();
-    // logger.debug("LD B,n - 6 n ");
+    SPDLOG_DEBUG(logger, "LD B,n - 6 n ");
     LD(Rgstr::B, currentInstruction[1]);
     break;
   case 0x07:
-    // logger.debug("RLCA - 7 ");
+    SPDLOG_DEBUG(logger, "RLCA - 7 ");
     RLCA();
     break;
   case 0x08:
-    // logger.debug("EX AF,AF' - 8 ");
+    SPDLOG_DEBUG(logger, "EX AF,AF' - 8 ");
     EX(RegisterPair::AF, RegisterPair::AF_prime);
     break;
   case 0x09:
-    // logger.debug("ADD HL,BC - 9 ");
+    SPDLOG_DEBUG(logger, "ADD HL,BC - 9 ");
     ADD(RegisterPair::HL, RegisterPair::BC);
     break;
   case 0x0A:
-    // logger.debug("LD A,(BC) - a ");
+    SPDLOG_DEBUG(logger, "LD A,(BC) - a ");
     LD(Rgstr::A, MemoryAddress(RegisterPair::BC));
     break;
   case 0x0B:
-    // logger.debug("DEC BC - b ");
+    SPDLOG_DEBUG(logger, "DEC BC - b ");
     DEC(RegisterPair::BC);
     break;
   case 0x0C:
-    // logger.debug("INC C - c ");
+    SPDLOG_DEBUG(logger, "INC C - c ");
     INC(Rgstr::C);
     break;
   case 0x0D:
-    // logger.debug("DEC C - d ");
+    SPDLOG_DEBUG(logger, "DEC C - d ");
     DEC(Rgstr::C);
     break;
   case 0x0E:
     currentInstruction[1] = next();
-    // logger.debug("LD C,n - e n ");
+    SPDLOG_DEBUG(logger, "LD C,n - e n ");
     LD(Rgstr::C, currentInstruction[1]);
     break;
   case 0x0F:
-    // logger.debug("RRCA - f ");
+    SPDLOG_DEBUG(logger, "RRCA - f ");
     RRCA();
     break;
   case 0x10:
     currentInstruction[1] = next();
-    // logger.debug("DJNZ (PC+e) - 10 n ");
+    SPDLOG_DEBUG(logger, "DJNZ (PC+e) - 10 n ");
     DJNZ(MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
   case 0x11:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD DE,nn - 11 n n ");
+    SPDLOG_DEBUG(logger, "LD DE,nn - 11 n n ");
     LD(RegisterPair::DE, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
   case 0x12:
-    // logger.debug("LD (DE),A - 12 ");
+    SPDLOG_DEBUG(logger, "LD (DE),A - 12 ");
     LD(MemoryAddress(RegisterPair::DE), Rgstr::A);
     break;
   case 0x13:
-    // logger.debug("INC DE - 13 ");
+    SPDLOG_DEBUG(logger, "INC DE - 13 ");
     INC(RegisterPair::DE);
     break;
   case 0x14:
-    // logger.debug("INC D - 14 ");
+    SPDLOG_DEBUG(logger, "INC D - 14 ");
     INC(Rgstr::D);
     break;
   case 0x15:
-    // logger.debug("DEC D - 15 ");
+    SPDLOG_DEBUG(logger, "DEC D - 15 ");
     DEC(Rgstr::D);
     break;
   case 0x16:
     currentInstruction[1] = next();
-    // logger.debug("LD D,n - 16 n ");
+    SPDLOG_DEBUG(logger, "LD D,n - 16 n ");
     LD(Rgstr::D, currentInstruction[1]);
     break;
   case 0x17:
-    // logger.debug("RLA - 17 ");
+    SPDLOG_DEBUG(logger, "RLA - 17 ");
     RLA();
     break;
   case 0x18:
     currentInstruction[1] = next();
-    // logger.debug("JR (PC+e) - 18 n ");
+    SPDLOG_DEBUG(logger, "JR (PC+e) - 18 n ");
     JR(MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
   case 0x19:
-    // logger.debug("ADD HL,DE - 19 ");
+    SPDLOG_DEBUG(logger, "ADD HL,DE - 19 ");
     ADD(RegisterPair::HL, RegisterPair::DE);
     break;
   case 0x1A:
-    // logger.debug("LD A,(DE) - 1a ");
+    SPDLOG_DEBUG(logger, "LD A,(DE) - 1a ");
     LD(Rgstr::A, MemoryAddress(RegisterPair::DE));
     break;
   case 0x1B:
-    // logger.debug("DEC DE - 1b ");
+    SPDLOG_DEBUG(logger, "DEC DE - 1b ");
     DEC(RegisterPair::DE);
     break;
   case 0x1C:
-    // logger.debug("INC E - 1c ");
+    SPDLOG_DEBUG(logger, "INC E - 1c ");
     INC(Rgstr::E);
     break;
   case 0x1D:
-    // logger.debug("DEC E - 1d ");
+    SPDLOG_DEBUG(logger, "DEC E - 1d ");
     DEC(Rgstr::E);
     break;
   case 0x1E:
     currentInstruction[1] = next();
-    // logger.debug("LD E,n - 1e n ");
+    SPDLOG_DEBUG(logger, "LD E,n - 1e n ");
     LD(Rgstr::E, currentInstruction[1]);
     break;
   case 0x1F:
-    // logger.debug("RRA - 1f ");
+    SPDLOG_DEBUG(logger, "RRA - 1f ");
     RRA();
     break;
   case 0x20:
     currentInstruction[1] = next();
-    // logger.debug("JR NZ,(PC+e) - 20 n ");
+    SPDLOG_DEBUG(logger, "JR NZ,(PC+e) - 20 n ");
     JR(Condition::NZ, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
   case 0x21:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD HL,nn - 21 n n ");
+    SPDLOG_DEBUG(logger, "LD HL,nn - 21 n n ");
     LD(RegisterPair::HL, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
   case 0x22:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD (nn),HL - 22 n n ");
+    SPDLOG_DEBUG(logger, "LD (nn),HL - 22 n n ");
     LD(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]), RegisterPair::HL);
     break;
   case 0x23:
-    // logger.debug("INC HL - 23 ");
+    SPDLOG_DEBUG(logger, "INC HL - 23 ");
     INC(RegisterPair::HL);
     break;
   case 0x24:
-    // logger.debug("INC H - 24 ");
+    SPDLOG_DEBUG(logger, "INC H - 24 ");
     INC(Rgstr::H);
     break;
   case 0x25:
-    // logger.debug("DEC H - 25 ");
+    SPDLOG_DEBUG(logger, "DEC H - 25 ");
     DEC(Rgstr::H);
     break;
   case 0x26:
     currentInstruction[1] = next();
-    // logger.debug("LD H,n - 26 n ");
+    SPDLOG_DEBUG(logger, "LD H,n - 26 n ");
     LD(Rgstr::H, currentInstruction[1]);
     break;
   case 0x27:
-    // logger.debug("DAA - 27 ");
+    SPDLOG_DEBUG(logger, "DAA - 27 ");
     DAA();
     break;
   case 0x28:
     currentInstruction[1] = next();
-    // logger.debug("JR Z,(PC+e) - 28 n ");
+    SPDLOG_DEBUG(logger, "JR Z,(PC+e) - 28 n ");
     JR(Condition::Z, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
   case 0x29:
-    // logger.debug("ADD HL,HL - 29 ");
+    SPDLOG_DEBUG(logger, "ADD HL,HL - 29 ");
     ADD(RegisterPair::HL, RegisterPair::HL);
     break;
   case 0x2A:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD HL,(nn) - 2a n n ");
+    SPDLOG_DEBUG(logger, "LD HL,(nn) - 2a n n ");
     LD_indirect(RegisterPair::HL, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0x2B:
-    // logger.debug("DEC HL - 2b ");
+    SPDLOG_DEBUG(logger, "DEC HL - 2b ");
     DEC(RegisterPair::HL);
     break;
   case 0x2C:
-    // logger.debug("INC L - 2c ");
+    SPDLOG_DEBUG(logger, "INC L - 2c ");
     INC(Rgstr::L);
     break;
   case 0x2D:
-    // logger.debug("DEC L - 2d ");
+    SPDLOG_DEBUG(logger, "DEC L - 2d ");
     DEC(Rgstr::L);
     break;
   case 0x2E:
     currentInstruction[1] = next();
-    // logger.debug("LD L,n - 2e n ");
+    SPDLOG_DEBUG(logger, "LD L,n - 2e n ");
     LD(Rgstr::L, currentInstruction[1]);
     break;
   case 0x2F:
-    // logger.debug("CPL - 2f ");
+    SPDLOG_DEBUG(logger, "CPL - 2f ");
     CPL();
     break;
   case 0x30:
     currentInstruction[1] = next();
-    // logger.debug("JR NC,(PC+e) - 30 n ");
+    SPDLOG_DEBUG(logger, "JR NC,(PC+e) - 30 n ");
     JR(Condition::NC, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
   case 0x31:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD SP,nn - 31 n n ");
+    SPDLOG_DEBUG(logger, "LD SP,nn - 31 n n ");
     LD(RegisterPair::SP, (currentInstruction[2] << 8) | currentInstruction[1]);
     break;
   case 0x32:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD (nn),A - 32 n n ");
+    SPDLOG_DEBUG(logger, "LD (nn),A - 32 n n ");
     LD(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]), Rgstr::A);
     break;
   case 0x33:
-    // logger.debug("INC SP - 33 ");
+    SPDLOG_DEBUG(logger, "INC SP - 33 ");
     INC(RegisterPair::SP);
     break;
   case 0x34:
-    // logger.debug("INC (HL) - 34 ");
+    SPDLOG_DEBUG(logger, "INC (HL) - 34 ");
     INC(MemoryAddress(RegisterPair::HL));
     break;
   case 0x35:
-    // logger.debug("DEC (HL) - 35 ");
+    SPDLOG_DEBUG(logger, "DEC (HL) - 35 ");
     DEC(MemoryAddress(RegisterPair::HL));
     break;
   case 0x36:
     currentInstruction[1] = next();
-    // logger.debug("LD (HL),n - 36 n ");
+    SPDLOG_DEBUG(logger, "LD (HL),n - 36 n ");
     LD(MemoryAddress(RegisterPair::HL), currentInstruction[1]);
     break;
   case 0x37:
-    // logger.debug("SCF - 37 ");
+    SPDLOG_DEBUG(logger, "SCF - 37 ");
     SCF();
     break;
   case 0x38:
     currentInstruction[1] = next();
-    // logger.debug("JR C,(PC+e) - 38 n ");
+    SPDLOG_DEBUG(logger, "JR C,(PC+e) - 38 n ");
     JR(Condition::C, MemoryAddress(RegisterPair::PC, currentInstruction[1]));
     break;
   case 0x39:
-    // logger.debug("ADD HL,SP - 39 ");
+    SPDLOG_DEBUG(logger, "ADD HL,SP - 39 ");
     ADD(RegisterPair::HL, RegisterPair::SP);
     break;
   case 0x3A:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("LD A,(nn) - 3a n n ");
+    SPDLOG_DEBUG(logger, "LD A,(nn) - 3a n n ");
     LD(Rgstr::A, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0x3B:
-    // logger.debug("DEC SP - 3b ");
+    SPDLOG_DEBUG(logger, "DEC SP - 3b ");
     DEC(RegisterPair::SP);
     break;
   case 0x3C:
-    // logger.debug("INC A - 3c ");
+    SPDLOG_DEBUG(logger, "INC A - 3c ");
     INC(Rgstr::A);
     break;
   case 0x3D:
-    // logger.debug("DEC A - 3d ");
+    SPDLOG_DEBUG(logger, "DEC A - 3d ");
     DEC(Rgstr::A);
     break;
   case 0x3E:
     currentInstruction[1] = next();
-    // logger.debug("LD A,n - 3e n ");
+    SPDLOG_DEBUG(logger, "LD A,n - 3e n ");
     LD(Rgstr::A, currentInstruction[1]);
     break;
   case 0x3F:
-    // logger.debug("CCF - 3f ");
+    SPDLOG_DEBUG(logger, "CCF - 3f ");
     CCF();
     break;
   case 0x40:
-    // logger.debug("LD B,B - 40 ");
+    SPDLOG_DEBUG(logger, "LD B,B - 40 ");
     LD(Rgstr::B, Rgstr::B);
     break;
   case 0x41:
-    // logger.debug("LD B,C - 41 ");
+    SPDLOG_DEBUG(logger, "LD B,C - 41 ");
     LD(Rgstr::B, Rgstr::C);
     break;
   case 0x42:
-    // logger.debug("LD B,D - 42 ");
+    SPDLOG_DEBUG(logger, "LD B,D - 42 ");
     LD(Rgstr::B, Rgstr::D);
     break;
   case 0x43:
-    // logger.debug("LD B,E - 43 ");
+    SPDLOG_DEBUG(logger, "LD B,E - 43 ");
     LD(Rgstr::B, Rgstr::E);
     break;
   case 0x44:
-    // logger.debug("LD B,H - 44 ");
+    SPDLOG_DEBUG(logger, "LD B,H - 44 ");
     LD(Rgstr::B, Rgstr::H);
     break;
   case 0x45:
-    // logger.debug("LD B,L - 45 ");
+    SPDLOG_DEBUG(logger, "LD B,L - 45 ");
     LD(Rgstr::B, Rgstr::L);
     break;
   case 0x46:
-    // logger.debug("LD B,(HL) - 46 ");
+    SPDLOG_DEBUG(logger, "LD B,(HL) - 46 ");
     LD(Rgstr::B, MemoryAddress(RegisterPair::HL));
     break;
   case 0x47:
-    // logger.debug("LD B,A - 47 ");
+    SPDLOG_DEBUG(logger, "LD B,A - 47 ");
     LD(Rgstr::B, Rgstr::A);
     break;
   case 0x48:
-    // logger.debug("LD C,B - 48 ");
+    SPDLOG_DEBUG(logger, "LD C,B - 48 ");
     LD(Rgstr::C, Rgstr::B);
     break;
   case 0x49:
-    // logger.debug("LD C,C - 49 ");
+    SPDLOG_DEBUG(logger, "LD C,C - 49 ");
     LD(Rgstr::C, Rgstr::C);
     break;
   case 0x4A:
-    // logger.debug("LD C,D - 4a ");
+    SPDLOG_DEBUG(logger, "LD C,D - 4a ");
     LD(Rgstr::C, Rgstr::D);
     break;
   case 0x4B:
-    // logger.debug("LD C,E - 4b ");
+    SPDLOG_DEBUG(logger, "LD C,E - 4b ");
     LD(Rgstr::C, Rgstr::E);
     break;
   case 0x4C:
-    // logger.debug("LD C,H - 4c ");
+    SPDLOG_DEBUG(logger, "LD C,H - 4c ");
     LD(Rgstr::C, Rgstr::H);
     break;
   case 0x4D:
-    // logger.debug("LD C,L - 4d ");
+    SPDLOG_DEBUG(logger, "LD C,L - 4d ");
     LD(Rgstr::C, Rgstr::L);
     break;
   case 0x4E:
-    // logger.debug("LD C,(HL) - 4e ");
+    SPDLOG_DEBUG(logger, "LD C,(HL) - 4e ");
     LD(Rgstr::C, MemoryAddress(RegisterPair::HL));
     break;
   case 0x4F:
-    // logger.debug("LD C,A - 4f ");
+    SPDLOG_DEBUG(logger, "LD C,A - 4f ");
     LD(Rgstr::C, Rgstr::A);
     break;
   case 0x50:
-    // logger.debug("LD D,B - 50 ");
+    SPDLOG_DEBUG(logger, "LD D,B - 50 ");
     LD(Rgstr::D, Rgstr::B);
     break;
   case 0x51:
-    // logger.debug("LD D,C - 51 ");
+    SPDLOG_DEBUG(logger, "LD D,C - 51 ");
     LD(Rgstr::D, Rgstr::C);
     break;
   case 0x52:
-    // logger.debug("LD D,D - 52 ");
+    SPDLOG_DEBUG(logger, "LD D,D - 52 ");
     LD(Rgstr::D, Rgstr::D);
     break;
   case 0x53:
-    // logger.debug("LD D,E - 53 ");
+    SPDLOG_DEBUG(logger, "LD D,E - 53 ");
     LD(Rgstr::D, Rgstr::E);
     break;
   case 0x54:
-    // logger.debug("LD D,H - 54 ");
+    SPDLOG_DEBUG(logger, "LD D,H - 54 ");
     LD(Rgstr::D, Rgstr::H);
     break;
   case 0x55:
-    // logger.debug("LD D,L - 55 ");
+    SPDLOG_DEBUG(logger, "LD D,L - 55 ");
     LD(Rgstr::D, Rgstr::L);
     break;
   case 0x56:
-    // logger.debug("LD D,(HL) - 56 ");
+    SPDLOG_DEBUG(logger, "LD D,(HL) - 56 ");
     LD(Rgstr::D, MemoryAddress(RegisterPair::HL));
     break;
   case 0x57:
-    // logger.debug("LD D,A - 57 ");
+    SPDLOG_DEBUG(logger, "LD D,A - 57 ");
     LD(Rgstr::D, Rgstr::A);
     break;
   case 0x58:
-    // logger.debug("LD E,B - 58 ");
+    SPDLOG_DEBUG(logger, "LD E,B - 58 ");
     LD(Rgstr::E, Rgstr::B);
     break;
   case 0x59:
-    // logger.debug("LD E,C - 59 ");
+    SPDLOG_DEBUG(logger, "LD E,C - 59 ");
     LD(Rgstr::E, Rgstr::C);
     break;
   case 0x5A:
-    // logger.debug("LD E,D - 5a ");
+    SPDLOG_DEBUG(logger, "LD E,D - 5a ");
     LD(Rgstr::E, Rgstr::D);
     break;
   case 0x5B:
-    // logger.debug("LD E,E - 5b ");
+    SPDLOG_DEBUG(logger, "LD E,E - 5b ");
     LD(Rgstr::E, Rgstr::E);
     break;
   case 0x5C:
-    // logger.debug("LD E,H - 5c ");
+    SPDLOG_DEBUG(logger, "LD E,H - 5c ");
     LD(Rgstr::E, Rgstr::H);
     break;
   case 0x5D:
-    // logger.debug("LD E,L - 5d ");
+    SPDLOG_DEBUG(logger, "LD E,L - 5d ");
     LD(Rgstr::E, Rgstr::L);
     break;
   case 0x5E:
-    // logger.debug("LD E,(HL) - 5e ");
+    SPDLOG_DEBUG(logger, "LD E,(HL) - 5e ");
     LD(Rgstr::E, MemoryAddress(RegisterPair::HL));
     break;
   case 0x5F:
-    // logger.debug("LD E,A - 5f ");
+    SPDLOG_DEBUG(logger, "LD E,A - 5f ");
     LD(Rgstr::E, Rgstr::A);
     break;
   case 0x60:
-    // logger.debug("LD H,B - 60 ");
+    SPDLOG_DEBUG(logger, "LD H,B - 60 ");
     LD(Rgstr::H, Rgstr::B);
     break;
   case 0x61:
-    // logger.debug("LD H,C - 61 ");
+    SPDLOG_DEBUG(logger, "LD H,C - 61 ");
     LD(Rgstr::H, Rgstr::C);
     break;
   case 0x62:
-    // logger.debug("LD H,D - 62 ");
+    SPDLOG_DEBUG(logger, "LD H,D - 62 ");
     LD(Rgstr::H, Rgstr::D);
     break;
   case 0x63:
-    // logger.debug("LD H,E - 63 ");
+    SPDLOG_DEBUG(logger, "LD H,E - 63 ");
     LD(Rgstr::H, Rgstr::E);
     break;
   case 0x64:
-    // logger.debug("LD H,H - 64 ");
+    SPDLOG_DEBUG(logger, "LD H,H - 64 ");
     LD(Rgstr::H, Rgstr::H);
     break;
   case 0x65:
-    // logger.debug("LD H,L - 65 ");
+    SPDLOG_DEBUG(logger, "LD H,L - 65 ");
     LD(Rgstr::H, Rgstr::L);
     break;
   case 0x66:
-    // logger.debug("LD H,(HL) - 66 ");
+    SPDLOG_DEBUG(logger, "LD H,(HL) - 66 ");
     LD(Rgstr::H, MemoryAddress(RegisterPair::HL));
     break;
   case 0x67:
-    // logger.debug("LD H,A - 67 ");
+    SPDLOG_DEBUG(logger, "LD H,A - 67 ");
     LD(Rgstr::H, Rgstr::A);
     break;
   case 0x68:
-    // logger.debug("LD L,B - 68 ");
+    SPDLOG_DEBUG(logger, "LD L,B - 68 ");
     LD(Rgstr::L, Rgstr::B);
     break;
   case 0x69:
-    // logger.debug("LD L,C - 69 ");
+    SPDLOG_DEBUG(logger, "LD L,C - 69 ");
     LD(Rgstr::L, Rgstr::C);
     break;
   case 0x6A:
-    // logger.debug("LD L,D - 6a ");
+    SPDLOG_DEBUG(logger, "LD L,D - 6a ");
     LD(Rgstr::L, Rgstr::D);
     break;
   case 0x6B:
-    // logger.debug("LD L,E - 6b ");
+    SPDLOG_DEBUG(logger, "LD L,E - 6b ");
     LD(Rgstr::L, Rgstr::E);
     break;
   case 0x6C:
-    // logger.debug("LD L,H - 6c ");
+    SPDLOG_DEBUG(logger, "LD L,H - 6c ");
     LD(Rgstr::L, Rgstr::H);
     break;
   case 0x6D:
-    // logger.debug("LD L,L - 6d ");
+    SPDLOG_DEBUG(logger, "LD L,L - 6d ");
     LD(Rgstr::L, Rgstr::L);
     break;
   case 0x6E:
-    // logger.debug("LD L,(HL) - 6e ");
+    SPDLOG_DEBUG(logger, "LD L,(HL) - 6e ");
     LD(Rgstr::L, MemoryAddress(RegisterPair::HL));
     break;
   case 0x6F:
-    // logger.debug("LD L,A - 6f ");
+    SPDLOG_DEBUG(logger, "LD L,A - 6f ");
     LD(Rgstr::L, Rgstr::A);
     break;
   case 0x70:
-    // logger.debug("LD (HL),B - 70 ");
+    SPDLOG_DEBUG(logger, "LD (HL),B - 70 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::B);
     break;
   case 0x71:
-    // logger.debug("LD (HL),C - 71 ");
+    SPDLOG_DEBUG(logger, "LD (HL),C - 71 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::C);
     break;
   case 0x72:
-    // logger.debug("LD (HL),D - 72 ");
+    SPDLOG_DEBUG(logger, "LD (HL),D - 72 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::D);
     break;
   case 0x73:
-    // logger.debug("LD (HL),E - 73 ");
+    SPDLOG_DEBUG(logger, "LD (HL),E - 73 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::E);
     break;
   case 0x74:
-    // logger.debug("LD (HL),H - 74 ");
+    SPDLOG_DEBUG(logger, "LD (HL),H - 74 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::H);
     break;
   case 0x75:
-    // logger.debug("LD (HL),L - 75 ");
+    SPDLOG_DEBUG(logger, "LD (HL),L - 75 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::L);
     break;
   case 0x76:
-    // logger.debug("HALT - 76 ");
+    SPDLOG_DEBUG(logger, "HALT - 76 ");
     HALT();
     break;
   case 0x77:
-    // logger.debug("LD (HL),A - 77 ");
+    SPDLOG_DEBUG(logger, "LD (HL),A - 77 ");
     LD(MemoryAddress(RegisterPair::HL), Rgstr::A);
     break;
   case 0x78:
-    // logger.debug("LD A,B - 78 ");
+    SPDLOG_DEBUG(logger, "LD A,B - 78 ");
     LD(Rgstr::A, Rgstr::B);
     break;
   case 0x79:
-    // logger.debug("LD A,C - 79 ");
+    SPDLOG_DEBUG(logger, "LD A,C - 79 ");
     LD(Rgstr::A, Rgstr::C);
     break;
   case 0x7A:
-    // logger.debug("LD A,D - 7a ");
+    SPDLOG_DEBUG(logger, "LD A,D - 7a ");
     LD(Rgstr::A, Rgstr::D);
     break;
   case 0x7B:
-    // logger.debug("LD A,E - 7b ");
+    SPDLOG_DEBUG(logger, "LD A,E - 7b ");
     LD(Rgstr::A, Rgstr::E);
     break;
   case 0x7C:
-    // logger.debug("LD A,H - 7c ");
+    SPDLOG_DEBUG(logger, "LD A,H - 7c ");
     LD(Rgstr::A, Rgstr::H);
     break;
   case 0x7D:
-    // logger.debug("LD A,L - 7d ");
+    SPDLOG_DEBUG(logger, "LD A,L - 7d ");
     LD(Rgstr::A, Rgstr::L);
     break;
   case 0x7E:
-    // logger.debug("LD A,(HL) - 7e ");
+    SPDLOG_DEBUG(logger, "LD A,(HL) - 7e ");
     LD(Rgstr::A, MemoryAddress(RegisterPair::HL));
     break;
   case 0x7F:
-    // logger.debug("LD A,A - 7f ");
+    SPDLOG_DEBUG(logger, "LD A,A - 7f ");
     LD(Rgstr::A, Rgstr::A);
     break;
   case 0x80:
-    // logger.debug("ADD A,B - 80 ");
+    SPDLOG_DEBUG(logger, "ADD A,B - 80 ");
     ADD(Rgstr::A, Rgstr::B);
     break;
   case 0x81:
-    // logger.debug("ADD A,C - 81 ");
+    SPDLOG_DEBUG(logger, "ADD A,C - 81 ");
     ADD(Rgstr::A, Rgstr::C);
     break;
   case 0x82:
-    // logger.debug("ADD A,D - 82 ");
+    SPDLOG_DEBUG(logger, "ADD A,D - 82 ");
     ADD(Rgstr::A, Rgstr::D);
     break;
   case 0x83:
-    // logger.debug("ADD A,E - 83 ");
+    SPDLOG_DEBUG(logger, "ADD A,E - 83 ");
     ADD(Rgstr::A, Rgstr::E);
     break;
   case 0x84:
-    // logger.debug("ADD A,H - 84 ");
+    SPDLOG_DEBUG(logger, "ADD A,H - 84 ");
     ADD(Rgstr::A, Rgstr::H);
     break;
   case 0x85:
-    // logger.debug("ADD A,L - 85 ");
+    SPDLOG_DEBUG(logger, "ADD A,L - 85 ");
     ADD(Rgstr::A, Rgstr::L);
     break;
   case 0x86:
-    // logger.debug("ADD A,(HL) - 86 ");
+    SPDLOG_DEBUG(logger, "ADD A,(HL) - 86 ");
     ADD(Rgstr::A, MemoryAddress(RegisterPair::HL));
     break;
   case 0x87:
-    // logger.debug("ADD A,A - 87 ");
+    SPDLOG_DEBUG(logger, "ADD A,A - 87 ");
     ADD(Rgstr::A, Rgstr::A);
     break;
   case 0x88:
-    // logger.info("ADC A,B - 88 ");
+    SPDLOG_DEBUG(logger, "ADC A,B - 88 ");
     ADC(Rgstr::A, Rgstr::B);
     break;
   case 0x89:
-    // logger.info("ADC A,C - 89 ");
+    SPDLOG_DEBUG(logger, "ADC A,C - 89 ");
     ADC(Rgstr::A, Rgstr::C);
     break;
   case 0x8A:
-    // logger.info("ADC A,D - 8a ");
+    SPDLOG_DEBUG(logger, "ADC A,D - 8a ");
     ADC(Rgstr::A, Rgstr::D);
     break;
   case 0x8B:
-    // logger.info("ADC A,E - 8b ");
+    SPDLOG_DEBUG(logger, "ADC A,E - 8b ");
     ADC(Rgstr::A, Rgstr::E);
     break;
   case 0x8C:
-    // logger.info("ADC A,H - 8c ");
+    SPDLOG_DEBUG(logger, "ADC A,H - 8c ");
     ADC(Rgstr::A, Rgstr::H);
     break;
   case 0x8D:
-    // logger.info("ADC A,L - 8d ");
+    SPDLOG_DEBUG(logger, "ADC A,L - 8d ");
     ADC(Rgstr::A, Rgstr::L);
     break;
   case 0x8E:
-    // logger.info("ADC A,(HL) - 8e ");
+    SPDLOG_DEBUG(logger, "ADC A,(HL) - 8e ");
     ADC(Rgstr::A, MemoryAddress(RegisterPair::HL));
     break;
   case 0x8F:
-    // logger.info("ADC A,A - 8f ");
+    SPDLOG_DEBUG(logger, "ADC A,A - 8f ");
     ADC(Rgstr::A, Rgstr::A);
     break;
   case 0x90:
-    // logger.debug("SUB B - 90 ");
+    SPDLOG_DEBUG(logger, "SUB B - 90 ");
     SUB(Rgstr::B);
     break;
   case 0x91:
-    // logger.debug("SUB C - 91 ");
+    SPDLOG_DEBUG(logger, "SUB C - 91 ");
     SUB(Rgstr::C);
     break;
   case 0x92:
-    // logger.debug("SUB D - 92 ");
+    SPDLOG_DEBUG(logger, "SUB D - 92 ");
     SUB(Rgstr::D);
     break;
   case 0x93:
-    // logger.debug("SUB E - 93 ");
+    SPDLOG_DEBUG(logger, "SUB E - 93 ");
     SUB(Rgstr::E);
     break;
   case 0x94:
-    // logger.debug("SUB H - 94 ");
+    SPDLOG_DEBUG(logger, "SUB H - 94 ");
     SUB(Rgstr::H);
     break;
   case 0x95:
-    // logger.debug("SUB L - 95 ");
+    SPDLOG_DEBUG(logger, "SUB L - 95 ");
     SUB(Rgstr::L);
     break;
   case 0x96:
-    // logger.debug("SUB (HL) - 96 ");
+    SPDLOG_DEBUG(logger, "SUB (HL) - 96 ");
     SUB(MemoryAddress(RegisterPair::HL));
     break;
   case 0x97:
-    // logger.debug("SUB A - 97 ");
+    SPDLOG_DEBUG(logger, "SUB A - 97 ");
     SUB(Rgstr::A);
     break;
   case 0x98:
-    // logger.info("SBC A,B - 98 ");
+    SPDLOG_DEBUG(logger, "SBC A,B - 98 ");
     SBC(Rgstr::A, Rgstr::B);
     break;
   case 0x99:
-    // logger.info("SBC A,C - 99 ");
+    SPDLOG_DEBUG(logger, "SBC A,C - 99 ");
     SBC(Rgstr::A, Rgstr::C);
     break;
   case 0x9A:
-    // logger.info("SBC A,D - 9a ");
+    SPDLOG_DEBUG(logger, "SBC A,D - 9a ");
     SBC(Rgstr::A, Rgstr::D);
     break;
   case 0x9B:
-    // logger.info("SBC A,E - 9b ");
+    SPDLOG_DEBUG(logger, "SBC A,E - 9b ");
     SBC(Rgstr::A, Rgstr::E);
     break;
   case 0x9C:
-    // logger.info("SBC A,H - 9c ");
+    SPDLOG_DEBUG(logger, "SBC A,H - 9c ");
     SBC(Rgstr::A, Rgstr::H);
     break;
   case 0x9D:
-    // logger.info("SBC A,L - 9d ");
+    SPDLOG_DEBUG(logger, "SBC A,L - 9d ");
     SBC(Rgstr::A, Rgstr::L);
     break;
   case 0x9E:
-    // logger.info("SBC A,(HL) - 9e ");
+    SPDLOG_DEBUG(logger, "SBC A,(HL) - 9e ");
     SBC(Rgstr::A, MemoryAddress(RegisterPair::HL));
     break;
   case 0x9F:
-    // logger.info("SBC A,A - 9f ");
+    SPDLOG_DEBUG(logger, "SBC A,A - 9f ");
     SBC(Rgstr::A, Rgstr::A);
     break;
   case 0xA0:
-    // logger.debug("AND B - a0 ");
+    SPDLOG_DEBUG(logger, "AND B - a0 ");
     AND(Rgstr::B);
     break;
   case 0xA1:
-    // logger.debug("AND C - a1 ");
+    SPDLOG_DEBUG(logger, "AND C - a1 ");
     AND(Rgstr::C);
     break;
   case 0xA2:
-    // logger.debug("AND D - a2 ");
+    SPDLOG_DEBUG(logger, "AND D - a2 ");
     AND(Rgstr::D);
     break;
   case 0xA3:
-    // logger.debug("AND E - a3 ");
+    SPDLOG_DEBUG(logger, "AND E - a3 ");
     AND(Rgstr::E);
     break;
   case 0xA4:
-    // logger.debug("AND H - a4 ");
+    SPDLOG_DEBUG(logger, "AND H - a4 ");
     AND(Rgstr::H);
     break;
   case 0xA5:
-    // logger.debug("AND L - a5 ");
+    SPDLOG_DEBUG(logger, "AND L - a5 ");
     AND(Rgstr::L);
     break;
   case 0xA6:
-    // logger.debug("AND (HL) - a6 ");
+    SPDLOG_DEBUG(logger, "AND (HL) - a6 ");
     AND(MemoryAddress(RegisterPair::HL));
     break;
   case 0xA7:
-    // logger.debug("AND A - a7 ");
+    SPDLOG_DEBUG(logger, "AND A - a7 ");
     AND(Rgstr::A);
     break;
   case 0xA8:
-    // logger.debug("XOR B - a8 ");
+    SPDLOG_DEBUG(logger, "XOR B - a8 ");
     XOR(Rgstr::B);
     break;
   case 0xA9:
-    // logger.debug("XOR C - a9 ");
+    SPDLOG_DEBUG(logger, "XOR C - a9 ");
     XOR(Rgstr::C);
     break;
   case 0xAA:
-    // logger.debug("XOR D - aa ");
+    SPDLOG_DEBUG(logger, "XOR D - aa ");
     XOR(Rgstr::D);
     break;
   case 0xAB:
-    // logger.debug("XOR E - ab ");
+    SPDLOG_DEBUG(logger, "XOR E - ab ");
     XOR(Rgstr::E);
     break;
   case 0xAC:
-    // logger.debug("XOR H - ac ");
+    SPDLOG_DEBUG(logger, "XOR H - ac ");
     XOR(Rgstr::H);
     break;
   case 0xAD:
-    // logger.debug("XOR L - ad ");
+    SPDLOG_DEBUG(logger, "XOR L - ad ");
     XOR(Rgstr::L);
     break;
   case 0xAE:
-    // logger.debug("XOR (HL) - ae ");
+    SPDLOG_DEBUG(logger, "XOR (HL) - ae ");
     XOR(MemoryAddress(RegisterPair::HL));
     break;
   case 0xAF:
-    // logger.debug("XOR A - af ");
+    SPDLOG_DEBUG(logger, "XOR A - af ");
     XOR(Rgstr::A);
     break;
   case 0xB0:
-    // logger.debug("OR B - b0 ");
+    SPDLOG_DEBUG(logger, "OR B - b0 ");
     OR(Rgstr::B);
     break;
   case 0xB1:
-    // logger.debug("OR C - b1 ");
+    SPDLOG_DEBUG(logger, "OR C - b1 ");
     OR(Rgstr::C);
     break;
   case 0xB2:
-    // logger.debug("OR D - b2 ");
+    SPDLOG_DEBUG(logger, "OR D - b2 ");
     OR(Rgstr::D);
     break;
   case 0xB3:
-    // logger.debug("OR E - b3 ");
+    SPDLOG_DEBUG(logger, "OR E - b3 ");
     OR(Rgstr::E);
     break;
   case 0xB4:
-    // logger.debug("OR H - b4 ");
+    SPDLOG_DEBUG(logger, "OR H - b4 ");
     OR(Rgstr::H);
     break;
   case 0xB5:
-    // logger.debug("OR L - b5 ");
+    SPDLOG_DEBUG(logger, "OR L - b5 ");
     OR(Rgstr::L);
     break;
   case 0xB6:
-    // logger.debug("OR (HL) - b6 ");
+    SPDLOG_DEBUG(logger, "OR (HL) - b6 ");
     OR(MemoryAddress(RegisterPair::HL));
     break;
   case 0xB7:
-    // logger.debug("OR A - b7 ");
+    SPDLOG_DEBUG(logger, "OR A - b7 ");
     OR(Rgstr::A);
     break;
   case 0xB8:
-    // logger.debug("CP B - b8 ");
+    SPDLOG_DEBUG(logger, "CP B - b8 ");
     CP(Rgstr::B);
     break;
   case 0xB9:
-    // logger.debug("CP C - b9 ");
+    SPDLOG_DEBUG(logger, "CP C - b9 ");
     CP(Rgstr::C);
     break;
   case 0xBA:
-    // logger.debug("CP D - ba ");
+    SPDLOG_DEBUG(logger, "CP D - ba ");
     CP(Rgstr::D);
     break;
   case 0xBB:
-    // logger.debug("CP E - bb ");
+    SPDLOG_DEBUG(logger, "CP E - bb ");
     CP(Rgstr::E);
     break;
   case 0xBC:
-    // logger.debug("CP H - bc ");
+    SPDLOG_DEBUG(logger, "CP H - bc ");
     CP(Rgstr::H);
     break;
   case 0xBD:
-    // logger.debug("CP L - bd ");
+    SPDLOG_DEBUG(logger, "CP L - bd ");
     CP(Rgstr::L);
     break;
   case 0xBE:
-    // logger.debug("CP (HL) - be ");
+    SPDLOG_DEBUG(logger, "CP (HL) - be ");
     CP(MemoryAddress(RegisterPair::HL));
     break;
   case 0xBF:
-    // logger.debug("CP A - bf ");
+    SPDLOG_DEBUG(logger, "CP A - bf ");
     CP(Rgstr::A);
     break;
   case 0xC0:
-    // logger.debug("RET NZ - c0 ");
+    SPDLOG_DEBUG(logger, "RET NZ - c0 ");
     RET(Condition::NZ);
     break;
   case 0xC1:
-    // logger.debug("POP BC - c1 ");
+    SPDLOG_DEBUG(logger, "POP BC - c1 ");
     POP(RegisterPair::BC);
     break;
   case 0xC2:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP NZ,(nn) - c2 n n ");
+    SPDLOG_DEBUG(logger, "JP NZ,(nn) - c2 n n ");
     JP(Condition::NZ, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xC3:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP (nn) - c3 n n ");
+    SPDLOG_DEBUG(logger, "JP (nn) - c3 n n ");
     JP(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xC4:
@@ -845,30 +847,30 @@ void Processor::decode() {
     CALL(Condition::NZ, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xC5:
-    // logger.debug("PUSH BC - c5 ");
+    SPDLOG_DEBUG(logger, "PUSH BC - c5 ");
     PUSH(RegisterPair::BC);
     break;
   case 0xC6:
     currentInstruction[1] = next();
-    // logger.debug("ADD A,n - c6 n ");
+    SPDLOG_DEBUG(logger, "ADD A,n - c6 n ");
     ADD(Rgstr::A, currentInstruction[1]);
     break;
   case 0xC7:
-    // logger.debug("RST 0H - c7 ");
+    SPDLOG_DEBUG(logger, "RST 0H - c7 ");
     RST(0x0);
     break;
   case 0xC8:
-    // logger.debug("RET Z - c8 ");
+    SPDLOG_DEBUG(logger, "RET Z - c8 ");
     RET(Condition::Z);
     break;
   case 0xC9:
-    // logger.debug("RET - c9 ");
+    SPDLOG_DEBUG(logger, "RET - c9 ");
     RET();
     break;
   case 0xCA:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP Z,(nn) - ca n n ");
+    SPDLOG_DEBUG(logger, "JP Z,(nn) - ca n n ");
     JP(Condition::Z, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xCB:
@@ -876,995 +878,995 @@ void Processor::decode() {
     currentInstruction[1] = next();
     switch (currentInstruction[1]) {
     case 0x00:
-      // logger.debug("RLC B - cb 0 ");
+      SPDLOG_DEBUG(logger, "RLC B - cb 0 ");
       RLC(Rgstr::B);
       break;
     case 0x01:
-      // logger.debug("RLC C - cb 1 ");
+      SPDLOG_DEBUG(logger, "RLC C - cb 1 ");
       RLC(Rgstr::C);
       break;
     case 0x02:
-      // logger.debug("RLC D - cb 2 ");
+      SPDLOG_DEBUG(logger, "RLC D - cb 2 ");
       RLC(Rgstr::D);
       break;
     case 0x03:
-      // logger.debug("RLC E - cb 3 ");
+      SPDLOG_DEBUG(logger, "RLC E - cb 3 ");
       RLC(Rgstr::E);
       break;
     case 0x04:
-      // logger.debug("RLC H - cb 4 ");
+      SPDLOG_DEBUG(logger, "RLC H - cb 4 ");
       RLC(Rgstr::H);
       break;
     case 0x05:
-      // logger.debug("RLC L - cb 5 ");
+      SPDLOG_DEBUG(logger, "RLC L - cb 5 ");
       RLC(Rgstr::L);
       break;
     case 0x06:
-      // logger.debug("RLC (HL) - cb 6 ");
+      SPDLOG_DEBUG(logger, "RLC (HL) - cb 6 ");
       RLC(MemoryAddress(RegisterPair::HL));
       break;
     case 0x07:
-      // logger.debug("RLC A - cb 7 ");
+      SPDLOG_DEBUG(logger, "RLC A - cb 7 ");
       RLC(Rgstr::A);
       break;
     case 0x08:
-      // logger.debug("RRC B - cb 8 ");
+      SPDLOG_DEBUG(logger, "RRC B - cb 8 ");
       RRC(Rgstr::B);
       break;
     case 0x09:
-      // logger.debug("RRC C - cb 9 ");
+      SPDLOG_DEBUG(logger, "RRC C - cb 9 ");
       RRC(Rgstr::C);
       break;
     case 0x0A:
-      // logger.debug("RRC D - cb a ");
+      SPDLOG_DEBUG(logger, "RRC D - cb a ");
       RRC(Rgstr::D);
       break;
     case 0x0B:
-      // logger.debug("RRC E - cb b ");
+      SPDLOG_DEBUG(logger, "RRC E - cb b ");
       RRC(Rgstr::E);
       break;
     case 0x0C:
-      // logger.debug("RRC H - cb c ");
+      SPDLOG_DEBUG(logger, "RRC H - cb c ");
       RRC(Rgstr::H);
       break;
     case 0x0D:
-      // logger.debug("RRC L - cb d ");
+      SPDLOG_DEBUG(logger, "RRC L - cb d ");
       RRC(Rgstr::L);
       break;
     case 0x0E:
-      // logger.debug("RRC (HL) - cb e ");
+      SPDLOG_DEBUG(logger, "RRC (HL) - cb e ");
       RRC(MemoryAddress(RegisterPair::HL));
       break;
     case 0x0F:
-      // logger.debug("RRC A - cb f ");
+      SPDLOG_DEBUG(logger, "RRC A - cb f ");
       RRC(Rgstr::A);
       break;
     case 0x10:
-      // logger.debug("RL B - cb 10 ");
+      SPDLOG_DEBUG(logger, "RL B - cb 10 ");
       RL(Rgstr::B);
       break;
     case 0x11:
-      // logger.debug("RL C - cb 11 ");
+      SPDLOG_DEBUG(logger, "RL C - cb 11 ");
       RL(Rgstr::C);
       break;
     case 0x12:
-      // logger.debug("RL D - cb 12 ");
+      SPDLOG_DEBUG(logger, "RL D - cb 12 ");
       RL(Rgstr::D);
       break;
     case 0x13:
-      // logger.debug("RL E - cb 13 ");
+      SPDLOG_DEBUG(logger, "RL E - cb 13 ");
       RL(Rgstr::E);
       break;
     case 0x14:
-      // logger.debug("RL H - cb 14 ");
+      SPDLOG_DEBUG(logger, "RL H - cb 14 ");
       RL(Rgstr::H);
       break;
     case 0x15:
-      // logger.debug("RL L - cb 15 ");
+      SPDLOG_DEBUG(logger, "RL L - cb 15 ");
       RL(Rgstr::L);
       break;
     case 0x16:
-      // logger.debug("RL (HL) - cb 16 ");
+      SPDLOG_DEBUG(logger, "RL (HL) - cb 16 ");
       RL(MemoryAddress(RegisterPair::HL));
       break;
     case 0x17:
-      // logger.debug("RL A - cb 17 ");
+      SPDLOG_DEBUG(logger, "RL A - cb 17 ");
       RL(Rgstr::A);
       break;
     case 0x18:
-      // logger.debug("RR B - cb 18 ");
+      SPDLOG_DEBUG(logger, "RR B - cb 18 ");
       RR(Rgstr::B);
       break;
     case 0x19:
-      // logger.debug("RR C - cb 19 ");
+      SPDLOG_DEBUG(logger, "RR C - cb 19 ");
       RR(Rgstr::C);
       break;
     case 0x1A:
-      // logger.debug("RR D - cb 1a ");
+      SPDLOG_DEBUG(logger, "RR D - cb 1a ");
       RR(Rgstr::D);
       break;
     case 0x1B:
-      // logger.debug("RR E - cb 1b ");
+      SPDLOG_DEBUG(logger, "RR E - cb 1b ");
       RR(Rgstr::E);
       break;
     case 0x1C:
-      // logger.debug("RR H - cb 1c ");
+      SPDLOG_DEBUG(logger, "RR H - cb 1c ");
       RR(Rgstr::H);
       break;
     case 0x1D:
-      // logger.debug("RR L - cb 1d ");
+      SPDLOG_DEBUG(logger, "RR L - cb 1d ");
       RR(Rgstr::L);
       break;
     case 0x1E:
-      // logger.debug("RR (HL) - cb 1e ");
+      SPDLOG_DEBUG(logger, "RR (HL) - cb 1e ");
       RR(MemoryAddress(RegisterPair::HL));
       break;
     case 0x1F:
-      // logger.debug("RR A - cb 1f ");
+      SPDLOG_DEBUG(logger, "RR A - cb 1f ");
       RR(Rgstr::A);
       break;
     case 0x20:
-      // logger.debug("SLA B - cb 20 ");
+      SPDLOG_DEBUG(logger, "SLA B - cb 20 ");
       SLA(Rgstr::B);
       break;
     case 0x21:
-      // logger.debug("SLA C - cb 21 ");
+      SPDLOG_DEBUG(logger, "SLA C - cb 21 ");
       SLA(Rgstr::C);
       break;
     case 0x22:
-      // logger.debug("SLA D - cb 22 ");
+      SPDLOG_DEBUG(logger, "SLA D - cb 22 ");
       SLA(Rgstr::D);
       break;
     case 0x23:
-      // logger.debug("SLA E - cb 23 ");
+      SPDLOG_DEBUG(logger, "SLA E - cb 23 ");
       SLA(Rgstr::E);
       break;
     case 0x24:
-      // logger.debug("SLA H - cb 24 ");
+      SPDLOG_DEBUG(logger, "SLA H - cb 24 ");
       SLA(Rgstr::H);
       break;
     case 0x25:
-      // logger.debug("SLA L - cb 25 ");
+      SPDLOG_DEBUG(logger, "SLA L - cb 25 ");
       SLA(Rgstr::L);
       break;
     case 0x26:
-      // logger.debug("SLA (HL) - cb 26 ");
+      SPDLOG_DEBUG(logger, "SLA (HL) - cb 26 ");
       SLA(MemoryAddress(RegisterPair::HL));
       break;
     case 0x27:
-      // logger.debug("SLA A - cb 27 ");
+      SPDLOG_DEBUG(logger, "SLA A - cb 27 ");
       SLA(Rgstr::A);
       break;
     case 0x28:
-      // logger.debug("SRA B - cb 28 ");
+      SPDLOG_DEBUG(logger, "SRA B - cb 28 ");
       SRA(Rgstr::B);
       break;
     case 0x29:
-      // logger.debug("SRA C - cb 29 ");
+      SPDLOG_DEBUG(logger, "SRA C - cb 29 ");
       SRA(Rgstr::C);
       break;
     case 0x2A:
-      // logger.debug("SRA D - cb 2a ");
+      SPDLOG_DEBUG(logger, "SRA D - cb 2a ");
       SRA(Rgstr::D);
       break;
     case 0x2B:
-      // logger.debug("SRA E - cb 2b ");
+      SPDLOG_DEBUG(logger, "SRA E - cb 2b ");
       SRA(Rgstr::E);
       break;
     case 0x2C:
-      // logger.debug("SRA H - cb 2c ");
+      SPDLOG_DEBUG(logger, "SRA H - cb 2c ");
       SRA(Rgstr::H);
       break;
     case 0x2D:
-      // logger.debug("SRA L - cb 2d ");
+      SPDLOG_DEBUG(logger, "SRA L - cb 2d ");
       SRA(Rgstr::L);
       break;
     case 0x2E:
-      // logger.debug("SRA (HL) - cb 2e ");
+      SPDLOG_DEBUG(logger, "SRA (HL) - cb 2e ");
       SRA(MemoryAddress(RegisterPair::HL));
       break;
     case 0x2F:
-      // logger.debug("SRA A - cb 2f ");
+      SPDLOG_DEBUG(logger, "SRA A - cb 2f ");
       SRA(Rgstr::A);
       break;
     case 0x38:
-      // logger.debug("SRL B - cb 38 ");
+      SPDLOG_DEBUG(logger, "SRL B - cb 38 ");
       SRL(Rgstr::B);
       break;
     case 0x39:
-      // logger.debug("SRL C - cb 39 ");
+      SPDLOG_DEBUG(logger, "SRL C - cb 39 ");
       SRL(Rgstr::C);
       break;
     case 0x3A:
-      // logger.debug("SRL D - cb 3a ");
+      SPDLOG_DEBUG(logger, "SRL D - cb 3a ");
       SRL(Rgstr::D);
       break;
     case 0x3B:
-      // logger.debug("SRL E - cb 3b ");
+      SPDLOG_DEBUG(logger, "SRL E - cb 3b ");
       SRL(Rgstr::E);
       break;
     case 0x3C:
-      // logger.debug("SRL H - cb 3c ");
+      SPDLOG_DEBUG(logger, "SRL H - cb 3c ");
       SRL(Rgstr::H);
       break;
     case 0x3D:
-      // logger.debug("SRL L - cb 3d ");
+      SPDLOG_DEBUG(logger, "SRL L - cb 3d ");
       SRL(Rgstr::L);
       break;
     case 0x3E:
-      // logger.debug("SRL (HL) - cb 3e ");
+      SPDLOG_DEBUG(logger, "SRL (HL) - cb 3e ");
       SRL(MemoryAddress(RegisterPair::HL));
       break;
     case 0x3F:
-      // logger.debug("SRL A - cb 3f ");
+      SPDLOG_DEBUG(logger, "SRL A - cb 3f ");
       SRL(Rgstr::A);
       break;
     case 0x40:
-      // logger.debug("BIT 0,B - cb 40 ");
+      SPDLOG_DEBUG(logger, "BIT 0,B - cb 40 ");
       BIT(0, Rgstr::B);
       break;
     case 0x41:
-      // logger.debug("BIT 0,C - cb 41 ");
+      SPDLOG_DEBUG(logger, "BIT 0,C - cb 41 ");
       BIT(0, Rgstr::C);
       break;
     case 0x42:
-      // logger.debug("BIT 0,D - cb 42 ");
+      SPDLOG_DEBUG(logger, "BIT 0,D - cb 42 ");
       BIT(0, Rgstr::D);
       break;
     case 0x43:
-      // logger.debug("BIT 0,E - cb 43 ");
+      SPDLOG_DEBUG(logger, "BIT 0,E - cb 43 ");
       BIT(0, Rgstr::E);
       break;
     case 0x44:
-      // logger.debug("BIT 0,H - cb 44 ");
+      SPDLOG_DEBUG(logger, "BIT 0,H - cb 44 ");
       BIT(0, Rgstr::H);
       break;
     case 0x45:
-      // logger.debug("BIT 0,L - cb 45 ");
+      SPDLOG_DEBUG(logger, "BIT 0,L - cb 45 ");
       BIT(0, Rgstr::L);
       break;
     case 0x46:
-      // logger.debug("BIT 0,(HL) - cb 46 ");
+      SPDLOG_DEBUG(logger, "BIT 0,(HL) - cb 46 ");
       BIT(0, MemoryAddress(RegisterPair::HL));
       break;
     case 0x47:
-      // logger.debug("BIT 0,A - cb 47 ");
+      SPDLOG_DEBUG(logger, "BIT 0,A - cb 47 ");
       BIT(0, Rgstr::A);
       break;
     case 0x48:
-      // logger.debug("BIT 1,B - cb 48 ");
+      SPDLOG_DEBUG(logger, "BIT 1,B - cb 48 ");
       BIT(1, Rgstr::B);
       break;
     case 0x49:
-      // logger.debug("BIT 1,C - cb 49 ");
+      SPDLOG_DEBUG(logger, "BIT 1,C - cb 49 ");
       BIT(1, Rgstr::C);
       break;
     case 0x4A:
-      // logger.debug("BIT 1,D - cb 4a ");
+      SPDLOG_DEBUG(logger, "BIT 1,D - cb 4a ");
       BIT(1, Rgstr::D);
       break;
     case 0x4B:
-      // logger.debug("BIT 1,E - cb 4b ");
+      SPDLOG_DEBUG(logger, "BIT 1,E - cb 4b ");
       BIT(1, Rgstr::E);
       break;
     case 0x4C:
-      // logger.debug("BIT 1,H - cb 4c ");
+      SPDLOG_DEBUG(logger, "BIT 1,H - cb 4c ");
       BIT(1, Rgstr::H);
       break;
     case 0x4D:
-      // logger.debug("BIT 1,L - cb 4d ");
+      SPDLOG_DEBUG(logger, "BIT 1,L - cb 4d ");
       BIT(1, Rgstr::L);
       break;
     case 0x4E:
-      // logger.debug("BIT 1,(HL) - cb 4e ");
+      SPDLOG_DEBUG(logger, "BIT 1,(HL) - cb 4e ");
       BIT(1, MemoryAddress(RegisterPair::HL));
       break;
     case 0x4F:
-      // logger.debug("BIT 1,A - cb 4f ");
+      SPDLOG_DEBUG(logger, "BIT 1,A - cb 4f ");
       BIT(1, Rgstr::A);
       break;
     case 0x50:
-      // logger.debug("BIT 2,B - cb 50 ");
+      SPDLOG_DEBUG(logger, "BIT 2,B - cb 50 ");
       BIT(2, Rgstr::B);
       break;
     case 0x51:
-      // logger.debug("BIT 2,C - cb 51 ");
+      SPDLOG_DEBUG(logger, "BIT 2,C - cb 51 ");
       BIT(2, Rgstr::C);
       break;
     case 0x52:
-      // logger.debug("BIT 2,D - cb 52 ");
+      SPDLOG_DEBUG(logger, "BIT 2,D - cb 52 ");
       BIT(2, Rgstr::D);
       break;
     case 0x53:
-      // logger.debug("BIT 2,E - cb 53 ");
+      SPDLOG_DEBUG(logger, "BIT 2,E - cb 53 ");
       BIT(2, Rgstr::E);
       break;
     case 0x54:
-      // logger.debug("BIT 2,H - cb 54 ");
+      SPDLOG_DEBUG(logger, "BIT 2,H - cb 54 ");
       BIT(2, Rgstr::H);
       break;
     case 0x55:
-      // logger.debug("BIT 2,L - cb 55 ");
+      SPDLOG_DEBUG(logger, "BIT 2,L - cb 55 ");
       BIT(2, Rgstr::L);
       break;
     case 0x56:
-      // logger.debug("BIT 2,(HL) - cb 56 ");
+      SPDLOG_DEBUG(logger, "BIT 2,(HL) - cb 56 ");
       BIT(2, MemoryAddress(RegisterPair::HL));
       break;
     case 0x57:
-      // logger.debug("BIT 2,A - cb 57 ");
+      SPDLOG_DEBUG(logger, "BIT 2,A - cb 57 ");
       BIT(2, Rgstr::A);
       break;
     case 0x58:
-      // logger.debug("BIT 3,B - cb 58 ");
+      SPDLOG_DEBUG(logger, "BIT 3,B - cb 58 ");
       BIT(3, Rgstr::B);
       break;
     case 0x59:
-      // logger.debug("BIT 3,C - cb 59 ");
+      SPDLOG_DEBUG(logger, "BIT 3,C - cb 59 ");
       BIT(3, Rgstr::C);
       break;
     case 0x5A:
-      // logger.debug("BIT 3,D - cb 5a ");
+      SPDLOG_DEBUG(logger, "BIT 3,D - cb 5a ");
       BIT(3, Rgstr::D);
       break;
     case 0x5B:
-      // logger.debug("BIT 3,E - cb 5b ");
+      SPDLOG_DEBUG(logger, "BIT 3,E - cb 5b ");
       BIT(3, Rgstr::E);
       break;
     case 0x5C:
-      // logger.debug("BIT 3,H - cb 5c ");
+      SPDLOG_DEBUG(logger, "BIT 3,H - cb 5c ");
       BIT(3, Rgstr::H);
       break;
     case 0x5D:
-      // logger.debug("BIT 3,L - cb 5d ");
+      SPDLOG_DEBUG(logger, "BIT 3,L - cb 5d ");
       BIT(3, Rgstr::L);
       break;
     case 0x5E:
-      // logger.debug("BIT 3,(HL) - cb 5e ");
+      SPDLOG_DEBUG(logger, "BIT 3,(HL) - cb 5e ");
       BIT(3, MemoryAddress(RegisterPair::HL));
       break;
     case 0x5F:
-      // logger.debug("BIT 3,A - cb 5f ");
+      SPDLOG_DEBUG(logger, "BIT 3,A - cb 5f ");
       BIT(3, Rgstr::A);
       break;
     case 0x60:
-      // logger.debug("BIT 4,B - cb 60 ");
+      SPDLOG_DEBUG(logger, "BIT 4,B - cb 60 ");
       BIT(4, Rgstr::B);
       break;
     case 0x61:
-      // logger.debug("BIT 4,C - cb 61 ");
+      SPDLOG_DEBUG(logger, "BIT 4,C - cb 61 ");
       BIT(4, Rgstr::C);
       break;
     case 0x62:
-      // logger.debug("BIT 4,D - cb 62 ");
+      SPDLOG_DEBUG(logger, "BIT 4,D - cb 62 ");
       BIT(4, Rgstr::D);
       break;
     case 0x63:
-      // logger.debug("BIT 4,E - cb 63 ");
+      SPDLOG_DEBUG(logger, "BIT 4,E - cb 63 ");
       BIT(4, Rgstr::E);
       break;
     case 0x64:
-      // logger.debug("BIT 4,H - cb 64 ");
+      SPDLOG_DEBUG(logger, "BIT 4,H - cb 64 ");
       BIT(4, Rgstr::H);
       break;
     case 0x65:
-      // logger.debug("BIT 4,L - cb 65 ");
+      SPDLOG_DEBUG(logger, "BIT 4,L - cb 65 ");
       BIT(4, Rgstr::L);
       break;
     case 0x66:
-      // logger.debug("BIT 4,(HL) - cb 66 ");
+      SPDLOG_DEBUG(logger, "BIT 4,(HL) - cb 66 ");
       BIT(4, MemoryAddress(RegisterPair::HL));
       break;
     case 0x67:
-      // logger.debug("BIT 4,A - cb 67 ");
+      SPDLOG_DEBUG(logger, "BIT 4,A - cb 67 ");
       BIT(4, Rgstr::A);
       break;
     case 0x68:
-      // logger.debug("BIT 5,B - cb 68 ");
+      SPDLOG_DEBUG(logger, "BIT 5,B - cb 68 ");
       BIT(5, Rgstr::B);
       break;
     case 0x69:
-      // logger.debug("BIT 5,C - cb 69 ");
+      SPDLOG_DEBUG(logger, "BIT 5,C - cb 69 ");
       BIT(5, Rgstr::C);
       break;
     case 0x6A:
-      // logger.debug("BIT 5,D - cb 6a ");
+      SPDLOG_DEBUG(logger, "BIT 5,D - cb 6a ");
       BIT(5, Rgstr::D);
       break;
     case 0x6B:
-      // logger.debug("BIT 5,E - cb 6b ");
+      SPDLOG_DEBUG(logger, "BIT 5,E - cb 6b ");
       BIT(5, Rgstr::E);
       break;
     case 0x6C:
-      // logger.debug("BIT 5,H - cb 6c ");
+      SPDLOG_DEBUG(logger, "BIT 5,H - cb 6c ");
       BIT(5, Rgstr::H);
       break;
     case 0x6D:
-      // logger.debug("BIT 5,L - cb 6d ");
+      SPDLOG_DEBUG(logger, "BIT 5,L - cb 6d ");
       BIT(5, Rgstr::L);
       break;
     case 0x6E:
-      // logger.debug("BIT 5,(HL) - cb 6e ");
+      SPDLOG_DEBUG(logger, "BIT 5,(HL) - cb 6e ");
       BIT(5, MemoryAddress(RegisterPair::HL));
       break;
     case 0x6F:
-      // logger.debug("BIT 5,A - cb 6f ");
+      SPDLOG_DEBUG(logger, "BIT 5,A - cb 6f ");
       BIT(5, Rgstr::A);
       break;
     case 0x70:
-      // logger.debug("BIT 6,B - cb 70 ");
+      SPDLOG_DEBUG(logger, "BIT 6,B - cb 70 ");
       BIT(6, Rgstr::B);
       break;
     case 0x71:
-      // logger.debug("BIT 6,C - cb 71 ");
+      SPDLOG_DEBUG(logger, "BIT 6,C - cb 71 ");
       BIT(6, Rgstr::C);
       break;
     case 0x72:
-      // logger.debug("BIT 6,D - cb 72 ");
+      SPDLOG_DEBUG(logger, "BIT 6,D - cb 72 ");
       BIT(6, Rgstr::D);
       break;
     case 0x73:
-      // logger.debug("BIT 6,E - cb 73 ");
+      SPDLOG_DEBUG(logger, "BIT 6,E - cb 73 ");
       BIT(6, Rgstr::E);
       break;
     case 0x74:
-      // logger.debug("BIT 6,H - cb 74 ");
+      SPDLOG_DEBUG(logger, "BIT 6,H - cb 74 ");
       BIT(6, Rgstr::H);
       break;
     case 0x75:
-      // logger.debug("BIT 6,L - cb 75 ");
+      SPDLOG_DEBUG(logger, "BIT 6,L - cb 75 ");
       BIT(6, Rgstr::L);
       break;
     case 0x76:
-      // logger.debug("BIT 6,(HL) - cb 76 ");
+      SPDLOG_DEBUG(logger, "BIT 6,(HL) - cb 76 ");
       BIT(6, MemoryAddress(RegisterPair::HL));
       break;
     case 0x77:
-      // logger.debug("BIT 6,A - cb 77 ");
+      SPDLOG_DEBUG(logger, "BIT 6,A - cb 77 ");
       BIT(6, Rgstr::A);
       break;
     case 0x78:
-      // logger.debug("BIT 7,B - cb 78 ");
+      SPDLOG_DEBUG(logger, "BIT 7,B - cb 78 ");
       BIT(7, Rgstr::B);
       break;
     case 0x79:
-      // logger.debug("BIT 7,C - cb 79 ");
+      SPDLOG_DEBUG(logger, "BIT 7,C - cb 79 ");
       BIT(7, Rgstr::C);
       break;
     case 0x7A:
-      // logger.debug("BIT 7,D - cb 7a ");
+      SPDLOG_DEBUG(logger, "BIT 7,D - cb 7a ");
       BIT(7, Rgstr::D);
       break;
     case 0x7B:
-      // logger.debug("BIT 7,E - cb 7b ");
+      SPDLOG_DEBUG(logger, "BIT 7,E - cb 7b ");
       BIT(7, Rgstr::E);
       break;
     case 0x7C:
-      // logger.debug("BIT 7,H - cb 7c ");
+      SPDLOG_DEBUG(logger, "BIT 7,H - cb 7c ");
       BIT(7, Rgstr::H);
       break;
     case 0x7D:
-      // logger.debug("BIT 7,L - cb 7d ");
+      SPDLOG_DEBUG(logger, "BIT 7,L - cb 7d ");
       BIT(7, Rgstr::L);
       break;
     case 0x7E:
-      // logger.debug("BIT 7,(HL) - cb 7e ");
+      SPDLOG_DEBUG(logger, "BIT 7,(HL) - cb 7e ");
       BIT(7, MemoryAddress(RegisterPair::HL));
       break;
     case 0x7F:
-      // logger.debug("BIT 7,A - cb 7f ");
+      SPDLOG_DEBUG(logger, "BIT 7,A - cb 7f ");
       BIT(7, Rgstr::A);
       break;
     case 0x80:
-      // logger.debug("RES 0,B - cb 80 ");
+      SPDLOG_DEBUG(logger, "RES 0,B - cb 80 ");
       RES(0, Rgstr::B);
       break;
     case 0x81:
-      // logger.debug("RES 0,C - cb 81 ");
+      SPDLOG_DEBUG(logger, "RES 0,C - cb 81 ");
       RES(0, Rgstr::C);
       break;
     case 0x82:
-      // logger.debug("RES 0,D - cb 82 ");
+      SPDLOG_DEBUG(logger, "RES 0,D - cb 82 ");
       RES(0, Rgstr::D);
       break;
     case 0x83:
-      // logger.debug("RES 0,E - cb 83 ");
+      SPDLOG_DEBUG(logger, "RES 0,E - cb 83 ");
       RES(0, Rgstr::E);
       break;
     case 0x84:
-      // logger.debug("RES 0,H - cb 84 ");
+      SPDLOG_DEBUG(logger, "RES 0,H - cb 84 ");
       RES(0, Rgstr::H);
       break;
     case 0x85:
-      // logger.debug("RES 0,L - cb 85 ");
+      SPDLOG_DEBUG(logger, "RES 0,L - cb 85 ");
       RES(0, Rgstr::L);
       break;
     case 0x86:
-      // logger.debug("RES 0,(HL) - cb 86 ");
+      SPDLOG_DEBUG(logger, "RES 0,(HL) - cb 86 ");
       RES(0, MemoryAddress(RegisterPair::HL));
       break;
     case 0x87:
-      // logger.debug("RES 0,A - cb 87 ");
+      SPDLOG_DEBUG(logger, "RES 0,A - cb 87 ");
       RES(0, Rgstr::A);
       break;
     case 0x88:
-      // logger.debug("RES 1,B - cb 88 ");
+      SPDLOG_DEBUG(logger, "RES 1,B - cb 88 ");
       RES(1, Rgstr::B);
       break;
     case 0x89:
-      // logger.debug("RES 1,C - cb 89 ");
+      SPDLOG_DEBUG(logger, "RES 1,C - cb 89 ");
       RES(1, Rgstr::C);
       break;
     case 0x8A:
-      // logger.debug("RES 1,D - cb 8a ");
+      SPDLOG_DEBUG(logger, "RES 1,D - cb 8a ");
       RES(1, Rgstr::D);
       break;
     case 0x8B:
-      // logger.debug("RES 1,E - cb 8b ");
+      SPDLOG_DEBUG(logger, "RES 1,E - cb 8b ");
       RES(1, Rgstr::E);
       break;
     case 0x8C:
-      // logger.debug("RES 1,H - cb 8c ");
+      SPDLOG_DEBUG(logger, "RES 1,H - cb 8c ");
       RES(1, Rgstr::H);
       break;
     case 0x8D:
-      // logger.debug("RES 1,L - cb 8d ");
+      SPDLOG_DEBUG(logger, "RES 1,L - cb 8d ");
       RES(1, Rgstr::L);
       break;
     case 0x8E:
-      // logger.debug("RES 1,(HL) - cb 8e ");
+      SPDLOG_DEBUG(logger, "RES 1,(HL) - cb 8e ");
       RES(1, MemoryAddress(RegisterPair::HL));
       break;
     case 0x8F:
-      // logger.debug("RES 1,A - cb 8f ");
+      SPDLOG_DEBUG(logger, "RES 1,A - cb 8f ");
       RES(1, Rgstr::A);
       break;
     case 0x90:
-      // logger.debug("RES 2,B - cb 90 ");
+      SPDLOG_DEBUG(logger, "RES 2,B - cb 90 ");
       RES(2, Rgstr::B);
       break;
     case 0x91:
-      // logger.debug("RES 2,C - cb 91 ");
+      SPDLOG_DEBUG(logger, "RES 2,C - cb 91 ");
       RES(2, Rgstr::C);
       break;
     case 0x92:
-      // logger.debug("RES 2,D - cb 92 ");
+      SPDLOG_DEBUG(logger, "RES 2,D - cb 92 ");
       RES(2, Rgstr::D);
       break;
     case 0x93:
-      // logger.debug("RES 2,E - cb 93 ");
+      SPDLOG_DEBUG(logger, "RES 2,E - cb 93 ");
       RES(2, Rgstr::E);
       break;
     case 0x94:
-      // logger.debug("RES 2,H - cb 94 ");
+      SPDLOG_DEBUG(logger, "RES 2,H - cb 94 ");
       RES(2, Rgstr::H);
       break;
     case 0x95:
-      // logger.debug("RES 2,L - cb 95 ");
+      SPDLOG_DEBUG(logger, "RES 2,L - cb 95 ");
       RES(2, Rgstr::L);
       break;
     case 0x96:
-      // logger.debug("RES 2,(HL) - cb 96 ");
+      SPDLOG_DEBUG(logger, "RES 2,(HL) - cb 96 ");
       RES(2, MemoryAddress(RegisterPair::HL));
       break;
     case 0x97:
-      // logger.debug("RES 2,A - cb 97 ");
+      SPDLOG_DEBUG(logger, "RES 2,A - cb 97 ");
       RES(2, Rgstr::A);
       break;
     case 0x98:
-      // logger.debug("RES 3,B - cb 98 ");
+      SPDLOG_DEBUG(logger, "RES 3,B - cb 98 ");
       RES(3, Rgstr::B);
       break;
     case 0x99:
-      // logger.debug("RES 3,C - cb 99 ");
+      SPDLOG_DEBUG(logger, "RES 3,C - cb 99 ");
       RES(3, Rgstr::C);
       break;
     case 0x9A:
-      // logger.debug("RES 3,D - cb 9a ");
+      SPDLOG_DEBUG(logger, "RES 3,D - cb 9a ");
       RES(3, Rgstr::D);
       break;
     case 0x9B:
-      // logger.debug("RES 3,E - cb 9b ");
+      SPDLOG_DEBUG(logger, "RES 3,E - cb 9b ");
       RES(3, Rgstr::E);
       break;
     case 0x9C:
-      // logger.debug("RES 3,H - cb 9c ");
+      SPDLOG_DEBUG(logger, "RES 3,H - cb 9c ");
       RES(3, Rgstr::H);
       break;
     case 0x9D:
-      // logger.debug("RES 3,L - cb 9d ");
+      SPDLOG_DEBUG(logger, "RES 3,L - cb 9d ");
       RES(3, Rgstr::L);
       break;
     case 0x9E:
-      // logger.debug("RES 3,(HL) - cb 9e ");
+      SPDLOG_DEBUG(logger, "RES 3,(HL) - cb 9e ");
       RES(3, MemoryAddress(RegisterPair::HL));
       break;
     case 0x9F:
-      // logger.debug("RES 3,A - cb 9f ");
+      SPDLOG_DEBUG(logger, "RES 3,A - cb 9f ");
       RES(3, Rgstr::A);
       break;
     case 0xA0:
-      // logger.debug("RES 4,B - cb a0 ");
+      SPDLOG_DEBUG(logger, "RES 4,B - cb a0 ");
       RES(4, Rgstr::B);
       break;
     case 0xA1:
-      // logger.debug("RES 4,C - cb a1 ");
+      SPDLOG_DEBUG(logger, "RES 4,C - cb a1 ");
       RES(4, Rgstr::C);
       break;
     case 0xA2:
-      // logger.debug("RES 4,D - cb a2 ");
+      SPDLOG_DEBUG(logger, "RES 4,D - cb a2 ");
       RES(4, Rgstr::D);
       break;
     case 0xA3:
-      // logger.debug("RES 4,E - cb a3 ");
+      SPDLOG_DEBUG(logger, "RES 4,E - cb a3 ");
       RES(4, Rgstr::E);
       break;
     case 0xA4:
-      // logger.debug("RES 4,H - cb a4 ");
+      SPDLOG_DEBUG(logger, "RES 4,H - cb a4 ");
       RES(4, Rgstr::H);
       break;
     case 0xA5:
-      // logger.debug("RES 4,L - cb a5 ");
+      SPDLOG_DEBUG(logger, "RES 4,L - cb a5 ");
       RES(4, Rgstr::L);
       break;
     case 0xA6:
-      // logger.debug("RES 4,(HL) - cb a6 ");
+      SPDLOG_DEBUG(logger, "RES 4,(HL) - cb a6 ");
       RES(4, MemoryAddress(RegisterPair::HL));
       break;
     case 0xA7:
-      // logger.debug("RES 4,A - cb a7 ");
+      SPDLOG_DEBUG(logger, "RES 4,A - cb a7 ");
       RES(4, Rgstr::A);
       break;
     case 0xA8:
-      // logger.debug("RES 5,B - cb a8 ");
+      SPDLOG_DEBUG(logger, "RES 5,B - cb a8 ");
       RES(5, Rgstr::B);
       break;
     case 0xA9:
-      // logger.debug("RES 5,C - cb a9 ");
+      SPDLOG_DEBUG(logger, "RES 5,C - cb a9 ");
       RES(5, Rgstr::C);
       break;
     case 0xAA:
-      // logger.debug("RES 5,D - cb aa ");
+      SPDLOG_DEBUG(logger, "RES 5,D - cb aa ");
       RES(5, Rgstr::D);
       break;
     case 0xAB:
-      // logger.debug("RES 5,E - cb ab ");
+      SPDLOG_DEBUG(logger, "RES 5,E - cb ab ");
       RES(5, Rgstr::E);
       break;
     case 0xAC:
-      // logger.debug("RES 5,H - cb ac ");
+      SPDLOG_DEBUG(logger, "RES 5,H - cb ac ");
       RES(5, Rgstr::H);
       break;
     case 0xAD:
-      // logger.debug("RES 5,L - cb ad ");
+      SPDLOG_DEBUG(logger, "RES 5,L - cb ad ");
       RES(5, Rgstr::L);
       break;
     case 0xAE:
-      // logger.debug("RES 5,(HL) - cb ae ");
+      SPDLOG_DEBUG(logger, "RES 5,(HL) - cb ae ");
       RES(5, MemoryAddress(RegisterPair::HL));
       break;
     case 0xAF:
-      // logger.debug("RES 5,A - cb af ");
+      SPDLOG_DEBUG(logger, "RES 5,A - cb af ");
       RES(5, Rgstr::A);
       break;
     case 0xB0:
-      // logger.debug("RES 6,B - cb b0 ");
+      SPDLOG_DEBUG(logger, "RES 6,B - cb b0 ");
       RES(6, Rgstr::B);
       break;
     case 0xB1:
-      // logger.debug("RES 6,C - cb b1 ");
+      SPDLOG_DEBUG(logger, "RES 6,C - cb b1 ");
       RES(6, Rgstr::C);
       break;
     case 0xB2:
-      // logger.debug("RES 6,D - cb b2 ");
+      SPDLOG_DEBUG(logger, "RES 6,D - cb b2 ");
       RES(6, Rgstr::D);
       break;
     case 0xB3:
-      // logger.debug("RES 6,E - cb b3 ");
+      SPDLOG_DEBUG(logger, "RES 6,E - cb b3 ");
       RES(6, Rgstr::E);
       break;
     case 0xB4:
-      // logger.debug("RES 6,H - cb b4 ");
+      SPDLOG_DEBUG(logger, "RES 6,H - cb b4 ");
       RES(6, Rgstr::H);
       break;
     case 0xB5:
-      // logger.debug("RES 6,L - cb b5 ");
+      SPDLOG_DEBUG(logger, "RES 6,L - cb b5 ");
       RES(6, Rgstr::L);
       break;
     case 0xB6:
-      // logger.debug("RES 6,(HL) - cb b6 ");
+      SPDLOG_DEBUG(logger, "RES 6,(HL) - cb b6 ");
       RES(6, MemoryAddress(RegisterPair::HL));
       break;
     case 0xB7:
-      // logger.debug("RES 6,A - cb b7 ");
+      SPDLOG_DEBUG(logger, "RES 6,A - cb b7 ");
       RES(6, Rgstr::A);
       break;
     case 0xB8:
-      // logger.debug("RES 7,B - cb b8 ");
+      SPDLOG_DEBUG(logger, "RES 7,B - cb b8 ");
       RES(7, Rgstr::B);
       break;
     case 0xB9:
-      // logger.debug("RES 7,C - cb b9 ");
+      SPDLOG_DEBUG(logger, "RES 7,C - cb b9 ");
       RES(7, Rgstr::C);
       break;
     case 0xBA:
-      // logger.debug("RES 7,D - cb ba ");
+      SPDLOG_DEBUG(logger, "RES 7,D - cb ba ");
       RES(7, Rgstr::D);
       break;
     case 0xBB:
-      // logger.debug("RES 7,E - cb bb ");
+      SPDLOG_DEBUG(logger, "RES 7,E - cb bb ");
       RES(7, Rgstr::E);
       break;
     case 0xBC:
-      // logger.debug("RES 7,H - cb bc ");
+      SPDLOG_DEBUG(logger, "RES 7,H - cb bc ");
       RES(7, Rgstr::H);
       break;
     case 0xBD:
-      // logger.debug("RES 7,L - cb bd ");
+      SPDLOG_DEBUG(logger, "RES 7,L - cb bd ");
       RES(7, Rgstr::L);
       break;
     case 0xBE:
-      // logger.debug("RES 7,(HL) - cb be ");
+      SPDLOG_DEBUG(logger, "RES 7,(HL) - cb be ");
       RES(7, MemoryAddress(RegisterPair::HL));
       break;
     case 0xBF:
-      // logger.debug("RES 7,A - cb bf ");
+      SPDLOG_DEBUG(logger, "RES 7,A - cb bf ");
       RES(7, Rgstr::A);
       break;
     case 0xC0:
-      // logger.debug("SET 0,B - cb c0 ");
+      SPDLOG_DEBUG(logger, "SET 0,B - cb c0 ");
       SET(0, Rgstr::B);
       break;
     case 0xC1:
-      // logger.debug("SET 0,C - cb c1 ");
+      SPDLOG_DEBUG(logger, "SET 0,C - cb c1 ");
       SET(0, Rgstr::C);
       break;
     case 0xC2:
-      // logger.debug("SET 0,D - cb c2 ");
+      SPDLOG_DEBUG(logger, "SET 0,D - cb c2 ");
       SET(0, Rgstr::D);
       break;
     case 0xC3:
-      // logger.debug("SET 0,E - cb c3 ");
+      SPDLOG_DEBUG(logger, "SET 0,E - cb c3 ");
       SET(0, Rgstr::E);
       break;
     case 0xC4:
-      // logger.debug("SET 0,H - cb c4 ");
+      SPDLOG_DEBUG(logger, "SET 0,H - cb c4 ");
       SET(0, Rgstr::H);
       break;
     case 0xC5:
-      // logger.debug("SET 0,L - cb c5 ");
+      SPDLOG_DEBUG(logger, "SET 0,L - cb c5 ");
       SET(0, Rgstr::L);
       break;
     case 0xC6:
-      // logger.debug("SET 0,(HL) - cb c6 ");
+      SPDLOG_DEBUG(logger, "SET 0,(HL) - cb c6 ");
       SET(0, MemoryAddress(RegisterPair::HL));
       break;
     case 0xC7:
-      // logger.debug("SET 0,A - cb c7 ");
+      SPDLOG_DEBUG(logger, "SET 0,A - cb c7 ");
       SET(0, Rgstr::A);
       break;
     case 0xC8:
-      // logger.debug("SET 1,B - cb c8 ");
+      SPDLOG_DEBUG(logger, "SET 1,B - cb c8 ");
       SET(1, Rgstr::B);
       break;
     case 0xC9:
-      // logger.debug("SET 1,C - cb c9 ");
+      SPDLOG_DEBUG(logger, "SET 1,C - cb c9 ");
       SET(1, Rgstr::C);
       break;
     case 0xCA:
-      // logger.debug("SET 1,D - cb ca ");
+      SPDLOG_DEBUG(logger, "SET 1,D - cb ca ");
       SET(1, Rgstr::D);
       break;
     case 0xCB:
-      // logger.debug("SET 1,E - cb cb ");
+      SPDLOG_DEBUG(logger, "SET 1,E - cb cb ");
       SET(1, Rgstr::E);
       break;
     case 0xCC:
-      // logger.debug("SET 1,H - cb cc ");
+      SPDLOG_DEBUG(logger, "SET 1,H - cb cc ");
       SET(1, Rgstr::H);
       break;
     case 0xCD:
-      // logger.debug("SET 1,L - cb cd ");
+      SPDLOG_DEBUG(logger, "SET 1,L - cb cd ");
       SET(1, Rgstr::L);
       break;
     case 0xCE:
-      // logger.debug("SET 1,(HL) - cb ce ");
+      SPDLOG_DEBUG(logger, "SET 1,(HL) - cb ce ");
       SET(1, MemoryAddress(RegisterPair::HL));
       break;
     case 0xCF:
-      // logger.debug("SET 1,A - cb cf ");
+      SPDLOG_DEBUG(logger, "SET 1,A - cb cf ");
       SET(1, Rgstr::A);
       break;
     case 0xD0:
-      // logger.debug("SET 2,B - cb d0 ");
+      SPDLOG_DEBUG(logger, "SET 2,B - cb d0 ");
       SET(2, Rgstr::B);
       break;
     case 0xD1:
-      // logger.debug("SET 2,C - cb d1 ");
+      SPDLOG_DEBUG(logger, "SET 2,C - cb d1 ");
       SET(2, Rgstr::C);
       break;
     case 0xD2:
-      // logger.debug("SET 2,D - cb d2 ");
+      SPDLOG_DEBUG(logger, "SET 2,D - cb d2 ");
       SET(2, Rgstr::D);
       break;
     case 0xD3:
-      // logger.debug("SET 2,E - cb d3 ");
+      SPDLOG_DEBUG(logger, "SET 2,E - cb d3 ");
       SET(2, Rgstr::E);
       break;
     case 0xD4:
-      // logger.debug("SET 2,H - cb d4 ");
+      SPDLOG_DEBUG(logger, "SET 2,H - cb d4 ");
       SET(2, Rgstr::H);
       break;
     case 0xD5:
-      // logger.debug("SET 2,L - cb d5 ");
+      SPDLOG_DEBUG(logger, "SET 2,L - cb d5 ");
       SET(2, Rgstr::L);
       break;
     case 0xD6:
-      // logger.debug("SET 2,(HL) - cb d6 ");
+      SPDLOG_DEBUG(logger, "SET 2,(HL) - cb d6 ");
       SET(2, MemoryAddress(RegisterPair::HL));
       break;
     case 0xD7:
-      // logger.debug("SET 2,A - cb d7 ");
+      SPDLOG_DEBUG(logger, "SET 2,A - cb d7 ");
       SET(2, Rgstr::A);
       break;
     case 0xD8:
-      // logger.debug("SET 3,B - cb d8 ");
+      SPDLOG_DEBUG(logger, "SET 3,B - cb d8 ");
       SET(3, Rgstr::B);
       break;
     case 0xD9:
-      // logger.debug("SET 3,C - cb d9 ");
+      SPDLOG_DEBUG(logger, "SET 3,C - cb d9 ");
       SET(3, Rgstr::C);
       break;
     case 0xDA:
-      // logger.debug("SET 3,D - cb da ");
+      SPDLOG_DEBUG(logger, "SET 3,D - cb da ");
       SET(3, Rgstr::D);
       break;
     case 0xDB:
-      // logger.debug("SET 3,E - cb db ");
+      SPDLOG_DEBUG(logger, "SET 3,E - cb db ");
       SET(3, Rgstr::E);
       break;
     case 0xDC:
-      // logger.debug("SET 3,H - cb dc ");
+      SPDLOG_DEBUG(logger, "SET 3,H - cb dc ");
       SET(3, Rgstr::H);
       break;
     case 0xDD:
-      // logger.debug("SET 3,L - cb dd ");
+      SPDLOG_DEBUG(logger, "SET 3,L - cb dd ");
       SET(3, Rgstr::L);
       break;
     case 0xDE:
-      // logger.debug("SET 3,(HL) - cb de ");
+      SPDLOG_DEBUG(logger, "SET 3,(HL) - cb de ");
       SET(3, MemoryAddress(RegisterPair::HL));
       break;
     case 0xDF:
-      // logger.debug("SET 3,A - cb df ");
+      SPDLOG_DEBUG(logger, "SET 3,A - cb df ");
       SET(3, Rgstr::A);
       break;
     case 0xE0:
-      // logger.debug("SET 4,B - cb e0 ");
+      SPDLOG_DEBUG(logger, "SET 4,B - cb e0 ");
       SET(4, Rgstr::B);
       break;
     case 0xE1:
-      // logger.debug("SET 4,C - cb e1 ");
+      SPDLOG_DEBUG(logger, "SET 4,C - cb e1 ");
       SET(4, Rgstr::C);
       break;
     case 0xE2:
-      // logger.debug("SET 4,D - cb e2 ");
+      SPDLOG_DEBUG(logger, "SET 4,D - cb e2 ");
       SET(4, Rgstr::D);
       break;
     case 0xE3:
-      // logger.debug("SET 4,E - cb e3 ");
+      SPDLOG_DEBUG(logger, "SET 4,E - cb e3 ");
       SET(4, Rgstr::E);
       break;
     case 0xE4:
-      // logger.debug("SET 4,H - cb e4 ");
+      SPDLOG_DEBUG(logger, "SET 4,H - cb e4 ");
       SET(4, Rgstr::H);
       break;
     case 0xE5:
-      // logger.debug("SET 4,L - cb e5 ");
+      SPDLOG_DEBUG(logger, "SET 4,L - cb e5 ");
       SET(4, Rgstr::L);
       break;
     case 0xE6:
-      // logger.debug("SET 4,(HL) - cb e6 ");
+      SPDLOG_DEBUG(logger, "SET 4,(HL) - cb e6 ");
       SET(4, MemoryAddress(RegisterPair::HL));
       break;
     case 0xE7:
-      // logger.debug("SET 4,A - cb e7 ");
+      SPDLOG_DEBUG(logger, "SET 4,A - cb e7 ");
       SET(4, Rgstr::A);
       break;
     case 0xE8:
-      // logger.debug("SET 5,B - cb e8 ");
+      SPDLOG_DEBUG(logger, "SET 5,B - cb e8 ");
       SET(5, Rgstr::B);
       break;
     case 0xE9:
-      // logger.debug("SET 5,C - cb e9 ");
+      SPDLOG_DEBUG(logger, "SET 5,C - cb e9 ");
       SET(5, Rgstr::C);
       break;
     case 0xEA:
-      // logger.debug("SET 5,D - cb ea ");
+      SPDLOG_DEBUG(logger, "SET 5,D - cb ea ");
       SET(5, Rgstr::D);
       break;
     case 0xEB:
-      // logger.debug("SET 5,E - cb eb ");
+      SPDLOG_DEBUG(logger, "SET 5,E - cb eb ");
       SET(5, Rgstr::E);
       break;
     case 0xEC:
-      // logger.debug("SET 5,H - cb ec ");
+      SPDLOG_DEBUG(logger, "SET 5,H - cb ec ");
       SET(5, Rgstr::H);
       break;
     case 0xED:
-      // logger.debug("SET 5,L - cb ed ");
+      SPDLOG_DEBUG(logger, "SET 5,L - cb ed ");
       SET(5, Rgstr::L);
       break;
     case 0xEE:
-      // logger.debug("SET 5,(HL) - cb ee ");
+      SPDLOG_DEBUG(logger, "SET 5,(HL) - cb ee ");
       SET(5, MemoryAddress(RegisterPair::HL));
       break;
     case 0xEF:
-      // logger.debug("SET 5,A - cb ef ");
+      SPDLOG_DEBUG(logger, "SET 5,A - cb ef ");
       SET(5, Rgstr::A);
       break;
     case 0xF0:
-      // logger.debug("SET 6,B - cb f0 ");
+      SPDLOG_DEBUG(logger, "SET 6,B - cb f0 ");
       SET(6, Rgstr::B);
       break;
     case 0xF1:
-      // logger.debug("SET 6,C - cb f1 ");
+      SPDLOG_DEBUG(logger, "SET 6,C - cb f1 ");
       SET(6, Rgstr::C);
       break;
     case 0xF2:
-      // logger.debug("SET 6,D - cb f2 ");
+      SPDLOG_DEBUG(logger, "SET 6,D - cb f2 ");
       SET(6, Rgstr::D);
       break;
     case 0xF3:
-      // logger.debug("SET 6,E - cb f3 ");
+      SPDLOG_DEBUG(logger, "SET 6,E - cb f3 ");
       SET(6, Rgstr::E);
       break;
     case 0xF4:
-      // logger.debug("SET 6,H - cb f4 ");
+      SPDLOG_DEBUG(logger, "SET 6,H - cb f4 ");
       SET(6, Rgstr::H);
       break;
     case 0xF5:
-      // logger.debug("SET 6,L - cb f5 ");
+      SPDLOG_DEBUG(logger, "SET 6,L - cb f5 ");
       SET(6, Rgstr::L);
       break;
     case 0xF6:
-      // logger.debug("SET 6,(HL) - cb f6 ");
+      SPDLOG_DEBUG(logger, "SET 6,(HL) - cb f6 ");
       SET(6, MemoryAddress(RegisterPair::HL));
       break;
     case 0xF7:
-      // logger.debug("SET 6,A - cb f7 ");
+      SPDLOG_DEBUG(logger, "SET 6,A - cb f7 ");
       SET(6, Rgstr::A);
       break;
     case 0xF8:
-      // logger.debug("SET 7,B - cb f8 ");
+      SPDLOG_DEBUG(logger, "SET 7,B - cb f8 ");
       SET(7, Rgstr::B);
       break;
     case 0xF9:
-      // logger.debug("SET 7,C - cb f9 ");
+      SPDLOG_DEBUG(logger, "SET 7,C - cb f9 ");
       SET(7, Rgstr::C);
       break;
     case 0xFA:
-      // logger.debug("SET 7,D - cb fa ");
+      SPDLOG_DEBUG(logger, "SET 7,D - cb fa ");
       SET(7, Rgstr::D);
       break;
     case 0xFB:
-      // logger.debug("SET 7,E - cb fb ");
+      SPDLOG_DEBUG(logger, "SET 7,E - cb fb ");
       SET(7, Rgstr::E);
       break;
     case 0xFC:
-      // logger.debug("SET 7,H - cb fc ");
+      SPDLOG_DEBUG(logger, "SET 7,H - cb fc ");
       SET(7, Rgstr::H);
       break;
     case 0xFD:
-      // logger.debug("SET 7,L - cb fd ");
+      SPDLOG_DEBUG(logger, "SET 7,L - cb fd ");
       SET(7, Rgstr::L);
       break;
     case 0xFE:
-      // logger.debug("SET 7,(HL) - cb fe ");
+      SPDLOG_DEBUG(logger, "SET 7,(HL) - cb fe ");
       SET(7, MemoryAddress(RegisterPair::HL));
       break;
     case 0xFF:
-      // logger.debug("SET 7,A - cb ff ");
+      SPDLOG_DEBUG(logger, "SET 7,A - cb ff ");
       SET(7, Rgstr::A);
       break;
     }
@@ -1872,79 +1874,79 @@ void Processor::decode() {
   case 0xCC:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL Z,(nn) - cc n n ");
+    SPDLOG_DEBUG(logger, "CALL Z,(nn) - cc n n ");
     CALL(Condition::Z, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xCD:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL (nn) - cd n n ");
+    SPDLOG_DEBUG(logger, "CALL (nn) - cd n n ");
     CALL(MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xCE:
     currentInstruction[1] = next();
-    // logger.info("ADC A,n - ce n ");
+    SPDLOG_DEBUG(logger, "ADC A,n - ce n ");
     ADC(Rgstr::A, currentInstruction[1]);
     break;
   case 0xCF:
-    // logger.debug("RST 8H - cf ");
+    SPDLOG_DEBUG(logger, "RST 8H - cf ");
     RST(0x8);
     break;
   case 0xD0:
-    // logger.debug("RET NC - d0 ");
+    SPDLOG_DEBUG(logger, "RET NC - d0 ");
     RET(Condition::NC);
     break;
   case 0xD1:
-    // logger.debug("POP DE - d1 ");
+    SPDLOG_DEBUG(logger, "POP DE - d1 ");
     POP(RegisterPair::DE);
     break;
   case 0xD2:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP NC,(nn) - d2 n n ");
+    SPDLOG_DEBUG(logger, "JP NC,(nn) - d2 n n ");
     JP(Condition::NC, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xD3:
     currentInstruction[1] = next();
-    // logger.debug("OUT (n),A - d3 n ");
+    SPDLOG_DEBUG(logger, "OUT (n),A - d3 n ");
     out(MemoryAddress(currentInstruction[1]), Rgstr::A);
     break;
   case 0xD4:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL NC,(nn) - d4 n n ");
+    SPDLOG_DEBUG(logger, "CALL NC,(nn) - d4 n n ");
     CALL(Condition::NC, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xD5:
-    // logger.debug("PUSH DE - d5 ");
+    SPDLOG_DEBUG(logger, "PUSH DE - d5 ");
     PUSH(RegisterPair::DE);
     break;
   case 0xD6:
     currentInstruction[1] = next();
-    // logger.debug("SUB n - d6 n ");
+    SPDLOG_DEBUG(logger, "SUB n - d6 n ");
     SUB(currentInstruction[1]);
     break;
   case 0xD7:
-    // logger.debug("RST 10H - d7 ");
+    SPDLOG_DEBUG(logger, "RST 10H - d7 ");
     RST(0x10);
     break;
   case 0xD8:
-    // logger.debug("RET C - d8 ");
+    SPDLOG_DEBUG(logger, "RET C - d8 ");
     RET(Condition::C);
     break;
   case 0xD9:
-    // logger.debug("EXX - d9 ");
+    SPDLOG_DEBUG(logger, "EXX - d9 ");
     EXX();
     break;
   case 0xDA:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP C,(nn) - da n n ");
+    SPDLOG_DEBUG(logger, "JP C,(nn) - da n n ");
     JP(Condition::C, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xDB:
     currentInstruction[1] = next();
-    // logger.debug("IN A,(n) - db n ");
+    SPDLOG_DEBUG(logger, "IN A,(n) - db n ");
     /* The operand n is placed on the bottom half (A0 through A7) of the address
       bus to select the I/O device at one of 256 possible ports. The contents of the
       Accumulator also appear on the top half (A8 through A15) of the address
@@ -1954,7 +1956,7 @@ void Processor::decode() {
   case 0xDC:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL C,(nn) - dc n n ");
+    SPDLOG_DEBUG(logger, "CALL C,(nn) - dc n n ");
     CALL(Condition::C, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xDD:
@@ -1962,171 +1964,171 @@ void Processor::decode() {
     currentInstruction[1] = next();
     switch (currentInstruction[1]) {
     case 0x09:
-      // logger.debug("ADD IX,BC - dd 9 ");
+      SPDLOG_DEBUG(logger, "ADD IX,BC - dd 9 ");
       ADD(RegisterPair::IX, RegisterPair::BC);
       break;
     case 0x19:
-      // logger.debug("ADD IX,DE - dd 19 ");
+      SPDLOG_DEBUG(logger, "ADD IX,DE - dd 19 ");
       ADD(RegisterPair::IX, RegisterPair::DE);
       break;
     case 0x21:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD IX,nn - dd 21 n n ");
+      SPDLOG_DEBUG(logger, "LD IX,nn - dd 21 n n ");
       LD(RegisterPair::IX, (currentInstruction[3] << 8) | currentInstruction[2]);
       break;
     case 0x22:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (nn),IX - dd 22 n n ");
+      SPDLOG_DEBUG(logger, "LD (nn),IX - dd 22 n n ");
       LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::IX);
       break;
     case 0x23:
-      // logger.debug("INC IX - dd 23 ");
+      SPDLOG_DEBUG(logger, "INC IX - dd 23 ");
       INC(RegisterPair::IX);
       break;
     case 0x29:
-      // logger.debug("ADD IX,IX - dd 29 ");
+      SPDLOG_DEBUG(logger, "ADD IX,IX - dd 29 ");
       ADD(RegisterPair::IX, RegisterPair::IX);
       break;
     case 0x2A:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD IX,(nn) - dd 2a n n ");
+      SPDLOG_DEBUG(logger, "LD IX,(nn) - dd 2a n n ");
       LD_indirect(RegisterPair::IX, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
       break;
     case 0x2B:
-      // logger.debug("DEC IX - dd 2b ");
+      SPDLOG_DEBUG(logger, "DEC IX - dd 2b ");
       DEC(RegisterPair::IX);
       break;
     case 0x34:
       currentInstruction[2] = next();
-      // logger.debug("INC (IX+d) - dd 34 n ");
+      SPDLOG_DEBUG(logger, "INC (IX+d) - dd 34 n ");
       INC(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x35:
       currentInstruction[2] = next();
-      // logger.debug("DEC (IX+d) - dd 35 n ");
+      SPDLOG_DEBUG(logger, "DEC (IX+d) - dd 35 n ");
       DEC(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x36:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (IX+d),n - dd 36 n n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),n - dd 36 n n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), currentInstruction[3]);
       break;
     case 0x39:
-      // logger.debug("ADD IX,SP - dd 39 ");
+      SPDLOG_DEBUG(logger, "ADD IX,SP - dd 39 ");
       ADD(RegisterPair::IX, RegisterPair::SP);
       break;
     case 0x46:
       currentInstruction[2] = next();
-      // logger.debug("LD B,(IX+d) - dd 46 n ");
+      SPDLOG_DEBUG(logger, "LD B,(IX+d) - dd 46 n ");
       LD(Rgstr::B, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x4E:
       currentInstruction[2] = next();
-      // logger.debug("LD C,(IX+d) - dd 4e n ");
+      SPDLOG_DEBUG(logger, "LD C,(IX+d) - dd 4e n ");
       LD(Rgstr::C, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x56:
       currentInstruction[2] = next();
-      // logger.debug("LD D,(IX+d) - dd 56 n ");
+      SPDLOG_DEBUG(logger, "LD D,(IX+d) - dd 56 n ");
       LD(Rgstr::D, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x5E:
       currentInstruction[2] = next();
-      // logger.debug("LD E,(IX+d) - dd 5e n ");
+      SPDLOG_DEBUG(logger, "LD E,(IX+d) - dd 5e n ");
       LD(Rgstr::E, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x66:
       currentInstruction[2] = next();
-      // logger.debug("LD H,(IX+d) - dd 66 n ");
+      SPDLOG_DEBUG(logger, "LD H,(IX+d) - dd 66 n ");
       LD(Rgstr::H, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x6E:
       currentInstruction[2] = next();
-      // logger.debug("LD L,(IX+d) - dd 6e n ");
+      SPDLOG_DEBUG(logger, "LD L,(IX+d) - dd 6e n ");
       LD(Rgstr::L, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x70:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),B - dd 70 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),B - dd 70 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::B);
       break;
     case 0x71:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),C - dd 71 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),C - dd 71 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::C);
       break;
     case 0x72:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),D - dd 72 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),D - dd 72 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::D);
       break;
     case 0x73:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),E - dd 73 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),E - dd 73 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::E);
       break;
     case 0x74:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),H - dd 74 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),H - dd 74 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::H);
       break;
     case 0x75:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),L - dd 75 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),L - dd 75 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::L);
       break;
     case 0x77:
       currentInstruction[2] = next();
-      // logger.debug("LD (IX+d),A - dd 77 n ");
+      SPDLOG_DEBUG(logger, "LD (IX+d),A - dd 77 n ");
       LD(MemoryAddress(RegisterPair::IX, currentInstruction[2]), Rgstr::A);
       break;
     case 0x7E:
       currentInstruction[2] = next();
-      // logger.debug("LD A,(IX+d) - dd 7e n ");
+      SPDLOG_DEBUG(logger, "LD A,(IX+d) - dd 7e n ");
       LD(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x86:
       currentInstruction[2] = next();
-      // logger.debug("ADD A,(IX+d) - dd 86 n ");
+      SPDLOG_DEBUG(logger, "ADD A,(IX+d) - dd 86 n ");
       ADD(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x8E:
       currentInstruction[2] = next();
-      // logger.info("ADC A,(IX+d) - dd 8e n ");
+      SPDLOG_DEBUG(logger, "ADC A,(IX+d) - dd 8e n ");
       ADC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x96:
       currentInstruction[2] = next();
-      // logger.debug("SUB (IX+d) - dd 96 n ");
+      SPDLOG_DEBUG(logger, "SUB (IX+d) - dd 96 n ");
       SUB(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0x9E:
       currentInstruction[2] = next();
-      // logger.info("SBC A,(IX+d) - dd 9e n ");
+      SPDLOG_DEBUG(logger, "SBC A,(IX+d) - dd 9e n ");
       SBC(Rgstr::A, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0xA6:
       currentInstruction[2] = next();
-      // logger.debug("AND (IX+d) - dd a6 n ");
+      SPDLOG_DEBUG(logger, "AND (IX+d) - dd a6 n ");
       AND(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0xAE:
       currentInstruction[2] = next();
-      // logger.debug("XOR (IX+d) - dd ae n ");
+      SPDLOG_DEBUG(logger, "XOR (IX+d) - dd ae n ");
       XOR(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0xB6:
       currentInstruction[2] = next();
-      // logger.debug("OR (IX+d) - dd b6 n ");
+      SPDLOG_DEBUG(logger, "OR (IX+d) - dd b6 n ");
       OR(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0xBE:
       currentInstruction[2] = next();
-      // logger.debug("CP (IX+d) - dd be n ");
+      SPDLOG_DEBUG(logger, "CP (IX+d) - dd be n ");
       CP(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
       break;
     case 0xCB:
@@ -2135,221 +2137,221 @@ void Processor::decode() {
       currentInstruction[3] = next();
       switch (currentInstruction[3]) {
       case 0x06:
-        // logger.debug("RLC (IX+d) - dd cb n 6 ");
+        SPDLOG_DEBUG(logger, "RLC (IX+d) - dd cb n 6 ");
         RLC(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x0E:
-        // logger.debug("RRC (IX+d) - dd cb n e ");
+        SPDLOG_DEBUG(logger, "RRC (IX+d) - dd cb n e ");
         RRC(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x16:
-        // logger.debug("RL (IX+d) - dd cb n 16 ");
+        SPDLOG_DEBUG(logger, "RL (IX+d) - dd cb n 16 ");
         RL(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x1E:
-        // logger.debug("RR (IX+d) - dd cb n 1e ");
+        SPDLOG_DEBUG(logger, "RR (IX+d) - dd cb n 1e ");
         RR(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x26:
-        // logger.debug("SLA (IX+d) - dd cb n 26 ");
+        SPDLOG_DEBUG(logger, "SLA (IX+d) - dd cb n 26 ");
         SLA(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x2E:
-        // logger.debug("SRA (IX+d) - dd cb n 2e ");
+        SPDLOG_DEBUG(logger, "SRA (IX+d) - dd cb n 2e ");
         SRA(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x3E:
-        // logger.debug("SRL (IX+d) - dd cb n 3e ");
+        SPDLOG_DEBUG(logger, "SRL (IX+d) - dd cb n 3e ");
         SRL(MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x46:
-        // logger.debug("BIT 0,(IX+d) - dd cb n 46 ");
+        SPDLOG_DEBUG(logger, "BIT 0,(IX+d) - dd cb n 46 ");
         BIT(0, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x4E:
-        // logger.debug("BIT 1,(IX+d) - dd cb n 4e ");
+        SPDLOG_DEBUG(logger, "BIT 1,(IX+d) - dd cb n 4e ");
         BIT(1, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x56:
-        // logger.debug("BIT 2,(IX+d) - dd cb n 56 ");
+        SPDLOG_DEBUG(logger, "BIT 2,(IX+d) - dd cb n 56 ");
         BIT(2, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x5E:
-        // logger.debug("BIT 3,(IX+d) - dd cb n 5e ");
+        SPDLOG_DEBUG(logger, "BIT 3,(IX+d) - dd cb n 5e ");
         BIT(3, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x66:
-        // logger.debug("BIT 4,(IX+d) - dd cb n 66 ");
+        SPDLOG_DEBUG(logger, "BIT 4,(IX+d) - dd cb n 66 ");
         BIT(4, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x6E:
-        // logger.debug("BIT 5,(IX+d) - dd cb n 6e ");
+        SPDLOG_DEBUG(logger, "BIT 5,(IX+d) - dd cb n 6e ");
         BIT(5, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x76:
-        // logger.debug("BIT 6,(IX+d) - dd cb n 76 ");
+        SPDLOG_DEBUG(logger, "BIT 6,(IX+d) - dd cb n 76 ");
         BIT(6, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x7E:
-        // logger.debug("BIT 7,(IX+d) - dd cb n 7e ");
+        SPDLOG_DEBUG(logger, "BIT 7,(IX+d) - dd cb n 7e ");
         BIT(7, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x86:
-        // logger.debug("RES 0,(IX+d) - dd cb n 86 ");
+        SPDLOG_DEBUG(logger, "RES 0,(IX+d) - dd cb n 86 ");
         RES(0, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x8E:
-        // logger.debug("RES 1,(IX+d) - dd cb n 8e ");
+        SPDLOG_DEBUG(logger, "RES 1,(IX+d) - dd cb n 8e ");
         RES(1, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x96:
-        // logger.debug("RES 2,(IX+d) - dd cb n 96 ");
+        SPDLOG_DEBUG(logger, "RES 2,(IX+d) - dd cb n 96 ");
         RES(2, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0x9E:
-        // logger.debug("RES 3,(IX+d) - dd cb n 9e ");
+        SPDLOG_DEBUG(logger, "RES 3,(IX+d) - dd cb n 9e ");
         RES(3, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xA6:
-        // logger.debug("RES 4,(IX+d) - dd cb n a6 ");
+        SPDLOG_DEBUG(logger, "RES 4,(IX+d) - dd cb n a6 ");
         RES(4, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xAE:
-        // logger.debug("RES 5,(IX+d) - dd cb n ae ");
+        SPDLOG_DEBUG(logger, "RES 5,(IX+d) - dd cb n ae ");
         RES(5, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xB6:
-        // logger.debug("RES 6,(IX+d) - dd cb n b6 ");
+        SPDLOG_DEBUG(logger, "RES 6,(IX+d) - dd cb n b6 ");
         RES(6, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xBE:
-        // logger.debug("RES 7,(IX+d) - dd cb n be ");
+        SPDLOG_DEBUG(logger, "RES 7,(IX+d) - dd cb n be ");
         RES(7, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xC6:
-        // logger.debug("SET 0,(IX+d) - dd cb n c6 ");
+        SPDLOG_DEBUG(logger, "SET 0,(IX+d) - dd cb n c6 ");
         SET(0, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xCE:
-        // logger.debug("SET 1,(IX+d) - dd cb n ce ");
+        SPDLOG_DEBUG(logger, "SET 1,(IX+d) - dd cb n ce ");
         SET(1, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xD6:
-        // logger.debug("SET 2,(IX+d) - dd cb n d6 ");
+        SPDLOG_DEBUG(logger, "SET 2,(IX+d) - dd cb n d6 ");
         SET(2, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xDE:
-        // logger.debug("SET 3,(IX+d) - dd cb n de ");
+        SPDLOG_DEBUG(logger, "SET 3,(IX+d) - dd cb n de ");
         SET(3, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xE6:
-        // logger.debug("SET 4,(IX+d) - dd cb n e6 ");
+        SPDLOG_DEBUG(logger, "SET 4,(IX+d) - dd cb n e6 ");
         SET(4, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xEE:
-        // logger.debug("SET 5,(IX+d) - dd cb n ee ");
+        SPDLOG_DEBUG(logger, "SET 5,(IX+d) - dd cb n ee ");
         SET(5, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xF6:
-        // logger.debug("SET 6,(IX+d) - dd cb n f6 ");
+        SPDLOG_DEBUG(logger, "SET 6,(IX+d) - dd cb n f6 ");
         SET(6, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       case 0xFE:
-        // logger.debug("SET 7,(IX+d) - dd cb n fe ");
+        SPDLOG_DEBUG(logger, "SET 7,(IX+d) - dd cb n fe ");
         SET(7, MemoryAddress(RegisterPair::IX, currentInstruction[2]));
         break;
       }
       break;
     case 0xE1:
-      // logger.debug("POP IX - dd e1 ");
+      SPDLOG_DEBUG(logger, "POP IX - dd e1 ");
       POP(RegisterPair::IX);
       break;
     case 0xE3:
-      // logger.debug("EX (SP),IX - dd e3 ");
+      SPDLOG_DEBUG(logger, "EX (SP),IX - dd e3 ");
       EX(MemoryAddress(RegisterPair::SP), RegisterPair::IX);
       break;
     case 0xE5:
-      // logger.debug("PUSH IX - dd e5 ");
+      SPDLOG_DEBUG(logger, "PUSH IX - dd e5 ");
       PUSH(RegisterPair::IX);
       break;
     case 0xE9:
-      // logger.debug("JP (IX) - dd e9 ");
+      SPDLOG_DEBUG(logger, "JP (IX) - dd e9 ");
       JP(MemoryAddress(RegisterPair::IX));
       break;
     case 0xF9:
-      // logger.debug("LD SP,IX - dd f9 ");
+      SPDLOG_DEBUG(logger, "LD SP,IX - dd f9 ");
       LD(RegisterPair::SP, RegisterPair::IX);
       break;
     }
     break;
   case 0xDE:
     currentInstruction[1] = next();
-    // logger.info("SBC A,n - de n ");
+    SPDLOG_DEBUG(logger, "SBC A,n - de n ");
     SBC(Rgstr::A, currentInstruction[1]);
     break;
   case 0xDF:
-    // logger.debug("RST 18H - df ");
+    SPDLOG_DEBUG(logger, "RST 18H - df ");
     RST(0x18);
     break;
   case 0xE0:
-    // logger.debug("RET PO - e0 ");
+    SPDLOG_DEBUG(logger, "RET PO - e0 ");
     RET(Condition::PO);
     break;
   case 0xE1:
-    // logger.debug("POP HL - e1 ");
+    SPDLOG_DEBUG(logger, "POP HL - e1 ");
     POP(RegisterPair::HL);
     break;
   case 0xE2:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP PO,(nn) - e2 n n ");
+    SPDLOG_DEBUG(logger, "JP PO,(nn) - e2 n n ");
     JP(Condition::PO, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xE3:
-    // logger.debug("EX (SP),HL - e3 ");
+    SPDLOG_DEBUG(logger, "EX (SP),HL - e3 ");
     EX(MemoryAddress(RegisterPair::SP), RegisterPair::HL);
     break;
   case 0xE4:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL PO,(nn) - e4 n n ");
+    SPDLOG_DEBUG(logger, "CALL PO,(nn) - e4 n n ");
     CALL(Condition::PO, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xE5:
-    // logger.debug("PUSH HL - e5 ");
+    SPDLOG_DEBUG(logger, "PUSH HL - e5 ");
     PUSH(RegisterPair::HL);
     break;
   case 0xE6:
     currentInstruction[1] = next();
-    // logger.debug("AND n - e6 n ");
+    SPDLOG_DEBUG(logger, "AND n - e6 n ");
     AND(currentInstruction[1]);
     break;
   case 0xE7:
-    // logger.debug("RST 20H - e7 ");
+    SPDLOG_DEBUG(logger, "RST 20H - e7 ");
     RST(0x20);
     break;
   case 0xE8:
-    // logger.debug("RET PE - e8 ");
+    SPDLOG_DEBUG(logger, "RET PE - e8 ");
     RET(Condition::PE);
     break;
   case 0xE9:
-    // logger.debug("JP (HL) - e9 ");
+    SPDLOG_DEBUG(logger, "JP (HL) - e9 ");
     JP(MemoryAddress(RegisterPair::HL));
     break;
   case 0xEA:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP PE,(nn) - ea n n ");
+    SPDLOG_DEBUG(logger, "JP PE,(nn) - ea n n ");
     JP(Condition::PE, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xEB:
-    // logger.debug("EX DE,HL - eb ");
+    SPDLOG_DEBUG(logger, "EX DE,HL - eb ");
     EX(RegisterPair::DE, RegisterPair::HL);
     break;
   case 0xEC:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL PE,(nn) - ec n n ");
+    SPDLOG_DEBUG(logger, "CALL PE,(nn) - ec n n ");
     CALL(Condition::PE, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xED:
@@ -2357,323 +2359,323 @@ void Processor::decode() {
     currentInstruction[1] = next();
     switch (currentInstruction[1]) {
     case 0x40:
-      // logger.debug("IN B,(C) - ed 40 ");
+      SPDLOG_DEBUG(logger, "IN B,(C) - ed 40 ");
       in(Rgstr::B, MemoryAddress(Rgstr::C));
       break;
     case 0x41:
-      // logger.debug("OUT (C),B - ed 41 ");
+      SPDLOG_DEBUG(logger, "OUT (C),B - ed 41 ");
       out(MemoryAddress(Rgstr::C), Rgstr::B);
       break;
     case 0x42:
-      // logger.info("SBC HL,BC - ed 42 ");
+      SPDLOG_DEBUG(logger, "SBC HL,BC - ed 42 ");
       SBC(RegisterPair::HL, RegisterPair::BC);
       break;
     case 0x43:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (nn),BC - ed 43 n n ");
+      SPDLOG_DEBUG(logger, "LD (nn),BC - ed 43 n n ");
       LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::BC);
       break;
     case 0x44:
-      // logger.debug("NEG - ed 44 ");
+      SPDLOG_DEBUG(logger, "NEG - ed 44 ");
       NEG();
       break;
     case 0x45:
-      // logger.debug("RETN - ed 45 ");
+      SPDLOG_DEBUG(logger, "RETN - ed 45 ");
       RETN();
       break;
     case 0x46:
-      // logger.debug("IM 0 - ed 46 ");
+      SPDLOG_DEBUG(logger, "IM 0 - ed 46 ");
       IM(0);
       break;
     case 0x47:
-      // logger.debug("LD I,A - ed 47 ");
+      SPDLOG_DEBUG(logger, "LD I,A - ed 47 ");
       LD(Rgstr::I, Rgstr::A);
       break;
     case 0x48:
-      // logger.debug("IN C,(C) - ed 48 ");
+      SPDLOG_DEBUG(logger, "IN C,(C) - ed 48 ");
       in(Rgstr::C, MemoryAddress(Rgstr::C));
       break;
     case 0x49:
-      // logger.debug("OUT (C),C - ed 49 ");
+      SPDLOG_DEBUG(logger, "OUT (C),C - ed 49 ");
       out(MemoryAddress(Rgstr::C), Rgstr::C);
       break;
     case 0x4A:
-      // logger.info("ADC HL,BC - ed 4a ");
+      SPDLOG_DEBUG(logger, "ADC HL,BC - ed 4a ");
       ADC(RegisterPair::HL, RegisterPair::BC);
       break;
     case 0x4B:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD BC,(nn) - ed 4b n n ");
+      SPDLOG_DEBUG(logger, "LD BC,(nn) - ed 4b n n ");
       LD_indirect(RegisterPair::BC, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
       break;
     case 0x4D:
-      // logger.debug("RETI - ed 4d ");
+      SPDLOG_DEBUG(logger, "RETI - ed 4d ");
       RETI();
       break;
     case 0x4F:
-      // logger.debug("LD R,A - ed 4f ");
+      SPDLOG_DEBUG(logger, "LD R,A - ed 4f ");
       LD(Rgstr::R, Rgstr::A);
       break;
     case 0x50:
-      // logger.debug("IN D,(C) - ed 50 ");
+      SPDLOG_DEBUG(logger, "IN D,(C) - ed 50 ");
       in(Rgstr::D, MemoryAddress(Rgstr::C));
       break;
     case 0x51:
-      // logger.debug("OUT (C),D - ed 51 ");
+      SPDLOG_DEBUG(logger, "OUT (C),D - ed 51 ");
       out(MemoryAddress(Rgstr::C), Rgstr::D);
       break;
     case 0x52:
-      // logger.info("SBC HL,DE - ed 52 ");
+      SPDLOG_DEBUG(logger, "SBC HL,DE - ed 52 ");
       SBC(RegisterPair::HL, RegisterPair::DE);
       break;
     case 0x53:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (nn),DE - ed 53 n n ");
+      SPDLOG_DEBUG(logger, "LD (nn),DE - ed 53 n n ");
       LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::DE);
       break;
     case 0x56:
-      // logger.debug("IM 1 - ed 56 ");
+      SPDLOG_DEBUG(logger, "IM 1 - ed 56 ");
       IM(1);
       break;
     case 0x57:
-      // logger.debug("LD A,I - ed 57 ");
+      SPDLOG_DEBUG(logger, "LD A,I - ed 57 ");
       LD(Rgstr::A, Rgstr::I);
       break;
     case 0x58:
-      // logger.debug("IN E,(C) - ed 58 ");
+      SPDLOG_DEBUG(logger, "IN E,(C) - ed 58 ");
       in(Rgstr::E, MemoryAddress(Rgstr::C));
       break;
     case 0x59:
-      // logger.debug("OUT (C),E - ed 59 ");
+      SPDLOG_DEBUG(logger, "OUT (C),E - ed 59 ");
       out(MemoryAddress(Rgstr::C), Rgstr::E);
       break;
     case 0x5A:
-      // logger.info("ADC HL,DE - ed 5a ");
+      SPDLOG_DEBUG(logger, "ADC HL,DE - ed 5a ");
       ADC(RegisterPair::HL, RegisterPair::DE);
       break;
     case 0x5B:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD DE,(nn) - ed 5b n n ");
+      SPDLOG_DEBUG(logger, "LD DE,(nn) - ed 5b n n ");
       LD_indirect(RegisterPair::DE, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
       break;
     case 0x5E:
-      // logger.debug("IM 2 - ed 5e ");
+      SPDLOG_DEBUG(logger, "IM 2 - ed 5e ");
       IM(2);
       break;
     case 0x5F:
-      // logger.debug("LD A,R - ed 5f ");
+      SPDLOG_DEBUG(logger, "LD A,R - ed 5f ");
       LD(Rgstr::A, Rgstr::R);
       break;
     case 0x60:
-      // logger.debug("IN H,(C) - ed 60 ");
+      SPDLOG_DEBUG(logger, "IN H,(C) - ed 60 ");
       in(Rgstr::H, MemoryAddress(Rgstr::C));
       break;
     case 0x61:
-      // logger.debug("OUT (C),H - ed 61 ");
+      SPDLOG_DEBUG(logger, "OUT (C),H - ed 61 ");
       out(MemoryAddress(Rgstr::C), Rgstr::H);
       break;
     case 0x62:
-      // logger.info("SBC HL,HL - ed 62 ");
+      SPDLOG_DEBUG(logger, "SBC HL,HL - ed 62 ");
       SBC(RegisterPair::HL, RegisterPair::HL);
       break;
     case 0x63:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (nn),HL - ed 63 n n ");
+      SPDLOG_DEBUG(logger, "LD (nn),HL - ed 63 n n ");
       LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::HL);
       break;
     case 0x67:
-      // logger.debug("RRD - ed 67 ");
+      SPDLOG_DEBUG(logger, "RRD - ed 67 ");
       RRD();
       break;
     case 0x68:
-      // logger.debug("IN L,(C) - ed 68 ");
+      SPDLOG_DEBUG(logger, "IN L,(C) - ed 68 ");
       in(Rgstr::L, MemoryAddress(Rgstr::C));
       break;
     case 0x69:
-      // logger.debug("OUT (C),L - ed 69 ");
+      SPDLOG_DEBUG(logger, "OUT (C),L - ed 69 ");
       out(MemoryAddress(Rgstr::C), Rgstr::L);
       break;
     case 0x6A:
-      // logger.info("ADC HL,HL - ed 6a ");
+      SPDLOG_DEBUG(logger, "ADC HL,HL - ed 6a ");
       ADC(RegisterPair::HL, RegisterPair::HL);
       break;
     case 0x6B:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD HL,(nn) - ed 6b n n ");
+      SPDLOG_DEBUG(logger, "LD HL,(nn) - ed 6b n n ");
       LD_indirect(RegisterPair::HL, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
       break;
     case 0x6F:
-      // logger.debug("RLD - ed 6f ");
+      SPDLOG_DEBUG(logger, "RLD - ed 6f ");
       RLD();
       break;
     case 0x72:
-      // logger.info("SBC HL,SP - ed 72 ");
+      SPDLOG_DEBUG(logger, "SBC HL,SP - ed 72 ");
       SBC(RegisterPair::HL, RegisterPair::SP);
       break;
     case 0x73:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (nn),SP - ed 73 n n ");
+      SPDLOG_DEBUG(logger, "LD (nn),SP - ed 73 n n ");
       LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::SP);
       break;
     case 0x78:
-      // logger.debug("IN A,(C) - ed 78 ");
+      SPDLOG_DEBUG(logger, "IN A,(C) - ed 78 ");
       in(Rgstr::A, MemoryAddress(RegisterPair::BC));
       break;
     case 0x79:
-      // logger.debug("OUT (C),A - ed 79 ");
+      SPDLOG_DEBUG(logger, "OUT (C),A - ed 79 ");
       out(MemoryAddress(Rgstr::C), Rgstr::A);
       break;
     case 0x7A:
-      // logger.info("ADC HL,SP - ed 7a ");
+      SPDLOG_DEBUG(logger, "ADC HL,SP - ed 7a ");
       ADC(RegisterPair::HL, RegisterPair::SP);
       break;
     case 0x7B:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD SP,(nn) - ed 7b n n ");
+      SPDLOG_DEBUG(logger, "LD SP,(nn) - ed 7b n n ");
       LD_indirect(RegisterPair::SP, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
       break;
     case 0xA0:
-      // logger.debug("LDI - ed a0 ");
+      SPDLOG_DEBUG(logger, "LDI - ed a0 ");
       LDI();
       break;
     case 0xA1:
-      // logger.debug("CPI - ed a1 ");
+      SPDLOG_DEBUG(logger, "CPI - ed a1 ");
       CPI();
       break;
     case 0xA2:
-      // logger.debug("INI - ed a2 ");
+      SPDLOG_DEBUG(logger, "INI - ed a2 ");
       INI();
       break;
     case 0xA3:
-      // logger.debug("OUTI - ed a3 ");
+      SPDLOG_DEBUG(logger, "OUTI - ed a3 ");
       OUTI();
       break;
     case 0xA8:
-      // logger.debug("LDD - ed a8 ");
+      SPDLOG_DEBUG(logger, "LDD - ed a8 ");
       LDD();
       break;
     case 0xA9:
-      // logger.debug("CPD - ed a9 ");
+      SPDLOG_DEBUG(logger, "CPD - ed a9 ");
       CPD();
       break;
     case 0xAA:
-      // logger.debug("IND - ed aa ");
+      SPDLOG_DEBUG(logger, "IND - ed aa ");
       IND();
       break;
     case 0xAB:
-      // logger.debug("OUTD - ed ab ");
+      SPDLOG_DEBUG(logger, "OUTD - ed ab ");
       OUTD();
       break;
     case 0xB0:
-      // logger.debug("LDIR - ed b0 ");
+      SPDLOG_DEBUG(logger, "LDIR - ed b0 ");
       LDIR();
       break;
     case 0xB1:
-      // logger.debug("CPIR - ed b1 ");
+      SPDLOG_DEBUG(logger, "CPIR - ed b1 ");
       CPIR();
       break;
     case 0xB2:
-      // logger.debug("INIR - ed b2 ");
+      SPDLOG_DEBUG(logger, "INIR - ed b2 ");
       INIR();
       break;
     case 0xB3:
-      // logger.debug("OTIR - ed b3 ");
+      SPDLOG_DEBUG(logger, "OTIR - ed b3 ");
       OTIR();
       break;
     case 0xB8:
-      // logger.debug("LDDR - ed b8 ");
+      SPDLOG_DEBUG(logger, "LDDR - ed b8 ");
       LDDR();
       break;
     case 0xB9:
-      // logger.debug("CPDR - ed b9 ");
+      SPDLOG_DEBUG(logger, "CPDR - ed b9 ");
       CPDR();
       break;
     case 0xBA:
-      // logger.debug("INDR - ed ba ");
+      SPDLOG_DEBUG(logger, "INDR - ed ba ");
       INDR();
       break;
     case 0xBB:
-      // logger.debug("OTDR - ed bb ");
+      SPDLOG_DEBUG(logger, "OTDR - ed bb ");
       OTDR();
       break;
     }
     break;
   case 0xEE:
     currentInstruction[1] = next();
-    // logger.debug("XOR n - ee n ");
+    SPDLOG_DEBUG(logger, "XOR n - ee n ");
     XOR(currentInstruction[1]);
     break;
   case 0xEF:
-    // logger.debug("RST 28H - ef ");
+    SPDLOG_DEBUG(logger, "RST 28H - ef ");
     RST(0x28);
     break;
   case 0xF0:
-    // logger.debug("RET P - f0 ");
+    SPDLOG_DEBUG(logger, "RET P - f0 ");
     RET(Condition::P);
     break;
   case 0xF1:
-    // logger.debug("POP AF - f1 ");
+    SPDLOG_DEBUG(logger, "POP AF - f1 ");
     POP(RegisterPair::AF);
     break;
   case 0xF2:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP P,(nn) - f2 n n ");
+    SPDLOG_DEBUG(logger, "JP P,(nn) - f2 n n ");
     JP(Condition::P, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xF3:
-    // logger.debug("DI - f3 ");
+    SPDLOG_DEBUG(logger, "DI - f3 ");
     DI();
     break;
   case 0xF4:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL P,(nn) - f4 n n ");
+    SPDLOG_DEBUG(logger, "CALL P,(nn) - f4 n n ");
     CALL(Condition::P, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xF5:
-    // logger.debug("PUSH AF - f5 ");
+    SPDLOG_DEBUG(logger, "PUSH AF - f5 ");
     PUSH(RegisterPair::AF);
     break;
   case 0xF6:
     currentInstruction[1] = next();
-    // logger.debug("OR n - f6 n ");
+    SPDLOG_DEBUG(logger, "OR n - f6 n ");
     OR(currentInstruction[1]);
     break;
   case 0xF7:
-    // logger.debug("RST 30H - f7 ");
+    SPDLOG_DEBUG(logger, "RST 30H - f7 ");
     RST(0x30);
     break;
   case 0xF8:
-    // logger.debug("RET M - f8 ");
+    SPDLOG_DEBUG(logger, "RET M - f8 ");
     RET(Condition::M);
     break;
   case 0xF9:
-    // logger.debug("LD SP,HL - f9 ");
+    SPDLOG_DEBUG(logger, "LD SP,HL - f9 ");
     LD(RegisterPair::SP, RegisterPair::HL);
     break;
   case 0xFA:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("JP M,(nn) - fa n n ");
+    SPDLOG_DEBUG(logger, "JP M,(nn) - fa n n ");
     JP(Condition::M, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xFB:
-    // logger.debug("EI - fb ");
+    SPDLOG_DEBUG(logger, "EI - fb ");
     EI();
     break;
   case 0xFC:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-    // logger.debug("CALL M,(nn) - fc n n ");
+    SPDLOG_DEBUG(logger, "CALL M,(nn) - fc n n ");
     CALL(Condition::M, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xFD:
@@ -2681,171 +2683,171 @@ void Processor::decode() {
     currentInstruction[1] = next();
     switch (currentInstruction[1]) {
     case 0x09:
-      // logger.debug("ADD IY,BC - fd 9 ");
+      SPDLOG_DEBUG(logger, "ADD IY,BC - fd 9 ");
       ADD(RegisterPair::IY, RegisterPair::BC);
       break;
     case 0x19:
-      // logger.debug("ADD IY,DE - fd 19 ");
+      SPDLOG_DEBUG(logger, "ADD IY,DE - fd 19 ");
       ADD(RegisterPair::IY, RegisterPair::DE);
       break;
     case 0x21:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD IY,nn - fd 21 n n ");
+      SPDLOG_DEBUG(logger, "LD IY,nn - fd 21 n n ");
       LD(RegisterPair::IY, (currentInstruction[3] << 8) | currentInstruction[2]);
       break;
     case 0x22:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (nn),IY - fd 22 n n ");
+      SPDLOG_DEBUG(logger, "LD (nn),IY - fd 22 n n ");
       LD(MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]), RegisterPair::IY);
       break;
     case 0x23:
-      // logger.debug("INC IY - fd 23 ");
+      SPDLOG_DEBUG(logger, "INC IY - fd 23 ");
       INC(RegisterPair::IY);
       break;
     case 0x29:
-      // logger.debug("ADD IY,IY - fd 29 ");
+      SPDLOG_DEBUG(logger, "ADD IY,IY - fd 29 ");
       ADD(RegisterPair::IY, RegisterPair::IY);
       break;
     case 0x2A:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD IY,(nn) - fd 2a n n ");
+      SPDLOG_DEBUG(logger, "LD IY,(nn) - fd 2a n n ");
       LD_indirect(RegisterPair::IY, MemoryAddress((currentInstruction[3] << 8) | currentInstruction[2]));
       break;
     case 0x2B:
-      // logger.debug("DEC IY - fd 2b ");
+      SPDLOG_DEBUG(logger, "DEC IY - fd 2b ");
       DEC(RegisterPair::IY);
       break;
     case 0x34:
       currentInstruction[2] = next();
-      // logger.debug("INC (IY+d) - fd 34 n ");
+      SPDLOG_DEBUG(logger, "INC (IY+d) - fd 34 n ");
       INC(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x35:
       currentInstruction[2] = next();
-      // logger.debug("DEC (IY+d) - fd 35 n ");
+      SPDLOG_DEBUG(logger, "DEC (IY+d) - fd 35 n ");
       DEC(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x36:
       currentInstruction[2] = next();
       currentInstruction[3] = next();
-      // logger.debug("LD (IY+d),n - fd 36 n n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),n - fd 36 n n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), currentInstruction[3]);
       break;
     case 0x39:
-      // logger.debug("ADD IY,SP - fd 39 ");
+      SPDLOG_DEBUG(logger, "ADD IY,SP - fd 39 ");
       ADD(RegisterPair::IY, RegisterPair::SP);
       break;
     case 0x46:
       currentInstruction[2] = next();
-      // logger.debug("LD B,(IY+d) - fd 46 n ");
+      SPDLOG_DEBUG(logger, "LD B,(IY+d) - fd 46 n ");
       LD(Rgstr::B, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x4E:
       currentInstruction[2] = next();
-      // logger.debug("LD C,(IY+d) - fd 4e n ");
+      SPDLOG_DEBUG(logger, "LD C,(IY+d) - fd 4e n ");
       LD(Rgstr::C, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x56:
       currentInstruction[2] = next();
-      // logger.debug("LD D,(IY+d) - fd 56 n ");
+      SPDLOG_DEBUG(logger, "LD D,(IY+d) - fd 56 n ");
       LD(Rgstr::D, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x5E:
       currentInstruction[2] = next();
-      // logger.debug("LD E,(IY+d) - fd 5e n ");
+      SPDLOG_DEBUG(logger, "LD E,(IY+d) - fd 5e n ");
       LD(Rgstr::E, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x66:
       currentInstruction[2] = next();
-      // logger.debug("LD H,(IY+d) - fd 66 n ");
+      SPDLOG_DEBUG(logger, "LD H,(IY+d) - fd 66 n ");
       LD(Rgstr::H, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x6E:
       currentInstruction[2] = next();
-      // logger.debug("LD L,(IY+d) - fd 6e n ");
+      SPDLOG_DEBUG(logger, "LD L,(IY+d) - fd 6e n ");
       LD(Rgstr::L, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x70:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),B - fd 70 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),B - fd 70 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::B);
       break;
     case 0x71:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),C - fd 71 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),C - fd 71 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::C);
       break;
     case 0x72:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),D - fd 72 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),D - fd 72 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::D);
       break;
     case 0x73:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),E - fd 73 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),E - fd 73 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::E);
       break;
     case 0x74:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),H - fd 74 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),H - fd 74 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::H);
       break;
     case 0x75:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),L - fd 75 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),L - fd 75 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::L);
       break;
     case 0x77:
       currentInstruction[2] = next();
-      // logger.debug("LD (IY+d),A - fd 77 n ");
+      SPDLOG_DEBUG(logger, "LD (IY+d),A - fd 77 n ");
       LD(MemoryAddress(RegisterPair::IY, currentInstruction[2]), Rgstr::A);
       break;
     case 0x7E:
       currentInstruction[2] = next();
-      // logger.debug("LD A,(IY+d) - fd 7e n ");
+      SPDLOG_DEBUG(logger, "LD A,(IY+d) - fd 7e n ");
       LD(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x86:
       currentInstruction[2] = next();
-      // logger.debug("ADD A,(IY+d) - fd 86 n ");
+      SPDLOG_DEBUG(logger, "ADD A,(IY+d) - fd 86 n ");
       ADD(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x8E:
       currentInstruction[2] = next();
-      // logger.info("ADC A,(IY+d) - fd 8e n ");
+      SPDLOG_DEBUG(logger, "ADC A,(IY+d) - fd 8e n ");
       ADC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x96:
       currentInstruction[2] = next();
-      // logger.debug("SUB (IY+d) - fd 96 n ");
+      SPDLOG_DEBUG(logger, "SUB (IY+d) - fd 96 n ");
       SUB(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0x9E:
       currentInstruction[2] = next();
-      // logger.info("SBC A,(IY+d) - fd 9e n ");
+      SPDLOG_DEBUG(logger, "SBC A,(IY+d) - fd 9e n ");
       SBC(Rgstr::A, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0xA6:
       currentInstruction[2] = next();
-      // logger.debug("AND (IY+d) - fd a6 n ");
+      SPDLOG_DEBUG(logger, "AND (IY+d) - fd a6 n ");
       AND(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0xAE:
       currentInstruction[2] = next();
-      // logger.debug("XOR (IY+d) - fd ae n ");
+      SPDLOG_DEBUG(logger, "XOR (IY+d) - fd ae n ");
       XOR(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0xB6:
       currentInstruction[2] = next();
-      // logger.debug("OR (IY+d) - fd b6 n ");
+      SPDLOG_DEBUG(logger, "OR (IY+d) - fd b6 n ");
       OR(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0xBE:
       currentInstruction[2] = next();
-      // logger.debug("CP (IY+d) - fd be n ");
+      SPDLOG_DEBUG(logger, "CP (IY+d) - fd be n ");
       CP(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
       break;
     case 0xCB:
@@ -2854,160 +2856,160 @@ void Processor::decode() {
       currentInstruction[3] = next();
       switch (currentInstruction[3]) {
       case 0x06:
-        // logger.debug("RLC (IY+d) - fd cb n 6 ");
+        SPDLOG_DEBUG(logger, "RLC (IY+d) - fd cb n 6 ");
         RLC(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x0E:
-        // logger.debug("RRC (IY+d) - fd cb n e ");
+        SPDLOG_DEBUG(logger, "RRC (IY+d) - fd cb n e ");
         RRC(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x16:
-        // logger.debug("RL (IY+d) - fd cb n 16 ");
+        SPDLOG_DEBUG(logger, "RL (IY+d) - fd cb n 16 ");
         RL(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x1E:
-        // logger.debug("RR (IY+d) - fd cb n 1e ");
+        SPDLOG_DEBUG(logger, "RR (IY+d) - fd cb n 1e ");
         RR(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x26:
-        // logger.debug("SLA (IY+d) - fd cb n 26 ");
+        SPDLOG_DEBUG(logger, "SLA (IY+d) - fd cb n 26 ");
         SLA(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x2E:
-        // logger.debug("SRA (IY+d) - fd cb n 2e ");
+        SPDLOG_DEBUG(logger, "SRA (IY+d) - fd cb n 2e ");
         SRA(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x3E:
-        // logger.debug("SRL (IY+d) - fd cb n 3e ");
+        SPDLOG_DEBUG(logger, "SRL (IY+d) - fd cb n 3e ");
         SRL(MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x46:
-        // logger.debug("BIT 0,(IY+d) - fd cb n 46 ");
+        SPDLOG_DEBUG(logger, "BIT 0,(IY+d) - fd cb n 46 ");
         BIT(0, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x4E:
-        // logger.debug("BIT 1,(IY+d) - fd cb n 4e ");
+        SPDLOG_DEBUG(logger, "BIT 1,(IY+d) - fd cb n 4e ");
         BIT(1, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x56:
-        // logger.debug("BIT 2,(IY+d) - fd cb n 56 ");
+        SPDLOG_DEBUG(logger, "BIT 2,(IY+d) - fd cb n 56 ");
         BIT(2, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x5E:
-        // logger.debug("BIT 3,(IY+d) - fd cb n 5e ");
+        SPDLOG_DEBUG(logger, "BIT 3,(IY+d) - fd cb n 5e ");
         BIT(3, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x66:
-        // logger.debug("BIT 4,(IY+d) - fd cb n 66 ");
+        SPDLOG_DEBUG(logger, "BIT 4,(IY+d) - fd cb n 66 ");
         BIT(4, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x6E:
-        // logger.debug("BIT 5,(IY+d) - fd cb n 6e ");
+        SPDLOG_DEBUG(logger, "BIT 5,(IY+d) - fd cb n 6e ");
         BIT(5, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x76:
-        // logger.debug("BIT 6,(IY+d) - fd cb n 76 ");
+        SPDLOG_DEBUG(logger, "BIT 6,(IY+d) - fd cb n 76 ");
         BIT(6, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x7E:
-        // logger.debug("BIT 7,(IY+d) - fd cb n 7e ");
+        SPDLOG_DEBUG(logger, "BIT 7,(IY+d) - fd cb n 7e ");
         BIT(7, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x86:
-        // logger.debug("RES 0,(IY+d) - fd cb n 86 ");
+        SPDLOG_DEBUG(logger, "RES 0,(IY+d) - fd cb n 86 ");
         RES(0, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x8E:
-        // logger.debug("RES 1,(IY+d) - fd cb n 8e ");
+        SPDLOG_DEBUG(logger, "RES 1,(IY+d) - fd cb n 8e ");
         RES(1, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x96:
-        // logger.debug("RES 2,(IY+d) - fd cb n 96 ");
+        SPDLOG_DEBUG(logger, "RES 2,(IY+d) - fd cb n 96 ");
         RES(2, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0x9E:
-        // logger.debug("RES 3,(IY+d) - fd cb n 9e ");
+        SPDLOG_DEBUG(logger, "RES 3,(IY+d) - fd cb n 9e ");
         RES(3, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xA6:
-        // logger.debug("RES 4,(IY+d) - fd cb n a6 ");
+        SPDLOG_DEBUG(logger, "RES 4,(IY+d) - fd cb n a6 ");
         RES(4, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xAE:
-        // logger.debug("RES 5,(IY+d) - fd cb n ae ");
+        SPDLOG_DEBUG(logger, "RES 5,(IY+d) - fd cb n ae ");
         RES(5, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xB6:
-        // logger.debug("RES 6,(IY+d) - fd cb n b6 ");
+        SPDLOG_DEBUG(logger, "RES 6,(IY+d) - fd cb n b6 ");
         RES(6, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xBE:
-        // logger.debug("RES 7,(IY+d) - fd cb n be ");
+        SPDLOG_DEBUG(logger, "RES 7,(IY+d) - fd cb n be ");
         RES(7, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xC6:
-        // logger.debug("SET 0,(IY+d) - fd cb n c6 ");
+        SPDLOG_DEBUG(logger, "SET 0,(IY+d) - fd cb n c6 ");
         SET(0, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xCE:
-        // logger.debug("SET 1,(IY+d) - fd cb n ce ");
+        SPDLOG_DEBUG(logger, "SET 1,(IY+d) - fd cb n ce ");
         SET(1, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xD6:
-        // logger.debug("SET 2,(IY+d) - fd cb n d6 ");
+        SPDLOG_DEBUG(logger, "SET 2,(IY+d) - fd cb n d6 ");
         SET(2, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xDE:
-        // logger.debug("SET 3,(IY+d) - fd cb n de ");
+        SPDLOG_DEBUG(logger, "SET 3,(IY+d) - fd cb n de ");
         SET(3, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xE6:
-        // logger.debug("SET 4,(IY+d) - fd cb n e6 ");
+        SPDLOG_DEBUG(logger, "SET 4,(IY+d) - fd cb n e6 ");
         SET(4, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xEE:
-        // logger.debug("SET 5,(IY+d) - fd cb n ee ");
+        SPDLOG_DEBUG(logger, "SET 5,(IY+d) - fd cb n ee ");
         SET(5, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xF6:
-        // logger.debug("SET 6,(IY+d) - fd cb n f6 ");
+        SPDLOG_DEBUG(logger, "SET 6,(IY+d) - fd cb n f6 ");
         SET(6, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       case 0xFE:
-        // logger.debug("SET 7,(IY+d) - fd cb n fe ");
+        SPDLOG_DEBUG(logger, "SET 7,(IY+d) - fd cb n fe ");
         SET(7, MemoryAddress(RegisterPair::IY, currentInstruction[2]));
         break;
       }
       break;
     case 0xE1:
-      // logger.debug("POP IY - fd e1 ");
+      SPDLOG_DEBUG(logger, "POP IY - fd e1 ");
       POP(RegisterPair::IY);
       break;
     case 0xE3:
-      // logger.debug("EX (SP),IY - fd e3 ");
+      SPDLOG_DEBUG(logger, "EX (SP),IY - fd e3 ");
       EX(MemoryAddress(RegisterPair::SP), RegisterPair::IY);
       break;
     case 0xE5:
-      // logger.debug("PUSH IY - fd e5 ");
+      SPDLOG_DEBUG(logger, "PUSH IY - fd e5 ");
       PUSH(RegisterPair::IY);
       break;
     case 0xE9:
-      // logger.debug("JP (IY) - fd e9 ");
+      SPDLOG_DEBUG(logger, "JP (IY) - fd e9 ");
       JP(MemoryAddress(RegisterPair::IY));
       break;
     case 0xF9:
-      // logger.debug("LD SP,IY - fd f9 ");
+      SPDLOG_DEBUG(logger, "LD SP,IY - fd f9 ");
       LD(RegisterPair::SP, RegisterPair::IY);
       break;
     }
     break;
   case 0xFE:
     currentInstruction[1] = next();
-    // logger.debug("CP n - fe n ");
+    SPDLOG_DEBUG(logger, "CP n - fe n ");
     CP(currentInstruction[1]);
     break;
   case 0xFF:
-    // logger.debug("RST 38H - ff ");
+    SPDLOG_DEBUG(logger, "RST 38H - ff ");
     RST(0x38);
     break;
   }
@@ -3441,7 +3443,7 @@ void Processor::DJNZ(std::uint16_t memoryAddress) {
   registers->setB(registers->getB() - 1);
 
   if (registers->getB() > 0) {
-    // logger.debug("B rgstr > 0");
+    SPDLOG_DEBUG(logger, "B rgstr > 0");
     registers->setPC(memoryAddress);
   }
 }
@@ -3930,7 +3932,7 @@ void Processor::RES(std::uint8_t i, std::uint16_t memoryAddress) {
  * instruction.
  */
 void Processor::RET(Condition condition) {
-  // logger.debug("RET cc[y]");
+  SPDLOG_DEBUG(logger, "RET cc[y]");
   if (isConditionTrue(condition)) {
     RET();
   }
@@ -4219,11 +4221,13 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   registers->setCFlag(oldvalue < toSubtract);
 }
 
-void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) { SBC(a, memory->read(memoryAddress)); }
+void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) {
+  SBC(a, memory->read(memoryAddress));
+}
 
 void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
   uint8_t oldvalue = registers->getRegisterValue(a);
-  uint8_t toSubtract = nextByte - registers->getCFlag();
+  uint8_t toSubtract = nextByte + registers->getCFlag();
   uint8_t newvalue = oldvalue - toSubtract;
   registers->setRegister(a, newvalue);
 
@@ -4238,7 +4242,9 @@ void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
   registers->setCFlag(oldvalue < toSubtract);
 }
 
-void Processor::SBC(Rgstr a, Rgstr b) { SBC(a, registers->getRegisterValue(b)); }
+void Processor::SBC(Rgstr a, Rgstr b) {
+  SBC(a, registers->getRegisterValue(b));
+}
 
   /* The Carry flag in the F rgstr is set. */
   /*-

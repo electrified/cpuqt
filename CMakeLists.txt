@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.0.2)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
 macro(use_cxx11)
   if (CMAKE_VERSION VERSION_LESS "3.1")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -14,6 +20,18 @@ set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
 use_cxx11()
+
+INCLUDE(CodeCoverage)
+SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+
+SETUP_TARGET_FOR_COVERAGE(
+    my_coverage_target  # Name for custom target.
+    ./tests/tooltests         # Name of the test driver executable that runs the tests.
+              # NOTE! This should always have a ZERO as exit code
+              # otherwise the coverage generation will not complete.
+    coverage            # Name of output directory.
+)
 
 # SPDLOG setup
 FILE(GLOB SPDLOG_INCLUDES

@@ -1,5 +1,5 @@
-#ifndef TESTCOMPUTER_H
-#define TESTCOMPUTER_H
+#pragma once
+
 #include "../Z80/processor.h"
 #include "../Z80/BadgerMemory.h"
 #include "../Z80/IO.h"
@@ -16,5 +16,3 @@ public:
   IO *getIO();
   Processor *getProcessor();
 };
-
-#endif // TESTCOMPUTER_H

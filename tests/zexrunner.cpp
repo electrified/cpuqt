@@ -1,6 +1,7 @@
 #include "mocks/test_computer.h"
 #include "../computer/utils.h"
 #include <boost/timer/timer.hpp>
+#include <iostream>
 
 int main(int argc, char **argv) {
   TestComputer *comp = new TestComputer();

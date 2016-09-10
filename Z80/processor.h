@@ -19,6 +19,8 @@ class UnimplementedInstructionException : public std::exception {
 };
 
 class Processor {
+  std::shared_ptr<spdlog::logger> logger;
+  
   Memory *memory;
   IO *io;
   Registers *registers;

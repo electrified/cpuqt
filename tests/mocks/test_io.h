@@ -1,7 +1,6 @@
-#ifndef TESTIO_H
-#define TESTIO_H
+#pragma once
 
-#include "IO.h"
+#include "../../Z80/IO.h"
 #include <cstdint>
 
 class TestIO : public IO {
@@ -14,5 +13,3 @@ public:
   std::uint8_t read(std::uint16_t address);
   void write(std::uint16_t address, std::uint8_t value);
 };
-
-#endif // TESTIO_H

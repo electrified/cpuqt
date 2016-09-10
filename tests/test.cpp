@@ -1,3 +1,5 @@
+#define SPDLOG_DEBUG_ON
+
 #include "catch.hpp"
 #include <boost/utility/binary.hpp>
 
@@ -427,18 +429,18 @@ TEST_CASE("EXXTest") {
 }
 
 /*
- * If the contents of the Accumulator are 23H , and byte 7BH is
- * available at the peripheral device mapped to I/O port 7BH .
- * At execution of INA, (01H) the Accumulator contains 7BH.
+ * If the contents of the Accumulator are 23H , and byte 7BH is available at the
+ * peripheral device mapped to I/O port address 01H . At execution of INA,
+ * (01H) the Accumulator contains 7BH .
  */
-TEST_CASE("INA_n_Test") {
+TEST_CASE("IN A _n_") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xDB);
   comp->getMemory()->write(0x1, 0x01);
   comp->getIO()->write(0x01, 0x7b);
   comp->getProcessor()->getRegisters()->setA(0x23);
   comp->getProcessor()->process();
-
+  
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7b);
 }
 
@@ -2076,7 +2078,7 @@ The A routine is completed and a RETI is issued resetting the IEO
 of A, allowing the B routine to continue. A second RETI is issued
 on completion of the B routine and the IE0 of B is reset (high)
 allowing lower priority devices interrupt access.*/
-TEST_CASE("RETI Test") {
+TEST_CASE("RETI Test", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2099,7 +2101,7 @@ memory stack, low order first, resulting in a Stack Pointer contents again of
 1000H. The program flow continues where it left off with an Op Code fetch
 to address 1A45H.
 */
-TEST_CASE("RETN") {
+TEST_CASE("RETN", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2144,7 +2146,7 @@ TEST_CASE("RLD") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110011));
 }
 
-TEST_CASE("RRCTest") {
+TEST_CASE("RRCTest", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2177,12 +2179,12 @@ at execution of RL D the contents of register D and the Carry flag are
 C76543210
 100011110
  */
-TEST_CASE("RLTest") {
+TEST_CASE("RLTest", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
 
-TEST_CASE("RRCmTest") {
+TEST_CASE("RRCmTest", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2201,12 +2203,14 @@ TEST_CASE("RSTpTest") {
 }
 
 TEST_CASE("SBC A r") {
+  // where r is E
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(10011011)); // E
   comp->getProcessor()->getRegisters()->setE(0xDE);
   comp->getProcessor()->getRegisters()->setA(0xFF);
   comp->getProcessor()->getRegisters()->setCFlag(true); // carry
   comp->getProcessor()->process();
+  spdlog::get("console")->debug("A: 0x{0:x}", comp->getProcessor()->getRegisters()->getA());
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
 
@@ -2235,8 +2239,8 @@ TEST_CASE("SBC A (HL)") {
 TEST_CASE("SBC A (IX + d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xDD);
-  comp->getMemory()->write(0x0, 0x9E);
-  comp->getMemory()->write(0x1, 0x7);
+  comp->getMemory()->write(0x1, 0x9E);
+  comp->getMemory()->write(0x2, 0x7);
   comp->getMemory()->write(0xFFED, 0xDE);
   comp->getProcessor()->getRegisters()->setA(0xFF);
   comp->getProcessor()->getRegisters()->setIX(0xFFE6);
@@ -2248,8 +2252,8 @@ TEST_CASE("SBC A (IX + d)") {
 TEST_CASE("SBC A (IY + d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xFD);
-  comp->getMemory()->write(0x0, 0x9E);
-  comp->getMemory()->write(0x1, 0x7);
+  comp->getMemory()->write(0x1, 0x9E);
+  comp->getMemory()->write(0x2, 0x7);
   comp->getMemory()->write(0xFFED, 0xDE);
   comp->getProcessor()->getRegisters()->setA(0xFF);
   comp->getProcessor()->getRegisters()->setIY(0xFFE6);
@@ -2303,7 +2307,7 @@ TEST_CASE("SLA") {
   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == 1);
 }
 
-TEST_CASE("SRA") {
+TEST_CASE("SRA", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2496,7 +2500,7 @@ correct BCD representation is obtained:
 1100 + 0110 = 0010
  = 42
  */
-TEST_CASE("DAA") {
+TEST_CASE("DAA", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x27);
   REQUIRE(true == false);

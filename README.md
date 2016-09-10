@@ -16,6 +16,15 @@ How To Build
 * Ensure CMake is installed
 * Ensure relevant dev libraries are installed: Boost, Qt5, SDL2, Lua etc
 
+Update modules to latest versions
+git submodule update --init --recursive --remote
+
+Run tests with code coverage
+* Ensure gcov and lcov are installed
+* cmake -DCMAKE_BUILD_TYPE=Debug 
+* make 
+* make my_coverage_target 
+
 Code incorporated from elsewhere
 * Modified zexdoc from https://github.com/anotherlin/z80emu
 
