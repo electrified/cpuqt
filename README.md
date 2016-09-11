@@ -37,7 +37,7 @@ Document available console commands
 Do UI scaling
 Fix snapshot loading!
 Improve code style/ naming, https://google.github.io/styleguide/cppguide.html#Naming
-
+Show list of breakpoints in UI
 Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
 
 
