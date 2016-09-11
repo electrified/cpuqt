@@ -15,8 +15,6 @@ find_package (Threads)
 set (tooltests_SRC
         mocks/test_computer.h mocks/test_computer.cpp
         mocks/test_io.h mocks/test_io.cpp
-        ../computer/cpm/badgerio.cpp ../computer/cpm/badgerio.h
-        ../computer/cpm/consolebadgerio.cpp ../computer/cpm/consolebadgerio.h
         test.cpp
         graphics_test.cpp
         computer_utils_test.cpp
@@ -25,10 +23,9 @@ set (tooltests_SRC
 
 set (zexrunner_SRC
         zexrunner.cpp
-        mocks/test_computer.h mocks/test_computer.cpp
-        mocks/test_io.h mocks/test_io.cpp
-        ../computer/cpm/consolebadgerio.cpp ../computer/cpm/consolebadgerio.h
-        ../computer/cpm/badgerio.cpp ../computer/cpm/badgerio.h
+        mocks/zexrunner_computer.h mocks/zexrunner_computer.cpp
+        ../computer/cpm/serial_io.cpp ../computer/cpm/serial_io.h
+        ../computer/cpm/console_serial_io.cpp ../computer/cpm/console_serial_io.h
         )
 
 add_executable(tooltests ${tooltests_SRC})

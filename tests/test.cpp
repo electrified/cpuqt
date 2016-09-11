@@ -20,7 +20,7 @@ std::unique_ptr<TestComputer> setupComputer() {
 pair contains 6666H, and address 6666H contains 10H, at execution of
 ADC A, (HL) the Accumulator contains 27H.
 */
-TEST_CASE("ADCA_HL_Test", "Instructions") {
+TEST_CASE("ADCA (HL)", "Instructions") {
   //    std::unique_ptr<TestComputer> comp = setupComputer();
   TestComputer *comp = new TestComputer();
   comp->getMemory()->write(0x0, 0x8E);
@@ -101,8 +101,49 @@ TEST_CASE("ADD HL ss") {
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x3fff);
   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
-  // REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
+
+TEST_CASE("ADD A, n") {
+/* If the Accumulator contains 23h , then upon the execution of an ADD A, 33h instruction,
+the Accumulator contains 56h.*/
+  std::unique_ptr<TestComputer> comp = setupComputer();
+
+  comp->getMemory()->write(0x0, 0xC6);
+  comp->getMemory()->write(0x1, 0x33);
+  comp->getProcessor()->getRegisters()->setA(0x23);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x56);
+//   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+}
+
+TEST_CASE("ADD A, r") {
+/* If the Accumulator contains 44h and Register C contains 11h , then upon the execution of
+an ADD A, C instruction, the Accumulator contains 55h .*/
+  std::unique_ptr<TestComputer> comp = setupComputer();
+
+  comp->getMemory()->write(0x0, BOOST_BINARY(10000001));
+  comp->getProcessor()->getRegisters()->setA(0x44);
+  comp->getProcessor()->getRegisters()->setC(0x11);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x55);
+//   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+}
+
+TEST_CASE("ADD A, (HL)") {
+/* If the Accumulator contains A0h , register pair HL contains 2323h , and memory location
+2323h contains byte 08h , then upon the execution of an ADD A, (HL) instruction, the
+Accumulator contains A8h. */
+  std::unique_ptr<TestComputer> comp = setupComputer();
+
+  comp->getMemory()->write(0x0, 0x86);
+  comp->getProcessor()->getRegisters()->setA(0xa0);
+  comp->getProcessor()->getRegisters()->setHL(0x2323);
+    comp->getMemory()->write(0x2323, 0x08);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xA8);
+//   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+}
+
 
 TEST_CASE("EXAFAFprimeTest") {
   /*
@@ -156,7 +197,7 @@ TEST_CASE("BITb_IXplusd_Test") {
   REQUIRE((comp->getMemory()->read(0x2004) & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000));
 }
 
-TEST_CASE("CCFTest") {
+TEST_CASE("CCF") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x3F);
   comp->getProcessor()->getRegisters()->setCFlag(false);
@@ -166,7 +207,7 @@ TEST_CASE("CCFTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
 }
 
-TEST_CASE("CPLTest") {
+TEST_CASE("CPL") {
   /*
    * If the contents of the Accumulator are 1011 0100 , at execution of
    * CPL the Accumulator contents are 0100 1011 .
@@ -185,7 +226,7 @@ TEST_CASE("CPLTest") {
 * and memory location 6000H contains 60H, the instruction CP (HL)
 * results in the P/V flag in the F register resetting.
 */
-TEST_CASE("CPrTest") {
+TEST_CASE("CP r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x6000, 0x60);
   comp->getProcessor()->getRegisters()->setHL(0x6000);
@@ -194,7 +235,7 @@ TEST_CASE("CPrTest") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
-TEST_CASE("CPrTest2") {
+TEST_CASE("CP r Test2") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(10111101));
   comp->getMemory()->write(0x1, BOOST_BINARY(10111101)); // L
@@ -260,6 +301,7 @@ TEST_CASE("CP s Test2") {
 }
 
 TEST_CASE("DEC r 8Bit") {
+  
   /*
    * f the D register contains byte 2AH, at execution of DEC D register D
    * contains 29H.
@@ -280,7 +322,7 @@ TEST_CASE("DEC r 16Bit") {
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0xFFFF);
 }
 
-TEST_CASE("DECss") {
+TEST_CASE("DEC ss") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(00101011));
   comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::HL, 0x1001);
@@ -296,7 +338,7 @@ TEST_CASE("DI") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->isIFF2());
 }
 
-TEST_CASE("DJNZeTest") {
+TEST_CASE("DJ NZ, e") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   // LD B, 1
   comp->getMemory()->write(0x0, 0x6);
@@ -406,7 +448,7 @@ TEST_CASE("EXDEHLTest") {
 * contains 3DA2H ; and HL' contains 8859H .
 */
 
-TEST_CASE("EXXTest") {
+TEST_CASE("EXX") {
 
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xD9);
@@ -433,7 +475,7 @@ TEST_CASE("EXXTest") {
  * peripheral device mapped to I/O port address 01H . At execution of INA,
  * (01H) the Accumulator contains 7BH .
  */
-TEST_CASE("IN A _n_") {
+TEST_CASE("IN A (n)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xDB);
   comp->getMemory()->write(0x1, 0x01);
@@ -444,7 +486,7 @@ TEST_CASE("IN A _n_") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7b);
 }
 
-TEST_CASE("INCr16BitTest") {
+TEST_CASE("INC rr") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   // increment BC
   comp->getMemory()->write(0x0, BOOST_BINARY(00000011));
@@ -453,7 +495,7 @@ TEST_CASE("INCr16BitTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 51);
 }
 
-TEST_CASE("INCr8BitTest") {
+TEST_CASE("INC r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(00111100));
   comp->getProcessor()->getRegisters()->setRegister(Rgstr::A, 50);
@@ -461,7 +503,7 @@ TEST_CASE("INCr8BitTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 51);
 }
 
-TEST_CASE("INCssTest") {
+TEST_CASE("INC ss") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   // increment BC
   comp->getMemory()->write(0x0, BOOST_BINARY(00000011));
@@ -470,7 +512,19 @@ TEST_CASE("INCssTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 51);
 }
 
-TEST_CASE("JPHLTest") {
+TEST_CASE("INC (HL)") {
+  /*
+   * If the HL register pair contains 3434h and address 3434h contains 82h , then upon the
+execution of an INC (HL) instruction, memory location 3434h contains 83h .*/
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x34);
+  comp->getMemory()->write(0x3434, 0x82);
+  comp->getProcessor()->getRegisters()->setRegisterPair(RegisterPair::HL, 0x3434);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getMemory()->read(0x3434) == 0x83);
+}
+
+TEST_CASE("JP HL") {
 
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0, 0xE9);
@@ -486,7 +540,7 @@ TEST_CASE("JPHLTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1145);
 }
 
-TEST_CASE("JPnnTest") {
+TEST_CASE("JP nn") {
 
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0, 0xC3);
@@ -564,6 +618,18 @@ TEST_CASE("JR e negative") {
   REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x47F);
 }
 
+TEST_CASE("JR C, e") {
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x480, 0x38);
+  comp->getMemory()->write(0x481, 0xFA); //two's complement of 6
+  comp->getProcessor()->getRegisters()->setPC(0x480);
+  comp->getProcessor()->getRegisters()->setCFlag(true);
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
+
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x47C);
+}
+
 /**
 * If the Accumulator contains 7AH and the BC register pair contains
 * 1212H the instruction LD (BC) , A results in 7AH in memory location
@@ -590,7 +656,7 @@ TEST_CASE("LD_BC_ATest") {
 * memory location 1128H .
 */
 
-TEST_CASE("LD_DE_ATest") {
+TEST_CASE("LD (DE), A") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x12);
   comp->getProcessor()->getRegisters()->setA(0xA0);
@@ -606,12 +672,27 @@ TEST_CASE("LD_DE_ATest") {
   REQUIRE(comp->getMemory()->read(0x1128) == 0xA0);
 }
 
+TEST_CASE("LD (HL), n") {
+  /*
+   * If the HL register pair contains 4444h , the instruction LD (HL), 28h results in the mem-
+ory location 4444h containing byte 28h .*/
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0x36);
+  comp->getMemory()->write(0x1, 0x28);
+  comp->getProcessor()->getRegisters()->setHL(0x4444);
+
+  REQUIRE(comp->getMemory()->read(0x4444) == 0x0);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getMemory()->read(0x4444) == 0x28);
+}
+
+
 /**
 * If the contents of the Accumulator are int D7H , at execution of LD
 * (3141 H) , A D7H results in memory location 3141H .
 */
 
-TEST_CASE("LD_nn_ATest") {
+TEST_CASE("LD (nn), A") {
 
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x32);
@@ -632,7 +713,7 @@ TEST_CASE("LD_nn_ATest") {
 * 48H .
 */
 
-TEST_CASE("LD (nn) HL") {
+TEST_CASE("LD (nn), HL") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x22);
   comp->getMemory()->write(0x1, 0x29);
@@ -712,7 +793,7 @@ TEST_CASE("LD A (nn)") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x04);
 }
 
-TEST_CASE("LDAITest") {
+TEST_CASE("LDA I") {
   // The contents of the Interrupt Vector Register I are loaded to the
   // Accumulator
 
@@ -752,7 +833,7 @@ TEST_CASE("LDAITest") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
 }
 
-TEST_CASE("LDARTest") {
+TEST_CASE("LD A, R") {
   // The contents of Memory Refresh Register R are loaded to the
   // Accumulator.
 
@@ -769,7 +850,7 @@ TEST_CASE("LDARTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getF() == 128);
 }
 
-TEST_CASE("LDddnnTest") {
+TEST_CASE("LD dd, nn") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x1);
   comp->getMemory()->write(0x1, 0x45);
@@ -800,7 +881,7 @@ TEST_CASE("LDddnnTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x21fc);
 }
 
-TEST_CASE("LD HL (nn)") {
+TEST_CASE("LD HL, (nn)") {
   /*
    * If address 2045H contains 37H , and address 2046H contains A1H , at
    * instruction LD HL , (2045H) the HL register pair contains A137H .
@@ -1065,7 +1146,7 @@ TEST_CASE("PUSH IY Test") {
  * memory address 1005H contains 33H,
  * and the Stack Pointer contains 1005H.
 */
-TEST_CASE("PUSH Test") {
+TEST_CASE("PUSH") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(11110101));
   comp->getProcessor()->getRegisters()->setAF(0x2233);
@@ -1085,7 +1166,7 @@ TEST_CASE("PUSH Test") {
  * is 18B5H , pointing to the address of the next program Op Code to be
  * fetched.
  */
-TEST_CASE("RET cc Test") {
+TEST_CASE("RET cc") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getProcessor()->getRegisters()->setSignFlag(true);
   comp->getProcessor()->getRegisters()->setPC(0x3535);
@@ -1245,7 +1326,7 @@ TEST_CASE("XORsTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11001011));
 }
 
-TEST_CASE("XOR (HL) Test") {
+TEST_CASE("XOR (HL)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xAE);
   comp->getMemory()->write(0x1000, 0x96); // 10010110
@@ -1292,7 +1373,7 @@ TEST_CASE("ADCHLssTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x4b);
 }
 
-TEST_CASE("ADDIXppTest") {
+TEST_CASE("ADD IX, pp") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xDD);
   comp->getMemory()->write(0x1, BOOST_BINARY(00001001)); // bc
@@ -1302,7 +1383,7 @@ TEST_CASE("ADDIXppTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x5888);
 }
 
-TEST_CASE("ADDIYrrTest") {
+TEST_CASE("ADD IY, rr") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xFD);
   comp->getMemory()->write(0x1, BOOST_BINARY(00001001)); // bc
@@ -1312,7 +1393,7 @@ TEST_CASE("ADDIYrrTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x5888);
 }
 
-TEST_CASE("ANDrTest") {
+TEST_CASE("AND r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(10100000));
   comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(01111011));
@@ -1321,7 +1402,7 @@ TEST_CASE("ANDrTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
 
-TEST_CASE("ANDnTest") {
+TEST_CASE("AND n") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xe6);
   comp->getMemory()->write(0x1, BOOST_BINARY(01111011));
@@ -1696,10 +1777,6 @@ TEST_CASE("DEC_iyplusd_Test") {
   REQUIRE(comp->getMemory()->read(0xffed) == 0xfe);
 }
 
-/**
- *
- */
-
 TEST_CASE("EXAFAFPrimeTest") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x08);
@@ -1863,7 +1940,7 @@ BC contains 0000H
 (1112H) contains 36H (2223H) contains 36H
 (1113H) contains A5H (2224H) contains A5H
 */
-TEST_CASE("LDIRTest") {
+TEST_CASE("LDIR") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0xB0);
@@ -1900,7 +1977,7 @@ HL contains 1112H
 DE contains 2223H
 (2222H) contains 88H
 BC contains 6H*/
-TEST_CASE("LDITest") {
+TEST_CASE("LDI") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0xA0);
@@ -1921,7 +1998,7 @@ TEST_CASE("LDITest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0x6);
 }
 
-TEST_CASE("NOPTest") {
+TEST_CASE("NOP") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x0);
 
@@ -1932,15 +2009,23 @@ TEST_CASE("NOPTest") {
 /* If the H register contains 48H (0100 0100), and the Accumulator contains
 12H (0001 0010), at execution of OR H the Accumulator contains 5AH
 (0101 1010).*/
-TEST_CASE("ORTest") {
+TEST_CASE("OR r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(10110100));
   comp->getProcessor()->getRegisters()->setH(BOOST_BINARY(01000100));
   comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010010));
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01010110));
+}
 
-  // TODO check other variants
+TEST_CASE("OR (HL)") {
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xB6);
+  comp->getMemory()->write(0x1234, BOOST_BINARY(01000100));
+  comp->getProcessor()->getRegisters()->setHL(0x1234);
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(00010010));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01010110));
 }
 
 /* If the contents of register C are 07H, the contents of register B are 03H, the
@@ -1955,7 +2040,7 @@ mapped to I/O port address 07H in the following sequence:
 03H
 A9H
 51H*/
-TEST_CASE("OTDRTest") {
+TEST_CASE("OTDR") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0xBB);
@@ -1989,7 +2074,7 @@ mapped to I/O port address 07H in the following sequence:
 51H
 A9H
 03H*/
-TEST_CASE("OTIRTest") {
+TEST_CASE("OTIR") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0xB3);
@@ -2017,7 +2102,7 @@ TEST_CASE("OTIRTest") {
  HL register pair contains 0FFFH, and byte 59H is written to the peripheral
  device mapped to I/O port address 07H.
  */
-TEST_CASE("OUTDTest") {
+TEST_CASE("OUTD") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0xAB);
@@ -2041,7 +2126,7 @@ then after the execution of OUTI
 register B contains 0FH,
 the HL register pair contains 1001H,
 and byte 59H is written to the peripheral device mapped to I/O port address 07H.*/
-TEST_CASE("OUTITest") {
+TEST_CASE("OUTI") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0xA3);
@@ -2058,13 +2143,23 @@ TEST_CASE("OUTITest") {
 
 /* At execution of RES 6, D, bit 6 in register D resets. Bit 0 in register D is the
 least-significant bit.*/
-TEST_CASE("RESTest") {
+TEST_CASE("RES b, r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xCB);
   comp->getMemory()->write(0x1, BOOST_BINARY(10110010));
   comp->getProcessor()->getRegisters()->setD(BOOST_BINARY(11111111));
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getD() == BOOST_BINARY(10111111));
+}
+
+TEST_CASE("RES b, (HL)") {
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(10100110)); //bit 4
+  comp->getMemory()->write(0x2345, BOOST_BINARY(11111111));
+  comp->getProcessor()->getRegisters()->setHL(0x2345);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getMemory()->read(0x2345) == BOOST_BINARY(11101111));
 }
 
 /* Given: Two interrupting devices, with A and B connected in a daisy-chain
@@ -2179,12 +2274,12 @@ at execution of RL D the contents of register D and the Carry flag are
 C76543210
 100011110
  */
-TEST_CASE("RLTest", "[!mayfail]") {
+TEST_CASE("RL", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
 
-TEST_CASE("RRCmTest", "[!mayfail]") {
+TEST_CASE("RRCm", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2194,7 +2289,7 @@ TEST_CASE("RRCmTest", "[!mayfail]") {
  * RST 18H (Object code 11011111) the PC contains 0018H, as the address
  * of the next Op Code fetched.
  */
-TEST_CASE("RSTpTest") {
+TEST_CASE("RSTp") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x15B3, BOOST_BINARY(11011111));
   comp->getProcessor()->getRegisters()->setPC(0x15B3);

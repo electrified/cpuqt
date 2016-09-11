@@ -1,10 +1,10 @@
 #pragma once
 
-#include "computer/cpm/badgerio.h"
+#include "computer/cpm/serial_io.h"
 
 #include <QObject>
 
-class QtBadgerIO : public QObject, public BadgerIO {
+class QtBadgerIO : public QObject, public SerialIO {
   Q_OBJECT
 public:
   QtBadgerIO();

@@ -843,7 +843,7 @@ void Processor::decode() {
   case 0xC4:
     currentInstruction[1] = next();
     currentInstruction[2] = next();
-//     logger.debug("CALL NZ,(nn) - c4 n n ");
+    SPDLOG_DEBUG(logger, "CALL NZ,(nn) - c4 n n ");
     CALL(Condition::NZ, MemoryAddress((currentInstruction[2] << 8) | currentInstruction[1]));
     break;
   case 0xC5:

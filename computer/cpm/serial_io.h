@@ -5,7 +5,7 @@
 
 #include "../../Z80/IO.h"
 
-class BadgerIO : public IO {
+class SerialIO : public IO {
 private:
   // DLAB = Divisor Latch Access Bit
   static const int UART_PORT = 0x80; // The UART's data buffer for in/out
@@ -29,8 +29,8 @@ private:
   std::uint8_t memory[0xffff];
 
 public:
-  BadgerIO();
-  ~BadgerIO();
+  SerialIO();
+  ~SerialIO();
   std::uint8_t read(std::uint16_t address);
   void write(std::uint16_t address, std::uint8_t value);
   virtual void outputCharacter(std::uint8_t value) = 0;

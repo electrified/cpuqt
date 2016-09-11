@@ -1,33 +1,33 @@
-#include "badgerio.h"
+#include "serial_io.h"
 #include <boost/utility/binary.hpp>
 
-BadgerIO::BadgerIO() {}
+SerialIO::SerialIO() {}
 
-BadgerIO::~BadgerIO() {}
+SerialIO::~SerialIO() {}
 
-std::uint8_t BadgerIO::read(std::uint16_t address) {
+std::uint8_t SerialIO::read(std::uint16_t address) {
   int returnValue = 0;
   if ((address & UART_PORT) == UART_PORT) {
     switch (address) {
-    case BadgerIO::UART_DLL: // case UART_PORT:
+    case SerialIO::UART_DLL: // case UART_PORT:
       //                    returnValue = DLL;
       returnValue = key;
       break;
-    case BadgerIO::UART_DLM:
+    case SerialIO::UART_DLM:
       returnValue = DLM;
       break;
-    case BadgerIO::UART_FCR:
+    case SerialIO::UART_FCR:
       returnValue = FCR;
       break;
     //				case UART_IER:
     //					break;
-    case BadgerIO::UART_LCR:
+    case SerialIO::UART_LCR:
       returnValue = LCR;
       break;
-    case BadgerIO::UART_MCR:
+    case SerialIO::UART_MCR:
       returnValue = MCR;
       break;
-    case BadgerIO::UART_LSR:
+    case SerialIO::UART_LSR:
       key = 0;
       if (keyboardBuffer.size() > 1) {
         key = keyboardBuffer.at(0);
@@ -43,7 +43,7 @@ std::uint8_t BadgerIO::read(std::uint16_t address) {
   return returnValue;
 }
 
-void BadgerIO::write(std::uint16_t address, std::uint8_t value) {
+void SerialIO::write(std::uint16_t address, std::uint8_t value) {
   if ((address & UART_PORT) == UART_PORT) {
     switch (address) {
     case UART_DLL:
