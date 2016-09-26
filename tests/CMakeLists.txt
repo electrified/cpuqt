@@ -17,7 +17,7 @@ set (tooltests_SRC
         mocks/test_io.h mocks/test_io.cpp
         test.cpp
         graphics_test.cpp
-        computer_utils_test.cpp
+#         computer_utils_test.cpp
         catch.cpp
         )
 

@@ -2,6 +2,7 @@
 
 #include "catch.hpp"
 #include <boost/utility/binary.hpp>
+#include "spdlog/spdlog.h"
 
 #include "../Z80/processor.h"
 #include "../Z80/BadgerMemory.h"
@@ -9,6 +10,8 @@
 #include "../Z80/RegisterPair.hpp"
 #include "mocks/test_computer.h"
 #include "../Z80/utils.h"
+
+// std::shared_ptr<spdlog::logger> logger = spdlog::get("console");
 
 std::unique_ptr<TestComputer> setupComputer() {
   std::unique_ptr<TestComputer> proc(new TestComputer());
@@ -1084,7 +1087,7 @@ TEST_CASE("POPIXTest") {
 * Register IY containing 3355H, and the Stack Pointer containing 1002H.
 */
 
-TEST_CASE("POPIYTest") {
+TEST_CASE("POP IY") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xFD);
   comp->getMemory()->write(0x1, 0xE1);
@@ -1102,7 +1105,7 @@ TEST_CASE("POPIYTest") {
 * register pair HL containing 3355H , and the Stack Pointer containing
 * 1002H
 */
-TEST_CASE("POP qq Test") {
+TEST_CASE("POP qq") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(11100001)); // HL
   comp->getMemory()->write(0x1000, 0x55);
@@ -1113,7 +1116,7 @@ TEST_CASE("POP qq Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1002);
 }
 
-TEST_CASE("PUSH IX Test") {
+TEST_CASE("PUSH IX") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xDD);
   comp->getMemory()->write(0x1, 0xE5);
@@ -1126,7 +1129,7 @@ TEST_CASE("PUSH IX Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getSP() == 0x1005);
 }
 
-TEST_CASE("PUSH IY Test") {
+TEST_CASE("PUSH IY") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xFD);
   comp->getMemory()->write(0x1, 0xE5);
@@ -1187,7 +1190,7 @@ TEST_CASE("RET cc") {
  * 2002H, and the contents of the Program Counter is 18B5H, pointing to
  * the address of the next program Op Code to be fetched.
  */
-TEST_CASE("RET Test") {
+TEST_CASE("RET") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x3535, 0xC9);
   comp->getMemory()->write(0x2000, 0xB5);
@@ -1199,7 +1202,7 @@ TEST_CASE("RET Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x18B5);
 }
 
-TEST_CASE("RLA Test") {
+TEST_CASE("RLA") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getProcessor()->getRegisters()->setCFlag(true);
   comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01110110));
@@ -1209,7 +1212,7 @@ TEST_CASE("RLA Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11101101));
 }
 
-TEST_CASE("RLCA Test") {
+TEST_CASE("RLCA") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   // increment BC
   comp->getMemory()->write(0x0, 0x07);
@@ -1220,7 +1223,7 @@ TEST_CASE("RLCA Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag());
 }
 
-TEST_CASE("RRA Test") {
+TEST_CASE("RRA") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x1F);
   comp->getProcessor()->getRegisters()->setCFlag(false);
@@ -1230,7 +1233,7 @@ TEST_CASE("RRA Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110000));
 }
 
-TEST_CASE("RRCA Test") {
+TEST_CASE("RRCA") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x0F);
   comp->getProcessor()->getRegisters()->setCFlag(false);
@@ -1242,7 +1245,7 @@ TEST_CASE("RRCA Test") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getNFlag());
 }
 
-TEST_CASE("RRDTest") {
+TEST_CASE("RRD") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0x67);
@@ -1255,7 +1258,7 @@ TEST_CASE("RRDTest") {
   REQUIRE(comp->getMemory()->read(0x5000) == BOOST_BINARY(01000010));
 }
 
-TEST_CASE("SCFTest") {
+TEST_CASE("SCF") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x37);
   comp->getProcessor()->getRegisters()->setNFlag(true);
@@ -1269,7 +1272,7 @@ TEST_CASE("SCFTest") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getHFlag());
 }
 
-TEST_CASE("SETb_HL_Test") {
+TEST_CASE("SET b (HL)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xCB);
   comp->getMemory()->write(0x1, BOOST_BINARY(11100110));
@@ -1317,7 +1320,7 @@ TEST_CASE("SETbrTest") {
   REQUIRE((comp->getProcessor()->getRegisters()->getA() & BOOST_BINARY(10000)) == BOOST_BINARY(10000));
 }
 
-TEST_CASE("XORsTest") {
+TEST_CASE("XOR s") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(10101011));
   comp->getProcessor()->getRegisters()->setE(0x96); // 10010110
@@ -1393,13 +1396,26 @@ TEST_CASE("ADD IY, rr") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x5888);
 }
 
+const Rgstr register_array[] = {Rgstr::B, Rgstr::C, Rgstr::D, Rgstr::E, Rgstr::H, Rgstr::L, Rgstr::A};
+const std::uint8_t register_values[] = {BOOST_BINARY(000), BOOST_BINARY(001), BOOST_BINARY(010), BOOST_BINARY(011), BOOST_BINARY(100), BOOST_BINARY(101), BOOST_BINARY(111)};
+const std::uint8_t result[] = {BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(11000011)};
+
 TEST_CASE("AND r") {
-  std::unique_ptr<TestComputer> comp = setupComputer();
-  comp->getMemory()->write(0x0, BOOST_BINARY(10100000));
-  comp->getProcessor()->getRegisters()->setB(BOOST_BINARY(01111011));
-  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(11000011));
-  comp->getProcessor()->process();
-  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
+  // base instruction - needs to be combined with a register in the lowest 3 bits
+  std::uint8_t and_r = BOOST_BINARY(10100000);
+  
+  
+  for (std::uint8_t i = 0; i < 7; i++) {
+    spdlog::get("console")->debug("AND {0}", register_values[i]);
+    std::unique_ptr<TestComputer> comp = setupComputer();
+    comp->getMemory()->write(0x0, and_r | register_values[i]);
+    comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01111011));
+    comp->getProcessor()->getRegisters()->setRegister(register_array[i], BOOST_BINARY(11000011));
+    spdlog::get("console")->debug("register value {0:x}", comp->getProcessor()->getRegisters()->getRegisterValue(register_array[i]));
+    comp->getProcessor()->process();
+    spdlog::get("console")->debug("a value {0:x}", comp->getProcessor()->getRegisters()->getA());
+    REQUIRE(comp->getProcessor()->getRegisters()->getA() == result[i]);
+  }
 }
 
 TEST_CASE("AND n") {
@@ -1411,7 +1427,7 @@ TEST_CASE("AND n") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
 
-TEST_CASE("AND_HL_Test") {
+TEST_CASE("AND (HL)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xa6);
   comp->getMemory()->write(0x1, 0);
@@ -1424,7 +1440,7 @@ TEST_CASE("AND_HL_Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
 
-TEST_CASE("AND_ixplusd_Test") {
+TEST_CASE("AND (ix+d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xdd);
   comp->getMemory()->write(0x1, 0xa6);
@@ -1436,7 +1452,7 @@ TEST_CASE("AND_ixplusd_Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01000011));
 }
 
-TEST_CASE("AND_iyplusd_Test") {
+TEST_CASE("AND (iy+d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xfd);
   comp->getMemory()->write(0x1, 0xa6);
@@ -1474,7 +1490,7 @@ TEST_CASE("BIT b IY+d") {
 * F register contains 1, and bit 2 in register B remains 0. Bit 0 in register B is
 * the least-significant bit.
 */
-TEST_CASE("BITbrTest") {
+TEST_CASE("BIT br") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xCB);
   comp->getMemory()->write(0x1, BOOST_BINARY(01010000));
@@ -1501,7 +1517,7 @@ Counter is 2135H, pointing to the address of the first Op Code of the
 subroutine now to be executed.
  */
 
-TEST_CASE("CALLccnnTest") {
+TEST_CASE("CALL cc nn") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x1a47, 0xd4);
   comp->getMemory()->write(0x1a48, 0x35);
@@ -1533,7 +1549,7 @@ TEST_CASE("CALLccnnTest") {
  * executed.
  */
 
-TEST_CASE("CALLnnTest") {
+TEST_CASE("CALL nn") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x1A47, 0xCD);
   comp->getMemory()->write(0x1A48, 0x35);
@@ -1558,7 +1574,7 @@ the Z flag in the F register sets,
 and the P/V flag in theF register resets.
 There is no effect on the contents of the Accumulator or address 1111H.
 */
-TEST_CASE("CPITest") {
+TEST_CASE("CPI") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xed);
   comp->getMemory()->write(0x1, 0xa1);
@@ -1583,7 +1599,7 @@ Then, at execution of CPDR the contents of register pair HL are 1115H,
 the contents of the Byte Counter are 0004H, the P/V flag in the F register
 sets, and the Z flag in the F register sets.
 */
-TEST_CASE("CPDRTest") {
+TEST_CASE("CPDR") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   // CPDR
   comp->getMemory()->write(0x0, 0xed);
@@ -1611,7 +1627,7 @@ register resets. There is no effect on the contents of the Accumulator or
 address 1111H.
  */
 
-TEST_CASE("CPDTest") {
+TEST_CASE("CPD") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xed);
   comp->getMemory()->write(0x1, 0xa9);
@@ -1626,7 +1642,7 @@ TEST_CASE("CPDTest") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
-TEST_CASE("CPIRTest") {
+TEST_CASE("CPIR") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xed);
   comp->getMemory()->write(0x1, 0xb1);
@@ -1644,7 +1660,7 @@ TEST_CASE("CPIRTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
 }
 
-TEST_CASE("CPnTest") {
+TEST_CASE("CP n") {
   std::unique_ptr<TestComputer> comp = setupComputer();
 
   comp->getMemory()->write(0x0, 0xfe);
@@ -1661,7 +1677,7 @@ TEST_CASE("CPnTest") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
 
-TEST_CASE("CP_hl_Test") {
+TEST_CASE("CP (hl)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xbe);
   comp->getMemory()->write(0x1, 0xbe);
@@ -1675,7 +1691,7 @@ TEST_CASE("CP_hl_Test") {
   REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getZeroFlag());
 }
 
-TEST_CASE("CP_ixplusd_Test") {
+TEST_CASE("CP (ix+d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xdd);
   comp->getMemory()->write(0x1, 0xbe);
@@ -1719,7 +1735,7 @@ TEST_CASE("CP_iyplusd_Test") {
  * If the contents of Index Register IX are 2006H, at execution of DEC IX
  the contents of Index Register IX are 2005H.
  */
-TEST_CASE("DECIXTest") {
+TEST_CASE("DEC IX") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xdd);
   comp->getMemory()->write(0x1, 0x2b);
@@ -1728,7 +1744,7 @@ TEST_CASE("DECIXTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIX() == 0x2005);
 }
 
-TEST_CASE("DECIYTest") {
+TEST_CASE("DEC IY") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xfd);
   comp->getMemory()->write(0x1, 0x2b);
@@ -1737,7 +1753,7 @@ TEST_CASE("DECIYTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIY() == 0x2005);
 }
 
-TEST_CASE("DECrTest") {
+TEST_CASE("DEC r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(00101101)); // L
   comp->getProcessor()->getRegisters()->setL(0xFF);
@@ -1755,7 +1771,7 @@ TEST_CASE("DEC (HL)") {
   REQUIRE(comp->getMemory()->read(0xffed) == 0xFE);
 }
 
-TEST_CASE("DEC_ixplusd_Test") {
+TEST_CASE("DEC (ix+d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xdd);
   comp->getMemory()->write(0x1, 0x35);
@@ -1766,7 +1782,7 @@ TEST_CASE("DEC_ixplusd_Test") {
   REQUIRE(comp->getMemory()->read(0xffed) == 0xfe);
 }
 
-TEST_CASE("DEC_iyplusd_Test") {
+TEST_CASE("DEC (iy+d)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xfd);
   comp->getMemory()->write(0x1, 0x35);
@@ -1787,14 +1803,14 @@ TEST_CASE("EXAFAFPrimeTest") {
   REQUIRE(comp->getProcessor()->getRegisters()->getAF_alt() == 0x9900);
 }
 
-TEST_CASE("HALTTest") {
+TEST_CASE("HALT") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0x76);
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x1);
 }
 
-TEST_CASE("IM0Test") {
+TEST_CASE("IM0") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0x46);
@@ -1802,7 +1818,7 @@ TEST_CASE("IM0Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 0);
 }
 
-TEST_CASE("IM1Test") {
+TEST_CASE("IM1") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0x56);
@@ -1810,7 +1826,7 @@ TEST_CASE("IM1Test") {
   REQUIRE(comp->getProcessor()->getRegisters()->getIM() == 1);
 }
 
-TEST_CASE("IM2Test") {
+TEST_CASE("IM2") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
   comp->getMemory()->write(0x1, 0x5e);
@@ -1823,7 +1839,7 @@ TEST_CASE("IM2Test") {
 peripheral device mapped to I/O port address 01H. At execution of INA,
 (01H) the Accumulator contains 7BH.
 */
-TEST_CASE("INa_n_Test") {
+TEST_CASE("IN a (n)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getIO()->write(0x1, 0x7b);
   comp->getMemory()->write(0x0, 0xDB);
@@ -2173,7 +2189,7 @@ The A routine is completed and a RETI is issued resetting the IEO
 of A, allowing the B routine to continue. A second RETI is issued
 on completion of the B routine and the IE0 of B is reset (high)
 allowing lower priority devices interrupt access.*/
-TEST_CASE("RETI Test", "[!mayfail]") {
+TEST_CASE("RETI", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2241,7 +2257,7 @@ TEST_CASE("RLD") {
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(01110011));
 }
 
-TEST_CASE("RRCTest", "[!mayfail]") {
+TEST_CASE("RRC", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2253,7 +2269,7 @@ memory location 4343H and the Carry flag are
 at execution of RR (HL) the contents of location 4343H and the Carry
 flag are
 */
-TEST_CASE("RRTest") {
+TEST_CASE("RR") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xCB);
   comp->getMemory()->write(0x1, 0x1E);
@@ -2279,7 +2295,7 @@ TEST_CASE("RL", "[!mayfail]") {
   REQUIRE(true == false);
 }
 
-TEST_CASE("RRCm", "[!mayfail]") {
+TEST_CASE("RRC m", "[!mayfail]") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   REQUIRE(true == false);
 }
@@ -2289,7 +2305,7 @@ TEST_CASE("RRCm", "[!mayfail]") {
  * RST 18H (Object code 11011111) the PC contains 0018H, as the address
  * of the next Op Code fetched.
  */
-TEST_CASE("RSTp") {
+TEST_CASE("RST p") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x15B3, BOOST_BINARY(11011111));
   comp->getProcessor()->getRegisters()->setPC(0x15B3);
