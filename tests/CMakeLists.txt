@@ -33,4 +33,4 @@ add_executable(tooltests ${tooltests_SRC})
 add_executable(zexrunner ${zexrunner_SRC})
 
 target_link_libraries(tooltests ${Boost_LIBRARIES} Z80 ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80 ${Boost_SYSTEM_LIBRARY})
+target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80 ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY})

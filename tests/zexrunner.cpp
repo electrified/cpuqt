@@ -6,16 +6,19 @@
 
 int main(int argc, char **argv) {
   ZexRunnerComputer *comp = new ZexRunnerComputer();
-//   spdlog::get("console")->debug("Computer created");
+  auto console = spdlog::stdout_logger_mt("console");
+  console->set_level(spdlog::level::debug);
+  spdlog::get("console")->debug("Computer created");
   // load zexdoc and cpm output bodge
-//   loadIntoMemory2(comp->getMemory(), 0x100, "./bin_z80/zexdoc.bin");
-//   loadIntoMemory2(comp->getMemory(), 0, "./bin_z80/cpm_io.rom");
-// 
-//   boost::timer::auto_cpu_timer t;
+  loadIntoMemory2(comp->getMemory(), 0x100, "./bin_z80/zexdoc.bin");
+  loadIntoMemory2(comp->getMemory(), 0, "./bin_z80/cpm_io.rom");
+
+  boost::timer::auto_cpu_timer t;
 //   for (std::uint64_t i = 0; i < 100000000; i++) {
+  while (true) {
 //     if (i % 10000000 == 0) {
 //       std::cout << i << std::endl;
 //     }
-//     comp->getProcessor()->process();
-//   }
+    comp->getProcessor()->process();
+  }
 }

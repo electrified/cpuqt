@@ -294,4 +294,6 @@ public:
   void placeProgramCounterOnAddressBus();
   void reset();
   void interruptRequest(bool state);
+private:
+  void do_adc(Rgstr rgstr, std::uint8_t val);
 };

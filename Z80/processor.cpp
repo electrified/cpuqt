@@ -3082,24 +3082,38 @@ void Processor::reset() {
 }
 
 void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
-  registers->setRegisterPair(rp1, registers->getRegisterPairValue(rp1) + registers->getRegisterPairValue(rp2) +
-                                      (registers->getCFlag() ? 1 : 0));
+  uint16_t a = registers->getRegisterPairValue(rp1);
+  uint16_t b = registers->getRegisterPairValue(rp2) + (registers->getCFlag() ? 1 : 0);
+  uint16_t newvalue = a + b;
+  
   // TODO: warning: C4244: 'argument' : conversion from 'uint16_t' to 'uint8_t', possible loss of data
-  setFlags(registers->getRegisterPairValue(rp1));
+  registers->setSignFlag(newvalue & 0x8000);
+  registers->setZeroFlag(newvalue == 0);
+  registers->setHFlag((((a & 0x0FFF) + (b & 0x0FFF)) & 0xF000) != 0);
+  registers->setParityOverflowFlag(a ^ b ^ registers->getCFlag());
+  registers->setNFlag(false);
+  // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
+  // carry out: a + b > 0xffff
+  // equivalent to a > 0xffff - b
+  registers->setCFlag(a > 0xffff - b);
+
+  registers->setRegisterPair(rp1, newvalue);
 }
 
 void Processor::ADC(Rgstr a, Rgstr b) {
-  registers->setRegister(a, registers->getRegisterValue(a) + registers->getRegisterValue(b) +
-                                (registers->getCFlag() ? 1 : 0));
+  do_adc(a, registers->getRegisterValue(b));
 }
 
 void Processor::ADC(Rgstr rgstr, std::uint8_t val) {
-  registers->setRegister(rgstr, registers->getRegisterValue(rgstr) + val + (registers->getCFlag() ? 1 : 0));
+  do_adc(rgstr, val);
 }
 
 void Processor::ADC(Rgstr rgstr, std::uint16_t memoryAddress) {
-  std::uint8_t memoryValue = memory->read(memoryAddress);
-  registers->setRegister(rgstr, registers->getRegisterValue(rgstr) + memoryValue + registers->getCFlag());
+  do_adc(rgstr, memory->read(memoryAddress));
+}
+
+void Processor::do_adc(Rgstr rgstr, std::uint8_t val) {
+  registers->setRegister(rgstr, registers->getRegisterValue(rgstr) + val + (registers->getCFlag() ? 1 : 0));
 }
 
 /**
@@ -3110,7 +3124,6 @@ void Processor::ADC(Rgstr rgstr, std::uint16_t memoryAddress) {
  * object code.
  */
 void Processor::ADD(RegisterPair destination, RegisterPair rgstr) {
-  // TODO: Set flags correctly after these operations!!!
   std::uint16_t a = registers->getRegisterPairValue(destination);
   std::uint16_t b = registers->getRegisterPairValue(rgstr);
   std::uint16_t newvalue = a + b;
@@ -3122,7 +3135,6 @@ void Processor::ADD(RegisterPair destination, RegisterPair rgstr) {
   // carry out: a + b > 0xffff
   // equivalent to a > 0xffff - b
   registers->setCFlag(a > 0xffff - b);
-  registers->setParityOverflowFlag(a ^ b ^ registers->getCFlag());
   registers->setNFlag(false);
 }
 
@@ -4207,17 +4219,19 @@ C is set if borrow; reset otherwise
 */
 void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   uint16_t oldvalue = registers->getRegisterPairValue(h1);
-  uint16_t toSubtract = registers->getRegisterPairValue(h2) + registers->getCFlag();
+  uint16_t toSubtract = registers->getRegisterPairValue(h2) + (registers->getCFlag() ? 1 : 0);
   uint16_t newvalue = oldvalue - toSubtract;
   registers->setRegisterPair(h1, newvalue);
 
+  
   registers->setSignFlag(newvalue & 0x8000);
   registers->setZeroFlag(newvalue == 0);
-
-  // Compare with 0 to remove warning: C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-  //     registers->setHFlag((((oldvalue & 0x0FFF) + (newvalue & 0x0FFF)) & 0xF000) !=0);
-
+  registers->setHFlag((((newvalue & 0xF000) + (toSubtract & 0xF000)) & 0xF000) != (oldvalue & 0xF000));
+  registers->setParityOverflowFlag(oldvalue ^ toSubtract ^ registers->getCFlag());
   registers->setNFlag(true);
+  // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
+  // carry out: a - b < 0
+  // equivalent to a < 0 + b
   registers->setCFlag(oldvalue < toSubtract);
 }
 
