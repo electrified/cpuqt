@@ -235,7 +235,7 @@ TEST_CASE("CP r") {
   comp->getProcessor()->getRegisters()->setHL(0x6000);
   comp->getProcessor()->getRegisters()->setA(0x63);
   comp->getProcessor()->process();
-  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getPVFlag());
 }
 
 TEST_CASE("CP r Test2") {
@@ -1586,7 +1586,7 @@ TEST_CASE("CPI") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0);
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1112);
   REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getPVFlag());
 }
 
 /*
@@ -1615,7 +1615,7 @@ TEST_CASE("CPDR") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 4);
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1115);
   REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-  REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getPVFlag());
 }
 
 /*
@@ -1639,7 +1639,7 @@ TEST_CASE("CPD") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 0);
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1110);
   REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  REQUIRE_FALSE(comp->getProcessor()->getRegisters()->getPVFlag());
 }
 
 TEST_CASE("CPIR") {
@@ -1657,7 +1657,7 @@ TEST_CASE("CPIR") {
   REQUIRE(comp->getProcessor()->getRegisters()->getBC() == 4);
   REQUIRE(comp->getProcessor()->getRegisters()->getHL() == 0x1114);
   REQUIRE(comp->getProcessor()->getRegisters()->getZeroFlag());
-  REQUIRE(comp->getProcessor()->getRegisters()->getParityOverflowFlag());
+  REQUIRE(comp->getProcessor()->getRegisters()->getPVFlag());
 }
 
 TEST_CASE("CP n") {

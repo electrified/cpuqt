@@ -170,9 +170,9 @@ void Registers::setNFlag(bool flag) {
   }
 }
 
-bool Registers::getParityOverflowFlag() { return (AF.bytes.low & BOOST_BINARY(100)) == BOOST_BINARY(100); }
+bool Registers::getPVFlag() { return (AF.bytes.low & BOOST_BINARY(100)) == BOOST_BINARY(100); }
 
-void Registers::setParityOverflowFlag(bool flag) {
+void Registers::setPVFlag(bool flag) {
   if (flag) {
     AF.bytes.low |= BOOST_BINARY(100);
   } else {

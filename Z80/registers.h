@@ -204,9 +204,9 @@ public:
 
   void setNFlag(bool flag);
 
-  bool getParityOverflowFlag();
+  bool getPVFlag();
 
-  void setParityOverflowFlag(bool flag);
+  void setPVFlag(bool flag);
 
   std::uint8_t getR();
 

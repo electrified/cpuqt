@@ -23,7 +23,7 @@ void Processor::decode() {
   SPDLOG_DEBUG(logger, "currentInstruction[0] {0:x}", currentInstruction[0]);
   switch (currentInstruction[0]) {
   case 0x00:
-    SPDLOG_DEBUG(logger, "NOP - 0 ");
+//     SPDLOG_DEBUG(logger, "NOP - 0 ");
     NOP();
     break;
   case 0x01:
@@ -3090,7 +3090,10 @@ void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
   registers->setSignFlag(newvalue & 0x8000);
   registers->setZeroFlag(newvalue == 0);
   registers->setHFlag((((a & 0x0FFF) + (b & 0x0FFF)) & 0xF000) != 0);
-  registers->setParityOverflowFlag(a ^ b ^ registers->getCFlag());
+  
+  uint16_t temp = (a ^ b ^ newvalue) >> 15;
+  
+  registers->setPVFlag(temp == 1 || temp == 2);
   registers->setNFlag(false);
   // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
   // carry out: a + b > 0xffff
@@ -3152,7 +3155,7 @@ void Processor::ADD(Rgstr destination, std::uint8_t nextByte) {
   // carry out: a + b > 0xff
   // equivalent to a > 0xff - b
   registers->setCFlag(oldvalue > 0xff - nextByte);
-  registers->setParityOverflowFlag(oldvalue ^ nextByte ^ registers->getCFlag());
+  registers->setPVFlag(oldvalue ^ nextByte ^ registers->getCFlag());
 }
 
 void Processor::ADD(Rgstr destination, Rgstr source) { ADD(destination, registers->getRegisterValue(source)); }
@@ -3177,7 +3180,7 @@ void Processor::AND(std::uint8_t value) {
   registers->setZeroFlag(result == 0);
 
   registers->setHFlag(true);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
   registers->setNFlag(false);
   registers->setCFlag(false);
   // P/V
@@ -3269,7 +3272,8 @@ std::uint8_t Processor::_compare(std::uint8_t n) {
   registers->setSignFlag(newvalue & 0x80);
   registers->setZeroFlag(newvalue == 0);
 
-  registers->setHFlag(((oldvalue & 0x0010) - (newvalue & 0x0010)) > 0);
+  registers->setHFlag(((oldvalue & 0x10) - (newvalue & 0x10)) > 0);
+  registers->setPVFlag((oldvalue & 0x80) != (n & 0x80) && (oldvalue & 0x80) != (newvalue & 0x80));
   registers->setNFlag(true);
 
   // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
@@ -3282,7 +3286,7 @@ std::uint8_t Processor::_compare(std::uint8_t n) {
   //     carryIn = (carryIn >> 7) ^ carryOut;
 
   registers->setCFlag(newvalue & 0x100);
-  registers->setParityOverflowFlag((oldvalue & 0x80) != (n & 0x80) && (oldvalue & 0x80) != (newvalue & 0x80));
+
   return newvalue & 0xff;
 }
 
@@ -3300,12 +3304,20 @@ void Processor::CP(std::uint16_t memoryAddress) { CP(memory->read(memoryAddress)
  * compared with the contents of the Accumulator. In case of a true
  * compare, a condition bit is set. The HL and Byte Counter (register pair
  * BC) are decremented.
+ * 
+ * S is set if result is negative; otherwise, it is reset.
+ * Z is set if A equals (HL); otherwise, it is reset.
+ * H is set if borrow from bit 4; otherwise, it is reset.
+ * P/V is set if BC – 1≠ 0; otherwise, it is reset.
+ * N is set.
+ * C is not affected.
+
  */
 void Processor::CPD() {
   CP(memory->read(registers->getHL()));
   DEC(RegisterPair::HL);
   DEC(RegisterPair::BC);
-  registers->setParityOverflowFlag(registers->getBC() != 0);
+  registers->setPVFlag(registers->getBC() != 0);
 }
 
 /*
@@ -3338,7 +3350,7 @@ void Processor::CPI() {
   INC(RegisterPair::HL);
   DEC(RegisterPair::BC);
 
-  registers->setParityOverflowFlag(registers->getBC() != 0);
+  registers->setPVFlag(registers->getBC() != 0);
 }
 
 void Processor::CPIR() {
@@ -3410,7 +3422,6 @@ void Processor::DEC(std::uint16_t memoryAddress) {
 }
 
 void Processor::DEC(Rgstr rgstr) {
-  registers->setParityOverflowFlag(registers->getRegisterValue(rgstr) == 0x80);
   std::uint8_t oldvalue = registers->getRegisterValue(rgstr);
   std::uint8_t newvalue = oldvalue - 1;
 
@@ -3418,9 +3429,23 @@ void Processor::DEC(Rgstr rgstr) {
 
   registers->setSignFlag(newvalue & 0x80);
   registers->setZeroFlag(newvalue == 0);
+//   registers->setHFlag((newvalue & 0x10) != (oldvalue & 0x10));
+  registers->setHFlag((oldvalue ^ newvalue) & 0x10);
+  registers->setPVFlag(oldvalue == 0x80);
+  registers->setNFlag(false);
+}
 
-  registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) != 0);
+void Processor::INC(Rgstr reg) {
+  std::uint8_t origValue = registers->getRegisterValue(reg);
+  std::uint8_t newValue = origValue + 1;
 
+  registers->setRegister(reg, newValue);
+
+  registers->setSignFlag(newValue & 0x80);
+  registers->setZeroFlag(newValue == 0);
+//   registers->setHFlag((((origValue & 0xF) + 1) & 0xF0) != 0);
+  registers->setHFlag((origValue ^ newValue) & 0x10);
+  registers->setPVFlag(origValue == 0x7F);
   registers->setNFlag(false);
 }
 
@@ -3558,7 +3583,7 @@ void Processor::in(Rgstr rgstr, const std::uint16_t i) {
  * C is not affected
  */
 void Processor::INC(std::uint16_t memoryAddress) {
-  registers->setParityOverflowFlag(memory->read(memoryAddress) == 0x7F);
+  registers->setPVFlag(memory->read(memoryAddress) == 0x7F);
 
   std::uint8_t newValue = memory->read(memoryAddress) + 1;
   memory->write(memoryAddress, newValue);
@@ -3566,20 +3591,6 @@ void Processor::INC(std::uint16_t memoryAddress) {
   registers->setSignFlag(newValue & 0x80);
   registers->setZeroFlag(newValue == 0);
   // H ??
-
-  registers->setNFlag(false);
-}
-
-void Processor::INC(Rgstr reg) {
-  registers->setParityOverflowFlag(registers->getRegisterValue(reg) == 0x7F);
-
-  std::uint8_t newValue = registers->getRegisterValue(reg) + 1;
-
-  registers->setRegister(reg, newValue);
-
-  registers->setSignFlag(newValue & 0x80);
-  registers->setZeroFlag(newValue == 0);
-  // Half carry flag setting! ??
 
   registers->setNFlag(false);
 }
@@ -3725,12 +3736,12 @@ void Processor::LDD() {
   DEC(RegisterPair::BC);
   registers->setHFlag(false);
   registers->setNFlag(false);
-  registers->setParityOverflowFlag(registers->getBC() != 0);
+  registers->setPVFlag(registers->getBC() != 0);
 }
 
 void Processor::LDDR() {
   LDD();
-  if (registers->getParityOverflowFlag()) {
+  if (registers->getPVFlag()) {
     registers->setPC(registers->getPC() - 2);
   }
 }
@@ -3746,7 +3757,7 @@ void Processor::LDI() {
   DEC(RegisterPair::BC);
   registers->setHFlag(false);
   registers->setNFlag(false);
-  registers->setParityOverflowFlag(registers->getBC() != 0);
+  registers->setPVFlag(registers->getBC() != 0);
 }
 
 /* This 2-byte instruction transfers a byte of data from the memory location
@@ -3760,7 +3771,7 @@ data transfer. When BC is set to zero prior to instruction execution, the
 instruction loops through 64 Kbytes.*/
 void Processor::LDIR() {
   LDI();
-  if (registers->getParityOverflowFlag()) {
+  if (registers->getPVFlag()) {
     registers->setPC(registers->getPC() - 2);
   }
 }
@@ -3770,19 +3781,23 @@ void Processor::LDIR() {
  * the same as subtracting the contents of the Accumulator from zero. Note
  * that 80H is left unchanged.
  * <p/>
- * S is set if result is negative; reset otherwise Z is set if result is 0;
- * reset otherwise H is set if borrow from bit 4; reset otherwise P/V is set
- * if Accumulator was 80H before operation; reset otherwise N is set C is
- * set if Accumulator was not 00H before operation; reset otherwise
+ * S is set if result is negative; reset otherwise 
+ * Z is set if result is 0 reset otherwise 
+ * H is set if borrow from bit 4; reset otherwise 
+ * P/V is set if Accumulator was 80H before operation; reset otherwise 
+ * N is set 
+ * C is set if Accumulator was not 00H before operation; reset otherwise
  */
 void Processor::NEG() {
-  registers->setSignFlag((registers->getA() & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000));
-  registers->setParityOverflowFlag(registers->getA() == 0x80);
-  registers->setZeroFlag(registers->getA() == 0);
+  uint8_t origValue = registers->getA();
+  uint8_t newValue = ~registers->getA() + 1;
+  registers->setSignFlag(newValue & 0x80);
+  registers->setZeroFlag(newValue == 0);
+  registers->setHFlag((origValue & 0x10) != (newValue & 0x10));
+  registers->setPVFlag(origValue == 0x80);
   registers->setNFlag(true);
-  registers->setCFlag(registers->getA() != 0);
-  registers->setA(~registers->getA() & 0xFF);
-  // setHFlag(false);
+  registers->setCFlag(origValue != 0);
+  registers->setA(newValue);
 }
 
 void Processor::NOP() {
@@ -3803,7 +3818,7 @@ void Processor::OR(std::uint8_t immediateValue) {
 
   registers->setNFlag(false);
   registers->setCFlag(false);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
 }
 
 void Processor::OR(std::uint16_t memoryAddress) { OR(memory->read(memoryAddress)); }
@@ -3986,7 +4001,7 @@ void Processor::RL(std::uint16_t memoryAddress) {
   registers->setSignFlag(result & 0x80);
   registers->setZeroFlag(result == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
   registers->setNFlag(false);
 }
 
@@ -4003,7 +4018,7 @@ void Processor::RL(Rgstr r) {
   registers->setSignFlag(result & 0x80);
   registers->setZeroFlag(result == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
   registers->setNFlag(false);
 }
 
@@ -4081,7 +4096,7 @@ void Processor::RLD() {
   registers->setSignFlag(finalVal >> 7);
   registers->setZeroFlag(finalVal == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(finalVal));
+  registers->setPVFlag(parity(finalVal));
   registers->setNFlag(false);
   /*
    * S is set if Accumulator is negative after operation; reset otherwise
@@ -4117,7 +4132,7 @@ void Processor::RR(std::uint16_t memoryAddress) {
   registers->setSignFlag(result & 0x80);
   registers->setZeroFlag(result == 0x0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
   registers->setNFlag(false);
 }
 
@@ -4131,7 +4146,7 @@ void Processor::RR(Rgstr r) {
   registers->setSignFlag(result & 0x80);
   registers->setZeroFlag(result == 0x0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
   registers->setNFlag(false);
 }
 
@@ -4152,7 +4167,7 @@ void Processor::RRC(Rgstr r) {
   registers->setSignFlag(result & 0x80);
   registers->setZeroFlag(result == 0x0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(result));
+  registers->setPVFlag(parity(result));
   registers->setNFlag(false);
 }
 
@@ -4226,13 +4241,17 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   
   registers->setSignFlag(newvalue & 0x8000);
   registers->setZeroFlag(newvalue == 0);
-  registers->setHFlag((((newvalue & 0xF000) + (toSubtract & 0xF000)) & 0xF000) != (oldvalue & 0xF000));
-  registers->setParityOverflowFlag(oldvalue ^ toSubtract ^ registers->getCFlag());
+  registers->setHFlag((oldvalue & 0x0FFF) < (toSubtract & 0x0FFF));
+  
+  uint16_t temp = (oldvalue ^ toSubtract ^ newvalue) >> 15;
+  
+  registers->setPVFlag(temp == 1 || temp == 2);
+//   registers->setPVFlag((oldvalue ^ toSubtract ^ newvalue) >> 15);
   registers->setNFlag(true);
   // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
   // carry out: a - b < 0
   // equivalent to a < 0 + b
-  registers->setCFlag(oldvalue < toSubtract);
+  registers->setCFlag(oldvalue < newvalue);
 }
 
 void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) {
@@ -4253,7 +4272,7 @@ void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
 
   registers->setNFlag(true);
 
-  registers->setCFlag(oldvalue < toSubtract);
+  registers->setCFlag(oldvalue < newvalue);
 }
 
 void Processor::SBC(Rgstr a, Rgstr b) {
@@ -4300,7 +4319,7 @@ void Processor::SLA(std::uint16_t memoryAddress) {
   memory->write(memoryAddress, newval);
   registers->setZeroFlag(newval == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(newval));
+  registers->setPVFlag(parity(newval));
   registers->setNFlag(false);
 }
 
@@ -4312,7 +4331,7 @@ void Processor::SLA(Rgstr r) {
   registers->setRegister(r, newval);
   registers->setZeroFlag(newval == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(newval));
+  registers->setPVFlag(parity(newval));
   registers->setNFlag(false);
 }
 
@@ -4336,7 +4355,7 @@ void Processor::SRL(Rgstr m) {
   registers->setRegister(m, newval);
   registers->setZeroFlag(newval == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(parity(newval));
+  registers->setPVFlag(parity(newval));
   registers->setNFlag(false);
 }
 
@@ -4389,7 +4408,7 @@ void Processor::XOR(std::uint8_t val) {
   registers->setHFlag(false);
   registers->setNFlag(false);
   registers->setCFlag(false);
-  registers->setParityOverflowFlag(parity(newvalue));
+  registers->setPVFlag(parity(newvalue));
 }
 
 void Processor::XOR(std::uint16_t memoryAddress) { XOR(memory->read(memoryAddress)); }
@@ -4409,9 +4428,9 @@ bool Processor::isConditionTrue(Condition condition) {
   } else if (condition == Condition::C) {
     retval = registers->getCFlag();
   } else if (condition == Condition::PO) {
-    retval = !registers->getParityOverflowFlag();
+    retval = !registers->getPVFlag();
   } else if (condition == Condition::PE) {
-    retval = registers->getParityOverflowFlag();
+    retval = registers->getPVFlag();
   } else if (condition == Condition::P) {
     retval = !registers->getSignFlag();
   } else if (condition == Condition::M) {
@@ -4451,8 +4470,8 @@ void Processor::setFlags(std::uint8_t value) {
   registers->setSignFlag(value & 0x80);
   registers->setZeroFlag(value == 0);
   registers->setHFlag(false);
-  registers->setParityOverflowFlag(registers->isIFF2());
-  registers->setNFlag(false); // N
+  registers->setPVFlag(registers->isIFF2());
+  registers->setNFlag(false);
 }
 
 void Processor::interruptRequest(bool state) { this->interruptRequested = state; }

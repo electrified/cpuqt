@@ -5,9 +5,10 @@
 #include "spdlog/spdlog.h"
 
 int main(int argc, char **argv) {
-  ZexRunnerComputer *comp = new ZexRunnerComputer();
   auto console = spdlog::stdout_logger_mt("console");
   console->set_level(spdlog::level::debug);
+  
+  ZexRunnerComputer *comp = new ZexRunnerComputer();
   spdlog::get("console")->debug("Computer created");
   // load zexdoc and cpm output bodge
   loadIntoMemory2(comp->getMemory(), 0x100, "./bin_z80/zexdoc.bin");
