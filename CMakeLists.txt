@@ -22,8 +22,8 @@ project(testproject)
 use_cxx11()
 
 INCLUDE(CodeCoverage)
-SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS}")
+SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_C_FLAGS}")
 
 SETUP_TARGET_FOR_COVERAGE(
     my_coverage_target  # Name for custom target.
