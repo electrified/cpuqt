@@ -1,4 +1,4 @@
-Z80 Emulator!
+Z80 Emulator - This is unmaintained and was last worked on significantly in 2016 
 
 Currently just trying to implement all documented instructions, undocumented ones will follow later.
 
@@ -18,6 +18,8 @@ How To Build
 
 Update modules to latest versions
 git submodule update --init --recursive --remote
+
+run `./ui/cpuqt2`
 
 Run tests with code coverage
 * Ensure gcov and lcov are installed

@@ -15,7 +15,7 @@ find_package(Boost COMPONENTS regex system filesystem timer REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-find_package(Lua 5.3 REQUIRED)
+find_package(Lua 5.4 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
 find_package (Threads)
