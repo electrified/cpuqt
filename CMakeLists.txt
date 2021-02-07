@@ -16,8 +16,8 @@ project(
   DESCRIPTION "Z80 based emulator"
   LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS}")
-set(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_C_FLAGS}")
+#set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS}")
+#set(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_C_FLAGS}")
 
 add_subdirectory(modules/spdlog)
 include_directories(${CMAKE_SOURCE_DIR}/modules/spdlog/include/)

@@ -1,7 +1,9 @@
 #include "utils.h"
 
 #include <fstream>
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include "spdlog/spdlog.h"
 
 std::vector<char> ReadAllBytes(std::string filename) {
