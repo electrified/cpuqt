@@ -29,7 +29,8 @@ set (zexrunner_SRC
         )
 
 
-find_package(Catch2 REQUIRED)
+add_subdirectory(./modules/Catch2)
+
 add_executable(tests ${tooltests_SRC})
 add_executable(zexrunner ${zexrunner_SRC})
 
