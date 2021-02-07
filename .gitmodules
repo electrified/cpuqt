@@ -7,9 +7,6 @@
 [submodule "modules/sdl2-cmake-scripts"]
 	path = modules/sdl2-cmake-scripts
 	url = https://github.com/electrified/sdl2-cmake-scripts.git
-[submodule "modules/Catch2"]
-	path = modules/Catch2
-	url = git@github.com:catchorg/Catch2.git
 [submodule "tests/modules/Catch2"]
 	path = tests/modules/Catch2
-	url = git@github.com:catchorg/Catch2.git
+	url = https://github.com/catchorg/Catch2.git
