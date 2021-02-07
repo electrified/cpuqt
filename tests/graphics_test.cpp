@@ -1,8 +1,8 @@
-#include <stdint.h>
+#include <catch2/catch.hpp>
 #include <iostream>
 #include <set>
+#include <stdint.h>
 
-#include "catch.hpp"
 #include "../computer/spectrum/graphics.h"
 
 TEST_CASE("gfx") {

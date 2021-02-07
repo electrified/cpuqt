@@ -1,6 +1,6 @@
-#include "catch.hpp"
-#include "../computer/utils.h"
 #include "../Z80/BadgerMemory.h"
+#include "../computer/utils.h"
+#include <catch2/catch.hpp>
 
 TEST_CASE("Read_all_bytes_array_is_correct_length", "utils") {
   std::vector<char> bytes = ReadAllBytes("/home/ed/dev/cpuqt/bin_z80/test.z80");

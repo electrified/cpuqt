@@ -10,7 +10,7 @@ find_package(Boost COMPONENTS regex system filesystem timer REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-set(Z80_SRC
+add_library(Z80 STATIC
     Condition.hpp Condition.cpp
     disassembler.cpp disassembler.h
     Memory.h
@@ -28,8 +28,4 @@ set(Z80_SRC
     ../computer/utils.cpp ../computer/utils.h
     ../computer/spectrum/graphics.h
     ../computer/spectrum/spectrumio.cpp ../computer/spectrum/spectrumio.h
-)
-
-add_library(Z80 STATIC
-    ${Z80_SRC}
 )

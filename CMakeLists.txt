@@ -1,37 +1,25 @@
-cmake_minimum_required(VERSION 3.0.2)
-
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 get_cmake_property(_variableNames VARIABLES)
 foreach (_variableName ${_variableNames})
     message(STATUS "${_variableName}=${${_variableName}}")
 endforeach()
 
-macro(use_cxx11)
-  if (CMAKE_VERSION VERSION_LESS "3.1")
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      set (CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
-    endif ()
-  else ()
-    set (CMAKE_CXX_STANDARD 11)
-  endif ()
-endmacro(use_cxx11)
-
 set(CMAKE_BUILD_TYPE Debug)
 project(testproject)
 
-use_cxx11()
-
-INCLUDE(CodeCoverage)
+#INCLUDE(CodeCoverage)
 SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS}")
 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_C_FLAGS}")
 
-SETUP_TARGET_FOR_COVERAGE(
-    my_coverage_target  # Name for custom target.
-    ./tests/tooltests         # Name of the test driver executable that runs the tests.
-              # NOTE! This should always have a ZERO as exit code
-              # otherwise the coverage generation will not complete.
-    coverage            # Name of output directory.
-)
+#setup_target_for_coverage_gcovr_html(
+    #my_coverage_target  # Name for custom target.
+    #./tests/tooltests         # Name of the test driver executable that runs the tests.
+              ## NOTE! This should always have a ZERO as exit code
+              ## otherwise the coverage generation will not complete.
+    #coverage            # Name of output directory.
+#)
 
 # SPDLOG setup
 FILE(GLOB SPDLOG_INCLUDES

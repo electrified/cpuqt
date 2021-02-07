@@ -16,6 +16,9 @@ How To Build
 * Ensure CMake is installed
 * Ensure relevant dev libraries are installed: Boost, Qt5, SDL2, Lua etc
 
+### Dependencies
+* gcovr
+
 Update modules to latest versions
 git submodule update --init --recursive --remote
 

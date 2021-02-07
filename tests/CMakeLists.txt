@@ -18,7 +18,7 @@ set (tooltests_SRC
         test.cpp
         graphics_test.cpp
 #         computer_utils_test.cpp
-        catch.cpp
+        main.cpp
         )
 
 set (zexrunner_SRC
@@ -28,9 +28,10 @@ set (zexrunner_SRC
         ../computer/cpm/console_serial_io.cpp ../computer/cpm/console_serial_io.h
         )
 
-add_executable(tooltests ${tooltests_SRC})
 
+find_package(Catch2 REQUIRED)
+add_executable(tests ${tooltests_SRC})
 add_executable(zexrunner ${zexrunner_SRC})
 
-target_link_libraries(tooltests ${Boost_LIBRARIES} Z80 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(tests PRIVATE ${Boost_LIBRARIES} Z80 ${CMAKE_THREAD_LIBS_INIT} Catch2::Catch2)
 target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80 ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY})
