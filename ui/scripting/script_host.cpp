@@ -3,8 +3,8 @@
 
 ScriptHost::ScriptHost(BadgerComputer *computer) {
   this->computer = computer;
-
-  state["em"].SetObj(*this, "brk", &ScriptHost::addBreakpoint, 
+  lua.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
+  lua["em"] = lua.create_table_with("brk", &ScriptHost::addBreakpoint, 
                      "step", &ScriptHost::step, 
                      "del", &ScriptHost::removeBreakpoint, 
                      "list", &ScriptHost::listBreakpoints, 
@@ -16,11 +16,11 @@ ScriptHost::ScriptHost(BadgerComputer *computer) {
                     );
 }
 
-void ScriptHost::executeScript(std::string path) { state.Load(path); }
+void ScriptHost::executeScript(std::string path) { lua.script_file(path); }
 
 void ScriptHost::runCommand(std::string command) {
   spdlog::get("console")->debug("Executing " + command);
-  state(command.c_str());
+  lua.script(command.c_str());
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {

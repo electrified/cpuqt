@@ -1,12 +1,12 @@
 [submodule "modules/spdlog"]
 	path = modules/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "modules/Selene"]
-	path = modules/Selene
-	url = https://github.com/jeremyong/Selene.git
 [submodule "modules/sdl2-cmake-scripts"]
 	path = modules/sdl2-cmake-scripts
 	url = https://github.com/electrified/sdl2-cmake-scripts.git
 [submodule "tests/modules/Catch2"]
 	path = tests/modules/Catch2
 	url = https://github.com/catchorg/Catch2.git
+[submodule "modules/sol2"]
+	path = modules/sol2
+	url = https://github.com/ThePhD/sol2.git

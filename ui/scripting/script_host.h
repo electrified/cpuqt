@@ -3,11 +3,11 @@
 #include <string>
 #include "../badgercomputer.h"
 #include "spdlog/spdlog.h"
-#include "selene.h"
+#include "sol/sol.hpp"
 
 class ScriptHost {
 private:
-  sel::State state{true};
+  sol::state lua;
   BadgerComputer *computer;
 
 public:

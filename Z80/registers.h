@@ -196,9 +196,9 @@ public:
 
   void setIFF2(bool iFF2);
 
-  std::uint16_t getRegisterPairValue(const RegisterPair register);
+  std::uint16_t getRegisterPairValue(const RegisterPair reg);
 
-  std::uint8_t getRegisterValue(const Rgstr register);
+  std::uint8_t getRegisterValue(const Rgstr reg);
 
   bool getNFlag();
 
@@ -224,9 +224,9 @@ public:
 
   void setZeroFlag(bool flag);
 
-  void setRegister(Rgstr register, std::uint8_t value);
+  void setRegister(Rgstr reg, std::uint8_t value);
 
-  void setRegisterPair(RegisterPair register, std::uint16_t sixteenBit);
+  void setRegisterPair(RegisterPair reg, std::uint16_t sixteenBit);
 
-  void setRegisterPair(RegisterPair register, std::uint8_t lowOrder, std::uint8_t highOrder);
+  void setRegisterPair(RegisterPair reg, std::uint8_t lowOrder, std::uint8_t highOrder);
 };

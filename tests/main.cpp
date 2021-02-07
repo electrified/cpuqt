@@ -5,9 +5,10 @@
 
 #include "../Z80/utils.h"
 #include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
 int main(int argc, char *const argv[]) {
-  auto console = spdlog::stdout_logger_mt("console");
+  auto console = spdlog::stdout_color_mt("console");
   console->set_level(spdlog::level::debug);
 
   int result = Catch::Session().run(argc, argv);

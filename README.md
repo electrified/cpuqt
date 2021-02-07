@@ -1,15 +1,15 @@
-Z80 Emulator - This is unmaintained and was last worked on significantly in 2016 
+## Z80 Emulator - This is unmaintained and was last worked on significantly in 2016 
 
 Currently just trying to implement all documented instructions, undocumented ones will follow later.
 
-Features:
+### Features:
 * Written from scratch in C++
 * Suite of tests using Catch
 * Comes with a Qt based UI
 * Disassembler
 * Builds on Linux/OSX/Windows
 
-How To Build
+### How To Build
 * git clone
 * git submodule init
 * git submodule update --recursive
@@ -36,18 +36,18 @@ Code incorporated from elsewhere
 Coding standards
 * Formatting?
 
-TODO:
-Make more c++ey i.e. use std::string instead of char*, references instead of pointers etc.
-Document available console commands
-Do UI scaling
-Fix snapshot loading!
-Improve code style/ naming, https://google.github.io/styleguide/cppguide.html#Naming
-Show list of breakpoints in UI
-Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
+### TODO:
+- Make more c++ey i.e. use std::string instead of char*, references instead of pointers etc.
+- Document available console commands
+- Do UI scaling
+- Fix snapshot loading!
+- Improve code style/ naming, https://google.github.io/styleguide/cppguide.html#Naming
+- Show list of breakpoints in UI
+- Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
 
 
-Use some kind of static anaysis tool, e.g cppcheck (cppcheck . --force 2> err.txt)
-Rerun valgrind (valgrind --leak-check=yes --track-origins=yes -v build/tooltests ADCA_HL_Test)
+- Use some kind of static anaysis tool, e.g cppcheck (cppcheck . --force 2> err.txt)
+- Rerun valgrind (valgrind --leak-check=yes --track-origins=yes -v build/tooltests ADCA_HL_Test)
 
 perf record build/zexrunner
 
@@ -55,6 +55,7 @@ Version number in about box
 http://stackoverflow.com/questions/1704907/how-can-i-get-my-c-code-to-automatically-print-out-its-git-version-hash
 http://xit0.org/2013/04/cmake-use-git-branch-and-commit-details-in-project/
 
+```
 export CC=/usr/bin/clang
 export CXX=/usr/bin/clang++
 export CCC_CC=clang
@@ -63,6 +64,7 @@ scan-build cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang ..
 scan-build make
 
 cppcheck --enable=all -ibuild -iclang-build -itests/test.cpp . 2> cppcheck.txt
+```
 
 TODO: Ensure all methods use parity function where they should and write a test for it.
 

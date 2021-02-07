@@ -16,7 +16,7 @@ public:
   virtual void ADC(const Rgstr a, const std::uint8_t i) = 0;
   virtual void ADC(const Rgstr a, const MemoryAddress memoryAddress) = 0;
 
-  virtual void ADD(const RegisterPair destination, const RegisterPair register) = 0;
+  virtual void ADD(const RegisterPair destination, const RegisterPair source) = 0;
   virtual void ADD(const Rgstr a, const std::uint8_t nextByte) = 0;
   virtual void ADD(const Rgstr a, const Rgstr b) = 0;
   virtual void ADD(const Rgstr a, const MemoryAddress memoryAddress) = 0;
@@ -25,7 +25,7 @@ public:
   virtual void AND(const std::uint8_t iX2) = 0;
   virtual void AND(const MemoryAddress memoryAddress) = 0;
 
-  virtual void BIT(const std::uint8_t y, const Rgstr register) = 0;
+  virtual void BIT(const std::uint8_t y, const Rgstr reg) = 0;
   virtual void BIT(const std::uint8_t i, const MemoryAddress memoryAddress) = 0;
 
   virtual void CALL(const Condition c, const MemoryAddress memoryAddress) = 0;
@@ -88,11 +88,11 @@ public:
   virtual void JR(const Condition nz, const MemoryAddress memoryAddress) = 0;
   virtual void JR(const MemoryAddress memoryAddress) = 0;
 
-  virtual void LD(const Rgstr register, const std::uint8_t memoryAddress) = 0;
+  virtual void LD(const Rgstr reg, const std::uint8_t memoryAddress) = 0;
   virtual void LD(const Rgstr r1, const Rgstr r2) = 0;
   virtual void LD(const RegisterPair r1, const RegisterPair r2) = 0;
 
-  virtual void LD(const RegisterPair registerPair, const std::uint16_t immediateValue) = 0;
+  virtual void LD(const RegisterPair regPair, const std::uint16_t immediateValue) = 0;
   virtual void LD(const MemoryAddress memoryAddress, const Rgstr a) = 0;
   virtual void LD(const Rgstr a, const MemoryAddress memoryAddress) = 0;
   virtual void LD(const MemoryAddress memoryAddress, const RegisterPair hl) = 0;
@@ -119,7 +119,7 @@ public:
 
   virtual void OTIR() = 0;
 
-  virtual void out(const MemoryAddress address, const Rgstr register) = 0;
+  virtual void out(const MemoryAddress address, const Rgstr reg) = 0;
 
   virtual void OUTD() = 0;
 
@@ -146,7 +146,7 @@ public:
 
   virtual void RLA() = 0;
 
-  virtual void RLC(const Rgstr register) = 0;
+  virtual void RLC(const Rgstr reg) = 0;
   virtual void RLC(const MemoryAddress memoryAddress) = 0;
 
   virtual void RLCA() = 0;
@@ -176,7 +176,7 @@ public:
 
   virtual void SCF() = 0;
 
-  virtual void SET(const std::uint8_t y, const Rgstr register) = 0;
+  virtual void SET(const std::uint8_t y, const Rgstr reg) = 0;
 
   virtual void SET(const std::uint8_t i, const MemoryAddress memoryAddress) = 0;
 

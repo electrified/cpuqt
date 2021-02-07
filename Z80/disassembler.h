@@ -121,7 +121,7 @@ public:
 
   void LD(const RegisterPair r1, const RegisterPair r2);
 
-  void LD(const RegisterPair registerPair, const std::uint16_t immediateValue);
+  void LD(const RegisterPair regPair, const std::uint16_t immediateValue);
 
   void LD(const MemoryAddress memoryAddress, const Rgstr a);
 

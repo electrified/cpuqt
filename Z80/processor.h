@@ -143,7 +143,7 @@ class Processor {
 
   void LD(const RegisterPair r1, const RegisterPair r2);
 
-  void LD(const RegisterPair registerPair, const std::uint16_t immediateValue);
+  void LD(const RegisterPair regPair, const std::uint16_t immediateValue);
 
   void LD(const std::uint16_t memoryAddress, const Rgstr a);
 
@@ -177,7 +177,7 @@ class Processor {
 
   void OTIR();
 
-  void out(const std::uint16_t address, const Rgstr register);
+  void out(const std::uint16_t address, const Rgstr reg);
 
   void OUTD();
 
@@ -205,7 +205,7 @@ class Processor {
 
   void RLA();
 
-  void RLC(const Rgstr register);
+  void RLC(const Rgstr reg);
 
   void RLC(const std::uint16_t memoryAddress);
 
@@ -239,7 +239,7 @@ class Processor {
 
   void SCF();
 
-  void SET(const std::uint8_t y, const Rgstr register);
+  void SET(const std::uint8_t y, const Rgstr reg);
 
   void SET(const std::uint8_t i, const std::uint16_t memoryAddress);
 
