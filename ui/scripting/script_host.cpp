@@ -1,28 +1,32 @@
 #include "script_host.h"
 
 #include <utility>
+#include "spdlog/spdlog.h"
 #include "computer/utils.h"
 
 ScriptHost::ScriptHost(BadgerComputer *computer) {
   this->computer = computer;
   lua.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
-  lua["em"] = lua.create_table_with("brk", &ScriptHost::addBreakpoint, 
-                     "step", &ScriptHost::step, 
-                     "del", &ScriptHost::removeBreakpoint, 
-                     "list", &ScriptHost::listBreakpoints, 
-                     "peek", &ScriptHost::peek,
-                     "poke", &ScriptHost::poke,
-                     "loadrom", &ScriptHost::loadRom,
-                     "loadsnap", &ScriptHost::loadSnapshot,
-                     "run", &ScriptHost::run
-                    );
+  lua.set_function("brk", &ScriptHost::addBreakpoint, this);
+  lua.set_function("step", &ScriptHost::step, this);
+  lua.set_function("del", &ScriptHost::removeBreakpoint, this);
+  lua.set_function("list", &ScriptHost::listBreakpoints, this);
+  lua.set_function("peek", &ScriptHost::peek, this);
+  lua.set_function("poke", &ScriptHost::poke, this);
+  lua.set_function("loadrom", &ScriptHost::loadRom, this);
+  lua.set_function("loadsnap", &ScriptHost::loadSnapshot, this);
+  lua.set_function("run", &ScriptHost::run, this);
 }
 
 void ScriptHost::executeScript(const std::string& path) { lua.script_file(path); }
 
 void ScriptHost::runCommand(const std::string& command) {
-  spdlog::get("console")->debug("Executing " + command);
-  lua.script(command.c_str());
+  try {
+    spdlog::get("console")->debug("Executing " + command);
+    lua.script(command.c_str());
+  } catch (sol::error &error) {
+    cout << error.what();
+  }
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {
