@@ -58,10 +58,10 @@ SpectrumIO::SpectrumIO() {
   keyCodes[16777237] = spec_key(4, 0x10, true); // down arrow => caps + 6
 }
 
-SpectrumIO::~SpectrumIO() {}
+SpectrumIO::~SpectrumIO() = default;
 
 spec_key SpectrumIO::findKey(int key) {
-  std::map<int, spec_key>::iterator it = keyCodes.find(key);
+  auto it = keyCodes.find(key);
   if (it != keyCodes.end()) {
     return it->second;
   }

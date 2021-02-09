@@ -8,8 +8,8 @@ class QtBadgerIO : public QObject, public SerialIO {
   Q_OBJECT
 public:
   QtBadgerIO();
-  ~QtBadgerIO();
-  void outputCharacter(std::uint8_t value);
+  ~QtBadgerIO() override;
+  void outputCharacter(std::uint8_t value) override;
 
 signals:
   void consoleTextOutput(char character);

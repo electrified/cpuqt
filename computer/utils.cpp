@@ -1,27 +1,32 @@
 #include "utils.h"
 
 #include <fstream>
-#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
-#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include "spdlog/spdlog.h"
 
-std::vector<char> ReadAllBytes(std::string filename) {
-  std::ifstream ifs(filename.c_str(), std::ios::binary | std::ios::ate);
-  std::ifstream::pos_type pos = ifs.tellg();
+//std::vector<char> ReadAllBytes(const std::string filename) {
+//  std::ifstream ifs(filename.c_str(), std::ios::binary | std::ios::ate);
+//  std::ifstream::pos_type pos = ifs.tellg();
+//
+//  std::vector<char> result(pos);
+//
+//  ifs.seekg(0, std::ios::beg);
+//  ifs.read(&result[0], pos);
+//
+//  return result;
+//}
 
-  std::vector<char> result(pos);
-
-  ifs.seekg(0, std::ios::beg);
-  ifs.read(&result[0], pos);
-
-  return result;
+std::vector<uint8_t> ReadAllBytes(const std::string& file_path)
+{
+  std::ifstream inStream(file_path, std::ios::in | std::ios::binary);
+  std::vector<uint8_t> data((std::istreambuf_iterator<char>(inStream)), std::istreambuf_iterator<char>());
+  return data;
 }
 
 /**
 * Used by frontend
 */
-void loadIntoMemory(std::vector<char> data, Memory *memory, std::uint16_t offset) {
+void loadIntoMemory(std::vector<uint8_t> data, Memory *memory, std::uint16_t offset) {
   for (std::uint16_t i = 0; i < data.size(); ++i) {
     //     spdlog::get("console")->debug("Writing to memory location {0:x}", i + offset);
     memory->write(i + offset, data.at(i));
@@ -31,10 +36,9 @@ void loadIntoMemory(std::vector<char> data, Memory *memory, std::uint16_t offset
 /**
 * Used by tests
 */
-void loadIntoMemory2(Memory *memory, std::uint16_t offset, char const *filename) {
+void loadIntoMemory2(Memory *memory, std::uint16_t offset, std::string filename) {
   if (boost::filesystem::exists(filename)) {
-    std::ifstream testFile(filename, std::ios::binary);
-    std::vector<char> fileContents((std::istreambuf_iterator<char>(testFile)), std::istreambuf_iterator<char>());
+    std::vector<uint8_t> fileContents = ReadAllBytes(filename);
 
     for (std::uint16_t i = 0; i < fileContents.size(); ++i) {
       memory->write(i + offset, fileContents.at(i));
@@ -47,7 +51,7 @@ void loadIntoMemory2(Memory *memory, std::uint16_t offset, char const *filename)
 /*
 * See info at http://www.worldofspectrum.org/faq/reference/z80format.htm
 */
-void loadZ80Snapshot(std::vector<char> data, Memory *memory, Registers *registers) {
+void loadZ80Snapshot(std::vector<uint8_t> data, Memory *memory, Registers *registers) {
   /*Offset  Length  Description
           ---------------------------
           0       1       A register
@@ -151,7 +155,7 @@ void loadZ80Snapshot(std::vector<char> data, Memory *memory, Registers *register
   spdlog::get("console")->debug("Finished loading snapshot");
 }
 
-void loadBlocks(std::vector<char> data, Memory *memory) {
+void loadBlocks(std::vector<uint8_t> data, Memory *memory) {
   spdlog::get("console")->debug("data size {0:x}", data.size());
   std::uint16_t i = 0x57;
   while (i < data.size() - 4) {
@@ -163,7 +167,7 @@ void loadBlocks(std::vector<char> data, Memory *memory) {
 
     spdlog::get("console")->debug("block start: {0:x} block length: {1:x} offset: {2:x}", i, block_length, offset);
 
-    std::vector<char> decompressed = decompressBlock(data, ++i, block_length);
+    std::vector<uint8_t> decompressed = decompressBlock(data, ++i, block_length);
     loadIntoMemory(decompressed, memory, offset);
     i += block_length;
   }
@@ -175,10 +179,10 @@ void loadBlocks(std::vector<char> data, Memory *memory) {
  * sequences consisting of ED's; if they are encountered, even two ED's are encoded into ED ED 02 ED. Finally, every
  * byte directly following a single ED is not taken into a block, for example ED 6*00 is not encoded into ED ED ED 06 00
  * but into ED 00 ED ED 05 00. The block is terminated by an end marker, 00 ED ED 00.*/
-std::vector<char> decompressBlock(std::vector<char> data, std::uint16_t block_data_start, std::uint16_t block_length) {
+std::vector<uint8_t> decompressBlock(std::vector<uint8_t> data, std::uint16_t block_data_start, std::uint16_t block_length) {
 
   spdlog::get("console")->debug("Beginning blockdecompress");
-  std::vector<char> uncompressed = std::vector<char>();
+  auto uncompressed = std::vector<uint8_t>();
   std::uint16_t i = block_data_start;
 
   while (i < block_data_start + block_length - 4) {

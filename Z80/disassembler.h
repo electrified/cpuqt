@@ -19,235 +19,235 @@ class Disassembler : public Alu {
 
 public:
   std::vector<std::string> results;
-  void ADC(const RegisterPair hl, const RegisterPair bc);
+  void ADC(RegisterPair hl, RegisterPair bc) override;
 
-  void ADC(const Rgstr a, const Rgstr b);
+  void ADC(Rgstr a, Rgstr b) override;
 
-  void ADC(const Rgstr a, const std::uint8_t i);
+  void ADC(Rgstr a, std::uint8_t i) override;
 
-  void ADC(const Rgstr a, const MemoryAddress memoryAddress);
+  void ADC(Rgstr a, MemoryAddress memoryAddress) override;
 
-  void ADD(const RegisterPair destination, const RegisterPair registerPair);
+  void ADD(RegisterPair destination, RegisterPair registerPair) override;
 
-  void ADD(const Rgstr a, const std::uint8_t nextByte);
+  void ADD(Rgstr a, std::uint8_t nextByte) override;
 
-  void ADD(const Rgstr a, const Rgstr b);
+  void ADD(Rgstr a, Rgstr b) override;
 
-  void ADD(const Rgstr a, const MemoryAddress memoryAddress);
+  void ADD(Rgstr a, MemoryAddress memoryAddress) override;
 
-  void AND(const Rgstr iX2);
+  void AND(Rgstr iX2) override;
 
-  void AND(const std::uint8_t iX2);
+  void AND(std::uint8_t iX2) override;
 
-  void AND(const MemoryAddress memoryAddress);
+  void AND(MemoryAddress memoryAddress) override;
 
-  void BIT(const std::uint8_t y, const Rgstr rgstr);
+  void BIT(std::uint8_t y, Rgstr rgstr) override;
 
-  void BIT(const std::uint8_t i, const MemoryAddress memoryAddress);
+  void BIT(std::uint8_t i, MemoryAddress memoryAddress) override;
 
-  void CALL(const Condition c, const MemoryAddress memoryAddress);
+  void CALL(Condition c, MemoryAddress memoryAddress) override;
 
-  void CALL(const MemoryAddress memoryAddress);
+  void CALL(MemoryAddress memoryAddress) override;
 
-  void CCF();
+  void CCF() override;
 
-  void CP(const std::uint8_t val);
+  void CP(std::uint8_t val) override;
 
-  void CP(const Rgstr val);
+  void CP(Rgstr val) override;
 
-  void CP(const MemoryAddress memoryAddress);
+  void CP(MemoryAddress memoryAddress) override;
 
-  void CPD();
+  void CPD() override;
 
-  void CPDR();
+  void CPDR() override;
 
-  void CPI();
+  void CPI() override;
 
-  void CPIR();
+  void CPIR() override;
 
-  void CPL();
+  void CPL() override;
 
-  void DAA();
+  void DAA() override;
 
-  void DEC(const Rgstr r);
+  void DEC(Rgstr r) override;
 
-  void DEC(const RegisterPair r);
+  void DEC(RegisterPair r) override;
 
-  void DEC(const MemoryAddress memoryAddress);
+  void DEC(MemoryAddress memoryAddress) override;
 
-  void DI();
+  void DI() override;
 
-  void DJNZ(const MemoryAddress memoryAddress);
+  void DJNZ(MemoryAddress memoryAddress) override;
 
-  void EI();
+  void EI() override;
 
-  void EX(const RegisterPair de, const RegisterPair hl);
+  void EX(RegisterPair de, RegisterPair hl) override;
 
-  void EX(const MemoryAddress memoryAddress, const RegisterPair ix);
+  void EX(MemoryAddress memoryAddress, RegisterPair ix) override;
 
-  void EXX();
+  void EXX() override;
 
-  void HALT();
+  void HALT() override;
 
-  void IM(const std::uint8_t im);
+  void IM(std::uint8_t im) override;
 
-  void in(const Rgstr a, const MemoryAddress &i);
+  void in(const Rgstr a, const MemoryAddress i) override;
 
-  void INC(const Rgstr r);
+  void INC(Rgstr r) override;
 
-  void INC(const RegisterPair r);
+  void INC(RegisterPair r) override;
 
-  void INC(const MemoryAddress memoryAddress);
+  void INC(MemoryAddress memoryAddress) override;
 
-  void IND();
+  void IND() override;
 
-  void INDR();
+  void INDR() override;
 
-  void INI();
+  void INI() override;
 
-  void INIR();
+  void INIR() override;
 
-  void JP(const Condition c, const MemoryAddress i);
+  void JP(Condition c, MemoryAddress i) override;
 
-  void JP(const MemoryAddress memoryAddress);
+  void JP(MemoryAddress memoryAddress) override;
 
-  void JR(const Condition nz, const MemoryAddress memoryAddress);
+  void JR(Condition nz, MemoryAddress memoryAddress) override;
 
-  void JR(const MemoryAddress memoryAddress);
+  void JR(MemoryAddress memoryAddress) override;
 
-  void LD(const Rgstr rgstr, const std::uint8_t memoryAddress);
+  void LD(Rgstr rgstr, std::uint8_t memoryAddress) override;
 
-  void LD(const Rgstr r1, const Rgstr r2);
+  void LD(Rgstr r1, Rgstr r2) override;
 
-  void LD(const RegisterPair r1, const RegisterPair r2);
+  void LD(RegisterPair r1, RegisterPair r2) override;
 
-  void LD(const RegisterPair regPair, const std::uint16_t immediateValue);
+  void LD(RegisterPair regPair, std::uint16_t immediateValue) override;
 
-  void LD(const MemoryAddress memoryAddress, const Rgstr a);
+  void LD(MemoryAddress memoryAddress, Rgstr a) override;
 
-  void LD(const Rgstr a, const MemoryAddress memoryAddress);
+  void LD(Rgstr a, MemoryAddress memoryAddress) override;
 
-  void LD(const MemoryAddress memoryAddress, const RegisterPair hl);
+  void LD(MemoryAddress memoryAddress, RegisterPair hl) override;
 
-  void LD(const RegisterPair hl, const MemoryAddress memoryAddress);
+  void LD(RegisterPair hl, MemoryAddress memoryAddress) override;
 
-  void LD(const MemoryAddress memoryAddress, const std::uint8_t i);
+  void LD(MemoryAddress memoryAddress, std::uint8_t i) override;
 
-  void LDD();
+  void LDD() override;
 
-  void LDDR();
+  void LDDR() override;
 
-  void LDI();
+  void LDI() override;
 
-  void LDIR();
+  void LDIR() override;
 
-  void NEG();
+  void NEG() override;
 
-  void NOP();
+  void NOP() override;
 
-  void OR(const Rgstr iX2);
+  void OR(Rgstr iX2) override;
 
-  void OR(const std::uint8_t immediateValue);
+  void OR(std::uint8_t immediateValue) override;
 
-  void OR(const MemoryAddress memoryAddress);
+  void OR(MemoryAddress memoryAddress) override;
 
-  void OTDR();
+  void OTDR() override;
 
-  void OTIR();
+  void OTIR() override;
 
-  void out(const MemoryAddress address, const Rgstr rgstr);
+  void out(MemoryAddress address, Rgstr rgstr) override;
 
-  void OUTD();
+  void OUTD() override;
 
-  void OUTI();
+  void OUTI() override;
 
-  void POP(const RegisterPair iy);
+  void POP(RegisterPair iy) override;
 
-  void PUSH(const RegisterPair valueRegister);
+  void PUSH(RegisterPair valueRegister) override;
 
-  void RES(const std::uint8_t i, const Rgstr b);
+  void RES(std::uint8_t i, Rgstr b) override;
 
-  void RES(const std::uint8_t i, const MemoryAddress memoryAddress);
+  void RES(std::uint8_t i, MemoryAddress memoryAddress) override;
 
-  void RET(const Condition p);
+  void RET(Condition p) override;
 
-  void RET();
+  void RET() override;
 
-  void RETI();
+  void RETI() override;
 
-  void RETN();
+  void RETN() override;
 
-  void RL(const Rgstr r);
+  void RL(Rgstr r) override;
 
-  void RL(const MemoryAddress memoryAddress);
+  void RL(MemoryAddress memoryAddress) override;
 
-  void RLA();
+  void RLA() override;
 
-  void RLC(const Rgstr rgstr);
+  void RLC(Rgstr rgstr) override;
 
-  void RLC(const MemoryAddress memoryAddress);
+  void RLC(MemoryAddress memoryAddress) override;
 
-  void RLCA();
+  void RLCA() override;
 
-  void RLD();
+  void RLD() override;
 
-  void RR(const Rgstr r);
+  void RR(Rgstr r) override;
 
-  void RR(const MemoryAddress memoryAddress);
+  void RR(MemoryAddress memoryAddress) override;
 
-  void RRA();
+  void RRA() override;
 
-  void RRC(const Rgstr r);
+  void RRC(Rgstr r) override;
 
-  void RRC(const MemoryAddress memoryAddress);
+  void RRC(MemoryAddress memoryAddress) override;
 
-  void RRCA();
+  void RRCA() override;
 
-  void RRD();
+  void RRD() override;
 
-  void RST(const std::uint8_t i);
+  void RST(std::uint8_t i) override;
 
-  void SBC(const Rgstr a, const std::uint8_t nextByte);
+  void SBC(Rgstr a, std::uint8_t nextByte) override;
 
-  void SBC(const Rgstr a, const Rgstr b);
+  void SBC(Rgstr a, Rgstr b) override;
 
-  void SBC(const RegisterPair hl, const RegisterPair hl1);
+  void SBC(RegisterPair hl, RegisterPair hl1) override;
 
-  void SBC(const Rgstr a, const MemoryAddress memoryAddress);
+  void SBC(Rgstr a, MemoryAddress memoryAddress) override;
 
-  void SCF();
+  void SCF() override;
 
-  void SET(const std::uint8_t y, const Rgstr rgstr);
+  void SET(std::uint8_t y, Rgstr rgstr) override;
 
-  void SET(const std::uint8_t i, const MemoryAddress memoryAddress);
+  void SET(std::uint8_t i, MemoryAddress memoryAddress) override;
 
-  void SLA(const Rgstr r);
+  void SLA(Rgstr r) override;
 
-  void SLA(const MemoryAddress memoryAddress);
+  void SLA(MemoryAddress memoryAddress) override;
 
-  void SRA(const Rgstr r);
+  void SRA(Rgstr r) override;
 
-  void SRA(const MemoryAddress memoryAddress);
+  void SRA(MemoryAddress memoryAddress) override;
 
-  void SRL(const Rgstr r);
+  void SRL(Rgstr r) override;
 
-  void SRL(const MemoryAddress memoryAddress);
+  void SRL(MemoryAddress memoryAddress) override;
 
-  void SUB(const Rgstr iX2);
+  void SUB(Rgstr iX2) override;
 
-  void SUB(const std::uint8_t iX2);
+  void SUB(std::uint8_t iX2) override;
 
-  void SUB(const MemoryAddress memoryAddress);
+  void SUB(MemoryAddress memoryAddress) override;
 
-  void XOR(const Rgstr val);
+  void XOR(Rgstr val) override;
 
-  void XOR(const std::uint8_t val);
+  void XOR(std::uint8_t val) override;
 
-  void XOR(const MemoryAddress memoryAddress);
+  void XOR(MemoryAddress memoryAddress) override;
 
-  Disassembler(Memory *memory);
+  explicit Disassembler(Memory *memory);
   ~Disassembler();
-  void disassemble(const std::uint16_t start, const std::uint16_t end);
+  void disassemble(std::uint16_t start, std::uint16_t end);
   void disassemble();
   std::string getDisassembly(std::uint16_t index);
 };

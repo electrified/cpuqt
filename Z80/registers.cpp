@@ -18,43 +18,43 @@ Registers::Registers() {
   HL_alt.all = 0;
 }
 
-std::uint16_t Registers::getPC() { return PC; }
+std::uint16_t Registers::getPC() const { return PC; }
 
 void Registers::setPC(std::uint16_t pc) { PC = pc; }
 
-std::uint8_t Registers::getA() { return AF.bytes.high; }
+std::uint8_t Registers::getA() const { return AF.bytes.high; }
 
 void Registers::setA(std::uint8_t a) { AF.bytes.high = a; }
 
-std::uint16_t Registers::getAF() { return AF.all; }
+std::uint16_t Registers::getAF() const { return AF.all; }
 
 void Registers::setAF(std::uint16_t value) { AF.all = value; }
 
-std::uint16_t Registers::getAF_alt() { return AF_alt.all; }
+std::uint16_t Registers::getAF_alt() const { return AF_alt.all; }
 
 void Registers::setAF_alt(std::uint16_t value) { AF_alt.all = value; }
 
-std::uint8_t Registers::getA_alt() { return AF_alt.bytes.high; }
+std::uint8_t Registers::getA_alt() const { return AF_alt.bytes.high; }
 
 void Registers::setA_alt(std::uint8_t a_alt) { AF_alt.bytes.high = a_alt; }
 
-std::uint8_t Registers::getB() { return BC.bytes.high; }
+std::uint8_t Registers::getB() const { return BC.bytes.high; }
 
 void Registers::setB(std::uint8_t b) { BC.bytes.high = b; }
 
-std::uint16_t Registers::getBC() { return BC.all; }
+std::uint16_t Registers::getBC() const { return BC.all; }
 
 void Registers::setBC(std::uint16_t value) { BC.all = value; }
 
-std::uint16_t Registers::getBC_alt() { return BC_alt.all; }
+std::uint16_t Registers::getBC_alt() const { return BC_alt.all; }
 
 void Registers::setBC_alt(std::uint16_t value) { BC_alt.all = value; }
 
-std::uint8_t Registers::getB_alt() { return BC_alt.bytes.high; }
+std::uint8_t Registers::getB_alt() const { return BC_alt.bytes.high; }
 
 void Registers::setB_alt(std::uint8_t b_alt) { BC_alt.bytes.high = b_alt; }
 
-std::uint8_t Registers::getC() { return BC.bytes.low; }
+std::uint8_t Registers::getC() const { return BC.bytes.low; }
 
 void Registers::setC(std::uint8_t c) { BC.bytes.low = c; }
 
@@ -68,53 +68,53 @@ void Registers::setCFlag(bool flag) {
   }
 }
 
-std::uint8_t Registers::getC_alt() { return BC_alt.bytes.low; }
+std::uint8_t Registers::getC_alt() const { return BC_alt.bytes.low; }
 
 void Registers::setC_alt(std::uint8_t c_alt) { BC_alt.bytes.low = c_alt; }
 
-std::uint8_t Registers::getD() { return DE.bytes.high; }
+std::uint8_t Registers::getD() const { return DE.bytes.high; }
 
 void Registers::setD(std::uint8_t d) { this->DE.bytes.high = d; }
 
-std::uint16_t Registers::getDE() { return DE.all; }
+std::uint16_t Registers::getDE() const { return DE.all; }
 
 void Registers::setDE(std::uint16_t value) { DE.all = value; }
 
-std::uint16_t Registers::getDE_alt() { return DE_alt.all; }
+std::uint16_t Registers::getDE_alt() const { return DE_alt.all; }
 
 void Registers::setDE_alt(std::uint16_t value) { DE_alt.all = value; }
 
-std::uint8_t Registers::getD_alt() { return DE_alt.bytes.high; }
+std::uint8_t Registers::getD_alt() const { return DE_alt.bytes.high; }
 
 void Registers::setD_alt(std::uint8_t d_alt) { DE_alt.bytes.high = d_alt; }
 
-std::uint8_t Registers::getE() { return DE.bytes.low; }
+std::uint8_t Registers::getE() const { return DE.bytes.low; }
 
 void Registers::setE(std::uint8_t e) { DE.bytes.low = e; }
 
-std::uint8_t Registers::getE_alt() { return DE_alt.bytes.low; }
+std::uint8_t Registers::getE_alt() const { return DE_alt.bytes.low; }
 
 void Registers::setE_alt(std::uint8_t e_alt) { DE_alt.bytes.low = e_alt; }
 
-std::uint8_t Registers::getF() { return AF.bytes.low; }
+std::uint8_t Registers::getF() const { return AF.bytes.low; }
 
 void Registers::setF(std::uint8_t f) { AF.bytes.low = f; }
 
-std::uint8_t Registers::getF_alt() { return AF_alt.bytes.low; }
+std::uint8_t Registers::getF_alt() const { return AF_alt.bytes.low; }
 
 void Registers::setF_alt(std::uint8_t f_alt) { AF_alt.bytes.low = f_alt; }
 
-std::uint8_t Registers::getH() { return HL.bytes.high; }
+std::uint8_t Registers::getH() const { return HL.bytes.high; }
 void Registers::setH(std::uint8_t h) { HL.bytes.high = h; }
 
-std::uint8_t Registers::getL() { return HL.bytes.low; }
+std::uint8_t Registers::getL() const { return HL.bytes.low; }
 void Registers::setL(std::uint8_t l) { HL.bytes.low = l; }
 
-std::uint16_t Registers::getHL() { return HL.all; }
+std::uint16_t Registers::getHL() const { return HL.all; }
 
 void Registers::setHL(std::uint16_t value) { HL.all = value; }
 
-bool Registers::getHFlag() { return (AF.bytes.low & BOOST_BINARY(10000)) == BOOST_BINARY(10000); }
+bool Registers::getHFlag() const { return (AF.bytes.low & BOOST_BINARY(10000)) == BOOST_BINARY(10000); }
 
 void Registers::setHFlag(bool flag) {
   if (flag) {
@@ -124,43 +124,43 @@ void Registers::setHFlag(bool flag) {
   }
 }
 
-std::uint16_t Registers::getHL_alt() { return HL_alt.all; }
+std::uint16_t Registers::getHL_alt() const { return HL_alt.all; }
 
 void Registers::setHL_alt(std::uint16_t value) { HL_alt.all = value; }
 
-std::uint8_t Registers::getH_alt() { return HL_alt.bytes.high; }
+std::uint8_t Registers::getH_alt() const { return HL_alt.bytes.high; }
 
 void Registers::setH_alt(std::uint8_t h_alt) { HL_alt.bytes.high = h_alt; }
 
-std::uint8_t Registers::getI() { return IR.bytes.high; }
+std::uint8_t Registers::getI() const { return IR.bytes.high; }
 
 void Registers::setI(std::uint8_t i) { IR.bytes.high = i; }
 
 void Registers::setIM(std::uint8_t im) { _IM = im; }
 
-std::uint8_t Registers::getIM() { return _IM; }
+std::uint8_t Registers::getIM() const { return _IM; }
 
-std::uint16_t Registers::getIX() { return IX.all; }
+std::uint16_t Registers::getIX() const { return IX.all; }
 
 void Registers::setIX(std::uint16_t ix) { IX.all = ix; }
 
-std::uint8_t Registers::getIXH() { return IX.bytes.high; }
+std::uint8_t Registers::getIXH() const { return IX.bytes.high; }
 
-std::uint8_t Registers::getIXL() { return IX.bytes.low; }
+std::uint8_t Registers::getIXL() const { return IX.bytes.low; }
 
-std::uint16_t Registers::getIY() { return IY.all; }
+std::uint16_t Registers::getIY() const { return IY.all; }
 
 void Registers::setIY(std::uint16_t iy) { IY.all = iy; }
 
-std::uint8_t Registers::getIYH() { return IY.bytes.high; }
+std::uint8_t Registers::getIYH() const { return IY.bytes.high; }
 
-std::uint8_t Registers::getIYL() { return IY.bytes.low; }
+std::uint8_t Registers::getIYL() const { return IY.bytes.low; }
 
-std::uint8_t Registers::getL_alt() { return HL_alt.bytes.low; }
+std::uint8_t Registers::getL_alt() const { return HL_alt.bytes.low; }
 
 void Registers::setL_alt(std::uint8_t l_alt) { HL_alt.bytes.low = l_alt; }
 
-bool Registers::getNFlag() { return (AF.bytes.low & BOOST_BINARY(10)) == BOOST_BINARY(10); }
+bool Registers::getNFlag() const { return (AF.bytes.low & BOOST_BINARY(10)) == BOOST_BINARY(10); }
 
 void Registers::setNFlag(bool flag) {
   if (flag) {
@@ -170,7 +170,7 @@ void Registers::setNFlag(bool flag) {
   }
 }
 
-bool Registers::getPVFlag() { return (AF.bytes.low & BOOST_BINARY(100)) == BOOST_BINARY(100); }
+bool Registers::getPVFlag() const { return (AF.bytes.low & BOOST_BINARY(100)) == BOOST_BINARY(100); }
 
 void Registers::setPVFlag(bool flag) {
   if (flag) {
@@ -180,7 +180,7 @@ void Registers::setPVFlag(bool flag) {
   }
 }
 
-std::uint8_t Registers::getR() { return IR.bytes.low; }
+std::uint8_t Registers::getR() const { return IR.bytes.low; }
 
 void Registers::setR(std::uint8_t r) { IR.bytes.low = r; }
 
@@ -244,11 +244,11 @@ std::uint8_t Registers::getRegisterValue(Rgstr rgstr) {
   }
 }
 
-std::uint16_t Registers::getSP() { return SP.all; }
+std::uint16_t Registers::getSP() const { return SP.all; }
 
 void Registers::setSP(std::uint16_t sp) { SP.all = sp; }
 
-bool Registers::getSignFlag() { return (AF.bytes.low & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000); }
+bool Registers::getSignFlag() const { return (AF.bytes.low & BOOST_BINARY(10000000)) == BOOST_BINARY(10000000); }
 
 void Registers::setSignFlag(bool flag) {
   if (flag) {
@@ -258,7 +258,7 @@ void Registers::setSignFlag(bool flag) {
   }
 }
 
-bool Registers::getZeroFlag() { return (AF.bytes.low & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000); }
+bool Registers::getZeroFlag() const { return (AF.bytes.low & BOOST_BINARY(1000000)) == BOOST_BINARY(1000000); }
 
 void Registers::setZeroFlag(bool flag) {
   if (flag) {
@@ -394,14 +394,14 @@ void Registers::setRegisterPair(RegisterPair rgstr, std::uint8_t lowOrder, std::
   }
 }
 
-bool Registers::isIFF1() { return IFF1; }
+bool Registers::isIFF1() const { return IFF1; }
 
 void Registers::setIFF1(bool iFF1) { IFF1 = iFF1; }
 
-bool Registers::isIFF2() { return IFF2; }
+bool Registers::isIFF2() const { return IFF2; }
 
 void Registers::setIFF2(bool iFF2) { IFF2 = iFF2; }
 
-bool Registers::isHalted() { return halted; }
+bool Registers::isHalted() const { return halted; }
 
 void Registers::setHalted(bool val) { halted = val; }

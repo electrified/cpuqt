@@ -3084,14 +3084,14 @@ void Processor::reset() {
 void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
   uint16_t a = registers->getRegisterPairValue(rp1);
   uint16_t b = registers->getRegisterPairValue(rp2) + (registers->getCFlag() ? 1 : 0);
-  uint16_t newvalue = a + b;
+  uint16_t newValue = a + b;
   
   // TODO: warning: C4244: 'argument' : conversion from 'uint16_t' to 'uint8_t', possible loss of data
-  registers->setSignFlag(newvalue & 0x8000);
-  registers->setZeroFlag(newvalue == 0);
+  registers->setSignFlag(newValue & 0x8000);
+  registers->setZeroFlag(newValue == 0);
   registers->setHFlag((((a & 0x0FFF) + (b & 0x0FFF)) & 0xF000) != 0);
   
-  uint16_t temp = (a ^ b ^ newvalue) >> 15;
+  uint16_t temp = (a ^ b ^ newValue) >> 15;
   
   registers->setPVFlag(temp == 1 || temp == 2);
   registers->setNFlag(false);
@@ -3100,7 +3100,7 @@ void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
   // equivalent to a > 0xffff - b
   registers->setCFlag(a > 0xffff - b);
 
-  registers->setRegisterPair(rp1, newvalue);
+  registers->setRegisterPair(rp1, newValue);
 }
 
 void Processor::ADC(Rgstr a, Rgstr b) {
@@ -3142,20 +3142,20 @@ void Processor::ADD(RegisterPair destination, RegisterPair rgstr) {
 }
 
 void Processor::ADD(Rgstr destination, std::uint8_t nextByte) {
-  std::uint8_t oldvalue = registers->getRegisterValue(destination);
-  std::uint8_t newvalue = registers->getRegisterValue(destination) + nextByte;
-  registers->setRegister(destination, newvalue);
-  registers->setSignFlag(newvalue & 0x80);
-  registers->setZeroFlag(newvalue == 0);
+  std::uint8_t oldValue = registers->getRegisterValue(destination);
+  std::uint8_t newValue = registers->getRegisterValue(destination) + nextByte;
+  registers->setRegister(destination, newValue);
+  registers->setSignFlag(newValue & 0x80);
+  registers->setZeroFlag(newValue == 0);
 
-  registers->setHFlag((((oldvalue & 0x000F) + (newvalue & 0x000F)) & 0x00F0) != 0);
+  registers->setHFlag((((oldValue & 0x000F) + (newValue & 0x000F)) & 0x00F0) != 0);
   registers->setNFlag(false);
 
   // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
   // carry out: a + b > 0xff
   // equivalent to a > 0xff - b
-  registers->setCFlag(oldvalue > 0xff - nextByte);
-  registers->setPVFlag(oldvalue ^ nextByte ^ registers->getCFlag());
+  registers->setCFlag(oldValue > 0xff - nextByte);
+  registers->setPVFlag(oldValue ^ nextByte ^ registers->getCFlag());
 }
 
 void Processor::ADD(Rgstr destination, Rgstr source) { ADD(destination, registers->getRegisterValue(source)); }
@@ -4475,3 +4475,10 @@ void Processor::setFlags(std::uint8_t value) {
 }
 
 void Processor::interruptRequest(bool state) { this->interruptRequested = state; }
+std::uint16_t Processor::MemoryAddress(const std::uint16_t memoryAddress) { return memoryAddress; }
+std::uint16_t Processor::MemoryAddress(const Rgstr rgstr) { return registers->getRegisterValue(rgstr); }
+std::uint16_t Processor::MemoryAddress(const RegisterPair rgstrPair) { return registers->getRegisterPairValue(rgstrPair); }
+std::uint16_t Processor::MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
+  return (std::int16_t)registers->getRegisterPairValue(rgstrPair) + (std::int8_t)offset;
+}
+const char *UnimplementedInstructionException::what() const noexcept { return "Unimplemented instruction"; }

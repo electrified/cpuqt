@@ -12,12 +12,12 @@ BadgerComputer::BadgerComputer() {
   connect(&timer, SIGNAL(timeout()), this, SLOT(doOneScreenRefreshesWorth()));
 }
 
-BadgerComputer::~BadgerComputer() {}
+BadgerComputer::~BadgerComputer() = default;
 
 /**
  * Here we can reset the CPU along with other peripherals, clear the screen etc maybe
  */
-void BadgerComputer::reset() { processor->reset(); }
+void BadgerComputer::reset() const { processor->reset(); }
 
 void BadgerComputer::doOneScreenRefreshesWorth() {
   // At 4Mhz, 20 milliseconds of execution corresponds to 80,000 cycles
@@ -42,7 +42,7 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
   emit gfxUpdated();
 }
 
-void BadgerComputer::step() { processor->process(); }
+void BadgerComputer::step() const { processor->process(); }
 
 void BadgerComputer::addBreakpoint(std::uint16_t pc) { breakpoints.insert(pc); }
 
@@ -57,3 +57,4 @@ void BadgerComputer::run() {
 void BadgerComputer::stop() {
   timer.stop();
 }
+void BadgerComputer::process(const std::uint8_t count) {}

@@ -10,7 +10,7 @@ class cpm_io : public QObject {
 public:
   cpm_io();
   //     ~cpm_io();
-  void in(const Rgstr rgstr, const MemoryAddress &i, Registers *registers, Memory *memory);
+  void in(Rgstr rgstr, const MemoryAddress &i, Registers *registers, Memory *memory);
 signals:
   void consoleTextOutput(char character);
 };

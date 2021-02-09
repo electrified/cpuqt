@@ -16,10 +16,10 @@ class MemoryAddress {
 
 public:
   MemoryAddress();
-  MemoryAddress(const std::uint16_t i);
-  MemoryAddress(const Rgstr r);
-  MemoryAddress(const RegisterPair rp);
-  MemoryAddress(const RegisterPair rp, const std::uint8_t offset);
+  explicit MemoryAddress(std::uint16_t i);
+  explicit MemoryAddress(Rgstr r);
+  explicit MemoryAddress(RegisterPair rp);
+  MemoryAddress(RegisterPair rp, std::uint8_t offset);
   std::uint16_t getMemoryAddress() const;
   std::uint8_t getOffset() const;
   Rgstr getRegister() const;

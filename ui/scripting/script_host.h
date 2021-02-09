@@ -11,10 +11,10 @@ private:
   BadgerComputer *computer;
 
 public:
-  ScriptHost(BadgerComputer *computer);
+  explicit ScriptHost(BadgerComputer *computer);
   ~ScriptHost();
-  void executeScript(std::string path);
-  void runCommand(std::string command);
+  void executeScript(const std::string& path);
+  void runCommand(const std::string& command);
   void addBreakpoint(int memoryAddress);
   void removeBreakpoint(int memoryAddress);
   void listBreakpoints();

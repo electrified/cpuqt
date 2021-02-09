@@ -5,10 +5,10 @@
 #include <vector>
 #include <string>
 
-std::vector<char> ReadAllBytes(std::string filename);
-void loadIntoMemory(std::vector<char> data, Memory *memory, std::uint16_t offset);
-void loadIntoMemory2(Memory *memory, std::uint16_t offset, char const *filename);
-void loadZ80Snapshot(std::vector<char> data, Memory *memory, Registers *registers);
-std::vector<char> decompressBlock(std::vector<char> data, std::uint16_t block_start, std::uint16_t block_length);
+std::vector<uint8_t> ReadAllBytes(const std::string& filename);
+void loadIntoMemory(std::vector<uint8_t> data, Memory *memory, std::uint16_t offset);
+void loadIntoMemory2(Memory *memory, std::uint16_t offset, std::string filename);
+void loadZ80Snapshot(std::vector<uint8_t> data, Memory *memory, Registers *registers);
+std::vector<uint8_t> decompressBlock(std::vector<uint8_t> data, std::uint16_t block_start, std::uint16_t block_length);
 std::uint16_t getMemoryOffsetOfBlock(std::uint8_t block_number);
-void loadBlocks(std::vector<char> data, Memory *memory);
+void loadBlocks(std::vector<uint8_t> data, Memory *memory);

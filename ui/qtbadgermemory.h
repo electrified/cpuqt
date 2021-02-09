@@ -6,8 +6,8 @@
 class QtBadgerMemory : public QObject, public BadgerMemory {
   Q_OBJECT
 public:
-  explicit QtBadgerMemory(QObject *parent = 0);
-  void write(const std::uint16_t address, const std::uint8_t value);
+  explicit QtBadgerMemory(QObject *parent = nullptr);
+  void write(std::uint16_t address, std::uint8_t value) override;
 signals:
   void memoryUpdated(std::uint16_t address);
   void spectrumGfxUpdated(std::uint16_t address);

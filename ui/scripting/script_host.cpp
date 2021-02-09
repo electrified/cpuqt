@@ -1,4 +1,6 @@
 #include "script_host.h"
+
+#include <utility>
 #include "computer/utils.h"
 
 ScriptHost::ScriptHost(BadgerComputer *computer) {
@@ -16,9 +18,9 @@ ScriptHost::ScriptHost(BadgerComputer *computer) {
                     );
 }
 
-void ScriptHost::executeScript(std::string path) { lua.script_file(path); }
+void ScriptHost::executeScript(const std::string& path) { lua.script_file(path); }
 
-void ScriptHost::runCommand(std::string command) {
+void ScriptHost::runCommand(const std::string& command) {
   spdlog::get("console")->debug("Executing " + command);
   lua.script(command.c_str());
 }
@@ -39,13 +41,13 @@ int ScriptHost::peek(int memoryAddress) { return computer->memory->read(memoryAd
 void ScriptHost::step() { computer->step(); }
 
 void ScriptHost::loadRom(std::string path) {
-  auto data = ReadAllBytes(path);
+  auto data = ReadAllBytes(std::move(path));
 
   loadIntoMemory(data, computer->memory, 0);
 }
 
 void ScriptHost::loadSnapshot(std::string path) {
-  auto data = ReadAllBytes(path);
+  auto data = ReadAllBytes(std::move(path));
 
   loadZ80Snapshot(data, computer->memory, computer->processor->getRegisters());
 }
@@ -57,3 +59,4 @@ void ScriptHost::run() {
 void ScriptHost::reset() {
   computer->reset();
 }
+ScriptHost::~ScriptHost() = default;

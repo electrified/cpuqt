@@ -15,17 +15,17 @@ class BadgerComputer : public QObject {
   Q_OBJECT
 public:
   BadgerComputer();
-  ~BadgerComputer();
-  void reset();
+  ~BadgerComputer() override;
+  void reset() const;
   Processor *processor;
   QtBadgerMemory *memory;
   SpectrumIO *io;
   bool skipBreakpoint = false;
 
-  void process(const std::uint8_t count);
-  void step();
-  void addBreakpoint(const std::uint16_t pc);
-  void removeBreakpoint(const std::uint16_t pc);
+  void process(std::uint8_t count);
+  void step() const;
+  void addBreakpoint(std::uint16_t pc);
+  void removeBreakpoint(std::uint16_t pc);
   void listBreakpoints();
   void run();
   void stop();

@@ -1,6 +1,7 @@
 #include "disassembler.h"
 #include <iostream>
 #include <boost/format.hpp>
+#include <utility>
 #include "utils.h"
 
 using namespace registers;
@@ -11,7 +12,7 @@ Disassembler::Disassembler(Memory *memory) {
   results.resize(memory->size());
 }
 
-Disassembler::~Disassembler() {}
+Disassembler::~Disassembler() = default;
 
 void Disassembler::disassemble() { disassemble(0, this->results.size()); }
 
@@ -26,7 +27,7 @@ void Disassembler::disassemble(const std::uint16_t start, const std::uint16_t en
   }
 }
 
-void Disassembler::add(std::string mnemonic) { results.at(programCounterAtStartOfInstructionExecution) = mnemonic; }
+void Disassembler::add(std::string mnemonic) { results.at(programCounterAtStartOfInstructionExecution) = std::move(mnemonic); }
 
 void Disassembler::ADC(const RegisterPair rp1, const RegisterPair rp2) {
   add(boost::str(boost::format("ADC %s, %s") % registers::toString(rp1) % registers::toString(rp2)));
@@ -136,7 +137,7 @@ void Disassembler::HALT() { add("HALT"); }
 
 void Disassembler::IM(const std::uint8_t im) { add(boost::str(boost::format("IM %s") % utils::int_to_hex(im))); }
 
-void Disassembler::in(const Rgstr r, const MemoryAddress &memoryAddress) {
+void Disassembler::in(const Rgstr r, const MemoryAddress memoryAddress) {
   add(boost::str(boost::format("IN %s, %s") % registers::toString(r) % memoryAddress.toString()));
 }
 

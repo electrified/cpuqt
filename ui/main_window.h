@@ -24,8 +24,8 @@ class MainWindow : public QMainWindow {
   QRgb valueOff = qRgb(0xCD, 0xCD, 0xCD);
   Settings *settings;
 public:
-  explicit MainWindow(QWidget *parent = 0);
-  ~MainWindow();
+  explicit MainWindow(QWidget *parent = nullptr);
+  ~MainWindow() override;
 private:
   Ui::MainWindow *ui;
 

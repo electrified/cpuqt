@@ -37,9 +37,9 @@ class SpectrumIO : public IO {
 
 public:
   SpectrumIO();
-  ~SpectrumIO();
-  std::uint8_t read(std::uint16_t address);
-  void write(std::uint16_t address, std::uint8_t value);
+  ~SpectrumIO() override;
+  std::uint8_t read(std::uint16_t address) override;
+  void write(std::uint16_t address, std::uint8_t value) override;
   void keydown(int key);
   void keyup(int key);
   spec_key findKey(int key);
