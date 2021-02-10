@@ -4335,9 +4335,41 @@ void Processor::SLA(Rgstr r) {
   registers->setNFlag(false);
 }
 
-void Processor::SRA(std::uint16_t memoryAddress) { unimplemented("SRA"); }
+/*
+ * An arithmetic shift right 1 bit position is performed on the contents of operand m. The
+contents of bit 0 are copied to the Carry flag and the previous contents of bit 7 remain
+unchanged. Bit 0 is the least-significant bit.
+S is set if result is negative; otherwise, it is reset.
+Z is set if result is 0; otherwise, it is reset.
+H is reset.
+P/V is set if parity is even; otherwise, it is reset.
+N is reset.
+C is data from bit 0 of source register.
 
-void Processor::SRA(Rgstr r) { unimplemented("SRA"); }
+ */
+void Processor::SRA(std::uint16_t memoryAddress) {
+  std::uint8_t val = memory->read(memoryAddress);
+  registers->setCFlag(val & 1);
+  std::uint8_t newval = (val & 0x80) ^ (val >> 1);
+  registers->setZeroFlag(newval == 0);
+  registers->setSignFlag(newval & 0x80);
+  registers->setHFlag(false);
+  registers->setPVFlag(parity(newval));
+  registers->setNFlag(false);
+  memory->write(memoryAddress, newval);
+}
+
+void Processor::SRA(Rgstr r) {
+  std::uint8_t val = registers->getRegisterValue(r);
+  registers->setCFlag(val & 1);
+  std::uint8_t newval = (val & 0x80) ^ (val >> 1);
+  registers->setZeroFlag(newval == 0);
+  registers->setSignFlag(newval & 0x80);
+  registers->setHFlag(false);
+  registers->setPVFlag(parity(newval));
+  registers->setNFlag(false);
+  registers->setRegister(r, newval);
+}
 
 void Processor::SRL(std::uint16_t memoryAddress) { unimplemented("SRL"); }
 

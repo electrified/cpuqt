@@ -2417,11 +2417,28 @@ TEST_CASE("SLA") {
   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == 1);
 }
 
-TEST_CASE("SRA", "[!mayfail]") {
+TEST_CASE("SRA (IX+d)") { // memory version
   std::unique_ptr<TestComputer> comp = setupComputer();
-  REQUIRE(true == false);
+  comp->getProcessor()->getRegisters()->setIX(0x1000);
+  comp->getMemory()->write(0x1003, BOOST_BINARY(10111000));
+  comp->getMemory()->write(0x0, 0xDD);
+  comp->getMemory()->write(0x1, 0xCB);
+  comp->getMemory()->write(0x2, 0x3);
+  comp->getMemory()->write(0x3, 0x2E);
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getMemory()->read(0x1003) == BOOST_BINARY(11011100));
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == 0);
 }
 
+TEST_CASE("SRA A") { // register version
+  std::unique_ptr<TestComputer> comp = setupComputer();
+  comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(10111000));
+  comp->getMemory()->write(0x0, 0xCB);
+  comp->getMemory()->write(0x1, BOOST_BINARY(00101111));
+  comp->getProcessor()->process();
+  REQUIRE(comp->getProcessor()->getRegisters()->getA() == BOOST_BINARY(11011100));
+  REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == 0);
+}
 /**
  * If the contents of register B are
  * <p/>
