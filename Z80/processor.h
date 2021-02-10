@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cstdint>
 
 #include "RegisterPair.hpp"
@@ -27,7 +26,10 @@ class Processor {
 
   bool interruptRequested = false;
 
-  inline std::uint8_t next() { return memory->read(registers->PC++); }
+  inline std::uint8_t next() {
+    SPDLOG_LOGGER_DEBUG(logger, "PC: {0:x}", registers->PC);
+    return memory->read(registers->PC++);
+  }
 
   std::uint16_t MemoryAddress(const std::uint16_t memoryAddress);
 

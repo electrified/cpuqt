@@ -13,13 +13,6 @@ int main(int argc, char **argv) {
   QCoreApplication::setOrganizationDomain("maidavale.org");
   QCoreApplication::setApplicationName("Emu");
 
-  /*
-  QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
-
-  for (QByteArray ba : supportedImageFormats) {
-    console->info() << ba.data();
-  }*/
-
   MainWindow ui;
   ui.show();
   return app.exec();

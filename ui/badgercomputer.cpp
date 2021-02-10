@@ -22,13 +22,11 @@ void BadgerComputer::reset() const { processor->reset(); }
 void BadgerComputer::doOneScreenRefreshesWorth() {
   // At 4Mhz, 20 milliseconds of execution corresponds to 80,000 cycles
   for (std::uint32_t i = 0; i < 70000; i++) {
-    if (!skipBreakpoint && breakpoints.find(processor->getRegisters()->getPC()) != breakpoints.end()) {
-      skipBreakpoint = true;
+    if (breakpoints.find(processor->getRegisters()->getPC()) != breakpoints.end()) {
       emit hitbreakpoint();
-      spdlog::get("console")->debug("breakpoint hit!");
+      SPDLOG_INFO("breakpoint hit!");
+      break;
     } else {
-      skipBreakpoint = false;
-
       if (i == 0) {
         processor->interruptRequest(true);
       }
@@ -38,7 +36,7 @@ void BadgerComputer::doOneScreenRefreshesWorth() {
       }
     }
   }
-  spdlog::get("console")->debug(">>>>>>>>>>>>>>>>>>> emit gfxupdated()");
+  SPDLOG_TRACE(">>>>>>>>>>>>>>>>>>> emit gfxupdated()");
   emit gfxUpdated();
 }
 
