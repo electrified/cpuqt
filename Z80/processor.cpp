@@ -1,4 +1,3 @@
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #include "processor.h"
 
 #include <boost/utility/binary.hpp>
@@ -6,9 +5,8 @@
 #include "spdlog/spdlog.h"
 
 Processor::Processor(Memory *memory, IO *io) : memory(memory), io(io) {
-  //     std::cout << "Processor ctor" << std::endl;
   registers = new Registers();
-  logger = spdlog::get("console");
+  logger = spdlog::get("processor");
 }
 
 Processor::~Processor() {
@@ -3016,14 +3014,14 @@ void Processor::decode() {
 }
 
 void Processor::process() {
-//   spdlog::get("console")->debug("PC: {0:x}", getRegisters()->getPC());
+  SPDLOG_LOGGER_TRACE(logger, "PC: {0:x}", getRegisters()->getPC());
   //        if (halted) {
   //            decode(); //NOP
   //        } else {
   decode();
   // maskable interrupt
   if (registers->isIFF1() && interruptRequested) {
-//     spdlog::get("console")->debug("Interrupt mode: " + std::to_string(registers->getIM()));
+    SPDLOG_LOGGER_TRACE(logger, "Interrupt mode: " + std::to_string(registers->getIM()));
     
     std::uint16_t destPC = 0;
     
@@ -3171,6 +3169,8 @@ H is set
 P/V is reset if overflow; reset otherwise
 N is reset
 C is reset
+
+ unused flags 5 and 3 should get set to operand bits
 */
 void Processor::AND(std::uint8_t value) {
   std::uint8_t result = registers->getA() & value;
@@ -3250,7 +3250,7 @@ void Processor::CALL(Condition c, std::uint16_t memoryAddress) {
 }
 
 void Processor::CALL(std::uint16_t memoryAddress) {
-//   spdlog::get("console")->debug("CALLing {0:x}", memoryAddress);
+  SPDLOG_LOGGER_DEBUG(logger, "CALLing {0:x}", memoryAddress);
   pushPCtoStack();
   registers->setPC(memoryAddress);
 }
@@ -3966,7 +3966,7 @@ void Processor::RET(Condition condition) {
 }
 
 void Processor::RET() {
-//   spdlog::get("console")->debug("RETting");
+  SPDLOG_LOGGER_DEBUG(logger, "RETting");
   // TODO: this doesn't quite follow what the spec says.
   // shouldn't wipe out high order when setting low order
   registers->setPC(memory->read(registers->getSP())); // set low order
@@ -4481,7 +4481,7 @@ void Processor::pushPCtoStack() {
 std::uint8_t Processor::readIO(std::uint16_t address) { return io->read(address); }
 
 void Processor::unimplemented(std::string opcode) {
-  spdlog::get("console")->debug("Unimplemented - " + opcode);
+  SPDLOG_LOGGER_DEBUG(logger, "Unimplemented - " + opcode);
   throw  UnimplementedInstructionException();
 }
 

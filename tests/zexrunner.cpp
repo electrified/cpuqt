@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
   console->set_level(spdlog::level::debug);
   
   auto *comp = new ZexRunnerComputer();
-  spdlog::get("console")->debug("Computer created");
+  spdlog::get("general")->debug("Computer created");
   // load zexdoc and cpm output bodge
   loadIntoMemory2(comp->getMemory(), 0x100, "./bin_z80/zexdoc.bin");
   loadIntoMemory2(comp->getMemory(), 0, "./bin_z80/cpm_io.rom");

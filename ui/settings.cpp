@@ -32,7 +32,7 @@ void Settings::update_recents_list(QString list_name, QString rom_path) {
 std::list<QString> Settings::get_recents_list(QString list_name) {
   std::list<QString> recentFiles;
   
-  spdlog::get("console")->debug(settings->fileName().toStdString());
+  spdlog::get("general")->debug(settings->fileName().toStdString());
   int size = settings->beginReadArray(list_name);
 //   std::cout << "reading vals from config file " << size << std::endl;
   for (int i = 0; i < size; ++i) {

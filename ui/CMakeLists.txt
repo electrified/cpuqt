@@ -1,7 +1,10 @@
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed. set(CMAKE_AUTOMOC ON)
-# set(CMAKE_AUTOUIC ON) Find the QtWidgets library
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
 find_package(
   Qt5
   COMPONENTS Widgets Svg
@@ -58,11 +61,9 @@ set(GuiBin_src main.cpp)
 
 qt5_wrap_cpp(GuiLib_hdr_moc ${GuiLib_hdr})
 qt5_wrap_ui(GuiLib_ui_moc ${GuiLib_ui})
-
 qt5_add_resources(APP_RESOURCES resources/app.qrc)
 
 include_directories(${PROJECT_SOURCE_DIR})
-# include_directories (${PROJECT_BINARY_DIR})
 
 add_library(GuiLib STATIC ${GuiLib_src} ${GuiLib_hdr_moc} ${GuiLib_ui_moc})
 

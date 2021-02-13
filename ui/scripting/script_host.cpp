@@ -22,7 +22,7 @@ void ScriptHost::executeScript(const std::string& path) { lua.script_file(path);
 
 void ScriptHost::runCommand(const std::string& command) {
   try {
-    spdlog::get("console")->debug("Executing " + command);
+    spdlog::get("general")->debug("Executing " + command);
     lua.script(command.c_str());
   } catch (sol::error &error) {
     cout << error.what();
@@ -30,7 +30,7 @@ void ScriptHost::runCommand(const std::string& command) {
 }
 
 void ScriptHost::addBreakpoint(int memoryAddress) {
-  spdlog::get("console")->debug("Adding breakpoint 0x{0:x}", memoryAddress);
+  spdlog::get("general")->debug("Adding breakpoint 0x{0:x}", memoryAddress);
   computer->addBreakpoint(memoryAddress);
 }
 

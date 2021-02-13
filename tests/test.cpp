@@ -10,7 +10,7 @@
 #include "mocks/test_computer.h"
 #include "../Z80/utils.h"
 
-// std::shared_ptr<spdlog::logger> logger = spdlog::get("console");
+// std::shared_ptr<spdlog::logger> logger = spdlog::get("general");
 
 std::unique_ptr<TestComputer> setupComputer() {
   std::unique_ptr<TestComputer> proc(new TestComputer());
@@ -1405,14 +1405,14 @@ TEST_CASE("AND r") {
   
   
   for (std::uint8_t i = 0; i < 7; i++) {
-    spdlog::get("console")->debug("AND {0}", register_values[i]);
+    spdlog::get("general")->debug("AND {0}", register_values[i]);
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, and_r | register_values[i]);
     comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01111011));
     comp->getProcessor()->getRegisters()->setRegister(register_array[i], BOOST_BINARY(11000011));
-    spdlog::get("console")->debug("register value {0:x}", comp->getProcessor()->getRegisters()->getRegisterValue(register_array[i]));
+    spdlog::get("general")->debug("register value {0:x}", comp->getProcessor()->getRegisters()->getRegisterValue(register_array[i]));
     comp->getProcessor()->process();
-    spdlog::get("console")->debug("a value {0:x}", comp->getProcessor()->getRegisters()->getA());
+    spdlog::get("general")->debug("a value {0:x}", comp->getProcessor()->getRegisters()->getA());
     REQUIRE(comp->getProcessor()->getRegisters()->getA() == result[i]);
   }
 }
@@ -2320,7 +2320,7 @@ TEST_CASE("SBC A r") {
   comp->getProcessor()->getRegisters()->setA(0xFF);
   comp->getProcessor()->getRegisters()->setCFlag(true); // carry
   comp->getProcessor()->process();
-  spdlog::get("console")->debug("A: 0x{0:x}", comp->getProcessor()->getRegisters()->getA());
+  spdlog::get("general")->debug("A: 0x{0:x}", comp->getProcessor()->getRegisters()->getA());
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x20);
 }
 

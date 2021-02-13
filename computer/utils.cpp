@@ -28,7 +28,7 @@ std::vector<uint8_t> ReadAllBytes(const std::string& file_path)
 */
 void loadIntoMemory(std::vector<uint8_t> data, Memory *memory, std::uint16_t offset) {
   for (std::uint16_t i = 0; i < data.size(); ++i) {
-    //     spdlog::get("console")->debug("Writing to memory location {0:x}", i + offset);
+    //     spdlog::get("general")->debug("Writing to memory location {0:x}", i + offset);
     memory->write(i + offset, data.at(i));
   }
 }
@@ -44,7 +44,7 @@ void loadIntoMemory2(Memory *memory, std::uint16_t offset, std::string filename)
       memory->write(i + offset, fileContents.at(i));
     }
   } else {
-    spdlog::get("console")->info(std::string("File not found: ") + std::string(filename));
+    spdlog::get("general")->info(std::string("File not found: ") + std::string(filename));
   }
 }
 
@@ -97,7 +97,7 @@ void loadZ80Snapshot(std::vector<uint8_t> data, Memory *memory, Registers *regis
   registers->setH(data.at(5));
   // program counter is 0 if a version 2 or 3 file
   bool isVersion2 = ((data.at(7) << 8) | data.at(6)) == 0;
-  spdlog::get("console")->info("isVersion2 {0}", isVersion2);
+  spdlog::get("general")->info("isVersion2 {0}", isVersion2);
   registers->setPC((data.at(7) << 8) | data.at(6));
   registers->setSP((data.at(9) << 8) | data.at(8));
   registers->setI(data.at(10));
@@ -147,16 +147,16 @@ void loadZ80Snapshot(std::vector<uint8_t> data, Memory *memory, Registers *regis
       */
 
   if (isVersion2) {
-    //   spdlog::get("console")->info("PC {0}", isVersion2);
+    //   spdlog::get("general")->info("PC {0}", isVersion2);
     registers->setPC((data.at(33) << 8) | data.at(32));
   }
   // read block
   loadBlocks(data, memory);
-  spdlog::get("console")->debug("Finished loading snapshot");
+  spdlog::get("general")->debug("Finished loading snapshot");
 }
 
 void loadBlocks(std::vector<uint8_t> data, Memory *memory) {
-  spdlog::get("console")->debug("data size {0:x}", data.size());
+  spdlog::get("general")->debug("data size {0:x}", data.size());
   std::uint16_t i = 0x57;
   while (i < data.size() - 4) {
     std::uint8_t b1 = data.at(i);
@@ -165,7 +165,7 @@ void loadBlocks(std::vector<uint8_t> data, Memory *memory) {
     std::uint16_t block_length = b1 | (b2 << 8);
     std::uint16_t offset = getMemoryOffsetOfBlock(data.at(++i));
 
-    spdlog::get("console")->debug("block start: {0:x} block length: {1:x} offset: {2:x}", i, block_length, offset);
+    spdlog::get("general")->debug("block start: {0:x} block length: {1:x} offset: {2:x}", i, block_length, offset);
 
     std::vector<uint8_t> decompressed = decompressBlock(data, ++i, block_length);
     loadIntoMemory(decompressed, memory, offset);
@@ -181,7 +181,7 @@ void loadBlocks(std::vector<uint8_t> data, Memory *memory) {
  * but into ED 00 ED ED 05 00. The block is terminated by an end marker, 00 ED ED 00.*/
 std::vector<uint8_t> decompressBlock(std::vector<uint8_t> data, std::uint16_t block_data_start, std::uint16_t block_length) {
 
-  spdlog::get("console")->debug("Beginning blockdecompress");
+  spdlog::get("general")->debug("Beginning blockdecompress");
   auto uncompressed = std::vector<uint8_t>();
   std::uint16_t i = block_data_start;
 
@@ -200,7 +200,7 @@ std::vector<uint8_t> decompressBlock(std::vector<uint8_t> data, std::uint16_t bl
       i++;
     }
   }
-  spdlog::get("console")->debug("decompressed block length: {0:x}", uncompressed.size());
+  spdlog::get("general")->debug("decompressed block length: {0:x}", uncompressed.size());
 
   return uncompressed;
 }

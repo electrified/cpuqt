@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>1250</width>
-     <height>35</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -105,9 +105,9 @@
      <string>Em&amp;u Control</string>
     </property>
     <addaction name="actionRun"/>
+    <addaction name="actionStep"/>
     <addaction name="actionStop"/>
     <addaction name="actionReset"/>
-    <addaction name="actionStep"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -424,11 +424,10 @@
    <addaction name="actionLoad_ROM"/>
    <addaction name="actionRun"/>
    <addaction name="actionStep"/>
-   <addaction name="actionContinue"/>
    <addaction name="actionStop"/>
    <addaction name="actionDebug_stats"/>
-   <addaction name="actionAbout"/>
    <addaction name="actionRunScript"/>
+   <addaction name="actionAbout"/>
   </widget>
   <widget class="QDockWidget" name="logOutputDockWidget">
    <property name="windowTitle">
@@ -504,6 +503,10 @@
    </property>
   </action>
   <action name="actionReset">
+   <property name="icon">
+    <iconset resource="resources/app.qrc">
+     <normaloff>:/toolbar/chronometer-reset.svg</normaloff>:/toolbar/chronometer-reset.svg</iconset>
+   </property>
    <property name="text">
     <string>R&amp;eset</string>
    </property>
@@ -520,11 +523,6 @@
   <action name="actionDebug_stats">
    <property name="text">
     <string>Debug stats</string>
-   </property>
-  </action>
-  <action name="actionContinue">
-   <property name="text">
-    <string>Continue</string>
    </property>
   </action>
   <action name="actionScroll_memory_with_PC">
@@ -690,22 +688,6 @@
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>print_debug_stats()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>474</x>
-     <y>343</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionContinue</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>resume()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

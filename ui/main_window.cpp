@@ -58,7 +58,7 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
   
-   spdlog::get("console")->trace("gfxUpdated(std::uint16_t memoryAddress)");
+   spdlog::get("general")->trace("gfxUpdated(std::uint16_t memoryAddress)");
   /*
    * Y Coordinate bit layout (MSB to LSB):
       zzxxxnnn
