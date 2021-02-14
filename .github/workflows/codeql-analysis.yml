@@ -60,10 +60,10 @@ jobs:
     #    uses a compiled language
 
     - run: |
-      git submodule init
-      git submodule update --recursive
-      cmake .
-      make
+        git submodule init
+        git submodule update --recursive
+        cmake .
+        make
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
