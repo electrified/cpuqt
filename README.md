@@ -81,8 +81,3 @@ TODO: Ensure all methods use parity function where they should and write a test 
 - Quit
 - Load ROM
 - Single step
-
-Parameter 'memoryAddress' is const-qualified in the function declaration; const-qualification of parameters only has an effect in function definitions
-Single-argument constructors must be marked explicit to avoid unintentional implicit conversions
-Dynamic exception specification 'throw()' is deprecated; consider using 'noexcept' instead
-Prefer using 'override' or (rarely) 'final' instead of 'virtual'

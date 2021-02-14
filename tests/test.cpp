@@ -1,7 +1,7 @@
 #define SPDLOG_DEBUG_ON
 #include "spdlog/spdlog.h"
 #include <boost/utility/binary.hpp>
-#include <catch2/catch.hpp>
+#include "catch2/catch.hpp"
 
 #include "../Z80/BadgerMemory.h"
 #include "../Z80/Register.hpp"
