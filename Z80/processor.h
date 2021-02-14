@@ -1,12 +1,12 @@
 #pragma once
 #include <cstdint>
 
-#include "RegisterPair.hpp"
-#include "Register.hpp"
 #include "Condition.hpp"
-#include "MemoryAddress.h"
-#include "Memory.h"
 #include "IO.h"
+#include "Memory.h"
+#include "MemoryAddress.h"
+#include "Register.hpp"
+#include "RegisterPair.hpp"
 #include "alu.h"
 #include "registers.h"
 #include "spdlog/spdlog.h"
@@ -19,7 +19,7 @@ class UnimplementedInstructionException : public std::exception {
 
 class Processor {
   std::shared_ptr<spdlog::logger> logger;
-  
+
   Memory *memory;
   IO *io;
   Registers *registers;
@@ -38,7 +38,7 @@ class Processor {
   std::uint16_t MemoryAddress(const RegisterPair rgstrPair);
 
   std::uint16_t MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset);
-  
+
   void ADC(RegisterPair hl, RegisterPair bc);
 
   void ADC(Rgstr a, Rgstr b);
@@ -294,6 +294,7 @@ public:
   void placeProgramCounterOnAddressBus();
   void reset();
   void interruptRequest(bool state);
+
 private:
   void do_adc(Rgstr rgstr, std::uint8_t val);
 };

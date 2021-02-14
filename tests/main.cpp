@@ -4,8 +4,8 @@
 #include <iostream>
 
 #include "../Z80/utils.h"
-#include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/spdlog.h"
 
 int main(int argc, char *const argv[]) {
   auto console = spdlog::stdout_color_mt("console");

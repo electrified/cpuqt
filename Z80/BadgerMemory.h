@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include "Memory.h"
+#include <cstdint>
 
 class BadgerMemory : public Memory {
 private:

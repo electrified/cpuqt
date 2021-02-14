@@ -1,9 +1,9 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
 #include "Register.hpp"
 #include "RegisterPair.hpp"
+#include <cstdint>
+#include <string>
 
 using namespace std;
 using namespace registers;

@@ -6,12 +6,11 @@
 
 #include "spdlog/spdlog.h"
 
-#include "utils.h"
 #include "about_box.h"
 #include "computer/utils.h"
-#include "qdebugstream.h"
 #include "keypresseater.h"
-
+#include "qdebugstream.h"
+#include "utils.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -22,10 +21,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
   scriptHost = new ScriptHost(computer);
 
-//   QDebugStream qout(std::cout, this->ui->scriptOutput);
+  //   QDebugStream qout(std::cout, this->ui->scriptOutput);
 
   settings = new Settings();
-  
+
   // Attach the model to the view
   ui->disassemblyView->setModel(disassemblyModel);
   ui->disassemblyView->setColumnWidth(0, 50);
@@ -57,8 +56,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
-  
-   spdlog::get("general")->trace("gfxUpdated(std::uint16_t memoryAddress)");
+
+  spdlog::get("general")->trace("gfxUpdated(std::uint16_t memoryAddress)");
   /*
    * Y Coordinate bit layout (MSB to LSB):
       zzxxxnnn
@@ -67,7 +66,7 @@ void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
       010z znnn xxxR RRRR
   */
   std::uint8_t data = computer->memory->read(memoryAddress);
-  
+
   if (memoryAddress < 0x5800) {
     std::uint16_t x = memoryAddress & 0x1f; // get bottom 5 bits
     std::uint16_t y = ((memoryAddress & 0x700) >> 8) | ((memoryAddress & 0xe0) >> 2) | ((memoryAddress & 0x1800) >> 5);
@@ -90,15 +89,16 @@ void MainWindow::gfxUpdated(std::uint16_t memoryAddress) {
 
 void MainWindow::drawPixel(std::uint16_t x, std::uint16_t y, bool on) { image.setPixel(x, y, on ? valueOn : valueOff); }
 
-void MainWindow::initialRecentMenuPopulation(QString list_name, QMenu* menu, QSignalMapper* signal_mapper) {
+void MainWindow::initialRecentMenuPopulation(QString list_name, QMenu *menu, QSignalMapper *signal_mapper) {
   std::list<QString> recentFiles = settings->get_recents_list(list_name);
-  
-  for (std::list<QString>::const_iterator iterator = recentFiles.begin(), end = recentFiles.end(); iterator != end; ++iterator) {
+
+  for (std::list<QString>::const_iterator iterator = recentFiles.begin(), end = recentFiles.end(); iterator != end;
+       ++iterator) {
     addRecentMenuItem(*iterator, menu, signal_mapper);
   }
 }
 
-void MainWindow::addRecentMenuItem(QString file_path, QMenu* menu, QSignalMapper* signal_mapper) {
+void MainWindow::addRecentMenuItem(QString file_path, QMenu *menu, QSignalMapper *signal_mapper) {
   std::cout << "adding to menu " << file_path.toStdString() << std::endl;
   QAction *recent_menu_item_action = new QAction(this);
   recent_menu_item_action->setObjectName(file_path);
@@ -124,21 +124,17 @@ void MainWindow::loadRom(QString file_path) {
 }
 
 void MainWindow::loadSnapshot() {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Snapshot"), QDir::homePath(), tr("Snapshot Files (*.z80)"),
-                                                  0, QFileDialog::DontUseNativeDialog);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Snapshot"), QDir::homePath(),
+                                                  tr("Snapshot Files (*.z80)"), 0, QFileDialog::DontUseNativeDialog);
 
   if (fileName != NULL) {
     loadSnapshot(fileName);
   }
 }
 
-void MainWindow::loadSnapshot(QString file_path) {
-  scriptHost->loadSnapshot(file_path.toUtf8().constData());
-}
+void MainWindow::loadSnapshot(QString file_path) { scriptHost->loadSnapshot(file_path.toUtf8().constData()); }
 
-void MainWindow::run() {
-  computer->run();
-}
+void MainWindow::run() { computer->run(); }
 
 void MainWindow::stop() {
   computer->stop();
@@ -146,9 +142,7 @@ void MainWindow::stop() {
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
-void MainWindow::update() {
-  updateScreen();
-}
+void MainWindow::update() { updateScreen(); }
 
 void MainWindow::updateScreen() { ui->gfxLabel->setPixmap(QPixmap::fromImage(image).scaled(512, 384)); }
 
@@ -207,8 +201,8 @@ void MainWindow::setPC(std::uint16_t address) {
   emit programCounterUpdated(computer->processor->getRegisters()->getPC());
 }
 
-void MainWindow::haltOnBreakpoint() { 
-  stop(); 
+void MainWindow::haltOnBreakpoint() {
+  stop();
   disassemblyModel->forceDisassembly();
 }
 
@@ -230,9 +224,9 @@ void MainWindow::loadScript() {
 }
 
 void MainWindow::loadScript(QString file_name) {
-    std::string script_contents = utils::get_file_contents(file_name.toLocal8Bit());
-    ui->scriptEdit->clear();
-    ui->scriptEdit->appendPlainText(QString::fromStdString(script_contents));
+  std::string script_contents = utils::get_file_contents(file_name.toLocal8Bit());
+  ui->scriptEdit->clear();
+  ui->scriptEdit->appendPlainText(QString::fromStdString(script_contents));
 }
 
 void MainWindow::saveScript() {

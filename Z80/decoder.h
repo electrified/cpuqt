@@ -1,8 +1,8 @@
 #pragma once
 
-#include "spdlog/spdlog.h"
 #include "Memory.h"
 #include "alu.h"
+#include "spdlog/spdlog.h"
 
 class Decoder {
 public:

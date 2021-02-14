@@ -1,10 +1,10 @@
 #include "utils.h"
 
-#include <fstream>
-#include <boost/filesystem.hpp>
 #include "spdlog/spdlog.h"
+#include <boost/filesystem.hpp>
+#include <fstream>
 
-//std::vector<char> ReadAllBytes(const std::string filename) {
+// std::vector<char> ReadAllBytes(const std::string filename) {
 //  std::ifstream ifs(filename.c_str(), std::ios::binary | std::ios::ate);
 //  std::ifstream::pos_type pos = ifs.tellg();
 //
@@ -16,16 +16,15 @@
 //  return result;
 //}
 
-std::vector<uint8_t> ReadAllBytes(const std::string& file_path)
-{
+std::vector<uint8_t> ReadAllBytes(const std::string &file_path) {
   std::ifstream inStream(file_path, std::ios::in | std::ios::binary);
   std::vector<uint8_t> data((std::istreambuf_iterator<char>(inStream)), std::istreambuf_iterator<char>());
   return data;
 }
 
 /**
-* Used by frontend
-*/
+ * Used by frontend
+ */
 void loadIntoMemory(std::vector<uint8_t> data, Memory *memory, std::uint16_t offset) {
   for (std::uint16_t i = 0; i < data.size(); ++i) {
     //     spdlog::get("general")->debug("Writing to memory location {0:x}", i + offset);
@@ -34,8 +33,8 @@ void loadIntoMemory(std::vector<uint8_t> data, Memory *memory, std::uint16_t off
 }
 
 /**
-* Used by tests
-*/
+ * Used by tests
+ */
 void loadIntoMemory2(Memory *memory, std::uint16_t offset, std::string filename) {
   if (boost::filesystem::exists(filename)) {
     std::vector<uint8_t> fileContents = ReadAllBytes(filename);
@@ -49,8 +48,8 @@ void loadIntoMemory2(Memory *memory, std::uint16_t offset, std::string filename)
 }
 
 /*
-* See info at http://www.worldofspectrum.org/faq/reference/z80format.htm
-*/
+ * See info at http://www.worldofspectrum.org/faq/reference/z80format.htm
+ */
 void loadZ80Snapshot(std::vector<uint8_t> data, Memory *memory, Registers *registers) {
   /*Offset  Length  Description
           ---------------------------
@@ -179,7 +178,8 @@ void loadBlocks(std::vector<uint8_t> data, Memory *memory) {
  * sequences consisting of ED's; if they are encountered, even two ED's are encoded into ED ED 02 ED. Finally, every
  * byte directly following a single ED is not taken into a block, for example ED 6*00 is not encoded into ED ED ED 06 00
  * but into ED 00 ED ED 05 00. The block is terminated by an end marker, 00 ED ED 00.*/
-std::vector<uint8_t> decompressBlock(std::vector<uint8_t> data, std::uint16_t block_data_start, std::uint16_t block_length) {
+std::vector<uint8_t> decompressBlock(std::vector<uint8_t> data, std::uint16_t block_data_start,
+                                     std::uint16_t block_length) {
 
   spdlog::get("general")->debug("Beginning blockdecompress");
   auto uncompressed = std::vector<uint8_t>();

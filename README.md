@@ -34,7 +34,7 @@ Code incorporated from elsewhere
 * Modified zexdoc from https://github.com/anotherlin/z80emu
 
 Coding standards
-* Formatting?
+* Formatting? `find computer -regex '.*\.\(cpp\|hpp\|cc\|cxx\)' -exec clang-format -style=file -i {} \;`
 
 ### TODO:
 - Make more c++ey i.e. use std::string instead of char*, references instead of pointers etc.
@@ -43,7 +43,10 @@ Coding standards
 - Fix snapshot loading!
 - Improve code style/ naming, https://google.github.io/styleguide/cppguide.html#Naming
 - Show list of breakpoints in UI
-- Implement callack mechanism for extending, so don't have to inherit to do stuff like cpm_io
+- Implement callback mechanism for extending, so don't have to inherit to do stuff like cpm_io
+- throttle speed
+- colour output
+- keyboard input focus
 
 
 - Use some kind of static anaysis tool, e.g cppcheck (cppcheck . --force 2> err.txt)
@@ -68,21 +71,18 @@ cppcheck --enable=all -ibuild -iclang-build -itests/test.cpp . 2> cppcheck.txt
 
 TODO: Ensure all methods use parity function where they should and write a test for it.
 
-Console commands
-Add breakpoint
-Remove breakpoint
-List breakpoints
-Peek value
-Poke value
-Set register
-Quit
-Load ROM
-Single step
+###Console commands
+- Add breakpoint
+- Remove breakpoint
+- List breakpoints
+- Peek value
+- Poke value
+- Set register
+- Quit
+- Load ROM
+- Single step
 
 Parameter 'memoryAddress' is const-qualified in the function declaration; const-qualification of parameters only has an effect in function definitions
 Single-argument constructors must be marked explicit to avoid unintentional implicit conversions
 Dynamic exception specification 'throw()' is deprecated; consider using 'noexcept' instead
 Prefer using 'override' or (rarely) 'final' instead of 'virtual'
-
-
-;brk(0x2e0b)

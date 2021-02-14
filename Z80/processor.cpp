@@ -1,8 +1,8 @@
 #include "processor.h"
 
-#include <boost/utility/binary.hpp>
-#include "tables.h"
 #include "spdlog/spdlog.h"
+#include "tables.h"
+#include <boost/utility/binary.hpp>
 
 Processor::Processor(Memory *memory, IO *io) : memory(memory), io(io) {
   registers = new Registers();
@@ -3022,9 +3022,9 @@ void Processor::process() {
   // maskable interrupt
   if (registers->isIFF1() && interruptRequested) {
     SPDLOG_LOGGER_TRACE(logger, "Interrupt mode: " + std::to_string(registers->getIM()));
-    
+
     std::uint16_t destPC = 0;
-    
+
     switch (registers->getIM()) {
     case 0:
       // 8080 mode, read instruction from data bus
@@ -3083,14 +3083,14 @@ void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
   uint16_t a = registers->getRegisterPairValue(rp1);
   uint16_t b = registers->getRegisterPairValue(rp2) + (registers->getCFlag() ? 1 : 0);
   uint16_t newValue = a + b;
-  
+
   // TODO: warning: C4244: 'argument' : conversion from 'uint16_t' to 'uint8_t', possible loss of data
   registers->setSignFlag(newValue & 0x8000);
   registers->setZeroFlag(newValue == 0);
   registers->setHFlag((((a & 0x0FFF) + (b & 0x0FFF)) & 0xF000) != 0);
-  
+
   uint16_t temp = (a ^ b ^ newValue) >> 15;
-  
+
   registers->setPVFlag(temp == 1 || temp == 2);
   registers->setNFlag(false);
   // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
@@ -3101,20 +3101,39 @@ void Processor::ADC(RegisterPair rp1, RegisterPair rp2) {
   registers->setRegisterPair(rp1, newValue);
 }
 
-void Processor::ADC(Rgstr a, Rgstr b) {
-  do_adc(a, registers->getRegisterValue(b));
-}
+void Processor::ADC(Rgstr a, Rgstr b) { do_adc(a, registers->getRegisterValue(b)); }
 
-void Processor::ADC(Rgstr rgstr, std::uint8_t val) {
-  do_adc(rgstr, val);
-}
+void Processor::ADC(Rgstr rgstr, std::uint8_t val) { do_adc(rgstr, val); }
 
-void Processor::ADC(Rgstr rgstr, std::uint16_t memoryAddress) {
-  do_adc(rgstr, memory->read(memoryAddress));
-}
+void Processor::ADC(Rgstr rgstr, std::uint16_t memoryAddress) { do_adc(rgstr, memory->read(memoryAddress)); }
 
 void Processor::do_adc(Rgstr rgstr, std::uint8_t val) {
-  registers->setRegister(rgstr, registers->getRegisterValue(rgstr) + val + (registers->getCFlag() ? 1 : 0));
+  uint8_t a = registers->getRegisterValue(rgstr);
+  uint8_t b = val + (registers->getCFlag() ? 1 : 0);
+  uint8_t newValue = a + b;
+
+  // S is set if result is negative; otherwise, it is reset.
+  registers->setSignFlag(newValue & 0x80);
+
+  // Z is set if result is 0; otherwise, it is reset.
+  registers->setZeroFlag(newValue == 0);
+
+  // H is set if carry from bit 3; otherwise, it is reset.
+  registers->setHFlag((a ^ b) & 0x8);
+
+  // P/V is set if overflow; otherwise, it is reset.
+  uint8_t temp = (a ^ b ^ newValue) >> 7;
+  registers->setPVFlag(temp == 1 || temp == 2);
+
+  // N is reset.
+  registers->setNFlag(false);
+  // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
+  // carry out: a + b > 0xffff
+  // equivalent to a > 0xffff - b
+  // C is set if carry from bit 7: otherwise, it is reset.
+  registers->setCFlag(a > 0xff - b);
+
+  registers->setRegister(rgstr, newValue);
 }
 
 /**
@@ -3304,7 +3323,7 @@ void Processor::CP(std::uint16_t memoryAddress) { CP(memory->read(memoryAddress)
  * compared with the contents of the Accumulator. In case of a true
  * compare, a condition bit is set. The HL and Byte Counter (register pair
  * BC) are decremented.
- * 
+ *
  * S is set if result is negative; otherwise, it is reset.
  * Z is set if A equals (HL); otherwise, it is reset.
  * H is set if borrow from bit 4; otherwise, it is reset.
@@ -3374,8 +3393,8 @@ void Processor::DAA() {
   int a, c, d;
 
   /* The following algorithm is from
-      * comp.sys.sinclair's FAQ.
-      */
+   * comp.sys.sinclair's FAQ.
+   */
 
   a = registers->getA();
   if (a > 0x99 || registers->getCFlag()) {
@@ -3429,10 +3448,10 @@ void Processor::DEC(Rgstr rgstr) {
 
   registers->setSignFlag(newvalue & 0x80);
   registers->setZeroFlag(newvalue == 0);
-//   registers->setHFlag((newvalue & 0x10) != (oldvalue & 0x10));
+  //   registers->setHFlag((newvalue & 0x10) != (oldvalue & 0x10));
   registers->setHFlag((oldvalue ^ newvalue) & 0x10);
   registers->setPVFlag(oldvalue == 0x80);
-  registers->setNFlag(false);
+  registers->setNFlag(true);
 }
 
 void Processor::INC(Rgstr reg) {
@@ -3443,7 +3462,7 @@ void Processor::INC(Rgstr reg) {
 
   registers->setSignFlag(newValue & 0x80);
   registers->setZeroFlag(newValue == 0);
-//   registers->setHFlag((((origValue & 0xF) + 1) & 0xF0) != 0);
+  //   registers->setHFlag((((origValue & 0xF) + 1) & 0xF0) != 0);
   registers->setHFlag((origValue ^ newValue) & 0x10);
   registers->setPVFlag(origValue == 0x7F);
   registers->setNFlag(false);
@@ -3781,11 +3800,11 @@ void Processor::LDIR() {
  * the same as subtracting the contents of the Accumulator from zero. Note
  * that 80H is left unchanged.
  * <p/>
- * S is set if result is negative; reset otherwise 
- * Z is set if result is 0 reset otherwise 
- * H is set if borrow from bit 4; reset otherwise 
- * P/V is set if Accumulator was 80H before operation; reset otherwise 
- * N is set 
+ * S is set if result is negative; reset otherwise
+ * Z is set if result is 0 reset otherwise
+ * H is set if borrow from bit 4; reset otherwise
+ * P/V is set if Accumulator was 80H before operation; reset otherwise
+ * N is set
  * C is set if Accumulator was not 00H before operation; reset otherwise
  */
 void Processor::NEG() {
@@ -4029,7 +4048,7 @@ void Processor::RL(Rgstr r) {
  */
 void Processor::RLA() { RL(Rgstr::A); }
 
-void Processor::RLC(std::uint16_t memoryAddress) { 
+void Processor::RLC(std::uint16_t memoryAddress) {
   std::uint8_t tempA = memory->read(memoryAddress);
   memory->write(memoryAddress, tempA << 1 | ((tempA >> 7) & 0x1));
   registers->setCFlag((tempA >> 7) & 0x1);
@@ -4070,10 +4089,10 @@ void Processor::RLCA() { RLC(Rgstr::A); }
 /*
  * The contents of the low order four bits (bits 3, 2, 1, and 0) of the memory
 location (HL) are copied to the high order four bits (7, 6, 5, and 4) of that
-same memory location; 
+same memory location;
 
 the previous contents of those high order four bits
-are copied to the low order four bits of the Accumulator (register A); 
+are copied to the low order four bits of the Accumulator (register A);
 
 and
 the previous contents of the low order four bits of the Accumulator are
@@ -4081,18 +4100,18 @@ copied to the low order four bits of memory location (HL).
 
 The contents of the high order bits of the Accumulator are unaffected.
 */
-void Processor::RLD() { 
+void Processor::RLD() {
   std::uint8_t priorMemory = memory->read(registers->getHL());
   std::uint8_t priorAccumulator = registers->getA();
 
   std::uint8_t finalVal = (priorMemory >> 4) | (priorAccumulator & 0xF0);
-  
+
   registers->setA(finalVal);
 
   memory->write(registers->getHL(), (priorMemory << 4) | (priorAccumulator & 0xF));
-  
+
   registers->getA();
-  
+
   registers->setSignFlag(finalVal >> 7);
   registers->setZeroFlag(finalVal == 0);
   registers->setHFlag(false);
@@ -4208,9 +4227,7 @@ void Processor::RRD() {
  * the table below. The operand p is assembled to the object code using the
  * corresponding T state.
  */
-void Processor::RST(std::uint8_t p) {
-  CALL(p);
-}
+void Processor::RST(std::uint8_t p) { CALL(p); }
 
 /*
  * The contents of the register pair ss (any of register pairs BC, DE, HL, or
@@ -4238,15 +4255,14 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   uint16_t newvalue = oldvalue - toSubtract;
   registers->setRegisterPair(h1, newvalue);
 
-  
   registers->setSignFlag(newvalue & 0x8000);
   registers->setZeroFlag(newvalue == 0);
   registers->setHFlag((oldvalue & 0x0FFF) < (toSubtract & 0x0FFF));
-  
+
   uint16_t temp = (oldvalue ^ toSubtract ^ newvalue) >> 15;
-  
+
   registers->setPVFlag(temp == 1 || temp == 2);
-//   registers->setPVFlag((oldvalue ^ toSubtract ^ newvalue) >> 15);
+  //   registers->setPVFlag((oldvalue ^ toSubtract ^ newvalue) >> 15);
   registers->setNFlag(true);
   // see http://stackoverflow.com/questions/8034566/overflow-and-carry-flags-on-z80
   // carry out: a - b < 0
@@ -4254,9 +4270,7 @@ void Processor::SBC(RegisterPair h1, RegisterPair h2) {
   registers->setCFlag(oldvalue < newvalue);
 }
 
-void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) {
-  SBC(a, memory->read(memoryAddress));
-}
+void Processor::SBC(Rgstr a, std::uint16_t memoryAddress) { SBC(a, memory->read(memoryAddress)); }
 
 void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
   uint8_t oldvalue = registers->getRegisterValue(a);
@@ -4275,19 +4289,17 @@ void Processor::SBC(Rgstr a, std::uint8_t nextByte) {
   registers->setCFlag(oldvalue < newvalue);
 }
 
-void Processor::SBC(Rgstr a, Rgstr b) {
-  SBC(a, registers->getRegisterValue(b));
-}
+void Processor::SBC(Rgstr a, Rgstr b) { SBC(a, registers->getRegisterValue(b)); }
 
-  /* The Carry flag in the F rgstr is set. */
-  /*-
-   * S is not affected
-  Z is not affected
-  H is reset
-  P/V is not affected
-  N is reset
-  C is set
-   */
+/* The Carry flag in the F rgstr is set. */
+/*-
+ * S is not affected
+Z is not affected
+H is reset
+P/V is not affected
+N is reset
+C is set
+ */
 void Processor::SCF() {
   registers->setHFlag(false);
   registers->setCFlag(true);
@@ -4311,7 +4323,7 @@ void Processor::SET(std::uint8_t i, std::uint16_t memoryAddress) {
   memory->write(memoryAddress, currentMemoryContents | (1 << i));
 }
 
-void Processor::SLA(std::uint16_t memoryAddress) { 
+void Processor::SLA(std::uint16_t memoryAddress) {
   std::uint8_t currentMemoryContents = memory->read(memoryAddress);
   registers->setSignFlag(false);
   registers->setCFlag(currentMemoryContents >> 7);
@@ -4323,7 +4335,7 @@ void Processor::SLA(std::uint16_t memoryAddress) {
   registers->setNFlag(false);
 }
 
-void Processor::SLA(Rgstr r) { 
+void Processor::SLA(Rgstr r) {
   std::uint8_t val = registers->getRegisterValue(r);
   registers->setSignFlag(false);
   registers->setCFlag(val >> 7);
@@ -4424,12 +4436,12 @@ bool parity(std::uint8_t val) {
 
 /*
  * S is set if result is negative; reset otherwise
-* Z is set if result is zero; reset otherwise
-* H is reset
-* P/V is set if parity even; reset otherwise
-* N is reset
-* C is reset
-*/
+ * Z is set if result is zero; reset otherwise
+ * H is reset
+ * P/V is set if parity even; reset otherwise
+ * N is reset
+ * C is reset
+ */
 void Processor::XOR(std::uint8_t val) {
   std::uint8_t newvalue = (registers->getA() ^ val);
   registers->setA(newvalue);
@@ -4482,22 +4494,20 @@ std::uint8_t Processor::readIO(std::uint16_t address) { return io->read(address)
 
 void Processor::unimplemented(std::string opcode) {
   SPDLOG_LOGGER_DEBUG(logger, "Unimplemented - " + opcode);
-  throw  UnimplementedInstructionException();
+  throw UnimplementedInstructionException();
 }
 
-void Processor::writeIO(std::uint16_t address, std::uint8_t value) {
-  io->write(address, value);
-}
+void Processor::writeIO(std::uint16_t address, std::uint8_t value) { io->write(address, value); }
 
-  /*- S is set if I-Rgstr is negative; reset otherwise
-  Z is set if I-Rgstr is zero; reset otherwise
-  H is reset
-  P/V contains contents of IFF2
-  N is reset
-  C is not affected
-  If an interrupt occurs during execution of this instruction, the Parity
-  flag contains a 0.
-   */
+/*- S is set if I-Rgstr is negative; reset otherwise
+Z is set if I-Rgstr is zero; reset otherwise
+H is reset
+P/V contains contents of IFF2
+N is reset
+C is not affected
+If an interrupt occurs during execution of this instruction, the Parity
+flag contains a 0.
+ */
 void Processor::setFlags(std::uint8_t value) {
   registers->setSignFlag(value & 0x80);
   registers->setZeroFlag(value == 0);
@@ -4509,7 +4519,9 @@ void Processor::setFlags(std::uint8_t value) {
 void Processor::interruptRequest(bool state) { this->interruptRequested = state; }
 std::uint16_t Processor::MemoryAddress(const std::uint16_t memoryAddress) { return memoryAddress; }
 std::uint16_t Processor::MemoryAddress(const Rgstr rgstr) { return registers->getRegisterValue(rgstr); }
-std::uint16_t Processor::MemoryAddress(const RegisterPair rgstrPair) { return registers->getRegisterPairValue(rgstrPair); }
+std::uint16_t Processor::MemoryAddress(const RegisterPair rgstrPair) {
+  return registers->getRegisterPairValue(rgstrPair);
+}
 std::uint16_t Processor::MemoryAddress(const RegisterPair rgstrPair, const std::uint8_t offset) {
   return (std::int16_t)registers->getRegisterPairValue(rgstrPair) + (std::int8_t)offset;
 }

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <cstdint>
 #include "Register.hpp"
 #include "RegisterPair.hpp"
-#include <boost/utility/binary.hpp>
 #include "spdlog/spdlog.h"
 #include <bitset>
+#include <boost/utility/binary.hpp>
+#include <cstdint>
 
 union WideReg {
   std::uint16_t all;
@@ -42,12 +42,12 @@ class Registers {
 
 public:
   /*
-* Program Counter (PC) The program counter holds the 16-bit address of the
-* current instruction being fetched from memory. The PC is automatically
-* incremented after its contents have been transferred to the address
-* lines. When a program jump occurs, the new value is automatically placed
-* in the PC, overriding the incrementer.
-*/
+   * Program Counter (PC) The program counter holds the 16-bit address of the
+   * current instruction being fetched from memory. The PC is automatically
+   * incremented after its contents have been transferred to the address
+   * lines. When a program jump occurs, the new value is automatically placed
+   * in the PC, overriding the incrementer.
+   */
   std::uint16_t PC = 0;
 
   Registers();

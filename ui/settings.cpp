@@ -1,9 +1,7 @@
 #include "settings.h"
 #include "spdlog/spdlog.h"
 
-Settings::Settings() {
-  settings = new QSettings();
-}
+Settings::Settings() { settings = new QSettings(); }
 
 void Settings::update_recents_list(QString list_name, QString rom_path) {
 
@@ -31,10 +29,10 @@ void Settings::update_recents_list(QString list_name, QString rom_path) {
 
 std::list<QString> Settings::get_recents_list(QString list_name) {
   std::list<QString> recentFiles;
-  
+
   spdlog::get("general")->debug(settings->fileName().toStdString());
   int size = settings->beginReadArray(list_name);
-//   std::cout << "reading vals from config file " << size << std::endl;
+  //   std::cout << "reading vals from config file " << size << std::endl;
   for (int i = 0; i < size; ++i) {
     settings->setArrayIndex(i);
     recentFiles.push_back(settings->value("path").toString());

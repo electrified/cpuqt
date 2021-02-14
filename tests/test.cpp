@@ -3,12 +3,12 @@
 #include <boost/utility/binary.hpp>
 #include <catch2/catch.hpp>
 
-#include "../Z80/processor.h"
 #include "../Z80/BadgerMemory.h"
 #include "../Z80/Register.hpp"
 #include "../Z80/RegisterPair.hpp"
-#include "mocks/test_computer.h"
+#include "../Z80/processor.h"
 #include "../Z80/utils.h"
+#include "mocks/test_computer.h"
 
 // std::shared_ptr<spdlog::logger> logger = spdlog::get("general");
 
@@ -106,8 +106,8 @@ TEST_CASE("ADD HL ss") {
 }
 
 TEST_CASE("ADD A, n") {
-/* If the Accumulator contains 23h , then upon the execution of an ADD A, 33h instruction,
-the Accumulator contains 56h.*/
+  /* If the Accumulator contains 23h , then upon the execution of an ADD A, 33h instruction,
+  the Accumulator contains 56h.*/
   std::unique_ptr<TestComputer> comp = setupComputer();
 
   comp->getMemory()->write(0x0, 0xC6);
@@ -115,12 +115,12 @@ the Accumulator contains 56h.*/
   comp->getProcessor()->getRegisters()->setA(0x23);
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x56);
-//   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+  //   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 TEST_CASE("ADD A, r") {
-/* If the Accumulator contains 44h and Register C contains 11h , then upon the execution of
-an ADD A, C instruction, the Accumulator contains 55h .*/
+  /* If the Accumulator contains 44h and Register C contains 11h , then upon the execution of
+  an ADD A, C instruction, the Accumulator contains 55h .*/
   std::unique_ptr<TestComputer> comp = setupComputer();
 
   comp->getMemory()->write(0x0, BOOST_BINARY(10000001));
@@ -128,24 +128,23 @@ an ADD A, C instruction, the Accumulator contains 55h .*/
   comp->getProcessor()->getRegisters()->setC(0x11);
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x55);
-//   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+  //   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
 
 TEST_CASE("ADD A, (HL)") {
-/* If the Accumulator contains A0h , register pair HL contains 2323h , and memory location
-2323h contains byte 08h , then upon the execution of an ADD A, (HL) instruction, the
-Accumulator contains A8h. */
+  /* If the Accumulator contains A0h , register pair HL contains 2323h , and memory location
+  2323h contains byte 08h , then upon the execution of an ADD A, (HL) instruction, the
+  Accumulator contains A8h. */
   std::unique_ptr<TestComputer> comp = setupComputer();
 
   comp->getMemory()->write(0x0, 0x86);
   comp->getProcessor()->getRegisters()->setA(0xa0);
   comp->getProcessor()->getRegisters()->setHL(0x2323);
-    comp->getMemory()->write(0x2323, 0x08);
+  comp->getMemory()->write(0x2323, 0x08);
   comp->getProcessor()->process();
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0xA8);
-//   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
+  //   REQUIRE(comp->getProcessor()->getRegisters()->getCFlag() == true);
 }
-
 
 TEST_CASE("EXAFAFprimeTest") {
   /*
@@ -179,12 +178,12 @@ TEST_CASE("BITb_HL_Test") {
 }
 
 /**
-* If the contents of Index Register IX are 2000H, and bit 6 in memory
-* location 2004H contains 1, at execution of BIT 6, (IX+4H) the Z flag in
-* the F register contains 0, and bit 6 in memory location 2004H
-* still contains 1. Bit 0 in memory location 2004H
-* is the least-significant bit.
-*/
+ * If the contents of Index Register IX are 2000H, and bit 6 in memory
+ * location 2004H contains 1, at execution of BIT 6, (IX+4H) the Z flag in
+ * the F register contains 0, and bit 6 in memory location 2004H
+ * still contains 1. Bit 0 in memory location 2004H
+ * is the least-significant bit.
+ */
 
 TEST_CASE("BITb_IXplusd_Test") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -224,10 +223,10 @@ TEST_CASE("CPL") {
 }
 
 /*
-* If the Accumulator contains 63H, the HL register pair contains 6000H,
-* and memory location 6000H contains 60H, the instruction CP (HL)
-* results in the P/V flag in the F register resetting.
-*/
+ * If the Accumulator contains 63H, the HL register pair contains 6000H,
+ * and memory location 6000H contains 60H, the instruction CP (HL)
+ * results in the P/V flag in the F register resetting.
+ */
 TEST_CASE("CP r") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x6000, 0x60);
@@ -303,7 +302,7 @@ TEST_CASE("CP s Test2") {
 }
 
 TEST_CASE("DEC r 8Bit") {
-  
+
   /*
    * f the D register contains byte 2AH, at execution of DEC D register D
    * contains 29H.
@@ -425,11 +424,11 @@ TEST_CASE("EX (SP) IY") {
 }
 
 /**
-* If the content of register pair DE is the number 2822H, and the content
-* of the register pair HL is number 499AH, at instruction EX DE, HL the
-* content of register pair DE is 499AH, and the content of register pair HL
-* is 2822H.
-*/
+ * If the content of register pair DE is the number 2822H, and the content
+ * of the register pair HL is number 499AH, at instruction EX DE, HL the
+ * content of register pair DE is 499AH, and the content of register pair HL
+ * is 2822H.
+ */
 
 TEST_CASE("EXDEHLTest") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -442,13 +441,13 @@ TEST_CASE("EXDEHLTest") {
 }
 
 /**
-* If the contents of register pair s BC, DE, and HL are the numbers 445AH ,
-* 3DA2H , and 8859H , respectively, and the contents of register pairs BC',
-* DE', and HL' are 0988H , 9300H , and 00E7H , respectively, at instruction
-* EXX the contents of the register pair s are as follows: BC' contains
-* 0988H; DE' contains 9300H ; HL contains 00E7H ; BC' contains 445AH ; DE'
-* contains 3DA2H ; and HL' contains 8859H .
-*/
+ * If the contents of register pair s BC, DE, and HL are the numbers 445AH ,
+ * 3DA2H , and 8859H , respectively, and the contents of register pairs BC',
+ * DE', and HL' are 0988H , 9300H , and 00E7H , respectively, at instruction
+ * EXX the contents of the register pair s are as follows: BC' contains
+ * 0988H; DE' contains 9300H ; HL contains 00E7H ; BC' contains 445AH ; DE'
+ * contains 3DA2H ; and HL' contains 8859H .
+ */
 
 TEST_CASE("EXX") {
 
@@ -484,7 +483,7 @@ TEST_CASE("IN A (n)") {
   comp->getIO()->write(0x01, 0x7b);
   comp->getProcessor()->getRegisters()->setA(0x23);
   comp->getProcessor()->process();
-  
+
   REQUIRE(comp->getProcessor()->getRegisters()->getA() == 0x7b);
 }
 
@@ -557,16 +556,16 @@ TEST_CASE("JP nn") {
 }
 
 /*
-* If condition cc is true, the instruction loads operand nn to register
-* pair PC (Program Counter), and the program continues with the
-* instruction beginning at address nn . If condition cc is false, the
-* Program Counter is incremented as usual, and the program continues
-* with the next sequential instruction. Condition cc is programmed as
-* one of eight status that corresponds to condition bits in the Fl ag
-* Register (register F). These eight status are defined in the table
-* below that also specifies the corresponding cc bit fields in the
-* assembled object code.
-*/
+ * If condition cc is true, the instruction loads operand nn to register
+ * pair PC (Program Counter), and the program continues with the
+ * instruction beginning at address nn . If condition cc is false, the
+ * Program Counter is incremented as usual, and the program continues
+ * with the next sequential instruction. Condition cc is programmed as
+ * one of eight status that corresponds to condition bits in the Fl ag
+ * Register (register F). These eight status are defined in the table
+ * below that also specifies the corresponding cc bit fields in the
+ * assembled object code.
+ */
 TEST_CASE("JP NZ nn") {
   std::unique_ptr<TestComputer> comp = setupComputer();
 
@@ -623,7 +622,7 @@ TEST_CASE("JR e negative") {
 TEST_CASE("JR C, e") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x480, 0x38);
-  comp->getMemory()->write(0x481, 0xFA); //two's complement of 6
+  comp->getMemory()->write(0x481, 0xFA); // two's complement of 6
   comp->getProcessor()->getRegisters()->setPC(0x480);
   comp->getProcessor()->getRegisters()->setCFlag(true);
   REQUIRE(comp->getProcessor()->getRegisters()->getPC() == 0x480);
@@ -633,10 +632,10 @@ TEST_CASE("JR C, e") {
 }
 
 /**
-* If the Accumulator contains 7AH and the BC register pair contains
-* 1212H the instruction LD (BC) , A results in 7AH in memory location
-* 1212H .
-*/
+ * If the Accumulator contains 7AH and the BC register pair contains
+ * 1212H the instruction LD (BC) , A results in 7AH in memory location
+ * 1212H .
+ */
 
 TEST_CASE("LD_BC_ATest") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -653,10 +652,10 @@ TEST_CASE("LD_BC_ATest") {
 }
 
 /**
-* If the contents of register pair DE are 1128H , and the Accumulator
-* contains int A0H , the instruction LD (DE), A results in A0H in
-* memory location 1128H .
-*/
+ * If the contents of register pair DE are 1128H , and the Accumulator
+ * contains int A0H , the instruction LD (DE), A results in A0H in
+ * memory location 1128H .
+ */
 
 TEST_CASE("LD (DE), A") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -688,11 +687,10 @@ ory location 4444h containing byte 28h .*/
   REQUIRE(comp->getMemory()->read(0x4444) == 0x28);
 }
 
-
 /**
-* If the contents of the Accumulator are int D7H , at execution of LD
-* (3141 H) , A D7H results in memory location 3141H .
-*/
+ * If the contents of the Accumulator are int D7H , at execution of LD
+ * (3141 H) , A D7H results in memory location 3141H .
+ */
 
 TEST_CASE("LD (nn), A") {
 
@@ -710,10 +708,10 @@ TEST_CASE("LD (nn), A") {
 }
 
 /**
-* If the content of register pair HL is 483AH , at instruction LD
-* (B2291-1), HL address B229H contains 3AH , and address B22AH contains
-* 48H .
-*/
+ * If the content of register pair HL is 483AH , at instruction LD
+ * (B2291-1), HL address B229H contains 3AH , and address B22AH contains
+ * 48H .
+ */
 
 TEST_CASE("LD (nn), HL") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -905,9 +903,9 @@ TEST_CASE("LD HL, (nn)") {
 }
 
 /*
-     * The contents of the Accumulator are loaded to the Interrupt Control
-     * Vector Register, I.
-     */
+ * The contents of the Accumulator are loaded to the Interrupt Control
+ * Vector Register, I.
+ */
 TEST_CASE("LD I A") {
 
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -924,9 +922,9 @@ TEST_CASE("LD I A") {
 }
 
 /*
-* The contents of the Accumulator are loaded to the Memory Refresh
-* register R.
-*/
+ * The contents of the Accumulator are loaded to the Memory Refresh
+ * register R.
+ */
 TEST_CASE("LD R A") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xED);
@@ -1063,10 +1061,10 @@ TEST_CASE("OUT_n_ATest") {
 }
 
 /**
-* If the Stack Pointer contains 1000H, memory location 1000H contains 55H,
-* and location 1001H contains 33H, the instruction POP IX results in Index
-* Register IX containing 3355H, and the Stack Pointer containing 1002H.
-*/
+ * If the Stack Pointer contains 1000H, memory location 1000H contains 55H,
+ * and location 1001H contains 33H, the instruction POP IX results in Index
+ * Register IX containing 3355H, and the Stack Pointer containing 1002H.
+ */
 
 TEST_CASE("POPIXTest") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -1081,10 +1079,10 @@ TEST_CASE("POPIXTest") {
 }
 
 /**
-* If the Stack Pointer Contains 1000H, memory location 1000H contains 55H,
-* and location 1001H contains 33H, the instruction POP IY results in Index
-* Register IY containing 3355H, and the Stack Pointer containing 1002H.
-*/
+ * If the Stack Pointer Contains 1000H, memory location 1000H contains 55H,
+ * and location 1001H contains 33H, the instruction POP IY results in Index
+ * Register IY containing 3355H, and the Stack Pointer containing 1002H.
+ */
 
 TEST_CASE("POP IY") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -1099,11 +1097,11 @@ TEST_CASE("POP IY") {
 }
 
 /**
-* If the Stack Pointer contains 1000H, memory location 1000H contains 55H,
-* and location 1001H contains 33H , the instruction POP HL results in
-* register pair HL containing 3355H , and the Stack Pointer containing
-* 1002H
-*/
+ * If the Stack Pointer contains 1000H, memory location 1000H contains 55H,
+ * and location 1001H contains 33H , the instruction POP HL results in
+ * register pair HL containing 3355H , and the Stack Pointer containing
+ * 1002H
+ */
 TEST_CASE("POP qq") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(11100001)); // HL
@@ -1147,7 +1145,7 @@ TEST_CASE("PUSH IY") {
  * at instruction PUSH AF memory address 1006H contains 22H,
  * memory address 1005H contains 33H,
  * and the Stack Pointer contains 1005H.
-*/
+ */
 TEST_CASE("PUSH") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, BOOST_BINARY(11110101));
@@ -1295,10 +1293,10 @@ TEST_CASE("SETb_IXplusd_Test") {
 }
 
 /**
-* If the contents of Index Register IY are 2000H, at execution of
-* SET 0, (IY+3H) bit 0 in memory location 2003H is 1. Bit 0 in memory
-* location 2003H is the least-significant bit.
-*/
+ * If the contents of Index Register IY are 2000H, at execution of
+ * SET 0, (IY+3H) bit 0 in memory location 2003H is 1. Bit 0 in memory
+ * location 2003H is the least-significant bit.
+ */
 
 TEST_CASE("SETb_IYplusd_Test") {
   std::unique_ptr<TestComputer> comp = setupComputer();
@@ -1396,21 +1394,24 @@ TEST_CASE("ADD IY, rr") {
 }
 
 const Rgstr register_array[] = {Rgstr::B, Rgstr::C, Rgstr::D, Rgstr::E, Rgstr::H, Rgstr::L, Rgstr::A};
-const std::uint8_t register_values[] = {BOOST_BINARY(000), BOOST_BINARY(001), BOOST_BINARY(010), BOOST_BINARY(011), BOOST_BINARY(100), BOOST_BINARY(101), BOOST_BINARY(111)};
-const std::uint8_t result[] = {BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(11000011)};
+const std::uint8_t register_values[] = {BOOST_BINARY(000), BOOST_BINARY(001), BOOST_BINARY(010), BOOST_BINARY(011),
+                                        BOOST_BINARY(100), BOOST_BINARY(101), BOOST_BINARY(111)};
+const std::uint8_t result[] = {BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011),
+                               BOOST_BINARY(01000011), BOOST_BINARY(01000011), BOOST_BINARY(01000011),
+                               BOOST_BINARY(11000011)};
 
 TEST_CASE("AND r") {
   // base instruction - needs to be combined with a register in the lowest 3 bits
   std::uint8_t and_r = BOOST_BINARY(10100000);
-  
-  
+
   for (std::uint8_t i = 0; i < 7; i++) {
     spdlog::get("general")->debug("AND {0}", register_values[i]);
     std::unique_ptr<TestComputer> comp = setupComputer();
     comp->getMemory()->write(0x0, and_r | register_values[i]);
     comp->getProcessor()->getRegisters()->setA(BOOST_BINARY(01111011));
     comp->getProcessor()->getRegisters()->setRegister(register_array[i], BOOST_BINARY(11000011));
-    spdlog::get("general")->debug("register value {0:x}", comp->getProcessor()->getRegisters()->getRegisterValue(register_array[i]));
+    spdlog::get("general")->debug("register value {0:x}",
+                                  comp->getProcessor()->getRegisters()->getRegisterValue(register_array[i]));
     comp->getProcessor()->process();
     spdlog::get("general")->debug("a value {0:x}", comp->getProcessor()->getRegisters()->getA());
     REQUIRE(comp->getProcessor()->getRegisters()->getA() == result[i]);
@@ -1471,7 +1472,7 @@ TEST_CASE("AND (iy+d)") {
  * the Z flag and the F register still contain 0,
  * and bit 6 in memory location 2004H still contains 1.
  * Bit 0 in memory location 2004H is the least-significant bit.
-*/
+ */
 TEST_CASE("BIT b IY+d") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xFD);
@@ -1486,9 +1487,9 @@ TEST_CASE("BIT b IY+d") {
 
 /*
  * If bit 2 in register B contains 0, at execution of BIT 2, B the Z flag in the
-* F register contains 1, and bit 2 in register B remains 0. Bit 0 in register B is
-* the least-significant bit.
-*/
+ * F register contains 1, and bit 2 in register B remains 0. Bit 0 in register B is
+ * the least-significant bit.
+ */
 TEST_CASE("BIT br") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xCB);
@@ -2170,7 +2171,7 @@ TEST_CASE("RES b, r") {
 TEST_CASE("RES b, (HL)") {
   std::unique_ptr<TestComputer> comp = setupComputer();
   comp->getMemory()->write(0x0, 0xCB);
-  comp->getMemory()->write(0x1, BOOST_BINARY(10100110)); //bit 4
+  comp->getMemory()->write(0x1, BOOST_BINARY(10100110)); // bit 4
   comp->getMemory()->write(0x2345, BOOST_BINARY(11111111));
   comp->getProcessor()->getRegisters()->setHL(0x2345);
   comp->getProcessor()->process();

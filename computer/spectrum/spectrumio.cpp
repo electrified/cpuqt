@@ -1,7 +1,7 @@
 #include "spectrumio.h"
 
-#include <map>
 #include "spdlog/spdlog.h"
+#include <map>
 
 SpectrumIO::SpectrumIO() {
   std::fill_n(this->keystates, 8, 0xff);

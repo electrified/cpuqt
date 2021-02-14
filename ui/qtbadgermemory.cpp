@@ -1,6 +1,6 @@
 #include "qtbadgermemory.h"
-#include <iostream>
 #include "Z80/utils.h"
+#include <iostream>
 
 QtBadgerMemory::QtBadgerMemory(QObject *parent) : QObject(parent) {}
 

@@ -1,5 +1,5 @@
-#include <iostream>
 #include "decoder.h"
+#include <iostream>
 
 void Decoder::decode(Memory &memory, Alu &alu, std::uint16_t &pc) {
   std::uint8_t currentInstruction[4];

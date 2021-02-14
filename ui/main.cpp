@@ -1,13 +1,12 @@
-#include <QtWidgets/QApplication>
-#include <QImageReader>
-#include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/spdlog.h"
 #include "ui/main_window.h"
+#include <QImageReader>
+#include <QtWidgets/QApplication>
 
 int main(int argc, char **argv) {
-//  auto console = spdlog::stdout_color_mt("console");
-//  console->set_level(spdlog::level::debug);
-
+  //  auto console = spdlog::stdout_color_mt("console");
+  //  console->set_level(spdlog::level::debug);
 
   auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
   console_sink->set_level(spdlog::level::debug);

@@ -1,7 +1,7 @@
 #include "BadgerMemory.h"
-#include <iostream>
 #include "spdlog/spdlog.h"
 #include "utils.h"
+#include <iostream>
 
 BadgerMemory::BadgerMemory() : memory{} {
   //      std::cout << "Initialising badgermemory" << std::endl;

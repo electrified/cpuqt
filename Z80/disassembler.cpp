@@ -1,8 +1,8 @@
 #include "disassembler.h"
-#include <iostream>
-#include <boost/format.hpp>
-#include <utility>
 #include "utils.h"
+#include <boost/format.hpp>
+#include <iostream>
+#include <utility>
 
 using namespace registers;
 
@@ -27,7 +27,9 @@ void Disassembler::disassemble(const std::uint16_t start, const std::uint16_t en
   }
 }
 
-void Disassembler::add(std::string mnemonic) { results.at(programCounterAtStartOfInstructionExecution) = std::move(mnemonic); }
+void Disassembler::add(std::string mnemonic) {
+  results.at(programCounterAtStartOfInstructionExecution) = std::move(mnemonic);
+}
 
 void Disassembler::ADC(const RegisterPair rp1, const RegisterPair rp2) {
   add(boost::str(boost::format("ADC %s, %s") % registers::toString(rp1) % registers::toString(rp2)));

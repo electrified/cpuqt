@@ -1,8 +1,8 @@
 #include "script_host.h"
 
-#include <utility>
-#include "spdlog/spdlog.h"
 #include "computer/utils.h"
+#include "spdlog/spdlog.h"
+#include <utility>
 
 ScriptHost::ScriptHost(BadgerComputer *computer) {
   this->computer = computer;
@@ -18,9 +18,9 @@ ScriptHost::ScriptHost(BadgerComputer *computer) {
   lua.set_function("run", &ScriptHost::run, this);
 }
 
-void ScriptHost::executeScript(const std::string& path) { lua.script_file(path); }
+void ScriptHost::executeScript(const std::string &path) { lua.script_file(path); }
 
-void ScriptHost::runCommand(const std::string& command) {
+void ScriptHost::runCommand(const std::string &command) {
   try {
     spdlog::get("general")->debug("Executing " + command);
     lua.script(command.c_str());
@@ -56,11 +56,7 @@ void ScriptHost::loadSnapshot(std::string path) {
   loadZ80Snapshot(data, computer->memory, computer->processor->getRegisters());
 }
 
-void ScriptHost::run() {
-  computer->run();
-}
+void ScriptHost::run() { computer->run(); }
 
-void ScriptHost::reset() {
-  computer->reset();
-}
+void ScriptHost::reset() { computer->reset(); }
 ScriptHost::~ScriptHost() = default;

@@ -22,7 +22,7 @@ public:
   SpectrumIO *io;
   bool skipBreakpoint = false;
 
-  void process(std::uint8_t count);
+  void process(std::uint32_t count);
   void step() const;
   void addBreakpoint(std::uint16_t pc);
   void removeBreakpoint(std::uint16_t pc);

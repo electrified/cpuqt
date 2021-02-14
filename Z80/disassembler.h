@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 
-#include "RegisterPair.hpp"
-#include "Register.hpp"
-#include "MemoryAddress.h"
-#include "Memory.h"
-#include "decoder.h"
 #include "DisassemblyResult.h"
+#include "Memory.h"
+#include "MemoryAddress.h"
+#include "Register.hpp"
+#include "RegisterPair.hpp"
+#include "decoder.h"
 
 class Disassembler : public Alu {
   std::uint16_t programCounterAtStartOfInstructionExecution = 0;

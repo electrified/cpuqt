@@ -1,6 +1,6 @@
-#include <string>
 #include "MemoryAddress.h"
 #include "utils.h"
+#include <string>
 
 MemoryAddress::MemoryAddress() {
   memoryAddress = 0;
