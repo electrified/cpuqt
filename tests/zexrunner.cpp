@@ -1,13 +1,12 @@
 #include "../computer/utils.h"
+#include "../computer/logger.h"
 #include "mocks/zexrunner_computer.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <boost/timer/timer.hpp>
 #include <iostream>
 
 int main(int argc, char **argv) {
-  auto console = spdlog::stdout_color_mt("console");
-  console->set_level(spdlog::level::debug);
+  configureLoggers();
 
   auto *comp = new ZexRunnerComputer();
   spdlog::get("general")->debug("Computer created");

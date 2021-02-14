@@ -25,6 +25,8 @@ set(tooltests_SRC
     test.cpp
     graphics_test.cpp
     # computer_utils_test.cpp
+    ../computer/logger.h
+    ../computer/logger.cpp
     main.cpp)
 
 set(zexrunner_SRC
@@ -34,7 +36,9 @@ set(zexrunner_SRC
     ../computer/cpm/serial_io.cpp
     ../computer/cpm/serial_io.h
     ../computer/cpm/console_serial_io.cpp
-    ../computer/cpm/console_serial_io.h)
+    ../computer/cpm/console_serial_io.h
+    ../computer/logger.h
+    ../computer/logger.cpp)
 
 add_subdirectory(./modules/Catch2)
 
@@ -43,5 +47,5 @@ add_executable(zexrunner ${zexrunner_SRC})
 
 target_link_libraries(tests PRIVATE ${Boost_LIBRARIES} Z80
                                     ${CMAKE_THREAD_LIBS_INIT} Catch2::Catch2)
-target_link_libraries(zexrunner ${Boost_LIBRARIES} Z80
-                      ${CMAKE_THREAD_LIBS_INIT} ${Boost_SYSTEM_LIBRARY})
+target_link_libraries(zexrunner Z80 ${Boost_LIBRARIES}
+                      ${CMAKE_THREAD_LIBS_INIT})

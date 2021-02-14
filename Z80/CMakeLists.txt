@@ -42,4 +42,4 @@ add_library(
   ../computer/utils.h
   ../computer/spectrum/graphics.h
   ../computer/spectrum/spectrumio.cpp
-  ../computer/spectrum/spectrumio.h)
+  ../computer/spectrum/spectrumio.h ../computer/logger.cpp ../computer/logger.h)
