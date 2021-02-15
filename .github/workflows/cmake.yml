@@ -17,11 +17,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+
     - name: Install dependencies
       run: sudo apt-get install liblua5.3-dev libboost-dev libboost-regex-dev libboost-system-dev libboost-filesystem-dev libboost-timer-dev qt5-default libqt5svg5-dev
     
     - name: Update submodules
-    - run: |
+      run: |
         git submodule init
         git submodule update --recursive
     
@@ -52,3 +57,6 @@ jobs:
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C $BUILD_TYPE
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
